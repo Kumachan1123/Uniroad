@@ -1,0 +1,67 @@
+/*
+	@file	Scene.h
+	@brief	一般的なシーンクラス
+*/
+#pragma once
+#include <cassert>
+#include <DeviceResources.h>
+#include "Game/SceneManager/IScene.h"
+#include "Game/CommonResources/CommonResources.h"
+#include "Libraries/MyLib/DebugCamera.h"
+#include "Libraries/MyLib/DebugString.h"
+#include "Libraries/MyLib/GridFloor.h"
+#include "Libraries/MyLib/InputManager.h"
+#include "Libraries/MyLib/MemoryLeakDetector.h"
+
+// 前方宣言
+class CommonResources;
+
+namespace mylib
+{
+	class DebugCamera;
+	class GridFloor;
+}
+
+// 一般的なシーンクラス
+class Scene : public IScene
+{
+private:
+
+	// 定数バッファ用のバッファオブジェクト
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
+	// 共通リソース
+	CommonResources* m_commonResources;
+
+	// デバッグカメラ
+	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
+
+	// 格子床
+	std::unique_ptr<mylib::GridFloor> m_gridFloor;
+
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
+
+	// 射影行列
+	DirectX::SimpleMath::Matrix m_projection;
+
+
+
+
+	// 時間
+	float m_time;
+
+	// シーンチェンジフラグ
+	bool m_isChangeScene;
+public:
+	Scene(IScene::SceneID sceneID);
+	~Scene()override;
+
+	void Initialize(CommonResources* resources) override;
+	void Update(float elapsedTime)override;
+	void Render()override;
+	void Finalize()override;
+	SceneID GetNextSceneID() const override;
+private:
+	// カメラに関する設定をする
+	void CreateCamera();
+};

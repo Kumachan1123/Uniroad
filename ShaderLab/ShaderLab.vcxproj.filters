@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Common">
+      <UniqueIdentifier>14669433-e497-40cb-ae78-3f2463252939</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>31a0cd6d-2ef1-4cbe-af38-519d8609812d</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dds;dlg;fbx;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="StepTimer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceResources.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\SceneManager\IScene.h" />
+    <ClInclude Include="Game\SceneManager\SceneManager.h" />
+    <ClInclude Include="Game\Screen\Screen.h" />
+    <ClInclude Include="Game\CommonResources\CommonResources.h" />
+    <ClInclude Include="KumachiLib\Anchor\Anchor.h" />
+    <ClInclude Include="KumachiLib\AudioManager\AudioManager.h" />
+    <ClInclude Include="KumachiLib\BinaryFile\BinaryFile.h" />
+    <ClInclude Include="KumachiLib\CreateShader\CreateShader.h" />
+    <ClInclude Include="KumachiLib\DrawCollision\DrawCollision.h" />
+    <ClInclude Include="KumachiLib\DrawPolygon\DrawPolygon.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod_codec.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod_common.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod_dsp.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod_dsp_effects.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod_errors.h" />
+    <ClInclude Include="Libraries\FMOD\inc\fmod_output.h" />
+    <ClInclude Include="Libraries\Json\json.hpp" />
+    <ClInclude Include="KumachiLib\Math\KumachiLib.h" />
+    <ClInclude Include="Libraries\Microsoft\DebugDraw.h" />
+    <ClInclude Include="Libraries\Microsoft\ReadData.h" />
+    <ClInclude Include="Libraries\MyLib\DebugCamera.h" />
+    <ClInclude Include="Libraries\MyLib\DebugString.h" />
+    <ClInclude Include="Libraries\MyLib\GridFloor.h" />
+    <ClInclude Include="Libraries\MyLib\InputManager.h" />
+    <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h" />
+    <ClInclude Include="Game\Scenes\Scene\Scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="DeviceResources.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="Game\CommonResources\CommonResources.cpp" />
+    <ClCompile Include="KumachiLib\AudioManager\AudioManager.cpp" />
+    <ClCompile Include="KumachiLib\BinaryFile\BinaryFile.cpp" />
+    <ClCompile Include="KumachiLib\CreateShader\CreateShader.cpp" />
+    <ClCompile Include="KumachiLib\DrawCollision\DrawCollision.cpp" />
+    <ClCompile Include="KumachiLib\DrawPolygon\DrawPolygon.cpp" />
+    <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
+    <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />
+    <ClCompile Include="Libraries\MyLib\DebugString.cpp" />
+    <ClCompile Include="Libraries\MyLib\GridFloor.cpp" />
+    <ClCompile Include="Libraries\MyLib\InputManager.cpp" />
+    <ClCompile Include="Game\Scenes\Scene\Scene.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="directx.ico">
+      <Filter>Assets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest">
+      <Filter>Assets</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="HLSL\Particle\Particle.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
+    <FxCompile Include="HLSL\Particle\PS_Particle.hlsl" />
+    <FxCompile Include="HLSL\Particle\VS_Particle.hlsl" />
+  </ItemGroup>
+</Project>
