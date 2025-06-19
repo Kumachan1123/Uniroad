@@ -3,13 +3,28 @@
 Texture2D tex : register(t0);
 Texture2D tex2 : register(t1);
 SamplerState samLinear : register(s0);
+
 float4 main(PS_INPUT input) : SV_TARGET
 {
-	//	指定された画像から情報を取得
-    float4 output = tex.Sample(samLinear, input.Tex);
-    float4 output2 = tex2.Sample(samLinear, input.Tex);
-   // float3 rainbowColor = GetRainbow(time.x);
-    output *= input.Color;
-	//	C++から指定された色割合を考慮して、表示色を決定
-    return output;
+    float2 uv = input.Tex;
+    float w = width.x;
+    float h = height.x;
+    uv.x /= w;
+    uv.y /= h;
+    float count2 = floor(count.x);
+    
+    uv.x += (1.0f / w) * (count2 % w);
+    uv.y += (1.0f / h) * (int) (count2 / w);
+    
+    float4 color = tex.Sample(samLinear, uv);
+    
+    color *= input.Color;
+   
+   // // アルファ値が0の場合はピクセルを非表示にする
+   // float alphaMask = step(0.0f, color.a); // アルファ値が0なら0、それ以外は1になる
+   // color *= alphaMask; // アルファが0のピクセルを完全に無効化
+   //// アルファ値を0から1の範囲に制限し、色に掛け合わせる
+   
+    
+    return color;
 }

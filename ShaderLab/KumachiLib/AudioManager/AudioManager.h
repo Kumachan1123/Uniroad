@@ -1,28 +1,41 @@
+/*
+*	@file	AudioManager.h
+*	@brief	音声管理クラス
+*/
 #pragma once
-// FMODのインクルード
-#include "KumachiLib/FMOD/inc/fmod.hpp"
-#include "KumachiLib/FMOD/inc/fmod_errors.h"
+#ifndef AUDIOMANAGER_DEFINED
+#define AUDIOMANAGER_DEFINED
+// 標準ライブラリ
 #include <string>
+#include <fstream>
 #include <unordered_map>
+#include <thread> 
 #include <memory>
+// FMOD(外部ライブラリ)
+#include "Libraries/FMOD/inc/fmod.hpp"
+#include "Libraries/FMOD/inc/fmod_errors.h"
+
+// 前方宣言
 namespace FMOD
 {
 	class System;
 	class Sound;
 	class Channel;
 }
+
+// 音声管理クラス
 class AudioManager
 {
 public:
-	// シングルトンインスタンスを取得
-	static AudioManager* const GetInstance();
-public:
+	// public関数
+	// コンストラクタ
+	AudioManager();
 	// デストラクタ
 	~AudioManager();
 	// 初期化
 	void Initialize();
 	// 音声データのロード
-	bool LoadSound(const std::string& filePath, const std::string& key);
+	bool LoadSound(const std::string& filePath, const std::string& key, bool allowMultiplePlay);
 	// 音声データの取得
 	FMOD::Sound* GetSound(const std::string& key);
 	// 音を再生する
@@ -34,15 +47,16 @@ public:
 	// 解放
 	void Shutdown();
 private:
-	// コンストラクタとデストラクタをプライベートにする
-	AudioManager();
-	// コピーコンストラクタと代入演算子の禁止
-	AudioManager(const AudioManager&) = delete;
-	AudioManager& operator=(const AudioManager&) = delete;
-	// FMOD関連のオブジェクト
-	FMOD::System* m_system;
-	std::unordered_map<std::string, FMOD::Channel*> m_channels;
-	std::unordered_map<std::string, FMOD::Sound*> m_sounds;
-	// シングルトンインスタンス
-	static std::unique_ptr<AudioManager> m_instance;
+	// private変数
+	// FMODシステム
+	FMOD::System* m_pFMODSystem;
+	// チャンネル
+	std::unordered_map<std::string, FMOD::Channel*> m_pChannels;
+	// サウンド
+	std::unordered_map<std::string, FMOD::Sound*> m_pSounds;
+	// キーごとの二重再生可否
+	std::unordered_map<std::string, bool> m_pAllowMultiplePlayMap;
+	// ボリューム
+	float m_volume;
 };
+#endif // AUDIOMANAGER_DEFINED

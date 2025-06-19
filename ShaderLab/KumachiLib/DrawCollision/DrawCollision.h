@@ -3,6 +3,9 @@
 	@brief	当たり判定描画用クラス
 */
 #pragma once
+#include <Libraries/Microsoft/DebugDraw.h>
+#include <DeviceResources.h>
+#include "Game/CommonResources/CommonResources.h"
 //前方宣言
 class CommonResources;
 
@@ -16,6 +19,8 @@ public:
 	static void DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	// 境界球描画
 	static void DrawBoundingSphere(DirectX::BoundingSphere& bs, DirectX::XMVECTOR color);
+	// 境界ボックス描画
+	static void DrawBoundingBox(DirectX::BoundingBox& bb, DirectX::XMVECTOR color);
 	// 描画終了
 	static void DrawEnd();
 	// 解放

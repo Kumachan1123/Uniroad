@@ -46,6 +46,11 @@
     <ClInclude Include="Libraries\MyLib\InputManager.h" />
     <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h" />
     <ClInclude Include="Game\Scenes\Scene\Scene.h" />
+    <ClInclude Include="Game\MainScreen\CSVMap\CSVMap.h" />
+    <ClInclude Include="Game\ControllScreen\Canvas\Canvas.h" />
+    <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
+    <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
+    <ClInclude Include="Game\ControllScreen\UIBack\UIBack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -67,6 +72,11 @@
     <ClCompile Include="Libraries\MyLib\GridFloor.cpp" />
     <ClCompile Include="Libraries\MyLib\InputManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene\Scene.cpp" />
+    <ClCompile Include="Game\MainScreen\CSVMap\CSVMap.cpp" />
+    <ClCompile Include="Game\ControllScreen\Canvas\Canvas.cpp" />
+    <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
+    <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="Game\ControllScreen\UIBack\UIBack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -84,10 +94,15 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="HLSL\Particle\Particle.hlsli" />
+    <None Include="HLSL\CRT\CRT.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
     <FxCompile Include="HLSL\Particle\PS_Particle.hlsl" />
     <FxCompile Include="HLSL\Particle\VS_Particle.hlsl" />
+    <FxCompile Include="HLSL\CRT\PS_CRT.hlsl" />
+    <FxCompile Include="HLSL\CRT\VS_CRT.hlsl" />
+    <FxCompile Include="HLSL\Radar\PS_Radar.hlsl" />
+    <FxCompile Include="HLSL\Radar\VS_Radar.hlsl" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@
 */
 #include "pch.h"
 #include "DebugCamera.h"
-#include "KumachiLib/MyLib/InputManager.h"
+#include "Libraries/MyLib/InputManager.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

@@ -192,7 +192,10 @@
   <ItemGroup>
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\ControllScreen\Canvas\Canvas.h" />
     <ClInclude Include="Game\CommonResources\CommonResources.h" />
+    <ClInclude Include="Game\ControllScreen\UIBack\UIBack.h" />
+    <ClInclude Include="Game\MainScreen\CSVMap\CSVMap.h" />
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene\Scene.h" />
@@ -203,6 +206,8 @@
     <ClInclude Include="KumachiLib\CreateShader\CreateShader.h" />
     <ClInclude Include="KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="KumachiLib\DrawPolygon\DrawPolygon.h" />
+    <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
+    <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
     <ClInclude Include="Libraries\FMOD\inc\fmod_codec.h" />
@@ -226,7 +231,10 @@
   <ItemGroup>
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game\ControllScreen\Canvas\Canvas.cpp" />
     <ClCompile Include="Game\CommonResources\CommonResources.cpp" />
+    <ClCompile Include="Game\ControllScreen\UIBack\UIBack.cpp" />
+    <ClCompile Include="Game\MainScreen\CSVMap\CSVMap.cpp" />
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene\Scene.cpp" />
     <ClCompile Include="KumachiLib\AudioManager\AudioManager.cpp" />
@@ -234,6 +242,8 @@
     <ClCompile Include="KumachiLib\CreateShader\CreateShader.cpp" />
     <ClCompile Include="KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="KumachiLib\DrawPolygon\DrawPolygon.cpp" />
+    <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
+    <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugString.cpp" />
@@ -257,10 +267,27 @@
     <Manifest Include="settings.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="HLSL\CRT\PS_CRT.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\CRT\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\CRT\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\CRT\VS_CRT.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\CRT\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\CRT\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
@@ -281,6 +308,22 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\Radar\PS_Radar.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\Radar\VS_Radar.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

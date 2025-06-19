@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "DrawCollision.h"
-#include "Game/CommonResources/CommonResources.h"
-#include "DeviceResources.h"
-#include <Libraries/Microsoft/DebugDraw.h>
+
 
 // 静的メンバーの初期化
 std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_basicEffect = nullptr;
@@ -62,6 +60,12 @@ void DrawCollision::DrawBoundingSphere(DirectX::BoundingSphere& bs, DirectX::XMV
 {
 	// 境界球を描画
 	DX::Draw(m_primitiveBatch.get(), bs, color);
+}
+
+void DrawCollision::DrawBoundingBox(DirectX::BoundingBox& bb, DirectX::XMVECTOR color)
+{
+	// 境界ボックスを描画
+	DX::Draw(m_primitiveBatch.get(), bb, color);
 }
 
 void DrawCollision::DrawEnd()

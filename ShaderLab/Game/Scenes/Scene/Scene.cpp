@@ -15,10 +15,14 @@ using namespace DirectX::SimpleMath;
 Scene::Scene(IScene::SceneID sceneID)
 	: m_commonResources{}
 	, m_debugCamera{}
-	, m_gridFloor{}
-	, m_projection{}
+	, m_projectionGame{}
+	, m_projectionControll{}
 	, m_time{ 0.0f }
 	, m_isChangeScene{}
+	, m_viewPortGame{}
+	, m_viewPortControll{}
+	, m_nowSceneID{ sceneID }// 現在のシーンID
+
 {
 }
 
@@ -29,20 +33,54 @@ Scene::~Scene()
 void Scene::Initialize(CommonResources* resources)
 {
 	m_commonResources = resources;
-	this->CreateCamera();
-
+	CreateCamera();
+	const auto deviceResources = m_commonResources->GetDeviceResources();
+	// 各種ビューポートを作成する
+	CreateViewports();
+	// マップ生成
+	m_pCSVMap = std::make_unique<CSVMap>(m_commonResources);
+	// CSVマップを読み込む
+	m_pCSVMap->LoadMap("Resources/Map/test.csv");
+	// 操作画面の背景を作成する
+	m_pUIBack = std::make_unique<UIBack>(m_commonResources);
+	// 操作画面の背景を初期化する
+	m_pUIBack->Create(deviceResources);
 }
 
 void Scene::Update(float elapsedTime)
 {
+	m_time += elapsedTime;
 	// デバッグカメラの更新
 	m_debugCamera->Update(m_commonResources->GetInputManager());
+	// 操作画面の背景の更新
+	m_pUIBack->Update(elapsedTime);
 }
-
 void Scene::Render()
 {
-	// ビュー行列を取得する
+	const auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
+
+	// --- 左側: ゲーム画面用ビューポート ---
+	context->RSSetViewports(1, &m_viewPortGame);
+
+	// ここでゲーム画面を描画
 	m_view = m_debugCamera->GetViewMatrix();
+	// ...他のゲーム描画...
+	m_pCSVMap->Render(m_view, m_projectionGame);
+	// --- 右側: 操作画面用ビューポート ---
+	context->RSSetViewports(1, &m_viewPortControll);
+
+	// ここで操作画面を描画
+	// 例: 操作UIや情報描画関数を呼ぶ
+	m_pUIBack->Render();
+
+
+	// --- デバッグ情報（例） ---
+	// ビューポートを元の設定に戻す
+	const auto& viewPort = m_commonResources->GetDeviceResources()->GetScreenViewport();
+	context->RSSetViewports(1, &viewPort);
+	const auto debugString = m_commonResources->GetDebugString();
+	debugString->AddString("Use ViewPort.");
 }
 
 void Scene::Finalize()
@@ -68,11 +106,40 @@ void Scene::CreateCamera()
 	// デバッグカメラを作成する
 	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
-	m_debugCamera->Initialize(rect.right, rect.bottom);
+	m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
 	// 射影行列を作成する
-	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
+		static_cast<float>(rect.right * 0.7f) / static_cast<float>(rect.bottom),
 		0.1f, 100.0f
 	);
+	m_projectionControll = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+		XMConvertToRadians(45.0f),
+		static_cast<float>(rect.right * 0.3f) / static_cast<float>(rect.bottom),
+		0.1f, 100.0f
+	);
+}
+
+void Scene::CreateViewports()
+{
+	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
+	// --- 左側: ゲーム画面用ビューポート ---
+	D3D11_VIEWPORT viewportLeft = {};
+	viewportLeft.TopLeftX = 0;
+	viewportLeft.TopLeftY = 0;
+	viewportLeft.Width = (FLOAT)rect.right * 0.7f; // 例: 左7割
+	viewportLeft.Height = (FLOAT)rect.bottom;
+	viewportLeft.MinDepth = 0.0f;
+	viewportLeft.MaxDepth = 1.0f;
+	m_viewPortGame = viewportLeft;
+
+	// --- 右側: 操作画面用ビューポート ---
+	D3D11_VIEWPORT viewportRight = {};
+	viewportRight.TopLeftX = (FLOAT)rect.right * 0.7f;
+	viewportRight.TopLeftY = 0;
+	viewportRight.Width = (FLOAT)rect.right * 0.3f; // 例: 右3割
+	viewportRight.Height = (FLOAT)rect.bottom;
+	viewportRight.MinDepth = 0.0f;
+	viewportRight.MaxDepth = 1.0f;
+	m_viewPortControll = viewportRight;
 }

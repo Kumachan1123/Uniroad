@@ -4,7 +4,10 @@ cbuffer ConstBuffer : register(b0)
     matrix matWorld;
     matrix matView;
     matrix matProj;
-    float4 time;
+    float4 colors;
+    float4 count;
+    float4 height;
+    float4 width;
 };
 
 struct VS_INPUT

@@ -5,14 +5,18 @@
 #pragma once
 #include <cassert>
 #include <DeviceResources.h>
-#include "Game/SceneManager/IScene.h"
-#include "Game/CommonResources/CommonResources.h"
+
 #include "Libraries/MyLib/DebugCamera.h"
 #include "Libraries/MyLib/DebugString.h"
 #include "Libraries/MyLib/GridFloor.h"
 #include "Libraries/MyLib/InputManager.h"
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 
+// 自作ヘッダーファイル
+#include "Game/SceneManager/IScene.h"
+#include "Game/CommonResources/CommonResources.h"
+#include "Game/MainScreen/CSVMap/CSVMap.h"
+#include "Game/ControllScreen/UIBack/UIBack.h"
 // 前方宣言
 class CommonResources;
 
@@ -25,37 +29,9 @@ namespace mylib
 // 一般的なシーンクラス
 class Scene : public IScene
 {
-private:
-
-	// 定数バッファ用のバッファオブジェクト
-	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
-	// 共通リソース
-	CommonResources* m_commonResources;
-
-	// デバッグカメラ
-	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
-
-	// 格子床
-	std::unique_ptr<mylib::GridFloor> m_gridFloor;
-
-	// ビュー行列
-	DirectX::SimpleMath::Matrix m_view;
-
-	// 射影行列
-	DirectX::SimpleMath::Matrix m_projection;
-
-
-
-
-	// 時間
-	float m_time;
-
-	// シーンチェンジフラグ
-	bool m_isChangeScene;
 public:
 	Scene(IScene::SceneID sceneID);
 	~Scene()override;
-
 	void Initialize(CommonResources* resources) override;
 	void Update(float elapsedTime)override;
 	void Render()override;
@@ -64,4 +40,32 @@ public:
 private:
 	// カメラに関する設定をする
 	void CreateCamera();
+	// 各種ビューポートを設定する
+	void CreateViewports();
+private:
+	// 共通リソース
+	CommonResources* m_commonResources;
+	// デバッグカメラ
+	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
+	// CSVマップ
+	std::unique_ptr<CSVMap> m_pCSVMap;
+	// 操作画面の背景
+	std::unique_ptr<UIBack> m_pUIBack;
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
+	// 射影行列
+	DirectX::SimpleMath::Matrix m_projectionGame;
+	// 射影行列
+	DirectX::SimpleMath::Matrix m_projectionControll;
+	// 現在のシーンID
+	IScene::SceneID m_nowSceneID;
+	// ゲーム画面用ビューポート　
+	D3D11_VIEWPORT m_viewPortGame;
+	// 操作用ビューポート
+	D3D11_VIEWPORT m_viewPortControll;
+	// 時間
+	float m_time;
+	// シーンチェンジフラグ
+	bool m_isChangeScene;
+
 };
