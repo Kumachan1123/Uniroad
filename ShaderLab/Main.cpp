@@ -23,7 +23,7 @@ namespace
 	std::unique_ptr<Game> g_game;// ゲームオブジェクトのグローバルポインター
 }
 // アプリケーション名
-LPCWSTR g_szAppName = L"シグナルレイダーズ";
+LPCWSTR g_szAppName = L"パズル";
 // Windowsプロシージャの宣言
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // ゲーム終了処理の宣言
@@ -144,7 +144,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		// ウィンドウのクライアント領域の矩形を取得
 		GetClientRect(hwnd, &rc);
 		// ゲームの初期化を行う
-		g_game->Initialize(hwnd, rc.right - rc.left, rc.bottom - rc.top);
+		g_game->Initialize(hwnd, 1920, 1080);
 		// フルスクリーンモードの場合
 		if (s_fullscreen)
 		{
@@ -254,7 +254,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// ウィンドウのクライアント領域の矩形を取得
 			GetClientRect(hWnd, &rc);
 			// ゲームオブジェクトにウィンドウサイズ変更を通知
-			game->OnWindowSizeChanged(rc.right - rc.left, rc.bottom - rc.top);
+			game->OnWindowSizeChanged(1920, 1080);
 		}
 		// switch文の終了
 		break;

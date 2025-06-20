@@ -45,6 +45,12 @@ void Scene::Initialize(CommonResources* resources)
 	m_pUIBack = std::make_unique<UIBack>(m_commonResources);
 	// 操作画面の背景を初期化する
 	m_pUIBack->Create(deviceResources);
+	// パネルを作成する
+	m_pPanel = std::make_unique<Panel>(m_pCSVMap->GetMaxCol(), m_pCSVMap->GetMaxRow());
+	// パネルにマップ情報を渡す
+	m_pPanel->SetCSVMap(m_pCSVMap.get());
+	// パネルを初期化する
+	m_pPanel->Initialize(m_commonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 }
 
 void Scene::Update(float elapsedTime)
@@ -54,6 +60,8 @@ void Scene::Update(float elapsedTime)
 	m_debugCamera->Update(m_commonResources->GetInputManager());
 	// 操作画面の背景の更新
 	m_pUIBack->Update(elapsedTime);
+	// パネルの更新
+	m_pPanel->Update(elapsedTime);
 }
 void Scene::Render()
 {
@@ -64,21 +72,23 @@ void Scene::Render()
 	context->RSSetViewports(1, &m_viewPortGame);
 
 	// ここでゲーム画面を描画
+	// ビュー行列を取得
 	m_view = m_debugCamera->GetViewMatrix();
-	// ...他のゲーム描画...
+	// CSVマップの描画
 	m_pCSVMap->Render(m_view, m_projectionGame);
 	// --- 右側: 操作画面用ビューポート ---
 	context->RSSetViewports(1, &m_viewPortControll);
-
-	// ここで操作画面を描画
-	// 例: 操作UIや情報描画関数を呼ぶ
+	// 操作画面の背景を描画
 	m_pUIBack->Render();
+	// パネルを描画
+	m_pPanel->Render();
 
 
 	// --- デバッグ情報（例） ---
 	// ビューポートを元の設定に戻す
 	const auto& viewPort = m_commonResources->GetDeviceResources()->GetScreenViewport();
 	context->RSSetViewports(1, &viewPort);
+
 	const auto debugString = m_commonResources->GetDebugString();
 	debugString->AddString("Use ViewPort.");
 }

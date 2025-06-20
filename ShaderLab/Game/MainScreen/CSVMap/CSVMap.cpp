@@ -4,6 +4,7 @@
 */
 #include <pch.h>
 #include "CSVMap.h"
+
 /*
 *	@brief コンストラクタ
 *	@details 生成時に共通リソースへのポインタを受け取り、初期化を行う。
@@ -62,7 +63,7 @@ void CSVMap::InitializeTileDictionary()
 void CSVMap::LoadModel()
 {
 	// モデルを読み込む
-	m_pModel = m_commonResources->GetModelManager()->GetModel("Block");
+	//m_pModel = m_commonResources->GetModelManager()->GetModel("Block");
 }
 /*
 *	@brief CSV形式のマップを読み込む
@@ -79,6 +80,11 @@ void CSVMap::LoadMap(const std::string& filePath)
 	std::ifstream file(filePath);
 	// ファイルが開けなかった場合は何もしない
 	if (!file.is_open()) return;
+	// CSV読み込む前に2次元配列を確保する
+	// 行数確保
+	m_mapData.resize(MAXCOL);
+	// 各行に列数確保
+	for (int i = 0; i < MAXCOL; ++i)m_mapData[i].resize(MAXRAW);
 	// マップの初期化
 	std::string line;
 	// 行番号を初期化
@@ -89,6 +95,7 @@ void CSVMap::LoadMap(const std::string& filePath)
 	// 中心補正値を計算
 	float offsetX = mapWidth / 2.0f - 1.0f;
 	float offsetZ = mapHeight / 2.0f - 1.0f;
+
 	// マップの行と列を読み込む
 	while (std::getline(file, line) && row < MAXCOL)
 	{
@@ -106,6 +113,7 @@ void CSVMap::LoadMap(const std::string& filePath)
 			// セルの文字列が辞書に存在する場合
 			if (it != m_tileDictionary.end())
 			{
+
 				// タイル情報を取得
 				const TileInfo& tileInfo = it->second;
 				// タイルの位置計算（マップ中心補正）
@@ -113,6 +121,8 @@ void CSVMap::LoadMap(const std::string& filePath)
 				float z = static_cast<float>(row * 2) - offsetZ;
 				// ワールド座標を計算
 				Vector3 pos(x, 0.0f, z);
+				// マップデータにタイル情報を保存
+				m_mapData[row][col] = MapTileData{ tileInfo, pos, tileInfo.hasCollision };
 				// ワールド行列を作成（スケーリングと位置の設定）
 				Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
 				// モデル取得
@@ -129,7 +139,7 @@ void CSVMap::LoadMap(const std::string& filePath)
 					// 拡大率を設定
 					box.Extents = tileInfo.scale;
 					// ボックスの拡大率を2倍にする（当たり判定用）
-					m_wallBox.push_back(box);
+					//m_wallBox.push_back(box);
 				}
 			}
 			// マップの列に値を設定
@@ -156,12 +166,12 @@ void CSVMap::DrawCollision(const DirectX::SimpleMath::Matrix& view, const Direct
 	UNREFERENCED_PARAMETER(proj);
 	// 当たり判定の描画を開始
 #ifdef _DEBUG
-	// 描画開始
-	DrawCollision::DrawStart(view, proj);
-	// 当たり判定のボックスを描画
-	for (int i = 0; i < m_wallBox.size(); i++)	DrawCollision::DrawBoundingBox(m_wallBox[i], Colors::Red);
-	// 描画終了
-	DrawCollision::DrawEnd();
+	//// 描画開始
+	//DrawCollision::DrawStart(view, proj);
+	//// 当たり判定のボックスを描画
+	//for (int i = 0; i < m_wallBox.size(); i++)	DrawCollision::DrawBoundingBox(m_wallBox[i], Colors::Red);
+	//// 描画終了
+	//DrawCollision::DrawEnd();
 
 #endif
 }
@@ -190,4 +200,17 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 	}
 	//// 当たり判定の描画
 	//DrawCollision(view, proj);
+}
+
+/*
+*	@brief 指定位置のタイル情報を取得する
+*	@details 指定された列と行の位置にあるタイルの情報を取得する。
+*	@param col 列番号
+*	@param row 行番号
+*	@return 指定位置のタイル情報への参照
+*/
+const CSVMap::MapTileData& CSVMap::GetTileData(int col, int row) const
+{
+	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
+	return m_mapData[col][row];
 }

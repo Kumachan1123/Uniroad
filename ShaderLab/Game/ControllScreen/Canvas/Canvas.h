@@ -36,45 +36,36 @@ public:
 	// シェーダーに送る定数バッファ
 	struct ConstBuffer
 	{
-		DirectX::SimpleMath::Vector4	windowSize;	// ウィンドウサイズ
-		DirectX::SimpleMath::Vector2	frame;		// フレーム数
-		float							animCount = 0.0f;	// アニメーションカウント
-		float							renderRatio = 0.0f;// レンダリング比率
+		DirectX::SimpleMath::Vector4 windowSize;// ウィンドウサイズ
+		float time;// 時間
+		DirectX::SimpleMath::Vector3 color;// 色
 	};
 public:
 	// アクセサ
-	// ウィンドウサイズの設定
+		// ウィンドウのサイズを設定
 	void SetWindowSize(const int& width, const int& height);
-	// スケールの設定
-	void SetScale(DirectX::SimpleMath::Vector2 scale) { m_scale = scale; };
-	// スケールの取得
+	// シェーダータイプを設定
+	void SetShaderType(ShaderType shaderType) { m_shaderType = shaderType; }
+	// スケールを取得
 	DirectX::SimpleMath::Vector2 GetScale() const { return m_scale; }
-	// ベーススケールの取得
-	DirectX::SimpleMath::Vector2 GetBaseScale() const { return m_baseScale; }
-	// 描画位置の取得
+	// スケールを設定
+	void SetScale(const DirectX::SimpleMath::Vector2& scale) { m_scale = scale; }
+	// 選択状態のスケールを取得
+	DirectX::SimpleMath::Vector2 GetSelectScale() const { return m_baseScale; }
+	// 位置を取得
 	DirectX::SimpleMath::Vector2 GetPosition() const { return m_position; }
-	// 描画位置の設定
-	void SetPosition(const DirectX::SimpleMath::Vector2& position) { m_position = position; }
-	// アンカーの取得
+	// 位置を設定
+	void SetPosition(const DirectX::SimpleMath::Vector2& position) { m_position = position; };
+	// アンカーを取得
 	KumachiLib::ANCHOR GetAnchor() const { return m_anchor; }
-	// アンカーの設定
+	// アンカーを設定
 	void SetAnchor(KumachiLib::ANCHOR anchor) { m_anchor = anchor; }
-	// レンダリング比率の取得
-	float GetRenderRatio() const { return m_renderRatio; }
-	// レンダリング比率の設定
-	void SetRenderRatio(float ratio) { m_renderRatio = ratio; }
-	// レンダリング比率のオフセットの取得
-	float GetRenderRatioOffset() const { return m_renderRatioOffset; }
-	// レンダリング比率のオフセットの設定
-	void SetRenderRatioOffset(float offset) { m_renderRatioOffset = offset; }
-	// シェーダーの種類の設定
-	void SetShaderType(ShaderType type) { m_shaderType = type; }
-	// アニメーションのフレーム数の設定
-	void SetAnim(int anim) { m_anim = anim; }
-	// フレームの行数の設定
-	void SetFrameRows(int rows) { m_frameRows = rows; }
-	// フレームの列数の設定
-	void SetFrameCols(int cols) { m_frameCols = cols; }
+	// 時間を取得
+	float GetTime() const { return m_time; }
+	// 時間を設定
+	void SetTime(float time) { m_time = time; }
+	// 指定位置にヒットしたかどうかを取得
+	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const;
 public:
 	// コンストラクタ
 	Canvas(CommonResources* pCommonResources);
@@ -104,6 +95,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
+	// 時間
+	float m_time;
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;
 	// 入力レイアウト
@@ -132,12 +125,6 @@ private:
 	int m_windowWidth, m_windowHeight;
 	// テクスチャの幅と高さ
 	int m_textureWidth, m_textureHeight;
-	// フレームの行数 
-	int m_frameRows;
-	// フレームの列数
-	int m_frameCols;
-	// フレーム数
-	int m_anim;
 	// スケール
 	DirectX::SimpleMath::Vector2 m_scale;
 	// ベーススケール
@@ -148,9 +135,5 @@ private:
 	KumachiLib::ANCHOR m_anchor;
 	// シェーダーの種類
 	ShaderType m_shaderType;
-	// レンダリング比率
-	float m_renderRatio;
-	// レンダリング比率のオフセット
-	float m_renderRatioOffset;
 };
 

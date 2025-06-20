@@ -17,6 +17,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/ControllScreen/UIBack/UIBack.h"
+#include "Game/ControllScreen/Panel/Panel.h"
 // 前方宣言
 class CommonResources;
 
@@ -51,6 +52,8 @@ private:
 	std::unique_ptr<CSVMap> m_pCSVMap;
 	// 操作画面の背景
 	std::unique_ptr<UIBack> m_pUIBack;
+	// パネル
+	std::unique_ptr<Panel> m_pPanel;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列

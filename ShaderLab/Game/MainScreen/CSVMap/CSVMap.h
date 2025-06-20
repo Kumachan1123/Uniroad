@@ -24,6 +24,7 @@ class CommonResources;
 // CSV形式のマップを読み込む
 class CSVMap
 {
+public:
 	// タイルの情報構造体
 	struct TileInfo
 	{
@@ -31,11 +32,26 @@ class CSVMap
 		bool hasCollision = false;              // 当たり判定を持つか
 		DirectX::SimpleMath::Vector3 scale = { 1.0f, 1.0f, 1.0f }; // スケーリング
 	};
+	// タイルのレンダリングデータ構造体
 	struct TileRenderData
 	{
 		DirectX::Model* model;
 		DirectX::SimpleMath::Matrix world;
 	};
+	// マップの1マス分の情報
+	struct MapTileData
+	{
+		TileInfo tileInfo;               // その場所のタイル種類（Block、Start、Goalなど）
+		DirectX::SimpleMath::Vector3 pos; // そのマスのワールド座標
+		bool hasCollision = false;               // 当たり判定あるか
+	};
+public:
+	// アクセサ
+	// 指定位置のタイル情報を取得する
+	const MapTileData& GetTileData(int col, int row) const;
+	// マップの最大列数と行数を取得する
+	const int GetMaxCol() const { return MAXCOL; }// 列数
+	const int GetMaxRow() const { return MAXRAW; }// 行数
 public:
 	CSVMap(CommonResources* resources);
 	~CSVMap();
@@ -49,18 +65,13 @@ private:
 private:
 	CommonResources* m_commonResources;
 	//マップ
-	static const int MAXCOL = 5;
-	static const int MAXRAW = 5;
-	char m_map[MAXCOL][MAXRAW];
-	// CSVMap のメンバに追加
+	const int MAXCOL = 5;
+	const int MAXRAW = 5;
+	// タイルの辞書
 	std::unordered_map<std::string, TileInfo> m_tileDictionary;
+	// タイルのレンダリングデータ
 	std::vector<TileRenderData> m_tiles;
-
-	std::vector<DirectX::BoundingBox> m_wallBox;
-	//std::vector<DirectX::SimpleMath::Matrix> worldMatrices;
-	DirectX::Model* m_pModel;
-	// モデルパス
-	wchar_t m_modelPath[256];
-
+	// マップデータ
+	std::vector<std::vector<MapTileData>> m_mapData;
 
 };

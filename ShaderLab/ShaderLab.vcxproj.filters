@@ -51,6 +51,8 @@
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Game\ControllScreen\UIBack\UIBack.h" />
+    <ClInclude Include="Game\ControllScreen\Panel\Panel.h" />
+    <ClInclude Include="Game\Interface\IUI\IUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -77,6 +79,7 @@
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Game\ControllScreen\UIBack\UIBack.cpp" />
+    <ClCompile Include="Game\ControllScreen\Panel\Panel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -95,6 +98,7 @@
     <None Include="packages.config" />
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="HLSL\CRT\CRT.hlsli" />
+    <None Include="HLSL\Tile\Tile.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -106,5 +110,8 @@
     <FxCompile Include="HLSL\Radar\VS_Radar.hlsl" />
     <FxCompile Include="HLSL\UI\VS_UI.hlsl" />
     <FxCompile Include="HLSL\UI\PS_UI.hlsl" />
+    <FxCompile Include="HLSL\Tile\GS_Tile.hlsl" />
+    <FxCompile Include="HLSL\Tile\PS_Tile.hlsl" />
+    <FxCompile Include="HLSL\Tile\VS_Tile.hlsl" />
   </ItemGroup>
 </Project>

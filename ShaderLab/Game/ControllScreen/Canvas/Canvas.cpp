@@ -11,6 +11,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Canvas::INPUT_LAYOUT =
 	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3) + sizeof(DirectX::SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
+
 /*
 *	@brief	コンストラクタ
 *	@details キャンバスクラスのコンストラクタ
@@ -20,11 +21,6 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Canvas::INPUT_LAYOUT =
 Canvas::Canvas(CommonResources* pCommonResources)
 	: m_pCommonResources(pCommonResources)
 	, m_pDR(nullptr)
-	, m_renderRatio(1.0f)
-	, m_renderRatioOffset(0.0f)
-	, m_anim(0)
-	, m_frameRows(1)
-	, m_frameCols(1)
 	, m_textureWidth(0)
 	, m_textureHeight(0)
 	, m_windowWidth(0)
@@ -125,16 +121,17 @@ void Canvas::Render()
 	using namespace DirectX::SimpleMath;
 	// 頂点情報
 	VertexPositionColorTexture vertex[1] = {
-		VertexPositionColorTexture(
-			  Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))//	Position.xy	:拡縮用スケール	Position.z	:アンカータイプ(0～8)の整数で指定
-			, Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))	//	Color.xy　	:アンカー座標(ピクセル指定:1280 ×720) Color.zw	:画像サイズ
-			, Vector2(m_renderRatio - m_renderRatioOffset,0))//	Tex.xy		:x = ゲージ画像の描画範囲(0～1), y = 0
+		VertexPositionColorTexture(Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))// 大きさとアンカー
+		, Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))// 位置と幅と高さ
+		, Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))// ウィンドウの幅と高さ
 	};
 	// シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
-	// ウィンドウサイズ
+	// ウィンドウサイズを設定
 	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
-	// レンダリング比率
-	m_constBuffer.renderRatio = m_renderRatio - m_renderRatioOffset;
+	// 時間を設定
+	m_constBuffer.time = m_time;
+	// 色を設定
+	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
 	// 受け渡し用バッファの内容更新
 	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
 	// ConstBufferからID3D11Bufferへの変換
@@ -150,27 +147,7 @@ void Canvas::Render()
 	// 描画開始
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
 	////	シェーダをセットする
-	//if (m_shaderType == ShaderType::HP)// HP用のシェーダーの場合
-	//{
-	//	// HP用のシェーダーをセット
-	//	m_pDrawPolygon->SetShader(m_hpShaders, nullptr, 0);
-	//}
-	//else if (m_shaderType == ShaderType::CIRCLE)// 円形ゲージ用のシェーダーの場合 
-	//{
-	//	// 円形ゲージ用のシェーダーをセット
-	//	m_pDrawPolygon->SetShader(m_circleShaders, nullptr, 0);
-	//}
-	//else if (m_shaderType == ShaderType::ANIM)// UVアニメーション用のシェーダーの場合
-	//{
-	//	// UVアニメーション用のシェーダーをセット
-	//	m_pDrawPolygon->SetShader(m_animShaders, nullptr, 0);
-	//}
-	//else// その他のシェーダーの場合
-	//{
-	//	// 共通のシェーダーをセット
-	//	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
-	//}
-	// 共通のシェーダーをセット
+
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	// 板ポリゴンを描画
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
@@ -186,15 +163,21 @@ void Canvas::Render()
 void Canvas::CreateShaders()
 {
 	// 頂点シェーダーの作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/PlayerUI/VS_PlayerUI.cso", m_pVertexShader);
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Tile/VS_Tile.cso", m_pVertexShader);
 	// ピクセルシェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/PlayerUI/PS_PlayerUI.cso", m_pPixelShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Tile/PS_Tile.cso", m_pPixelShader);
 	// ジオメトリシェーダーの作成
-	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/PlayerUI/GS_PlayerUI.cso", m_pGeometryShader);
+	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Tile/GS_Tile.cso", m_pGeometryShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
 	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	// シェーダーの構造体に頂点シェーダーを渡す
+	m_shaders.vs = m_pVertexShader.Get();
+	// シェーダーの構造体にジオメトリシェーダーを渡す
+	m_shaders.gs = m_pGeometryShader.Get();
+	// シェーダーの構造体にピクセルシェーダーを渡す
+	m_shaders.ps = m_pPixelShader.Get();
 }
 /*
 *	@brief	ウィンドウのサイズを設定
@@ -209,4 +192,21 @@ void Canvas::SetWindowSize(const int& width, const int& height)
 	m_windowWidth = width;
 	// ウィンドウの高さ
 	m_windowHeight = height;
+}
+/*
+*	@brief	当たり判定
+*	@details マウスの座標がUIの範囲内にあるかを判定する
+*	@param pos マウスの座標
+*	@return true:当たり判定あり, false:当たり判定なし
+*/
+bool Canvas::IsHit(const DirectX::SimpleMath::Vector2& pos) const
+{
+	// 画像の左上の座標を取得
+	DirectX::SimpleMath::Vector2 leftTop = m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
+	// 画像の右下の座標を取得
+	DirectX::SimpleMath::Vector2 rightBottom = m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
+	// マウスの座標が画像の範囲内にあるならtrueを返す
+	if (leftTop.x <= pos.x && pos.x <= rightBottom.x && leftTop.y <= pos.y && pos.y <= rightBottom.y)return true;
+	// 当たり判定なしならfalseを返す
+	return false;
 }
