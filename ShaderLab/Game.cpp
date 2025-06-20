@@ -148,6 +148,12 @@ void Game::Update(DX::StepTimer const& timer)
 	float elapsedTime = float(timer.GetElapsedSeconds());
 	// 入力マネージャを更新する
 	m_inputManager->Update();
+	// ESCキーでゲームを終了する
+	if (m_inputManager->GetKeyboardState().Escape)
+	{
+		ExitGame();// ゲームを終了する
+		return;
+	}
 	// シーンマネージャを更新する
 	m_sceneManager->Update(elapsedTime);
 }

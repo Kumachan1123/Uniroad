@@ -4,6 +4,7 @@
 CSVMap::CSVMap(CommonResources* resources)
 {
 	m_commonResources = resources;
+	InitializeTileDictionary();
 	DrawCollision::Initialize(m_commonResources);// 当たり判定描画の初期化
 	LoadModel();
 }
@@ -11,18 +12,17 @@ CSVMap::CSVMap(CommonResources* resources)
 CSVMap::~CSVMap()
 {
 }
+void CSVMap::InitializeTileDictionary()
+{
+	m_tileDictionary["w"] = TileInfo{ "Block", true };
+	m_tileDictionary["s"] = TileInfo{ "Start", true };
+	m_tileDictionary["g"] = TileInfo{ "Goal", true };
+	m_tileDictionary[""] = TileInfo{ "", false }; // 空白用
+}
 
 void CSVMap::LoadModel()
 {
 	using namespace DirectX;
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-
-	// モデルを読み込む準備
-	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
-	fx->SetDirectory(L"Resources/models");
-	//テクスチャパスを設定する
-	wcscpy_s(m_modelPath, L"Resources/models/Block.cmo");
-
 	// モデルを読み込む
 	m_pModel = m_commonResources->GetModelManager()->GetModel("Block");
 }
@@ -31,57 +31,48 @@ void CSVMap::LoadMap(const std::string& filePath)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// csvファイルを開く
-	std::ifstream file = std::ifstream(filePath);
-	if (!file.is_open())
-	{
-		return;
-	}
+	std::ifstream file(filePath);
+	if (!file.is_open()) return;
+
 	std::string line;
-	for (int i = 0; i < MAXCOL && std::getline(file, line); ++i)
+	int row = 0;
+	while (std::getline(file, line) && row < MAXCOL)
 	{
 		std::stringstream ss(line);
 		std::string cell;
-		int j = 0;
-		while (j < MAXRAW && std::getline(ss, cell, ','))
+		int col = 0;
+		while (std::getline(ss, cell, ',') && col < MAXRAW)
 		{
-			if (!cell.empty() && cell[0] == 'w') // カンマで区切られた各セルを処理
+			auto it = m_tileDictionary.find(cell);
+			if (it != m_tileDictionary.end())
 			{
-				// ()の中身の数値をいじることで間隔を調整することができる
-				float x = static_cast<float>(j * 2);
-				float z = static_cast<float>(i * 2);
-				float y = 0.0f; // 必要に応じてこの値を変更
+				const TileInfo& tileInfo = it->second;
 
-				// キューブを正しい位置に移動するための変換を適用
-				DirectX::SimpleMath::Matrix worldMatrix;
-				worldMatrix = DirectX::SimpleMath::Matrix::CreateScale(1.0f); // スケールを適用
-				worldMatrix *= DirectX::SimpleMath::Matrix::CreateTranslation(x, y, z);
+				//if (tileInfo.modelName.empty()) continue;
 
-				// ワールド行列を保存
-				worldMatrices.push_back(worldMatrix);
-				// 境界ボックスを作成
-				DirectX::BoundingBox box;
-				box.Center = Vector3(x, y, z);
-				box.Extents = Vector3(1.0f, 1.0f, 1.0f); // サイズを調整
-				m_wallBox.push_back(box);
+				// 座標計算
+				Vector3 pos(static_cast<float>(col * 2), 0.0f, static_cast<float>(row * 2));
+				Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
 
+				// モデル取得
+				DirectX::Model* model = m_commonResources->GetModelManager()->GetModel(tileInfo.modelName);
+
+				// タイルデータ保存
+				m_tiles.push_back(TileRenderData{ model, world });
+
+				// 当たり判定
+				if (tileInfo.hasCollision)
+				{
+					BoundingBox box;
+					box.Center = pos;
+					box.Extents = tileInfo.scale;
+					m_wallBox.push_back(box);
+				}
 			}
-			else if (!cell.empty() && cell[0] == 'g')
-			{
-				// ()の中身の数値をいじることで間隔を調整することができる
-				float x = static_cast<float>(j * 2);
-				float z = static_cast<float>(i * 2);
-				float y = 0.0f; // 必要に応じてこの値を変更
 
-				m_goalPosition = Vector3{ x, y, z };
-				// ゴールの境界ボックスを作成
-				DirectX::BoundingBox box;
-				box.Center = Vector3(x, y, z);
-				box.Extents = Vector3(1.0f, 1.0f, 1.0f); // サイズを調整
-				m_goalBox = box;
-			}
-			++j;
+			++col;
 		}
+		++row;
 	}
 }
 
@@ -97,7 +88,6 @@ void CSVMap::DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath
 	{
 		DrawCollision::DrawBoundingBox(m_wallBox[i], Colors::Red);
 	}
-	DrawCollision::DrawBoundingBox(m_goalBox, Colors::Green);
 	DrawCollision::DrawEnd();// 描画終了
 
 #endif
@@ -108,14 +98,13 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_commonResources->GetCommonStates();
 
-	// worlsMatricesに保存されているデータを用いてBoxを描画する
-	for (const auto& world : worldMatrices)
+	for (const auto& tile : m_tiles)
 	{
-
-
-		// モデルの描画（テクスチャONバージョン）
-		m_pModel->Draw(context, *states, world, view, proj, false);
-
+		if (tile.model)
+		{
+			tile.model->Draw(context, *states, tile.world, view, proj, false);
+		}
 	}
-	this->DrawCollision(view, proj);
+
+	DrawCollision(view, proj);
 }

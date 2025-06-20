@@ -104,5 +104,7 @@
     <FxCompile Include="HLSL\CRT\VS_CRT.hlsl" />
     <FxCompile Include="HLSL\Radar\PS_Radar.hlsl" />
     <FxCompile Include="HLSL\Radar\VS_Radar.hlsl" />
+    <FxCompile Include="HLSL\UI\VS_UI.hlsl" />
+    <FxCompile Include="HLSL\UI\PS_UI.hlsl" />
   </ItemGroup>
 </Project>

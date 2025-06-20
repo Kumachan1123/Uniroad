@@ -106,9 +106,9 @@ void UIBack::Render()
 void UIBack::CreateShaders()
 {
 	// 頂点シェーダーの作成
-	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Radar/VS_Radar.cso", m_pVertexShader);
+	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/UI/VS_UI.cso", m_pVertexShader);
 	// ピクセルシェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Radar/PS_Radar.cso", m_pPixelShader);
+	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/UI/PS_UI.cso", m_pPixelShader);
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
