@@ -1,17 +1,27 @@
+/*
+*	@file CSVMap.h
+*	@brief CSV形式のマップを読み込み、描画するクラス
+*/
 #pragma once
-
+// 標準ライブラリ
 #include <string>
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
 #include <cassert>
+// DirectX関連
 #include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <Model.h>
 #include <Effects.h>
+// 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/DrawCollision/DrawCollision.h"
+
+// 前方宣言
 class CommonResources;
+
+// CSV形式のマップを読み込む
 class CSVMap
 {
 	// タイルの情報構造体
@@ -31,7 +41,7 @@ public:
 	~CSVMap();
 	void LoadModel();
 	void LoadMap(const std::string& filePath);
-	void DrawCollision(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 private:
 	void InitializeTileDictionary();
