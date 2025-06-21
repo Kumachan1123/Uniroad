@@ -53,6 +53,21 @@ void CSVMap::InitializeTileDictionary()
 	m_tileDictionary["s"] = TileInfo{ "Start", true };
 	// ゴール地点
 	m_tileDictionary["g"] = TileInfo{ "Goal", true };
+	// 直進（縦）
+	m_tileDictionary["v"] = TileInfo{ "DefaultStraightVertical", true };
+	// 直進（横）
+	m_tileDictionary["h"] = TileInfo{ "DefaultStraightHorizontal", true };
+	// 十字
+	m_tileDictionary["x"] = TileInfo{ "Cross", true };
+	// 右下カーブ
+	m_tileDictionary["rd"] = TileInfo{ "RightDown", true };
+	// 左下カーブ
+	m_tileDictionary["ld"] = TileInfo{ "LeftDown", true };
+	// 右上カーブ
+	m_tileDictionary["ru"] = TileInfo{ "RightUp", true };
+	// 左上カーブ
+	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
+
 }
 /*
 *	@brief モデルを読み込む
