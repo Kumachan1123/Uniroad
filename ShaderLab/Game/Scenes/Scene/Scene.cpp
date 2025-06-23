@@ -2,7 +2,7 @@
 	@file	Scene.cpp
 	@brief	一般的なシーンクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "Scene.h"
 
 
@@ -15,6 +15,7 @@ using namespace DirectX::SimpleMath;
 Scene::Scene(IScene::SceneID sceneID)
 	: m_commonResources{}
 	, m_debugCamera{}
+	, m_pFixedCamera{}
 	, m_projectionGame{}
 	, m_projectionControll{}
 	, m_time{ 0.0f }
@@ -47,6 +48,8 @@ void Scene::Initialize(CommonResources* resources)
 	m_pUIBack->Create(deviceResources);
 	// パネルを作成する
 	m_pPanel = std::make_unique<Panel>(m_pCSVMap->GetMaxCol(), m_pCSVMap->GetMaxRow());
+	// パネルにビューポートを設定
+	m_pPanel->SetViewport(m_viewPortControll);
 	// パネルにマップ情報を渡す
 	m_pPanel->SetCSVMap(m_pCSVMap.get());
 	// パネルを初期化する
@@ -56,8 +59,10 @@ void Scene::Initialize(CommonResources* resources)
 void Scene::Update(float elapsedTime)
 {
 	m_time += elapsedTime;
-	// デバッグカメラの更新
-	m_debugCamera->Update(m_commonResources->GetInputManager());
+	//// デバッグカメラの更新
+	//m_debugCamera->Update(m_commonResources->GetInputManager());
+	// 固定カメラの更新
+	m_pFixedCamera->Update();
 	// 操作画面の背景の更新
 	m_pUIBack->Update(elapsedTime);
 	// パネルの更新
@@ -73,7 +78,7 @@ void Scene::Render()
 
 	// ここでゲーム画面を描画
 	// ビュー行列を取得
-	m_view = m_debugCamera->GetViewMatrix();
+	m_view = m_pFixedCamera->GetViewMatrix();
 	// CSVマップの描画
 	m_pCSVMap->Render(m_view, m_projectionGame);
 	// --- 右側: 操作画面用ビューポート ---
@@ -115,8 +120,12 @@ void Scene::CreateCamera()
 {
 	// デバッグカメラを作成する
 	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
-	m_debugCamera = std::make_unique<mylib::DebugCamera>();
-	m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
+	//m_debugCamera = std::make_unique<mylib::DebugCamera>();
+	//m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
+	// 固定カメラを作成する
+	m_pFixedCamera = std::make_unique<FixedCamera>();
+	m_pFixedCamera->Initialize(rect.right * 0.7f, rect.bottom);
+
 	// 射影行列を作成する
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),

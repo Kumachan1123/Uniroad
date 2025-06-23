@@ -14,10 +14,12 @@
 Panel::Panel(int mapSizeX, int mapSizeY)
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_pDR(nullptr) // デバイスリソース
+	, m_pCSVMap(nullptr) // CSVマップへのポインタ
 	, m_hit(false) // UIにヒットしたかどうか
 	, m_time(0.0f) // 経過時間
 	, m_windowHeight(0) // ウィンドウの高さ
 	, m_windowWidth(0) // ウィンドウの幅
+	, m_menuIndex(0) // 現在選択されているメニューのインデックス
 	, m_mapSizeX(mapSizeX) // マップのサイズX
 	, m_mapSizeY(mapSizeY) // マップのサイズY
 {
@@ -85,47 +87,99 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 void Panel::Update(const float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	// マウストラッカーを取得する
-	auto& mtracker = m_pCommonResources->GetInputManager()->GetMouseTracker();
-	// マウスの現在の状態を取得する
+	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	// 未選択状態にする
 	m_hit = false;
-	// マウス座標を2Dベクトルで取得する
-	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
-	// UIの各要素に対してヒット判定を行う
+	// ウィンドウハンドルを取得
+	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
+	// ウィンドウサイズ取得
+	RECT rect;
+	// クライアント領域サイズを取得
+	GetClientRect(hwnd, &rect);
+	// ウィンドウの幅（ピクセル単位）
+	float renderWidth = static_cast<float>(rect.right);
+	// ウィンドウの高さ（ピクセル単位）
+	float renderHeight = static_cast<float>(rect.bottom);
+	// ビューポート設定 
+	D3D11_VIEWPORT viewportRight = {};
+	// ビューポートの左上X座標（画面幅の70%位置）
+	viewportRight.TopLeftX = renderWidth * 0.7f;
+	// ビューポートの左上Y座標（最上部）
+	viewportRight.TopLeftY = 0;
+	// ビューポートの幅（画面幅の30%）
+	viewportRight.Width = renderWidth * 0.3f;
+	// ビューポートの高さ（画面高さ全体）
+	viewportRight.Height = renderHeight;
+	// 最小深度
+	viewportRight.MinDepth = 0.0f;
+	// 最大深度
+	viewportRight.MaxDepth = 1.0f;
+	// ビューポート情報をメンバ変数に保存
+	m_viewPortControll = viewportRight;
+	// ビューポート左上X
+	float vp_left = m_viewPortControll.TopLeftX;
+	// ビューポート左上Y
+	float vp_top = m_viewPortControll.TopLeftY;
+	// ビューポート幅
+	float vp_width = m_viewPortControll.Width;
+	// ビューポート高さ
+	float vp_height = m_viewPortControll.Height;
+
+	// UIの論理解像度 
+	// 論理解像度の幅
+	constexpr float logicalWidth = 1920.0f;
+	// 論理解像度の高さ
+	constexpr float logicalHeight = 1080.0f;
+	// マウス座標を論理解像度基準にスケーリング
+	// 論理解像度基準のマウスX座標
+	float mouseX_UI = mouseState.x * (logicalWidth / renderWidth);
+	// 論理解像度基準のマウスY座標
+	float mouseY_UI = mouseState.y * (logicalHeight / renderHeight);
+	// ビューポートの論理解像度基準での座標・サイズを計算
+	// 論理解像度基準のビューポート左上X
+	float vp_left_UI = vp_left * (logicalWidth / renderWidth);
+	// 論理解像度基準のビューポート左上Y
+	float vp_top_UI = vp_top * (logicalHeight / renderHeight);
+	// 論理解像度基準のビューポート幅
+	float vp_width_UI = vp_width * (logicalWidth / renderWidth);
+	// 論理解像度基準のビューポート高さ
+	float vp_height_UI = vp_height * (logicalHeight / renderHeight);
+	// マウス座標をビューポート内ローカル座標に変換
+	Vector2 mousePos = Vector2(mouseX_UI - vp_left_UI, mouseY_UI - vp_top_UI);
+	// デバッグ表示
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("isInside: %s",
+		(mouseX_UI >= vp_left_UI) && (mouseX_UI < vp_left_UI + vp_width_UI)
+		&& (mouseY_UI >= vp_top_UI) && (mouseY_UI < vp_top_UI + vp_height_UI)
+		? "true" : "false"); // マウスがビューポート内にあるか
+	debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", mousePos.x, mousePos.y); // ビューポート内マウス座標
+
+	// 6. UI要素ごとにヒット判定を行う
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		// マウスの座標がUIに重なっているか確認する
+		// マウスがビューポート外ならスキップ
+		if (mousePos.x < 0 || mousePos.y < 0 || mousePos.x >= vp_width_UI || mousePos.y >= vp_height_UI)
+			continue;
+
+		// ヒット判定（UI要素ごと）
 		if (m_pUI[i]->IsHit(mousePos))
 		{
-			// ヒットフラグを立てる
-			m_hit = true;
-			//// 選択メニューが前回と違う場合、SE再生フラグをリセット
-			//if ((int(m_menuIndex)) != i)m_isSEPlay = false;
-			//// SEが未再生なら
-			//if (!m_isSEPlay)
-			//{
-			//	// 効果音を再生する
-			//	m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);
-			//	// SE再生フラグを立てる
-			//	m_isSEPlay = true;
-			//}
-			//// 現在選択されているメニューのインデックスを更新する
-			//m_menuIndex = i;
-			// 1つでもヒットしたら他は無視する（選択は1つだけ）
+			m_hit = true;         // 当たり判定フラグ
+			m_menuIndex = i;      // 当たったUIのインデックス
 			break;
 		}
 	}
-	// 経過時間を加算する
+
+	// 経過時間を加算
 	m_time += elapsedTime;
-	// UI要素の状態を更新する 
+
+	// 全UI要素の経過時間を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
-		// 経過時間を渡してアニメ進行
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
 }
+
 
 void Panel::Render()
 {
@@ -135,6 +189,9 @@ void Panel::Render()
 		// 描画
 		m_pUI[i]->Render();
 	}
+	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("hitPanel:%i", m_menuIndex);
 }
 
 void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor, UIType type)

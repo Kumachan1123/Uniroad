@@ -10,6 +10,8 @@
 #include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <WICTextureLoader.h>
+// 外部ライブラリ
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"

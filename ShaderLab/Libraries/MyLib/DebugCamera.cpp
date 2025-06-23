@@ -9,7 +9,7 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-const float mylib::DebugCamera::DEFAULT_CAMERA_DISTANCE = 5.0f;
+const float mylib::DebugCamera::DEFAULT_CAMERA_DISTANCE = 10.0f;
 
 //---------------------------------------------------------
 // コンストラクタ

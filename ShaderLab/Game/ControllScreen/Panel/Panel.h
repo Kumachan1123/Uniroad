@@ -13,6 +13,7 @@
 #include <Mouse.h>
 // 外部ライブラリ
 #include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/ControllScreen/Canvas/Canvas.h"
@@ -35,6 +36,8 @@ public:
 	void SetIsHit(bool hit) { m_hit = hit; }
 	// CSVマップを設定
 	void SetCSVMap(CSVMap* pCSVMap) { m_pCSVMap = pCSVMap; }
+	// ビューポートを設定
+	void SetViewport(const D3D11_VIEWPORT& viewport) { m_viewPortControll = viewport; }
 public:
 	// public関数
 	// コンストラクタ
@@ -68,8 +71,12 @@ private:
 	float m_time;
 	// ヒットフラグ
 	bool m_hit;
+	// ヒットフラグが立ったUIのインデックス
+	int m_menuIndex;
 	// マップサイズ
 	int m_mapSizeX, m_mapSizeY;
 	// CSVマップ
 	CSVMap* m_pCSVMap;
+	// 操作用ビューポート
+	D3D11_VIEWPORT m_viewPortControll;
 };

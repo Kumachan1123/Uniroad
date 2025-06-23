@@ -53,6 +53,7 @@
     <ClInclude Include="Game\ControllScreen\UIBack\UIBack.h" />
     <ClInclude Include="Game\ControllScreen\Panel\Panel.h" />
     <ClInclude Include="Game\Interface\IUI\IUI.h" />
+    <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Game\ControllScreen\UIBack\UIBack.cpp" />
     <ClCompile Include="Game\ControllScreen\Panel\Panel.cpp" />
+    <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

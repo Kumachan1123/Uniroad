@@ -6,15 +6,16 @@
 #include <cassert>
 #include <DeviceResources.h>
 
-#include "Libraries/MyLib/DebugCamera.h"
-#include "Libraries/MyLib/DebugString.h"
-#include "Libraries/MyLib/GridFloor.h"
-#include "Libraries/MyLib/InputManager.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
+#include <Libraries/MyLib/DebugCamera.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/GridFloor.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
 #include "Game/CommonResources/CommonResources.h"
+#include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/ControllScreen/UIBack/UIBack.h"
 #include "Game/ControllScreen/Panel/Panel.h"
@@ -48,6 +49,8 @@ private:
 	CommonResources* m_commonResources;
 	// デバッグカメラ
 	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
+	// 固定カメラ
+	std::unique_ptr<FixedCamera> m_pFixedCamera;
 	// CSVマップ
 	std::unique_ptr<CSVMap> m_pCSVMap;
 	// 操作画面の背景

@@ -146,13 +146,14 @@ void Canvas::Render()
 		DrawPolygon::DepthStencilStates::DEPTH_NONE);// 深度ステンシルステート
 	// 描画開始
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
-	////	シェーダをセットする
-
+	//	シェーダをセットする
 	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
 	// 板ポリゴンを描画
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	// シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
+
+
 }
 /*
 *	@brief	シェーダーの作成
@@ -201,10 +202,15 @@ void Canvas::SetWindowSize(const int& width, const int& height)
 */
 bool Canvas::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 {
+	using namespace DirectX::SimpleMath;
 	// 画像の左上の座標を取得
-	DirectX::SimpleMath::Vector2 leftTop = m_position - DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
+	Vector2 leftTop = m_position - Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
 	// 画像の右下の座標を取得
-	DirectX::SimpleMath::Vector2 rightBottom = m_position + DirectX::SimpleMath::Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
+	Vector2 rightBottom = m_position + Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
+	// デバッグ用の文字列を取得
+	const auto debugString = m_pCommonResources->GetDebugString();
+	// UIの座標を表示する
+	debugString->AddString("UI Position: (%f, %f)", leftTop.x, leftTop.y);
 	// マウスの座標が画像の範囲内にあるならtrueを返す
 	if (leftTop.x <= pos.x && pos.x <= rightBottom.x && leftTop.y <= pos.y && pos.y <= rightBottom.y)return true;
 	// 当たり判定なしならfalseを返す

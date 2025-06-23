@@ -192,6 +192,7 @@
   <ItemGroup>
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
     <ClInclude Include="Game\ControllScreen\Canvas\Canvas.h" />
     <ClInclude Include="Game\CommonResources\CommonResources.h" />
     <ClInclude Include="Game\ControllScreen\Panel\Panel.h" />
@@ -233,6 +234,7 @@
   <ItemGroup>
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
     <ClCompile Include="Game\ControllScreen\Canvas\Canvas.cpp" />
     <ClCompile Include="Game\CommonResources\CommonResources.cpp" />
     <ClCompile Include="Game\ControllScreen\Panel\Panel.cpp" />
