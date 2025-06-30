@@ -38,6 +38,12 @@ void Scene::Initialize(CommonResources* resources)
 	const auto deviceResources = m_commonResources->GetDeviceResources();
 	// 各種ビューポートを作成する
 	CreateViewports();
+	// マウスを作成する
+	m_pMouse = std::make_unique<MyMouse>();
+	// マウスを初期化する
+	m_pMouse->Initialize(m_commonResources);
+	// マウスにビューポートを設定
+	m_pMouse->SetViewport(m_viewPortControll);
 	// マップ生成
 	m_pCSVMap = std::make_unique<CSVMap>(m_commonResources);
 	// CSVマップを読み込む
@@ -48,12 +54,19 @@ void Scene::Initialize(CommonResources* resources)
 	m_pUIBack->Create(deviceResources);
 	// パネルを作成する
 	m_pPanel = std::make_unique<Panel>(m_pCSVMap->GetMaxCol(), m_pCSVMap->GetMaxRow());
-	// パネルにビューポートを設定
-	m_pPanel->SetViewport(m_viewPortControll);
+	// パネルにマウスを設定
+	m_pPanel->SetMouse(m_pMouse.get());
 	// パネルにマップ情報を渡す
 	m_pPanel->SetCSVMap(m_pCSVMap.get());
 	// パネルを初期化する
 	m_pPanel->Initialize(m_commonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// 次のタイルを作成する
+	m_pNextTiles = std::make_unique<NextTiles>();
+	// 次のタイルにマウスを設定
+	m_pNextTiles->SetMouse(m_pMouse.get());
+	// 次のタイルを初期化する
+	m_pNextTiles->Initialize(m_commonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+
 }
 
 void Scene::Update(float elapsedTime)
@@ -63,10 +76,14 @@ void Scene::Update(float elapsedTime)
 	//m_debugCamera->Update(m_commonResources->GetInputManager());
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
+	// マウスの更新
+	m_pMouse->Update(elapsedTime);
 	// 操作画面の背景の更新
 	m_pUIBack->Update(elapsedTime);
 	// パネルの更新
 	m_pPanel->Update(elapsedTime);
+	// 次のタイルの更新
+	m_pNextTiles->Update(elapsedTime);
 }
 void Scene::Render()
 {
@@ -87,6 +104,8 @@ void Scene::Render()
 	m_pUIBack->Render();
 	// パネルを描画
 	m_pPanel->Render();
+	// 次のタイルを描画
+	m_pNextTiles->Render();
 
 
 	// --- デバッグ情報（例） ---
@@ -124,7 +143,7 @@ void Scene::CreateCamera()
 	//m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
 	// 固定カメラを作成する
 	m_pFixedCamera = std::make_unique<FixedCamera>();
-	m_pFixedCamera->Initialize(rect.right * 0.7f, rect.bottom);
+	m_pFixedCamera->Initialize((int)(rect.right * 0.7f), rect.bottom);
 
 	// 射影行列を作成する
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(

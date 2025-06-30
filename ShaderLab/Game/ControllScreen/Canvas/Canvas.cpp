@@ -207,10 +207,10 @@ bool Canvas::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 	Vector2 leftTop = m_position - Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
 	// 画像の右下の座標を取得
 	Vector2 rightBottom = m_position + Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
-	// デバッグ用の文字列を取得
-	const auto debugString = m_pCommonResources->GetDebugString();
-	// UIの座標を表示する
-	debugString->AddString("UI Position: (%f, %f)", leftTop.x, leftTop.y);
+	//// デバッグ用の文字列を取得
+	//const auto debugString = m_pCommonResources->GetDebugString();
+	//// UIの座標を表示する
+	//debugString->AddString("UI Position: (%f, %f)", leftTop.x, leftTop.y);
 	// マウスの座標が画像の範囲内にあるならtrueを返す
 	if (leftTop.x <= pos.x && pos.x <= rightBottom.x && leftTop.y <= pos.y && pos.y <= rightBottom.y)return true;
 	// 当たり判定なしならfalseを返す

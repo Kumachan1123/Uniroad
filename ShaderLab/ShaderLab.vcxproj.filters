@@ -54,6 +54,9 @@
     <ClInclude Include="Game\ControllScreen\Panel\Panel.h" />
     <ClInclude Include="Game\Interface\IUI\IUI.h" />
     <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
+    <ClInclude Include="Game\ControllScreen\NextTiles\NextTiles.h" />
+    <ClInclude Include="Game\TileDatas\TileDatas.h" />
+    <ClInclude Include="Game\Mouse\Mouse.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -82,6 +85,8 @@
     <ClCompile Include="Game\ControllScreen\UIBack\UIBack.cpp" />
     <ClCompile Include="Game\ControllScreen\Panel\Panel.cpp" />
     <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
+    <ClCompile Include="Game\ControllScreen\NextTiles\NextTiles.cpp" />
+    <ClCompile Include="Game\Mouse\Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

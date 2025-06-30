@@ -1,49 +1,46 @@
 /*
-*	@file Panel.cpp
-*	@brief パネルクラス
+*	@file NextTiles.cpp
+*	@brief 次のタイルクラス
 */
 #include <pch.h>
-#include "Panel.h"
+#include "NextTiles.h"
+#include <random>
 /*
 *	@brief コンストラクタ
-*	@details パネルクラスのコンストラクタ
-*	@param mapSizeX マップのサイズX
-*	@param mapSizeY マップのサイズY
+*	@details 次のタイルクラスのコンストラクタ
+*	@param なし
 *	@return なし
 */
-Panel::Panel(int mapSizeX, int mapSizeY)
+NextTiles::NextTiles()
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_viewPortControll() // ビューポートの制御
 	, m_pDR(nullptr) // デバイスリソース
-	, m_pCSVMap(nullptr) // CSVマップへのポインタ
 	, m_hit(false) // UIにヒットしたかどうか
 	, m_time(0.0f) // 経過時間
 	, m_windowHeight(0) // ウィンドウの高さ
 	, m_windowWidth(0) // ウィンドウの幅
 	, m_menuIndex(0) // 現在選択されているメニューのインデックス
-	, m_mapSizeX(mapSizeX) // マップのサイズX
-	, m_mapSizeY(mapSizeY) // マップのサイズY
 {
 }
 /*
 *	@brief デストラクタ
-*	@details パネルクラスのデストラクタ(ここでは何もしない)
+*	@details 次のタイルクラスのデストラクタ(ここでは何もしない)
 *	@param なし
 *	@return なし
 */
-Panel::~Panel()
+NextTiles::~NextTiles()
 {
-	/*do nothing*/
+	// 何もしない
 }
 /*
 *	@brief 初期化
-*	@details パネルクラスの初期化を行う
+*	@details 次のタイルクラスの初期化を行う
 *	@param resources 共通リソースへのポインタ
 *	@param width ウィンドウの幅
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void Panel::Initialize(CommonResources* resources, int width, int height)
+void NextTiles::Initialize(CommonResources* resources, int width, int height)
 {
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
@@ -55,38 +52,35 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 	m_windowWidth = (int)(width * .3f);
 	// ウィンドウ高さ
 	m_windowHeight = height;
-	// 一枚当たりの幅
-	const float tileSize = 90.0f;
-	// 左端の位置
-	const float startX = Screen::CENTER_X - (tileSize * 2);
-	// 上端の位置
-	const float startY = Screen::CENTER_Y - (tileSize * 2);
-	// グリッドのキーを決定するためのループ
-	for (int row = 0; row < 5; ++row)
-	{
-		for (int col = 0; col < 5; ++col)
-		{
-			// CSVマップのタイル情報を取得
-			const MapTileData& tileData = m_pCSVMap->GetTileData(row, col);
-			// グリッドのキーを決定
-			std::string textureKey = ((row + col) % 2 == 0) ? "GridA" : "GridB";
-			// タイルの種類に応じてテクスチャキーを変更
-			textureKey = tileData.tileInfo.modelName.empty() ? textureKey : tileData.tileInfo.modelName;
-			// 位置計算
-			float posX = startX + col * tileSize - 350.0f;
-			float posY = startY + row * tileSize + 420.0f;
-
-			// タイルの種類に応じてテクスチャキーを変更して並べる
-			Add(textureKey
-				, Vector2(posX, posY)
-				, Vector2(0.6f, 0.6f)
-				, KumachiLib::ANCHOR::MIDDLE_CENTER
-				, UIType::SELECT);
-		}
-	}
+	// UI追加
+	Add("NextTilesBack"
+		, Vector2(290.0f, 300.0f)
+		, Vector2(0.6f, 0.6f)
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::NON_SELECT);
+	// 使うタイルを宣言
+	// 直進(横)
+	m_tilesDictionary.push_back("StraightHorizontal");
+	// 直進(縦)
+	m_tilesDictionary.push_back("StraightVertical");
+	// 十字
+	m_tilesDictionary.push_back("Cross");
+	// 右下カーブ
+	m_tilesDictionary.push_back("RightDown");
+	// 左下カーブ
+	m_tilesDictionary.push_back("LeftDown");
+	// 右上カーブ
+	m_tilesDictionary.push_back("RightUp");
+	// 左上カーブ
+	m_tilesDictionary.push_back("LeftUp");
 }
-
-void Panel::Update(const float elapsedTime)
+/*
+*	@brief 更新
+*	@details 次のタイルクラスの更新を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void NextTiles::Update(const float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
@@ -149,8 +143,6 @@ void Panel::Update(const float elapsedTime)
 	//float vp_height_UI = vp_height * (logicalHeight / renderHeight);
 	//// マウス座標をビューポート内ローカル座標に変換
 	//Vector2 mousePos = Vector2(mouseX_UI - vp_left_UI, mouseY_UI - vp_top_UI);
-
-
 	// UI要素ごとにヒット判定を行う
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
@@ -158,39 +150,72 @@ void Panel::Update(const float elapsedTime)
 		if (m_pMouse->GetPosition().x < 0 || m_pMouse->GetPosition().y < 0 || m_pMouse->GetPosition().x >= m_pMouse->GetVpWidthUI() || m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())
 			continue;
 		// ヒット判定（UI要素ごと）
-		if (m_pUI[i]->IsHit(m_pMouse->GetPosition()))
+		if (m_pUI[i]->IsHit(m_pMouse->GetPosition()) && mouseState.leftButton)
 		{
 			m_hit = true;         // 当たり判定フラグ
 			m_menuIndex = i;      // 当たったUIのインデックス
 			const auto debugString = m_pCommonResources->GetDebugString();
-			debugString->AddString("hitPanel:%i", m_menuIndex);
+			debugString->AddString("hitNextTile:%i", m_menuIndex);
 			break;
 		}
 	}
-
 	// 経過時間を加算
 	m_time += elapsedTime;
-
+	// 10秒ごとにUIを追加する
+	if (m_time >= 10.0f)
+	{
+		// UIを追加
+		AddNextTiles();
+		// 時間をリセット
+		m_time = 0.0f;
+	}
+	// 全背景UIの経過時間を更新
+	for (int i = 0; i < m_pBackUI.size(); i++)
+	{
+		// 背景UIの時間を更新
+		m_pBackUI[i]->SetTime(m_pBackUI[i]->GetTime() + elapsedTime);
+	}
 	// 全UI要素の経過時間を更新
 	for (int i = 0; i < m_pUI.size(); i++)
 	{
+		// UI要素の時間を更新
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
+	// 選択中のUIがあるなら座標を変更する
+	if (m_menuIndex >= 0 && mouseState.leftButton)m_pUI[m_menuIndex]->SetPosition(m_pMouse->GetPosition());
 }
-
-
-void Panel::Render()
+/*
+*	@brief 描画
+*	@details 次のタイルクラスの描画を行う
+*	@param なし
+*	@return なし
+*/
+void NextTiles::Render()
 {
+	// 背景UIの数だけ繰り返す
+	for (unsigned int i = 0; i < m_pBackUI.size(); i++)
+	{
+		// 背景UIの描画
+		m_pBackUI[i]->Render();
+	}
 	// UIの数だけ繰り返す
 	for (unsigned int i = 0; i < m_pUI.size(); i++)
 	{
-		// 描画
+		// 選択可能UIの描画
 		m_pUI[i]->Render();
 	}
-
 }
-
-void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor, UIType type)
+/*
+*	@brief UI追加
+*	@details 次のタイルクラスにUIを追加する
+*	@param key テクスチャのキー
+*	@param position 位置
+*	@param scale スケール
+*	@param anchor アンカー
+*	@param type UIの種類
+*	@return なし
+*/
+void NextTiles::Add(const std::string& key, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor, UIType type)
 {
 	// UIオブジェクトの生成
 	std::unique_ptr<Canvas> userInterface = std::make_unique<Canvas>(m_pCommonResources);
@@ -198,10 +223,39 @@ void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& posi
 	userInterface->Create(m_pDR, key, position, scale, anchor);
 	// ウィンドウサイズを設定
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
-	// UIの種類に応じて処理を分岐
-	if (type == UIType::SELECT)// 選択可能なアイテムなら
-	{
-		// アイテムを新しく追加		
-		m_pUI.push_back(std::move(userInterface));
-	}
+	// アイテムを新しく追加		
+	if (type == UIType::SELECT)m_pUI.push_back(std::move(userInterface));
+	else m_pBackUI.push_back(std::move(userInterface));
 }
+
+/*
+*	@brief 定期的にUIを追加する
+*	@details 更新中に10秒に一個UIを追加する
+*	@param なし
+*	@return なし
+*/
+void NextTiles::AddNextTiles()
+{
+	// 名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	// UIの数が5個以上なら追加しない
+	if (m_pUI.size() == 5)return;
+	// 乱数の設定
+	std::random_device seed;
+	// メルセンヌ・ツイスタ法
+	std::default_random_engine engine(seed());
+	// ランダムな範囲を設定
+	std::uniform_int_distribution<int> rand(0, (int)m_tilesDictionary.size() - 1);
+	// ランダムなインデックスを取得
+	int randomIndex = rand(engine);
+	// Y座標を調整
+	float positionY = 480.0f - (float(m_pUI.size()) * 90.0f);
+	// UI追加
+	Add(m_tilesDictionary[randomIndex]
+		, Vector2(290.0f, positionY)
+		, Vector2(0.6f, 0.6f)
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::SELECT);
+
+}
+

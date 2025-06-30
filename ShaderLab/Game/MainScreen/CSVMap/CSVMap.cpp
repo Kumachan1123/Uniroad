@@ -224,7 +224,7 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 *	@param row 行番号
 *	@return 指定位置のタイル情報への参照
 */
-const CSVMap::MapTileData& CSVMap::GetTileData(int col, int row) const
+const  MapTileData& CSVMap::GetTileData(int col, int row) const
 {
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
 	return m_mapData[col][row];

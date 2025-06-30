@@ -1,6 +1,6 @@
 /*
-*	@file Panel.h
-*	@brief パネルクラス
+*	@file	NextTiles.h
+*	@brief	次のタイルクラス
 */
 #pragma once
 // 標準ライブラリ
@@ -20,15 +20,13 @@
 #include "Game/Interface/IUI/IUI.h"
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
-#include "Game/MainScreen/CSVMap/CSVMap.h"
-#include "Game/TileDatas/TileDatas.h"
 #include "Game/Mouse/Mouse.h"
 
 // 前方宣言
 class CommonResources;
 
-// パネルクラス
-class Panel : public IUI
+// 次のタイルクラス
+class NextTiles : public IUI
 {
 public:
 	// アクセサ
@@ -36,8 +34,6 @@ public:
 	bool GetIsHit()const { return m_hit; }
 	// UIにヒットしたかどうか設定
 	void SetIsHit(bool hit) { m_hit = hit; }
-	// CSVマップを設定
-	void SetCSVMap(CSVMap* pCSVMap) { m_pCSVMap = pCSVMap; }
 	// マウスポインターを設定
 	void SetMouse(MyMouse* pMouse) { m_pMouse = pMouse; }
 	// ビューポートを設定
@@ -45,9 +41,9 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	Panel(int mapSizeX, int mapSizeY);
+	NextTiles();
 	// デストラクタ
-	~Panel();
+	~NextTiles();
 	// 初期化
 	void Initialize(CommonResources* resources, int width, int height) override;
 	// 更新
@@ -63,12 +59,18 @@ public:
 		UIType type) override;						// UIの種類
 private:
 	// private関数
+	// 更新中に定期的にUIを追加する
+	void AddNextTiles();
+private:
+	// private関数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 選択可能UI
 	std::vector<std::unique_ptr<Canvas>> m_pUI;
+	// 背景UI
+	std::vector<std::unique_ptr<Canvas>> m_pBackUI;
 	// 選択中であることを表示するUI
 	std::unique_ptr<Canvas> m_pSelectedUI;
 	// マウスのポインター
@@ -81,10 +83,8 @@ private:
 	bool m_hit;
 	// ヒットフラグが立ったUIのインデックス
 	int m_menuIndex;
-	// マップサイズ
-	int m_mapSizeX, m_mapSizeY;
-	// CSVマップ
-	CSVMap* m_pCSVMap;
 	// 操作用ビューポート
 	D3D11_VIEWPORT m_viewPortControll;
+	// 使うタイルの辞書
+	std::vector<std::string> m_tilesDictionary;
 };

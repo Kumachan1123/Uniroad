@@ -19,6 +19,8 @@
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/ControllScreen/UIBack/UIBack.h"
 #include "Game/ControllScreen/Panel/Panel.h"
+#include "Game/Mouse/Mouse.h"
+#include "Game/ControllScreen/NextTiles/NextTiles.h"
 // 前方宣言
 class CommonResources;
 
@@ -57,6 +59,10 @@ private:
 	std::unique_ptr<UIBack> m_pUIBack;
 	// パネル
 	std::unique_ptr<Panel> m_pPanel;
+	// 次のタイル
+	std::unique_ptr<NextTiles> m_pNextTiles;
+	// マウス
+	std::unique_ptr<MyMouse> m_pMouse;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列
