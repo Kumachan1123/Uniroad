@@ -16,6 +16,10 @@ MyMouse::MyMouse()
 	, m_viewPortControll() // ビューポートの制御
 	, m_renderWidth(0.0f) // ウィンドウの幅（ピクセル単位）
 	, m_renderHeight(0.0f) // ウィンドウの高さ（ピクセル単位）
+	, m_vp_left_UI(0.0f) // ビューポート左上X（論理解像度基準）
+	, m_vp_top_UI(0.0f) // ビューポート左上Y（論理解像度基準）
+	, m_vp_width_UI(0.0f) // ビューポート幅（論理解像度基準）
+	, m_vp_height_UI(0.0f) // ビューポート高さ（論理解像度基準）
 {
 }
 /*

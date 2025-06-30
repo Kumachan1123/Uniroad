@@ -16,6 +16,7 @@ Panel::Panel(int mapSizeX, int mapSizeY)
 	, m_viewPortControll() // ビューポートの制御
 	, m_pDR(nullptr) // デバイスリソース
 	, m_pCSVMap(nullptr) // CSVマップへのポインタ
+	, m_pMouse(nullptr) // マウスへのポインタ
 	, m_hit(false) // UIにヒットしたかどうか
 	, m_time(0.0f) // 経過時間
 	, m_windowHeight(0) // ウィンドウの高さ

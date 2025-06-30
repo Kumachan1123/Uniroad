@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <RootNamespace>ShaderLab</RootNamespace>
+    <RootNamespace>Puzzle</RootNamespace>
     <ProjectGuid>{6e37dcd0-55a6-418d-9b42-9d099e0bffec}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
