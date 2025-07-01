@@ -75,6 +75,10 @@ private:
 	std::unique_ptr<Canvas> m_pSelectedUI;
 	// マウスのポインター
 	MyMouse* m_pMouse;
+	// 各選択可能UIの初期位置リスト
+	std::vector<DirectX::SimpleMath::Vector2> m_initialPositions;
+	// ドラッグ中のUIインデックス
+	int m_draggingIndex;
 	// ウィンドウの幅と高さ
 	int m_windowWidth, m_windowHeight;
 	// 時間

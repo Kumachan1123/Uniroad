@@ -16,10 +16,13 @@ NextTiles::NextTiles()
 	, m_viewPortControll() // ビューポートの制御
 	, m_pDR(nullptr) // デバイスリソース
 	, m_hit(false) // UIにヒットしたかどうか
-	, m_time(0.0f) // 経過時間
+	, m_pMouse(nullptr) // マウスへのポインタ
+	, m_time(7.0f) // 経過時間
 	, m_windowHeight(0) // ウィンドウの高さ
 	, m_windowWidth(0) // ウィンドウの幅
+	, m_draggingIndex(-1) // ドラッグ中のUIインデックス
 	, m_menuIndex(0) // 現在選択されているメニューのインデックス
+	, m_initialPositions{} // 各選択可能UIの初期位置リスト
 {
 }
 /*
@@ -85,78 +88,52 @@ void NextTiles::Update(const float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	m_hit = false;
-	m_menuIndex = -1;
-	//// ウィンドウハンドルを取得
-	//const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
-	//// ウィンドウサイズ取得
-	//RECT rect;
-	//// クライアント領域サイズを取得
-	//GetClientRect(hwnd, &rect);
-	//// ウィンドウの幅（ピクセル単位）
-	//float renderWidth = static_cast<float>(rect.right);
-	//// ウィンドウの高さ（ピクセル単位）
-	//float renderHeight = static_cast<float>(rect.bottom);
-	//// ビューポート設定 
-	//D3D11_VIEWPORT viewportRight = {};
-	//// ビューポートの左上X座標（画面幅の70%位置）
-	//viewportRight.TopLeftX = renderWidth * 0.7f;
-	//// ビューポートの左上Y座標（最上部）
-	//viewportRight.TopLeftY = 0;
-	//// ビューポートの幅（画面幅の30%）
-	//viewportRight.Width = renderWidth * 0.3f;
-	//// ビューポートの高さ（画面高さ全体）
-	//viewportRight.Height = renderHeight;
-	//// 最小深度
-	//viewportRight.MinDepth = 0.0f;
-	//// 最大深度
-	//viewportRight.MaxDepth = 1.0f;
-	//// ビューポート情報をメンバ変数に保存
-	//m_viewPortControll = viewportRight;
-	//// ビューポート左上X
-	//float vp_left = m_viewPortControll.TopLeftX;
-	//// ビューポート左上Y
-	//float vp_top = m_viewPortControll.TopLeftY;
-	//// ビューポート幅
-	//float vp_width = m_viewPortControll.Width;
-	//// ビューポート高さ
-	//float vp_height = m_viewPortControll.Height;
-
-	//// UIの論理解像度 
-	//// 論理解像度の幅
-	//constexpr float logicalWidth = 1920.0f;
-	//// 論理解像度の高さ
-	//constexpr float logicalHeight = 1080.0f;
-	//// マウス座標を論理解像度基準にスケーリング
-	//// 論理解像度基準のマウスX座標
-	//float mouseX_UI = mouseState.x * (logicalWidth / renderWidth);
-	//// 論理解像度基準のマウスY座標
-	//float mouseY_UI = mouseState.y * (logicalHeight / renderHeight);
-	//// ビューポートの論理解像度基準での座標・サイズを計算
-	//// 論理解像度基準のビューポート左上X
-	//float vp_left_UI = vp_left * (logicalWidth / renderWidth);
-	//// 論理解像度基準のビューポート左上Y
-	//float vp_top_UI = vp_top * (logicalHeight / renderHeight);
-	//// 論理解像度基準のビューポート幅
-	//float vp_width_UI = vp_width * (logicalWidth / renderWidth);
-	//// 論理解像度基準のビューポート高さ
-	//float vp_height_UI = vp_height * (logicalHeight / renderHeight);
-	//// マウス座標をビューポート内ローカル座標に変換
-	//Vector2 mousePos = Vector2(mouseX_UI - vp_left_UI, mouseY_UI - vp_top_UI);
-	// UI要素ごとにヒット判定を行う
-	for (int i = 0; i < m_pUI.size(); i++)
+	const auto debugString = m_pCommonResources->GetDebugString();
+	m_pMouse->SetHitNewTile(false); // マウスのヒットフラグをリセット
+	m_pMouse->SetHitNewTileIndex(-1);// 当たっている新しく出てきたタイルの番号をリセット
+	// --- ドラッグ中は他UIのヒット判定をしない ---
+	if (m_pMouse->IsMouseDrag() && m_draggingIndex >= 0)
 	{
-		// マウスがビューポート外ならスキップ
-		if (m_pMouse->GetPosition().x < 0 || m_pMouse->GetPosition().y < 0 || m_pMouse->GetPosition().x >= m_pMouse->GetVpWidthUI() || m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())
-			continue;
-		// ヒット判定（UI要素ごと）
-		if (m_pUI[i]->IsHit(m_pMouse->GetPosition()) && mouseState.leftButton)
+		// ドラッグ中の処理だけやる
+		if (mouseState.leftButton)
 		{
-			m_hit = true;         // 当たり判定フラグ
-			m_menuIndex = i;      // 当たったUIのインデックス
-			const auto debugString = m_pCommonResources->GetDebugString();
-			debugString->AddString("hitNextTile:%i", m_menuIndex);
-			break;
+			m_pUI[m_draggingIndex]->SetPosition(m_pMouse->GetPosition());
+			m_pMouse->SetNewTilePosition(m_pUI[m_draggingIndex]->GetPosition()); // 当たった新しいタイルの位置をセット
+			debugString->AddString("DraggingNextTilePosition: %f, %f", m_pUI[m_draggingIndex]->GetPosition().x, m_pUI[m_draggingIndex]->GetPosition().y);
+		}
+		else
+		{
+			// 左ボタン離した瞬間だけリセット
+			m_pUI[m_draggingIndex]->SetPosition(m_initialPositions[m_draggingIndex]);
+			m_pMouse->SetMouseDrag(false);
+			m_draggingIndex = -1;
+		}
+	}
+	else
+	{
+		// ドラッグしていない状態のみヒット判定&ドラッグ開始
+		for (int i = 0; i < m_pUI.size(); i++)
+		{
+			if (m_pMouse->GetPosition().x < 0 || m_pMouse->GetPosition().y < 0 ||
+				m_pMouse->GetPosition().x >= m_pMouse->GetVpWidthUI() ||
+				m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())
+				continue;
+
+			if (m_pUI[i]->IsHit(m_pMouse->GetPosition()))
+			{
+				m_pMouse->SetHitNewTile(true); // マウスのヒットフラグをセット
+				m_pMouse->SetHitNewTileIndex(i); // 当たった新しいタイルのインデックスをセット
+				m_pMouse->SetNewTilePosition(m_pUI[i]->GetPosition()); // 当たった新しいタイルの位置をセット
+
+
+				// ドラッグ開始（ドラッグしていない時のみ）
+				if (mouseState.leftButton && !m_pMouse->IsMouseDrag())
+				{
+					m_draggingIndex = i;
+					m_pMouse->SetMouseDrag(true);
+				}
+				break;
+			}
 		}
 	}
 	// 経過時間を加算
@@ -182,7 +159,9 @@ void NextTiles::Update(const float elapsedTime)
 		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
 	}
 	// 選択中のUIがあるなら座標を変更する
-	if (m_menuIndex >= 0 && mouseState.leftButton)m_pUI[m_menuIndex]->SetPosition(m_pMouse->GetPosition());
+	if (m_pMouse->GetHitNewTileIndex() >= 0 && mouseState.leftButton)m_pUI[m_pMouse->GetHitNewTileIndex()]->SetPosition(m_pMouse->GetPosition());
+
+	debugString->AddString("DragNextTile:%i", m_draggingIndex);
 }
 /*
 *	@brief 描画
@@ -250,12 +229,18 @@ void NextTiles::AddNextTiles()
 	int randomIndex = rand(engine);
 	// Y座標を調整
 	float positionY = 480.0f - (float(m_pUI.size()) * 90.0f);
+	// X座標は固定
+	const float positionX = 290.0f;
+	// 位置を設定
+	Vector2 position(positionX, positionY);
 	// UI追加
 	Add(m_tilesDictionary[randomIndex]
-		, Vector2(290.0f, positionY)
+		, position
 		, Vector2(0.6f, 0.6f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
 		, UIType::SELECT);
+	// 初期位置を保存
+	m_initialPositions.push_back(position);
 
 }
 
