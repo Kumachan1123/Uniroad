@@ -165,6 +165,7 @@ void Panel::Update(const float elapsedTime)
 			m_menuIndex = i;      // 当たったUIのインデックス
 			const auto debugString = m_pCommonResources->GetDebugString();
 			debugString->AddString("hitPanel:%i", m_menuIndex);
+			debugString->AddString("PanelPosition:%f,%f", m_pUI[i]->GetPosition().x, m_pUI[i]->GetPosition().y);
 			break;
 		}
 	}
