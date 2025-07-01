@@ -20,6 +20,11 @@ MyMouse::MyMouse()
 	, m_vp_top_UI(0.0f) // ビューポート左上Y（論理解像度基準）
 	, m_vp_width_UI(0.0f) // ビューポート幅（論理解像度基準）
 	, m_vp_height_UI(0.0f) // ビューポート高さ（論理解像度基準）
+	, m_isMouseDrag(false) // マウスドラッグフラグ
+	, m_hit(false) // ヒットフラグ
+	, m_hitNewTile(false) // ヒットフラグ(新しく出てきたタイル)
+	, m_hitNewTileIndex(-1) // 当たっている新しく出てきたタイルの番号(-1は当たっていないことを示す)
+	, m_hitPanelIndex(-1) // 当たっているパネルの番号(-1は当たっていないことを示す)
 {
 }
 /*
@@ -118,4 +123,9 @@ void MyMouse::Update(const float elapsedTime)
 		&& (mouseY_UI >= m_vp_top_UI) && (mouseY_UI < m_vp_top_UI + m_vp_height_UI)
 		? "true" : "false"); // マウスがビューポート内にあるか
 	debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", m_position.x, m_position.y); // ビューポート内マウス座標
+	debugString->AddString("PanelPosition:%f,%f", GetPanelPosition().x, GetPanelPosition().y);// 当たっているパネルの位置
+	debugString->AddString("HitNextTilePosition: %f, %f", GetNewTilePosition().x, GetNewTilePosition().y);// 当たっている新しいタイルの位置
+	debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");// ドラッグフラグの状態
+	debugString->AddString("hitPanel:%i", GetHitPanelIndex());// 当たっているパネルのインデックス
+	debugString->AddString("hitNextTile:%i", GetHitNewTileIndex());// 当たっている新しく出てきたタイルのインデックス
 }
