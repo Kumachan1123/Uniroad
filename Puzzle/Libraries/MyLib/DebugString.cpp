@@ -24,7 +24,7 @@ mylib::DebugString::DebugString(
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 	m_spriteFont = std::make_unique<DirectX::SpriteFont>(device, fontFilePath);
 
-	m_fontHeight = m_spriteFont->GetLineSpacing();
+	m_fontHeight = m_spriteFont->GetLineSpacing() * 1.5f;
 	m_color = DirectX::Colors::Black;
 }
 
@@ -76,7 +76,10 @@ void mylib::DebugString::Render(DirectX::CommonStates* states)
 			m_spriteBatch.get(),
 			m_strings[i].c_str(),
 			pos,
-			m_color
+			m_color,
+			0.0f, // 回転角度
+			DirectX::SimpleMath::Vector2::Zero, // 回転の中心
+			1.5f // スケール
 		);
 	}
 

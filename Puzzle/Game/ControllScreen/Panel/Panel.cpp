@@ -107,17 +107,12 @@ void Panel::Update(const float elapsedTime)
 		// ヒット判定（UI要素ごと）
 		if (m_pUI[i]->IsHit(m_pMouse->GetPosition()))
 		{
-			//m_hit = true;         // 当たり判定フラグ
 			m_pMouse->SetHit(true); // マウスのヒットフラグをセット
 			m_pMouse->SetHitPanelIndex(i);// 当たったパネルのインデックスをセット
-			//m_menuIndex = i;      // 当たったUIのインデックス
-			const auto debugString = m_pCommonResources->GetDebugString();
-			//debugString->AddString("hitPanel:%i", m_menuIndex);
 			m_pMouse->SetPanelPosition(m_pUI[i]->GetPosition()); // 当たったパネルの位置をセット
 			break;
 		}
 	}
-
 	// 経過時間を加算
 	m_time += elapsedTime;
 

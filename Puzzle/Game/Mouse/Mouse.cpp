@@ -25,6 +25,8 @@ MyMouse::MyMouse()
 	, m_hitNewTile(false) // ヒットフラグ(新しく出てきたタイル)
 	, m_hitNewTileIndex(-1) // 当たっている新しく出てきたタイルの番号(-1は当たっていないことを示す)
 	, m_hitPanelIndex(-1) // 当たっているパネルの番号(-1は当たっていないことを示す)
+	, m_prevLeftButton(false) // 前フレームの左ボタン状態
+	, m_leftReleased(false) // 左ボタンが離されたかどうか
 {
 }
 /*
@@ -116,7 +118,12 @@ void MyMouse::Update(const float elapsedTime)
 	m_vp_height_UI = vp_height * (logicalHeight / m_renderHeight);
 	// マウス座標をビューポート内ローカル座標に変換
 	m_position = Vector2(mouseX_UI - m_vp_left_UI, mouseY_UI - m_vp_top_UI);
-	// デバッグ表示
+
+	// 離されたか判定
+	m_leftReleased = (!mouseState.leftButton) && m_prevLeftButton;
+	// 最後に、前フレームの状態を更新しておく
+	m_prevLeftButton = mouseState.leftButton;
+	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("isInside: %s",
 		(mouseX_UI >= m_vp_left_UI) && (mouseX_UI < m_vp_left_UI + m_vp_width_UI)
@@ -128,4 +135,5 @@ void MyMouse::Update(const float elapsedTime)
 	debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");// ドラッグフラグの状態
 	debugString->AddString("hitPanel:%i", GetHitPanelIndex());// 当たっているパネルのインデックス
 	debugString->AddString("hitNextTile:%i", GetHitNewTileIndex());// 当たっている新しく出てきたタイルのインデックス
+	debugString->AddString("LeftReleased: %s", m_leftReleased ? "true" : "false");// 左ボタンが離されたかどうか
 }

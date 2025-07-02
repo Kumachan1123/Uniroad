@@ -99,12 +99,12 @@ void NextTiles::Update(const float elapsedTime)
 		{
 			m_pUI[m_draggingIndex]->SetPosition(m_pMouse->GetPosition());
 			m_pMouse->SetNewTilePosition(m_pUI[m_draggingIndex]->GetPosition()); // 当たった新しいタイルの位置をセット
-			debugString->AddString("DraggingNextTilePosition: %f, %f", m_pUI[m_draggingIndex]->GetPosition().x, m_pUI[m_draggingIndex]->GetPosition().y);
 		}
-		else
+		else// 左ボタン離した瞬間だけリセット
 		{
-			// 左ボタン離した瞬間だけリセット
-			m_pUI[m_draggingIndex]->SetPosition(m_initialPositions[m_draggingIndex]);
+			// パネルに当たっていなければ元の位置に戻す
+			if (m_pMouse->GetHitPanelIndex() == -1)	ResetTilePosition();
+			else AddToPanel();
 			m_pMouse->SetMouseDrag(false);
 			m_draggingIndex = -1;
 		}
@@ -242,5 +242,26 @@ void NextTiles::AddNextTiles()
 	// 初期位置を保存
 	m_initialPositions.push_back(position);
 
+}
+/*
+*	@brief 新しいパネルを配置
+*	@details 新しいパネルを配置する
+*	@param なし
+*	@return なし
+*/
+void NextTiles::AddToPanel()
+{
+	m_pUI[m_draggingIndex]->SetPosition(m_pMouse->GetPanelPosition());
+
+}
+/*
+*	@brief 元の位置にタイルを戻す
+*	@details 元の位置にタイルを戻す
+*	@param なし
+*	@return なし
+*/
+void NextTiles::ResetTilePosition()
+{
+	m_pUI[m_draggingIndex]->SetPosition(m_initialPositions[m_draggingIndex]);
 }
 

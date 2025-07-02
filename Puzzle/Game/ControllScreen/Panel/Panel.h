@@ -61,6 +61,7 @@ public:
 		const DirectX::SimpleMath::Vector2& scale,	// スケール
 		KumachiLib::ANCHOR anchor,					// アンカー
 		UIType type) override;						// UIの種類
+
 private:
 	// private関数
 	// デバイスリソース

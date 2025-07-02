@@ -61,6 +61,11 @@ private:
 	// private関数
 	// 更新中に定期的にUIを追加する
 	void AddNextTiles();
+	// 新しいパネルを配置
+	void AddToPanel();
+	// 元の位置にタイルを戻す
+	void ResetTilePosition();
+
 private:
 	// private関数
 	// デバイスリソース

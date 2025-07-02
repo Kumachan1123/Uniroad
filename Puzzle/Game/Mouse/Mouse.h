@@ -64,7 +64,10 @@ public:
 	bool IsHitNewTile() const { return m_hitNewTile; }
 	// ヒットフラグ(新しく出てきたタイル)を設定
 	void SetHitNewTile(bool hitNewTile) { m_hitNewTile = hitNewTile; }
-
+	// 左が離されたかどうかを取得
+	bool IsLeftReleased() const { return m_leftReleased; }
+	// 左が離されたかどうかを設定
+	void SetLeftReleased(bool leftReleased) { m_leftReleased = leftReleased; }
 
 public:
 	// public関数
@@ -110,4 +113,8 @@ private:
 	bool m_hit;
 	// ヒットフラグ(新しく出てきたタイル)
 	bool m_hitNewTile;
+	// 前回の左ボタンの状態
+	bool m_prevLeftButton;
+	// 左ボタンが押されたかどうか
+	bool m_leftReleased;
 };
