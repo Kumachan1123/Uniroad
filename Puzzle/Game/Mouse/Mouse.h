@@ -52,6 +52,14 @@ public:
 	int GetHitPanelIndex() const { return m_hitPanelIndex; }
 	// 当たっているパネルの番号を設定
 	void SetHitPanelIndex(int index) { m_hitPanelIndex = index; }
+	// 当たっているパネルの行番号を取得
+	int GetHitPanelRowIndex() const { return m_hitPanelRowIndex; }
+	// 当たっているパネルの行番号を設定
+	void SetHitPanelRowIndex(int rowIndex) { m_hitPanelRowIndex = rowIndex; }
+	// 当たっているパネルの列番号を取得
+	int GetHitPanelColIndex() const { return m_hitPanelColIndex; }
+	// 当たっているパネルの列番号を設定
+	void SetHitPanelColIndex(int colIndex) { m_hitPanelColIndex = colIndex; }
 	// 当たっている新しく出てきたタイルの番号を取得
 	int GetHitNewTileIndex() const { return m_hitNewTileIndex; }
 	// 当たっている新しく出てきたタイルの番号を設定
@@ -107,6 +115,10 @@ private:
 	bool m_isMouseDrag;
 	// 当たっているパネルの番号
 	int m_hitPanelIndex;
+	// 当たっているパネルの行番号
+	int m_hitPanelRowIndex;
+	// 当たっているパネルの列番号
+	int m_hitPanelColIndex;
 	// 当たっている新しく出てきたタイルの番号
 	int m_hitNewTileIndex;
 	// ヒットフラグ(パネル)

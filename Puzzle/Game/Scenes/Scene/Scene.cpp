@@ -64,6 +64,8 @@ void Scene::Initialize(CommonResources* resources)
 	m_pNextTiles = std::make_unique<NextTiles>();
 	// 次のタイルにマウスを設定
 	m_pNextTiles->SetMouse(m_pMouse.get());
+	// 次のタイルにマップ情報を渡す
+	m_pNextTiles->SetCSVMap(m_pCSVMap.get());
 	// 次のタイルを初期化する
 	m_pNextTiles->Initialize(m_commonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 

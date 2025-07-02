@@ -110,6 +110,10 @@ void Panel::Update(const float elapsedTime)
 			m_pMouse->SetHit(true); // マウスのヒットフラグをセット
 			m_pMouse->SetHitPanelIndex(i);// 当たったパネルのインデックスをセット
 			m_pMouse->SetPanelPosition(m_pUI[i]->GetPosition()); // 当たったパネルの位置をセット
+			// 当たったパネルの行番号を設定
+			m_pMouse->SetHitPanelRowIndex(i / m_mapSizeX);
+			// 当たったパネルの列番号を設定
+			m_pMouse->SetHitPanelColIndex(i % m_mapSizeX);
 			break;
 		}
 	}

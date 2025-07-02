@@ -5,6 +5,7 @@
 #include <pch.h>
 #include "CSVMap.h"
 
+
 /*
 *	@brief コンストラクタ
 *	@details 生成時に共通リソースへのポインタを受け取り、初期化を行う。
@@ -67,6 +68,7 @@ void CSVMap::InitializeTileDictionary()
 	m_tileDictionary["ru"] = TileInfo{ "RightUp", true };
 	// 左上カーブ
 	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
+
 
 }
 /*
@@ -157,6 +159,21 @@ void CSVMap::LoadMap(const std::string& filePath)
 					//m_wallBox.push_back(box);
 				}
 			}
+			else
+			{
+				// タイルの位置計算（マップ中心補正）
+				float x = static_cast<float>(col * 2) - offsetX;
+				float z = static_cast<float>(row * 2) - offsetZ;
+				// ワールド座標を計算
+				Vector3 pos(x, 0.0f, z);
+				// セルの文字列が辞書に存在しない場合は空のタイルを追加
+				m_tiles.push_back(TileRenderData{ nullptr, Matrix::Identity });
+
+				// デフォルトの床タイルを使用
+				const TileInfo& emptyTileInfo = m_tileDictionary[""];
+				// マップデータに空のタイル情報を保存
+				m_mapData[row][col] = MapTileData{ emptyTileInfo, pos, false };
+			}
 			// マップの列に値を設定
 			++col;
 		}
@@ -220,12 +237,44 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 /*
 *	@brief 指定位置のタイル情報を取得する
 *	@details 指定された列と行の位置にあるタイルの情報を取得する。
-*	@param col 列番号
 *	@param row 行番号
+*	@param col 列番号
 *	@return 指定位置のタイル情報への参照
 */
-const  MapTileData& CSVMap::GetTileData(int col, int row) const
+const  MapTileData& CSVMap::GetTileData(int row, int col) const
 {
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
-	return m_mapData[col][row];
+	return m_mapData[row][col];
+}
+
+/*
+*	@brief 指定した位置に指定したモデルを配置する
+*	@details 指定された行と列の位置に、指定されたモデル名のタイルを配置する。
+*	@param row 行番号
+*	@param col 列番号
+*	@param modelName モデル名
+*	@return なし
+*/
+void CSVMap::SetTileModel(int row, int col, const std::string& modelName)
+{	// DirectXとSimpleMathの名前空間を使用
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
+	// モデル名が空でない場合
+	if (!modelName.empty())
+	{
+		// タイル情報を更新
+		m_mapData[row][col].tileInfo.modelName = modelName;
+		// モデルを取得
+		DirectX::Model* model = m_commonResources->GetModelManager()->GetModel(modelName);
+		// ワールド座標を計算
+		Vector3 pos = m_mapData[row][col].pos;
+		Matrix world = Matrix::CreateScale(m_mapData[row][col].tileInfo.scale) * Matrix::CreateTranslation(pos);
+		// タイルのレンダリングデータを更新
+		m_tiles.push_back(TileRenderData{ model, world });
+	}
+	else
+	{
+		// モデル名が空の場合は何もしない
+	}
 }

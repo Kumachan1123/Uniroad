@@ -25,6 +25,8 @@ MyMouse::MyMouse()
 	, m_hitNewTile(false) // ヒットフラグ(新しく出てきたタイル)
 	, m_hitNewTileIndex(-1) // 当たっている新しく出てきたタイルの番号(-1は当たっていないことを示す)
 	, m_hitPanelIndex(-1) // 当たっているパネルの番号(-1は当たっていないことを示す)
+	, m_hitPanelRowIndex(-1) // 当たっているパネルの行番号(-1は当たっていないことを示す)
+	, m_hitPanelColIndex(-1) // 当たっているパネルの列番号(-1は当たっていないことを示す)
 	, m_prevLeftButton(false) // 前フレームの左ボタン状態
 	, m_leftReleased(false) // 左ボタンが離されたかどうか
 {
@@ -131,6 +133,7 @@ void MyMouse::Update(const float elapsedTime)
 		? "true" : "false"); // マウスがビューポート内にあるか
 	debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", m_position.x, m_position.y); // ビューポート内マウス座標
 	debugString->AddString("PanelPosition:%f,%f", GetPanelPosition().x, GetPanelPosition().y);// 当たっているパネルの位置
+	debugString->AddString("PanelRow:%i, PanelCol:%i", GetHitPanelRowIndex(), GetHitPanelColIndex());// 当たっているパネルの行と列のインデックス
 	debugString->AddString("HitNextTilePosition: %f, %f", GetNewTilePosition().x, GetNewTilePosition().y);// 当たっている新しいタイルの位置
 	debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");// ドラッグフラグの状態
 	debugString->AddString("hitPanel:%i", GetHitPanelIndex());// 当たっているパネルのインデックス

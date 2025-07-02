@@ -21,6 +21,8 @@
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/Mouse/Mouse.h"
+#include "Game/TileDatas/TileDatas.h"
+#include "Game/MainScreen/CSVMap/CSVMap.h"
 
 // 前方宣言
 class CommonResources;
@@ -34,6 +36,8 @@ public:
 	bool GetIsHit()const { return m_hit; }
 	// UIにヒットしたかどうか設定
 	void SetIsHit(bool hit) { m_hit = hit; }
+	// CSVマップを設定
+	void SetCSVMap(CSVMap* pCSVMap) { m_pCSVMap = pCSVMap; }
 	// マウスポインターを設定
 	void SetMouse(MyMouse* pMouse) { m_pMouse = pMouse; }
 	// ビューポートを設定
@@ -78,6 +82,8 @@ private:
 	std::vector<std::unique_ptr<Canvas>> m_pBackUI;
 	// 選択中であることを表示するUI
 	std::unique_ptr<Canvas> m_pSelectedUI;
+	// CSVマップ
+	CSVMap* m_pCSVMap;
 	// マウスのポインター
 	MyMouse* m_pMouse;
 	// 各選択可能UIの初期位置リスト

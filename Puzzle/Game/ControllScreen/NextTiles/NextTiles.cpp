@@ -15,6 +15,7 @@ NextTiles::NextTiles()
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_viewPortControll() // ビューポートの制御
 	, m_pDR(nullptr) // デバイスリソース
+	, m_pCSVMap(nullptr) // CSVマップへのポインタ
 	, m_hit(false) // UIにヒットしたかどうか
 	, m_pMouse(nullptr) // マウスへのポインタ
 	, m_time(7.0f) // 経過時間
@@ -139,7 +140,7 @@ void NextTiles::Update(const float elapsedTime)
 	// 経過時間を加算
 	m_time += elapsedTime;
 	// 10秒ごとにUIを追加する
-	if (m_time >= 10.0f)
+	if (m_time >= 5.0f)
 	{
 		// UIを追加
 		AddNextTiles();
@@ -251,7 +252,15 @@ void NextTiles::AddNextTiles()
 */
 void NextTiles::AddToPanel()
 {
-	m_pUI[m_draggingIndex]->SetPosition(m_pMouse->GetPanelPosition());
+	if (m_pCSVMap->GetTileData(m_pMouse->GetHitPanelRowIndex(), m_pMouse->GetHitPanelColIndex()).tileInfo.modelName == "")
+	{
+		m_pUI[m_draggingIndex]->SetPosition(m_pMouse->GetPanelPosition());
+		// パネルに新しいタイルを配置
+		m_pCSVMap->SetTileModel(m_pMouse->GetHitPanelRowIndex(), m_pMouse->GetHitPanelColIndex(),
+			m_tilesDictionary[m_draggingIndex]);
+	}
+	else
+		ResetTilePosition();
 
 }
 /*
