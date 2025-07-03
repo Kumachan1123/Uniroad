@@ -75,7 +75,7 @@ void Scene::Update(float elapsedTime)
 {
 	m_time += elapsedTime;
 	//// デバッグカメラの更新
-	//m_debugCamera->Update(m_commonResources->GetInputManager());
+	//m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// マウスの更新

@@ -30,6 +30,12 @@ class CommonResources;
 // 次のタイルクラス
 class NextTiles : public IUI
 {
+private:
+	struct TileInfo
+	{
+		std::string textureKey; // テクスチャのキー
+		std::unique_ptr<Canvas> canvas; // キャンバスオブジェクト
+	};
 public:
 	// アクセサ
 	// UIにヒットしたかどうか取得
@@ -76,12 +82,12 @@ private:
 	DX::DeviceResources* m_pDR;
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	// 選択可能UI
-	std::vector<std::unique_ptr<Canvas>> m_pUI;
-	// 背景UI
-	std::vector<std::unique_ptr<Canvas>> m_pBackUI;
-	// 選択中であることを表示するUI
-	std::unique_ptr<Canvas> m_pSelectedUI;
+	// 設置可能タイル
+	std::vector<TileInfo> m_pTile;
+	// 背景
+	std::vector<TileInfo> m_pBack;
+	// 設置済みタイル
+	std::vector<TileInfo> m_pPlacedTile;
 	// CSVマップ
 	CSVMap* m_pCSVMap;
 	// マウスのポインター

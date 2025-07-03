@@ -15,11 +15,11 @@
 CSVMap::CSVMap(CommonResources* resources)
 {
 	// 共通リソースへのポインタを保存
-	m_commonResources = resources;
+	m_pCommonResources = resources;
 	// マップのタイルの辞書を初期化
 	InitializeTileDictionary();
 	// 当たり判定描画の初期化
-	DrawCollision::Initialize(m_commonResources);
+	DrawCollision::Initialize(m_pCommonResources);
 	// マップの読み込み
 	LoadModel();
 }
@@ -68,6 +68,8 @@ void CSVMap::InitializeTileDictionary()
 	m_tileDictionary["ru"] = TileInfo{ "RightUp", true };
 	// 左上カーブ
 	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
+	// 空白
+	m_tileDictionary["0"] = TileInfo{ "", false };
 
 
 }
@@ -80,7 +82,7 @@ void CSVMap::InitializeTileDictionary()
 void CSVMap::LoadModel()
 {
 	// モデルを読み込む
-	//m_pModel = m_commonResources->GetModelManager()->GetModel("Block");
+	//m_pModel = m_pCommonResources->GetModelManager()->GetModel("Block");
 }
 /*
 *	@brief CSV形式のマップを読み込む
@@ -143,7 +145,7 @@ void CSVMap::LoadMap(const std::string& filePath)
 				// ワールド行列を作成（スケーリングと位置の設定）
 				Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
 				// モデル取得
-				DirectX::Model* model = m_commonResources->GetModelManager()->GetModel(tileInfo.modelName);
+				DirectX::Model* model = m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName);
 				// タイルデータ保存
 				m_tiles.push_back(TileRenderData{ model, world });
 				// 当たり判定
@@ -166,6 +168,8 @@ void CSVMap::LoadMap(const std::string& filePath)
 				float z = static_cast<float>(row * 2) - offsetZ;
 				// ワールド座標を計算
 				Vector3 pos(x, 0.0f, z);
+				// ワールド行列を作成（スケーリングと位置の設定）
+				Matrix world = Matrix::CreateScale(Vector3::One) * Matrix::CreateTranslation(pos);
 				// セルの文字列が辞書に存在しない場合は空のタイルを追加
 				m_tiles.push_back(TileRenderData{ nullptr, Matrix::Identity });
 
@@ -217,9 +221,9 @@ void CSVMap::DrawCollision(const DirectX::SimpleMath::Matrix& view, const Direct
 void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	// デバイスコンテキストを取得
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// 共通のステートを取得
-	auto states = m_commonResources->GetCommonStates();
+	auto states = m_pCommonResources->GetCommonStates();
 	// 全タイルを描画する
 	for (const auto& tile : m_tiles)
 	{
@@ -230,6 +234,9 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 			tile.model->Draw(context, *states, tile.world, view, proj, false);
 		}
 	}
+	const auto debugString = m_pCommonResources->GetDebugString();
+	for (int i = 0; i < 5; ++i)
+		debugString->AddString("MapPos%f,%f", GetTileData(i, 4).pos.x, GetTileData(i, 4).pos.z);
 	//// 当たり判定の描画
 	//DrawCollision(view, proj);
 }
@@ -256,7 +263,8 @@ const  MapTileData& CSVMap::GetTileData(int row, int col) const
 *	@return なし
 */
 void CSVMap::SetTileModel(int row, int col, const std::string& modelName)
-{	// DirectXとSimpleMathの名前空間を使用
+{
+	// DirectXとSimpleMathの名前空間を使用
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
@@ -266,9 +274,10 @@ void CSVMap::SetTileModel(int row, int col, const std::string& modelName)
 		// タイル情報を更新
 		m_mapData[row][col].tileInfo.modelName = modelName;
 		// モデルを取得
-		DirectX::Model* model = m_commonResources->GetModelManager()->GetModel(modelName);
-		// ワールド座標を計算
+		DirectX::Model* model = m_pCommonResources->GetModelManager()->GetModel(modelName);
+		// タイルの位置を計算
 		Vector3 pos = m_mapData[row][col].pos;
+		// ワールド座標を計算
 		Matrix world = Matrix::CreateScale(m_mapData[row][col].tileInfo.scale) * Matrix::CreateTranslation(pos);
 		// タイルのレンダリングデータを更新
 		m_tiles.push_back(TileRenderData{ model, world });

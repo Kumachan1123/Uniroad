@@ -14,6 +14,8 @@
 #include <SimpleMath.h>
 #include <Model.h>
 #include <Effects.h>
+// 外部ライブラリ
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/DrawCollision/DrawCollision.h"
@@ -53,7 +55,7 @@ private:
 	void InitializeTileDictionary();
 
 private:
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	//マップ
 	const int MAXCOL = 5;
 	const int MAXRAW = 5;
