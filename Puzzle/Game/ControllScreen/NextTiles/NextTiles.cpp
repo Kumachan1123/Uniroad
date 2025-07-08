@@ -184,17 +184,18 @@ void NextTiles::Render()
 		// 背景の描画
 		m_pBack[i].canvas->Render();
 	}
-	// タイルの数だけ繰り返す
-	for (unsigned int i = 0; i < m_pTile.size(); i++)
-	{
-		// タイルの描画
-		m_pTile[i].canvas->Render();
-	}
+
 	// 設置済みタイルの数だけ繰り返す
 	for (unsigned int i = 0; i < m_pPlacedTile.size(); i++)
 	{
 		// 設置済みタイルの描画
 		m_pPlacedTile[i].canvas->Render();
+	}
+	// タイルの数だけ繰り返す
+	for (unsigned int i = 0; i < m_pTile.size(); i++)
+	{
+		// タイルの描画
+		m_pTile[i].canvas->Render();
 	}
 }
 /*

@@ -200,6 +200,14 @@
     <ClInclude Include="Game\ControllScreen\UIBack\UIBack.h" />
     <ClInclude Include="Game\Interface\IUI\IUI.h" />
     <ClInclude Include="Game\MainScreen\CSVMap\CSVMap.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComponent.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComposite.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\ILeaf.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacter.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.h" />
     <ClInclude Include="Game\Mouse\Mouse.h" />
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
@@ -212,6 +220,7 @@
     <ClInclude Include="KumachiLib\CreateShader\CreateShader.h" />
     <ClInclude Include="KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="KumachiLib\DrawPolygon\DrawPolygon.h" />
+    <ClInclude Include="KumachiLib\Easing\Easing.h" />
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
@@ -244,6 +253,11 @@
     <ClCompile Include="Game\ControllScreen\Panel\Panel.cpp" />
     <ClCompile Include="Game\ControllScreen\UIBack\UIBack.cpp" />
     <ClCompile Include="Game\MainScreen\CSVMap\CSVMap.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacter.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.cpp" />
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\Scene\Scene.cpp" />

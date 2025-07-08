@@ -48,6 +48,13 @@ void Scene::Initialize(CommonResources* resources)
 	m_pCSVMap = std::make_unique<CSVMap>(m_commonResources);
 	// CSVマップを読み込む
 	m_pCSVMap->LoadMap("Resources/Map/test.csv");
+	// ミニキャラを作成する
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	// ミニキャラを初期化する
+	m_pMiniCharacterBase->Initialize(m_commonResources);
+	// ミニキャラベースにミニキャラをアタッチ
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
+
 	// 操作画面の背景を作成する
 	m_pUIBack = std::make_unique<UIBack>(m_commonResources);
 	// 操作画面の背景を初期化する
@@ -86,6 +93,10 @@ void Scene::Update(float elapsedTime)
 	m_pPanel->Update(elapsedTime);
 	// 次のタイルの更新
 	m_pNextTiles->Update(elapsedTime);
+	// ミニキャラの更新
+	Vector3 position(0.0f, 0.0f, 0.0f);
+	Quaternion angle(Quaternion::Identity);
+	m_pMiniCharacterBase->Update(elapsedTime, position, angle);
 }
 void Scene::Render()
 {
@@ -100,6 +111,9 @@ void Scene::Render()
 	m_view = m_pFixedCamera->GetViewMatrix();
 	// CSVマップの描画
 	m_pCSVMap->Render(m_view, m_projectionGame);
+	// ミニキャラの描画
+	m_pMiniCharacterBase->Render(m_view, m_projectionGame);
+
 	// --- 右側: 操作画面用ビューポート ---
 	context->RSSetViewports(1, &m_viewPortControll);
 	// 操作画面の背景を描画

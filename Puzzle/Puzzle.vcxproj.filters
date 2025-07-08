@@ -57,6 +57,15 @@
     <ClInclude Include="Game\ControllScreen\NextTiles\NextTiles.h" />
     <ClInclude Include="Game\TileDatas\TileDatas.h" />
     <ClInclude Include="Game\Mouse\Mouse.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComponent.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComposite.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\ILeaf.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacter.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.h" />
+    <ClInclude Include="KumachiLib\Easing\Easing.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -87,6 +96,11 @@
     <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
     <ClCompile Include="Game\ControllScreen\NextTiles\NextTiles.cpp" />
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacter.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
