@@ -2,7 +2,7 @@
 #include "MiniCharacterBase.h"
 
 MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	:m_parent(parent)
+	:m_pParent(parent)
 	, m_nodeNumber{}
 	, m_partNumber{}
 	, m_partID{}
@@ -21,7 +21,7 @@ MiniCharacterBase::~MiniCharacterBase()
 
 void MiniCharacterBase::Initialize(CommonResources* commonResources)
 {
-	m_commonResources = commonResources;
+	m_pCommonResources = commonResources;
 }
 
 
@@ -40,7 +40,7 @@ void MiniCharacterBase::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 
 void MiniCharacterBase::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
-	MiniCharacterPart->Initialize(m_commonResources);
+	MiniCharacterPart->Initialize(m_pCommonResources);
 	m_nodes.emplace_back(std::move(MiniCharacterPart));
 
 }

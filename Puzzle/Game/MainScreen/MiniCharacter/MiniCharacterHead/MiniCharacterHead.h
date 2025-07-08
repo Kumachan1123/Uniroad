@@ -42,6 +42,9 @@ public:
 	void SetMass(const float& mass) { m_mass = mass; }
 	// モデルを取得する
 	DirectX::Model* GetModel() { return m_pModel; }
+	// CSVマップを取得する
+	CSVMap* GetCSVMap() { return nullptr; }
+
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:

@@ -10,9 +10,11 @@
 // 外部ライブラリ
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
+#include <Libraries\MyLib\DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Scenes/Scene/Scene.h"
+#include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBody/MiniCharacterBody.h"
 // 前方宣言
@@ -54,6 +56,8 @@ public:
 	void SetMass(const float& mass) { m_mass = mass; }
 	// モデルを取得する
 	DirectX::Model* GetModel() { return nullptr; }
+	// CSVマップを取得する
+	CSVMap* GetCSVMap() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:
@@ -91,7 +95,7 @@ private:
 	static int s_partsNumber;
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// 親
 	IComponent* m_parent;
 	// ノード番号

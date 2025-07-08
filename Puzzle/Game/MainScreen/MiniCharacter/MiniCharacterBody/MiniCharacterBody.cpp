@@ -8,6 +8,7 @@ MiniCharacterBody::MiniCharacterBody(IComponent* parent, const DirectX::SimpleMa
 	, m_nodeNumber{ MiniCharacter::GetNodeCountAfterCountUp() }
 	, m_partNumber{ MiniCharacter::GetPartsNumber() }
 	, m_partID{ MiniCharacter::BODY }
+	, m_pCommonResources(nullptr)
 	, m_pModel(nullptr)
 	, m_initialPosition(initialPosition)
 	, m_time(0.0f)
@@ -41,7 +42,7 @@ void MiniCharacterBody::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 	m_time += elapsedTime;
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
-	m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time); // イージングを使ってY座標を変化させる
+	//m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time); // イージングを使ってY座標を変化させる
 	// 現在の回転角を更新する
 	m_currentAngle = m_rotationBodyAngle * currentAngle;
 	// 「胴体」部品を更新する

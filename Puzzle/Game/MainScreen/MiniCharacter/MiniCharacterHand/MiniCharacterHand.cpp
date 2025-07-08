@@ -42,7 +42,7 @@ void MiniCharacterHand::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
 	//m_currentPosition.x += Easing::Reflect(Easing::EaseInSine, m_time) / 4; // イージングを使ってX座標を変化させる
-	m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time) / 2; // イージングを使ってY座標を変化させる
+	m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time) / 8; // イージングを使ってY座標を変化させる
 	// 現在の回転角を更新する
 	m_currentAngle = m_rotationMiniCharacterAngle * m_initialAngle * currentAngle;
 }

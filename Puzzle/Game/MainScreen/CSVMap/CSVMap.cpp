@@ -287,3 +287,30 @@ void CSVMap::SetTileModel(int row, int col, const std::string& modelName)
 		// モデル名が空の場合は何もしない
 	}
 }
+/*
+*	@brief スタート地点を返す
+*	@details modelnameがStartのタイルの位置を返す。
+*	@param なし
+*	@return スタート地点の位置への参照
+*/
+const DirectX::SimpleMath::Vector3& CSVMap::GetStartPosition() const
+{
+	// DirectXとSimpleMathの名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// マップデータを走査してスタート地点を探す
+	for (const auto& row : m_mapData)
+	{
+		// 各行のタイルを走査
+		for (const auto& tile : row)
+		{
+			// タイルのモデル名が"Start"の場合
+			if (tile.tileInfo.modelName == "Start")
+			{
+				// スタート地点の位置を返す
+				return tile.pos;
+			}
+		}
+	}
+	// スタート地点が見つからない場合はゼロベクトルを返す
+	return Vector3::Zero;
+}

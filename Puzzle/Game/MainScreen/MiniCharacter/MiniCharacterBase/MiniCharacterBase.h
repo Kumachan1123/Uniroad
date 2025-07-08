@@ -14,6 +14,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Scenes/Scene/Scene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
+#include "Game/MainScreen/CSVMap/CSVMap.h"
 class CommonResources;
 class MiniCharacterBase : public IComposite
 {
@@ -26,7 +27,7 @@ public:
 	// 部品番号を取得する
 	int GetPartNumber() const { return m_partNumber; }
 	// 親を取得する
-	IComponent* GetParent() const { return m_parent; }
+	IComponent* GetParent() const { return m_pParent; }
 	// 現在の位置を取得する
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_currentPosition; }
 	// 現在の位置を設定する
@@ -41,6 +42,10 @@ public:
 	void SetMass(const float& mass) { m_mass = mass; }
 	// モデルを取得する
 	DirectX::Model* GetModel() { return nullptr; }
+	// CSVマップを取得する
+	CSVMap* GetCSVMap() { return m_pCSVMap; }
+	// CSVマップを設定する
+	void SetCSVMap(CSVMap* csvMap) { m_pCSVMap = csvMap; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -60,9 +65,12 @@ public:
 	void Finalize();
 private:
 	// 親
-	IComponent* m_parent;
+	IComponent* m_pParent;
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
+	// CSVマップ
+	CSVMap* m_pCSVMap;
+
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

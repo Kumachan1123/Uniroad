@@ -15,7 +15,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_nodeNumber(MiniCharacter::GetNodeCountAfterCountUp())
 	, m_partNumber(MiniCharacter::GetPartsNumber())
 	, m_partID(MiniCharacter::MINICHARACTER)
-	, m_commonResources(nullptr)
+	, m_pCommonResources(nullptr)
 	, m_initialPosition(initialPosition)
 	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))
 	, m_currentPosition{}
@@ -34,13 +34,23 @@ MiniCharacter::~MiniCharacter()
 
 void MiniCharacter::Initialize(CommonResources* resources)
 {
+	// SimpleMathの名前空間を使うためにusing宣言を追加
+	using namespace DirectX::SimpleMath;
+	// 共通リソースが存在することを確認する
 	assert(resources);
-	m_commonResources = resources;
+	// 共通リソースを設定する
+	m_pCommonResources = resources;
+
+	m_initialPosition = GetParent()->GetCSVMap()->GetStartPosition();
+
 	Attach(std::make_unique<MiniCharacterBody>(this, Vector3(0.0f, 1.8f, 0.0f), 0.0f));
 }
 
 void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	// 時間経過でプレイヤーを-Z方向に移動
+	m_MiniCharacterVelocity += Vector3(0.0f, 0.0f, 1.0f) * elapsedTime * 1.0f; // 速度を設定
+
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition + m_MiniCharacterVelocity;
 	// 現在の回転角を更新する
@@ -56,7 +66,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 
 void MiniCharacter::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
-	MiniCharacterPart->Initialize(m_commonResources);
+	MiniCharacterPart->Initialize(m_pCommonResources);
 	m_pMiniCharacterParts.push_back(std::move(MiniCharacterPart));
 }
 
@@ -71,6 +81,11 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	{
 		MiniCharacterPart->Render(view, proj);
 	}
+	// ---デバッグ表示---
+	const auto debugString = m_pCommonResources->GetDebugString();
+	// 座標表示
+	debugString->AddString("MiniCharacter Position: (%f, %f, %f)",
+		m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
 }
 
 void MiniCharacter::Finalize()

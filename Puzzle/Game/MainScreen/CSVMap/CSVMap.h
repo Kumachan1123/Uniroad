@@ -35,6 +35,8 @@ public:
 	const int GetMaxRow() const { return MAXRAW; }// 行数
 	// 指定した位置に指定したモデルを配置する
 	void SetTileModel(int row, int col, const std::string& modelName);
+	// スタート地点を返す
+	const DirectX::SimpleMath::Vector3& GetStartPosition() const;
 public:
 	// public関数
 	// コンストラクタ
