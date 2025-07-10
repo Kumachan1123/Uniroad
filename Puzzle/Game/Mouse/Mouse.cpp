@@ -61,6 +61,7 @@ void MyMouse::Initialize(CommonResources* resources)
 */
 void MyMouse::Update(const float elapsedTime)
 {
+	UNREFERENCED_PARAMETER(elapsedTime); // 経過時間は使用しない
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();

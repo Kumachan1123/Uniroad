@@ -4,6 +4,9 @@
 // DirectX
 #include <SimpleMath.h>
 #include <Model.h>
+//// 自作ヘッダーファイル
+//#include "Game/MainScreen/Tiles/TileBase/TileBase.h"
+class TileBase;
 // タイルの情報構造体
 struct TileInfo
 {
@@ -23,4 +26,6 @@ struct MapTileData
 	TileInfo tileInfo;               // その場所のタイル種類（Block、Start、Goalなど）
 	DirectX::SimpleMath::Vector3 pos; // そのマスのワールド座標
 	bool hasCollision = false;               // 当たり判定あるか
+	std::unique_ptr<TileBase> tileBasePtr = nullptr; // タイルのベースクラスへのポインタ
+
 };

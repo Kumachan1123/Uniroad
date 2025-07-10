@@ -140,8 +140,10 @@ void CSVMap::LoadMap(const std::string& filePath)
 				float z = static_cast<float>(row * 2) - offsetZ;
 				// ワールド座標を計算
 				Vector3 pos(x, 0.0f, z);
+				// タイルを生成
+				std::unique_ptr<TileBase> tileBase = TileFactory::CreateTileByName(tileInfo.modelName);
 				// マップデータにタイル情報を保存
-				m_mapData[row][col] = MapTileData{ tileInfo, pos, tileInfo.hasCollision };
+				m_mapData[row][col] = MapTileData{ tileInfo, pos, tileInfo.hasCollision,std::move(tileBase) };
 				// ワールド行列を作成（スケーリングと位置の設定）
 				Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
 				// モデル取得
@@ -311,6 +313,10 @@ void CSVMap::SetTileModel(int row, int col, const std::string& modelName)
 		m_mapData[row][col].tileInfo.modelName = modelName;
 		// モデルを取得
 		DirectX::Model* model = m_pCommonResources->GetModelManager()->GetModel(modelName);
+		// タイルを生成
+		std::unique_ptr<TileBase> tileBase = TileFactory::CreateTileByName(m_mapData[row][col].tileInfo.modelName);
+		// タイルのポインターを設定
+		m_mapData[row][col].tileBasePtr = std::move(tileBase);
 		// タイルの位置を計算
 		Vector3 pos = m_mapData[row][col].pos;
 		// ワールド座標を計算

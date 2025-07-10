@@ -46,6 +46,10 @@ public:
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_currentPosition; }
 	// 現在の位置を設定する
 	void SetPosition(const DirectX::SimpleMath::Vector3& currretPosition) { m_currentPosition = currretPosition; }
+	// 現在の速度を取得する
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return m_currentVelocity; }
+	// 現在の速度を設定する
+	void SetVelocity(const DirectX::SimpleMath::Vector3& currentVelocity) { m_currentVelocity = currentVelocity; }
 	// 現在の回転角を取得する
 	DirectX::SimpleMath::Quaternion GetAngle() const { return m_currentAngle; }
 	// 現在の回転角を設定する
@@ -60,6 +64,12 @@ public:
 	CSVMap* GetCSVMap() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
+	// タイルに入ったかどうかを確認する
+	bool HasEnteredTile(const TileBase* tile) const { return m_enteredTiles.count(tile) > 0; }
+	// タイルに入ったことを記録する
+	void SetEnteredTile(const TileBase* tile) { m_enteredTiles.insert(tile); }
+	// 入ったタイルのセットをクリアする
+	void ResetEnteredTiles() { m_enteredTiles.clear(); }
 public:
 	// コンストラクタ
 	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -80,6 +90,9 @@ public:
 private:
 	//　速度を更新する
 	void UpdateSpeedByStartTile();
+	// タイルの中心にいるかどうかを確認する
+	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.005f) const;
+
 public:
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
@@ -111,6 +124,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_initialPosition;
 	// 初期回転角
 	DirectX::SimpleMath::Quaternion m_initialAngle;
+	// 前のタイルの位置
+	DirectX::SimpleMath::Vector3 m_prevPosition;
 	// 現在の位置
 	DirectX::SimpleMath::Vector3 m_currentPosition;
 	// 現在の速度
@@ -127,4 +142,8 @@ private:
 	std::vector<std::unique_ptr<IComponent>> m_pMiniCharacterParts;
 	//	ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
+	// 入ったタイルのセット
+	std::set<const TileBase*> m_enteredTiles;
+	// 前フレームで一番近かったタイルの名前
+	std::string m_prevTileName;
 };

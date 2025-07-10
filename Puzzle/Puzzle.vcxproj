@@ -190,6 +190,11 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
@@ -208,6 +213,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\TileBase\TileBase.h" />
     <ClInclude Include="Game\Mouse\Mouse.h" />
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
@@ -242,8 +248,15 @@
     <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\StraightHorizontalTile\StraightHorizontalTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
@@ -280,6 +293,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Game\MainScreen\Tiles\StraightHorizontalTile\StraightHorizontalTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\TileFactory\TileFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

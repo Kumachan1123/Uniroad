@@ -20,6 +20,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/TileDatas/TileDatas.h"
+#include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
 // ‘O•ûéŒ¾
 class CommonResources;
 

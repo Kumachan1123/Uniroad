@@ -140,7 +140,7 @@ void NextTiles::Update(const float elapsedTime)
 	// Œo‰ßŽžŠÔ‚ð‰ÁŽZ
 	m_time += elapsedTime;
 	// 10•b‚²‚Æ‚ÉUI‚ð’Ç‰Á‚·‚é
-	if (m_time >= 5.0f)
+	if (m_time >= 1.0f)
 	{
 		// UI‚ð’Ç‰Á
 		AddNextTiles();

@@ -49,7 +49,27 @@ void MiniCharacter::Initialize(CommonResources* resources)
 
 void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	// 時間経過でプレイヤーを-Z方向に移動
+	// ----- タイルによる進行方向の自動制御 -----
+	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
+	if (currentTileName != m_prevTileName && IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos))
+	{
+		// タイルを移動した瞬間
+		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
+		// 前のタイルのOnExitを呼び出す
+		if (prevTile.tileBasePtr) prevTile.tileBasePtr->OnExit(this);
+		// 新しいタイルのOnEnterを呼び出す
+		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
+		if (currentTile.tileBasePtr)
+			currentTile.tileBasePtr->OnEnter(this);
+		// 前のタイル名を更新
+		m_prevTileName = currentTileName;
+		// 前の位置を更新
+		m_prevPosition = m_currentPosition;
+	}
+
+
+
+	// 時間経過でプレイヤーを移動
 	m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4; // 速度を設定
 
 	// 現在の位置を更新する
@@ -87,6 +107,9 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	// 座標表示
 	debugString->AddString("MiniCharacter Position: (%f, %f, %f)",
 		m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
+	// 速度表示
+	debugString->AddString("MiniCharacter Velocity: (%f, %f, %f)",
+		m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
 	// 最も近いタイルの名前を表示
 	debugString->AddString("MiniCharacter Tile: %s",
 		GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName.c_str());
@@ -161,5 +184,19 @@ void MiniCharacter::UpdateSpeedByStartTile()
 			}
 		}
 	}
+}
+/*
+*	@brief タイルの中心にいるかどうかを判定する
+*	@details プレイヤーの位置がタイルの中心に近いかどうかを判定する。
+*	@param charPos プレイヤーの位置
+*	@param tileCenter タイルの中心位置
+*	@param epsilon 判定の許容誤差
+*	@return タイルの中心にいる場合はtrue、そうでない場合はfalse
+*/
+bool MiniCharacter::IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon) const
+{
+	// タイルの中心とプレイヤーの位置の距離を計算
+	float distance = (charPos - tileCenter).Length();
+	return distance < epsilon;
 }
 

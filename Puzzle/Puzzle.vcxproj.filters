@@ -66,6 +66,14 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.h" />
     <ClInclude Include="KumachiLib\Easing\Easing.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\TileBase\TileBase.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\StraightHorizontalTile\StraightHorizontalTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -101,6 +109,13 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\StraightHorizontalTile\StraightHorizontalTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\TileFactory\TileFactory.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

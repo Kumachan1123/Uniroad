@@ -4,6 +4,7 @@
 */
 #pragma once
 #include <cassert>
+#include <memory>
 #include <DeviceResources.h>
 
 #include <Libraries/MyLib/DebugCamera.h>
@@ -20,12 +21,14 @@
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
 #include "Game/ControllScreen/UIBack/UIBack.h"
+#include "Game/ControllScreen/NextTiles/NextTiles.h"
 #include "Game/ControllScreen/Panel/Panel.h"
 #include "Game/Mouse/Mouse.h"
-#include "Game/ControllScreen/NextTiles/NextTiles.h"
 // ëOï˚êÈåæ
 class CommonResources;
 class MiniCharacterBase;
+class NextTiles;
+class Panel;
 namespace mylib
 {
 	class DebugCamera;
