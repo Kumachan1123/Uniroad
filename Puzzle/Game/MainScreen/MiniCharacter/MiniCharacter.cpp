@@ -21,6 +21,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_currentPosition{}
 	, m_currentVelocity{}
 	, m_currentAngle{}
+	, m_prevTileName("Start")
 	, m_rotationMiniCharacterAngle{}
 	, m_mass{}
 	, m_MiniCharacterVelocity{}
@@ -51,7 +52,8 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 {
 	// ----- タイルによる進行方向の自動制御 -----
 	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
-	if (currentTileName != m_prevTileName && IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos))
+	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
+	if (currentTileName != m_prevTileName && isAtTileCenter)
 	{
 		// タイルを移動した瞬間
 		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
@@ -66,7 +68,13 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 		// 前の位置を更新
 		m_prevPosition = m_currentPosition;
 	}
-
+	else if (currentTileName == "" && IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos))
+	{
+		// 落下させる
+		m_currentVelocity += Vector3(0.0f, -9.8f, 0.0f); // 重力を適用
+		m_MiniCharacterVelocity = Vector3::Zero; // 落下中は移動しない
+		m_initialPosition = m_currentPosition;// 落下後の位置を初期位置に設定
+	}
 
 
 	// 時間経過でプレイヤーを移動

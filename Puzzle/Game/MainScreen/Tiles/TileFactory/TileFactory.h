@@ -11,6 +11,8 @@
 #include "Game/MainScreen/Tiles/LeftDownTile/LeftDownTile.h"
 #include "Game/MainScreen/Tiles/RightUpTile/RightUpTile.h"
 #include "Game/MainScreen/Tiles/RightDownTile/RightDownTile.h"
+#include "Game/MainScreen/Tiles/StartTile/StartTile.h"
+#include "Game/MainScreen/Tiles/GoalTile/GoalTile.h"
 
 class TileFactory
 {

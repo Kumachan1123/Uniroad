@@ -190,10 +190,12 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\StartTile\StartTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
@@ -252,10 +254,12 @@
     <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\StartTile\StartTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />

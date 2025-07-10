@@ -31,6 +31,12 @@ std::unique_ptr<TileBase> TileFactory::CreateTileByName(const std::string& name)
 	// 右下タイル
 	if (name == "RightDown")
 		return std::make_unique<RightDownTile>();
+	// スタートタイル
+	if (name == "Start")
+		return std::make_unique<StartTile>();
+	// ゴールタイル
+	if (name == "Goal")
+		return std::make_unique<GoalTile>();
 
 	return nullptr;
 }
