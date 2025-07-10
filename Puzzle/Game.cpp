@@ -210,7 +210,7 @@ void Game::Clear()
 	// 深度ステンシルビューを取得する
 	auto depthStencil = m_deviceResources->GetDepthStencilView();
 	// レンダリングターゲットビューをクリアする
-	context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
+	context->ClearRenderTargetView(renderTarget, Colors::Gray);
 	// 深度ステンシルビューをクリアする
 	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	// レンダーターゲットと深度ステンシルビューを設定する

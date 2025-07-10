@@ -253,6 +253,42 @@ const  MapTileData& CSVMap::GetTileData(int row, int col) const
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
 	return m_mapData[row][col];
 }
+/*
+*	@brief 指定座標のタイル情報を取得する
+*	@details 指定されたワールド座標に最も近いタイルの情報を取得する。
+*	@param pos ワールド座標
+*	@return 指定座標のタイル情報への参照
+*/
+const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) const
+{
+	// DirectXとSimpleMathの名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// 最小距離と対応するタイルのインデックスを初期化
+	float minDistance = std::numeric_limits<float>::max();
+	int closestRow = -1;
+	int closestCol = -1;
+
+	// マップデータを走査して最も近いタイルを探す
+	for (int row = 0; row < MAXCOL; ++row)
+	{
+		for (int col = 0; col < MAXRAW; ++col)
+		{
+			const MapTileData& tile = m_mapData[row][col];
+			// タイルの位置との距離を計算
+			float distance = (tile.pos - pos).LengthSquared();
+			// 最小距離を更新
+			if (distance < minDistance)
+			{
+				minDistance = distance;
+				closestRow = row;
+				closestCol = col;
+			}
+		}
+	}
+	// 最も近いタイルの情報を返す
+	assert(closestRow >= 0 && closestRow < MAXCOL && closestCol >= 0 && closestCol < MAXRAW);
+	return m_mapData[closestRow][closestCol];
+}
 
 /*
 *	@brief 指定した位置に指定したモデルを配置する
@@ -291,9 +327,9 @@ void CSVMap::SetTileModel(int row, int col, const std::string& modelName)
 *	@brief スタート地点を返す
 *	@details modelnameがStartのタイルの位置を返す。
 *	@param なし
-*	@return スタート地点の位置への参照
+*	@return スタート地点への参照
 */
-const DirectX::SimpleMath::Vector3& CSVMap::GetStartPosition() const
+const MapTileData& CSVMap::GetStart() const
 {
 	// DirectXとSimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
@@ -307,10 +343,10 @@ const DirectX::SimpleMath::Vector3& CSVMap::GetStartPosition() const
 			if (tile.tileInfo.modelName == "Start")
 			{
 				// スタート地点の位置を返す
-				return tile.pos;
+				return tile;
 			}
 		}
 	}
-	// スタート地点が見つからない場合はゼロベクトルを返す
-	return Vector3::Zero;
+	// スタート地点が見つからない場合は(0,0)の位置を返す
+	return   m_mapData[0][0];
 }

@@ -77,6 +77,9 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 後処理を行う
 	void Finalize();
+private:
+	//　速度を更新する
+	void UpdateSpeedByStartTile();
 public:
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
@@ -110,6 +113,8 @@ private:
 	DirectX::SimpleMath::Quaternion m_initialAngle;
 	// 現在の位置
 	DirectX::SimpleMath::Vector3 m_currentPosition;
+	// 現在の速度
+	DirectX::SimpleMath::Vector3 m_currentVelocity;
 	// 現在の回転角
 	DirectX::SimpleMath::Quaternion m_currentAngle;
 	// プレイヤー回転角

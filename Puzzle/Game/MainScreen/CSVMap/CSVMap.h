@@ -28,15 +28,18 @@ class CSVMap
 {
 public:
 	// アクセサ
-	// 指定位置のタイル情報を取得する
+	// 指定位置のタイル情報を取得する(行, 列)
 	const MapTileData& GetTileData(int row, int col) const;
+	// 指定座標のタイル情報を取得する(ワールド座標)
+	const MapTileData& GetTileData(const DirectX::SimpleMath::Vector3& pos) const;
+
 	// マップの最大列数と行数を取得する
 	const int GetMaxCol() const { return MAXCOL; }// 列数
 	const int GetMaxRow() const { return MAXRAW; }// 行数
 	// 指定した位置に指定したモデルを配置する
 	void SetTileModel(int row, int col, const std::string& modelName);
 	// スタート地点を返す
-	const DirectX::SimpleMath::Vector3& GetStartPosition() const;
+	const MapTileData& GetStart() const;
 public:
 	// public関数
 	// コンストラクタ
