@@ -15,6 +15,8 @@ public:
 	void OnEnter(MiniCharacter* character) override;
 	// プレイヤーがこのタイルから出たときの処理
 	void OnExit(MiniCharacter* character) override;
+	// プレイヤーがこのタイルの中心に来たときの処理
+	void OnCenterReached(MiniCharacter* character) override;
 
 };
 

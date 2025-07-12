@@ -13,13 +13,10 @@
 */
 void GoalTile::OnEnter(MiniCharacter* character)
 {
-	using namespace DirectX::SimpleMath;
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this)) return;
 
 	// ゴールに到達したことを通知
-
-	character->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
 
 	// 通過記録
 	character->SetEnteredTile(this);
@@ -35,4 +32,13 @@ void GoalTile::OnExit(MiniCharacter* character)
 {
 	// フラグを解除する
 	character->ResetEnteredTiles();
+}
+
+void GoalTile::OnCenterReached(MiniCharacter* character)
+{
+	using namespace DirectX::SimpleMath;
+
+	character->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+	// キャラクターを動かすフラグを止める
+	character->SetMoving(false);
 }

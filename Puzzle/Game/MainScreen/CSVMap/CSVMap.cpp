@@ -270,6 +270,8 @@ const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) 
 	int closestRow = -1;
 	int closestCol = -1;
 
+
+
 	// マップデータを走査して最も近いタイルを探す
 	for (int row = 0; row < MAXCOL; ++row)
 	{
@@ -289,6 +291,7 @@ const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) 
 	}
 	// 最も近いタイルの情報を返す
 	assert(closestRow >= 0 && closestRow < MAXCOL && closestCol >= 0 && closestCol < MAXRAW);
+
 	return m_mapData[closestRow][closestCol];
 }
 

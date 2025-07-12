@@ -16,6 +16,9 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_partNumber(MiniCharacter::GetPartsNumber())
 	, m_partID(MiniCharacter::MINICHARACTER)
 	, m_pCommonResources(nullptr)
+	, m_enteredTilePtr(nullptr)
+	, m_hasEnteredTile(false)
+	, m_isMoving(true)
 	, m_initialPosition(initialPosition)
 	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))
 	, m_currentPosition{}
@@ -25,6 +28,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_rotationMiniCharacterAngle{}
 	, m_mass{}
 	, m_MiniCharacterVelocity{}
+
 
 {
 }
@@ -53,7 +57,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// ----- タイルによる進行方向の自動制御 -----
 	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
 	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
-	if (currentTileName != m_prevTileName && isAtTileCenter)
+	if (currentTileName != m_prevTileName)
 	{
 		// タイルを移動した瞬間
 		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
@@ -61,24 +65,35 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 		if (prevTile.tileBasePtr) prevTile.tileBasePtr->OnExit(this);
 		// 新しいタイルのOnEnterを呼び出す
 		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
-		if (currentTile.tileBasePtr)
+		if (currentTile.tileBasePtr ||
+			(m_prevTileName == "" && currentTileName != ""))
+		{
 			currentTile.tileBasePtr->OnEnter(this);
-		// 前のタイル名を更新
-		m_prevTileName = currentTileName;
-		// 前の位置を更新
-		m_prevPosition = m_currentPosition;
+			m_prevTileName = currentTileName;
+			// 前の位置を更新
+			m_prevPosition = m_currentPosition;
+		}
+
+
 	}
-	else if (currentTileName == "" && IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos))
+	if (isAtTileCenter)
+	{
+		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
+		if (currentTile.tileBasePtr)
+			currentTile.tileBasePtr->OnCenterReached(this);
+	}
+	else if (currentTileName == ""/* && isAtTileCenter*/)
 	{
 		// 落下させる
-		m_currentVelocity += Vector3(0.0f, -9.8f, 0.0f); // 重力を適用
-		m_MiniCharacterVelocity = Vector3::Zero; // 落下中は移動しない
-		m_initialPosition = m_currentPosition;// 落下後の位置を初期位置に設定
+		//m_currentVelocity += Vector3(0.0f, -9.8f, 0.0f); // 重力を適用
+		//m_currentVelocity = Vector3::Zero; // 落下中は移動しない
+		m_isMoving = false;
+		//m_initialPosition = m_currentPosition;// 落下後の位置を初期位置に設定
 	}
 
 
 	// 時間経過でプレイヤーを移動
-	m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4; // 速度を設定
+	if (m_isMoving)m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4; // 速度を設定
 
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition + m_MiniCharacterVelocity;

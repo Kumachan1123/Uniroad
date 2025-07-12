@@ -70,6 +70,12 @@ public:
 	void SetEnteredTile(const TileBase* tile) { m_enteredTiles.insert(tile); }
 	// 入ったタイルのセットをクリアする
 	void ResetEnteredTiles() { m_enteredTiles.clear(); }
+	// 前に入ってたタイルの名前
+	const std::string& GetPrevTileName() const { return m_prevTileName; }
+	// 移動フラグを取得
+	bool IsMoving() const { return m_isMoving; }
+	// 移動フラグを設定
+	void SetMoving(bool isMoving) { m_isMoving = isMoving; }
 public:
 	// コンストラクタ
 	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -146,4 +152,10 @@ private:
 	std::set<const TileBase*> m_enteredTiles;
 	// 前フレームで一番近かったタイルの名前
 	std::string m_prevTileName;
+	// 入ったタイルのポインタ
+	TileBase* m_enteredTilePtr;
+	// 入った直後フラグ
+	bool m_hasEnteredTile;
+	// 移動フラグ
+	bool m_isMoving;
 };

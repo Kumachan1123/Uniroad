@@ -13,6 +13,7 @@
 #include "Game/MainScreen/Tiles/RightDownTile/RightDownTile.h"
 #include "Game/MainScreen/Tiles/StartTile/StartTile.h"
 #include "Game/MainScreen/Tiles/GoalTile/GoalTile.h"
+#include "Game/MainScreen/Tiles/CrossTile/CrossTile.h"
 
 class TileFactory
 {

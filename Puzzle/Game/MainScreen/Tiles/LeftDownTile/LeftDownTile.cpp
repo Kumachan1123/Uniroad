@@ -16,11 +16,10 @@ void LeftDownTile::OnEnter(MiniCharacter* character)
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this)) return;
 	// 左方向からタイルに入ったら下に方向転換
-	if (character->GetVelocity().x > 0.0f)
-		character->SetVelocity(Vector3(0.0f, 0.0f, 1.0f));
-	// 下方向からタイルに入ったら左に方向転換
-	else if (character->GetVelocity().z < 0.0f)
-		character->SetVelocity(Vector3(-1.0f, 0.0f, 0.0f));
+	if (character->GetVelocity().x < 0.0f || character->GetVelocity().z > 0.0f)
+		character->SetVelocity(Vector3::Zero);
+	// キャラクターを動かすフラグを立てる
+	character->SetMoving(true);
 	// 通過記録
 	character->SetEnteredTile(this);
 }
@@ -34,4 +33,20 @@ void LeftDownTile::OnExit(MiniCharacter* character)
 {
 	// フラグを解除する
 	character->ResetEnteredTiles();
+}
+/*
+*	@brief タイルの中心に来たときの処理
+*	@details キャラクターがこのタイルの中心に来たときの処理を定義する。
+*	@param character タイルの中心に来たキャラクターへのポインタ
+*	@return なし
+*/
+void LeftDownTile::OnCenterReached(MiniCharacter* character)
+{
+	using namespace DirectX::SimpleMath;
+	// 左方向からタイルに入ったら下に方向転換
+	if (character->GetVelocity().x > 0.0f)
+		character->SetVelocity(Vector3(0.0f, 0.0f, 1.0f));
+	// 下方向からタイルに入ったら左に方向転換
+	else if (character->GetVelocity().z < 0.0f)
+		character->SetVelocity(Vector3(-1.0f, 0.0f, 0.0f));
 }

@@ -50,12 +50,12 @@ void Scene::Initialize(CommonResources* resources)
 	m_pCSVMap->LoadMap("Resources/Map/test.csv");
 	// ミニキャラを作成する
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
-	// ミニキャラを初期化する
-	m_pMiniCharacterBase->Initialize(m_commonResources);
 	// ミニキャラベースにCSVマップを設定
 	m_pMiniCharacterBase->SetCSVMap(m_pCSVMap.get());
+	// ミニキャラを初期化する
+	m_pMiniCharacterBase->Initialize(m_commonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(-5.0f, 0.0f, 0.0f), 0.0f));
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
 
 	// 操作画面の背景を作成する
 	m_pUIBack = std::make_unique<UIBack>(m_commonResources);

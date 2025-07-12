@@ -16,11 +16,10 @@ void RightDownTile::OnEnter(MiniCharacter* character)
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this)) return;
 	// 右方向からタイルに入ったら下に方向転換
-	if (character->GetVelocity().x < 0.0f)
-		character->SetVelocity(Vector3(0.0f, 0.0f, 1.0f));
-	// 下方向からタイルに入ったら左に方向転換
-	else if (character->GetVelocity().z < 0.0f)
-		character->SetVelocity(Vector3(1.0f, 0.0f, 0.0f));
+	if (character->GetVelocity().x > 0.0f || character->GetVelocity().z > 0.0f)
+		character->SetVelocity(Vector3::Zero);
+	// キャラクターを動かすフラグを立てる
+	character->SetMoving(true);
 	// 通過記録
 	character->SetEnteredTile(this);
 }
@@ -34,4 +33,15 @@ void RightDownTile::OnExit(MiniCharacter* character)
 {
 	// フラグを解除する
 	character->ResetEnteredTiles();
+}
+
+void RightDownTile::OnCenterReached(MiniCharacter* character)
+{
+	using namespace DirectX::SimpleMath;
+	// 右方向からタイルに入ったら下に方向転換
+	if (character->GetVelocity().x < 0.0f)
+		character->SetVelocity(Vector3(0.0f, 0.0f, 1.0f));
+	// 下方向からタイルに入ったら左に方向転換
+	else if (character->GetVelocity().z < 0.0f)
+		character->SetVelocity(Vector3(1.0f, 0.0f, 0.0f));
 }

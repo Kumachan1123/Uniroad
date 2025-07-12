@@ -16,6 +16,8 @@ void StartTile::OnEnter(MiniCharacter* character)
 	if (character->HasEnteredTile(this)) return;
 	// 縦方向に進む
 	character->SetVelocity(character->GetVelocity());
+	// キャラクターを動かすフラグを立てる
+	character->SetMoving(true);
 	// 通過記録
 	character->SetEnteredTile(this);
 }

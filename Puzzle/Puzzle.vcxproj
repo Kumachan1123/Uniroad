@@ -190,6 +190,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.h" />
@@ -254,6 +255,7 @@
     <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.cpp" />

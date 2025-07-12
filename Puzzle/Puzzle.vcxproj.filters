@@ -74,6 +74,9 @@
     <ClInclude Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\StartTile\StartTile.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -116,6 +119,9 @@
     <ClCompile Include="Game\MainScreen\Tiles\RightUpTile\RightUpTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\RightDownTile\RightDownTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\StartTile\StartTile.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
