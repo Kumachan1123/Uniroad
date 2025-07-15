@@ -16,7 +16,7 @@
 #include "Game/Scenes/Scene/Scene.h"
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
-#include "Game/MainScreen/MiniCharacter/MiniCharacterBody/MiniCharacterBody.h"
+#include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
 // 前方宣言
 class CommonResources;
 
@@ -31,6 +31,9 @@ public:
 		HEAD = 1,
 		ARM_LEFT = 2,
 		ARM_RIGHT = 3,
+		SHEEP = 4,
+		UNICYCLE_BODY = 5,
+		UNICYCLE_WHEEL = 6,
 	};
 public:
 	// アクセサ

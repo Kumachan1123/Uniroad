@@ -24,5 +24,7 @@ void CrossTile::OnExit(MiniCharacter* character)
 
 void CrossTile::OnCenterReached(MiniCharacter* character)
 {
+	// ñ¢égópåxçêîÒï\é¶
+	UNREFERENCED_PARAMETER(character);
 	return;
 }

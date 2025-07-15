@@ -22,6 +22,8 @@ void StraightHorizontalTile::OnEnter(MiniCharacter* character)
 		// 侵入可能なら通過記録のみ
 		character->SetEnteredTile(this);
 		// 速度ベクトルはそのまま
+		// キャラクターを動かすフラグを立てる
+		character->SetMoving(true);
 	}
 	else
 	{
@@ -49,5 +51,7 @@ void StraightHorizontalTile::OnExit(MiniCharacter* character)
  */
 void StraightHorizontalTile::OnCenterReached(MiniCharacter* character)
 {
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(character);
 	return;
 }

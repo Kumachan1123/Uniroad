@@ -1,8 +1,7 @@
 #include <pch.h>
 #include "MiniCharacter.h"
 
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
+
 
 
 // 砲塔カウンター
@@ -49,11 +48,13 @@ void MiniCharacter::Initialize(CommonResources* resources)
 
 	m_initialPosition = GetParent()->GetCSVMap()->GetStart().pos;
 	UpdateSpeedByStartTile();
-	Attach(std::make_unique<MiniCharacterBody>(this, Vector3(0.0f, 1.8f, 0.0f), 0.0f));
+	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
 }
 
 void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	// ----- タイルによる進行方向の自動制御 -----
 	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
 	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
@@ -84,7 +85,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	}
 	else if (currentTileName == ""/* && isAtTileCenter*/)
 	{
-		// 落下させる
+		// 移動を停止させて3秒後に落下させる
 		//m_currentVelocity += Vector3(0.0f, -9.8f, 0.0f); // 重力を適用
 		//m_currentVelocity = Vector3::Zero; // 落下中は移動しない
 		m_isMoving = false;
@@ -97,6 +98,22 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition + m_MiniCharacterVelocity;
+
+	// 1. 目標回転を計算（速度ベクトルから）
+	Quaternion targetQuat;
+	if (m_currentVelocity.LengthSquared() > 0.0f)
+	{
+		float yaw = atan2f(m_currentVelocity.x, m_currentVelocity.z);
+		targetQuat = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f);
+	}
+	else
+	{
+		targetQuat = Quaternion::Identity;
+	}
+
+	// 2. 現在の回転から徐々に補間
+	float rotateSpeed = 0.05f; // 0～1の範囲で補間速度（小さいほどゆっくり）
+	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
 	// 現在の回転角を更新する
 	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle;
 

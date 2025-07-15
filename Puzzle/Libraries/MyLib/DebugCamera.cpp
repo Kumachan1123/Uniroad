@@ -9,7 +9,7 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-const float mylib::DebugCamera::DEFAULT_CAMERA_DISTANCE = 10.0f;
+const float mylib::DebugCamera::DEFAULT_CAMERA_DISTANCE = 5.0f;
 
 //---------------------------------------------------------
 // コンストラクタ
@@ -127,7 +127,7 @@ void mylib::DebugCamera::CalculateViewMatrix()
 	Matrix rotYX = rotY * rotX;
 
 	Vector3 eye(0.0f, 1.0f, 1.0f);
-	Vector3 target(0.0f, 0.0f, 0.0f);
+	Vector3 target(0.0f, 1.0f, 0.0f);
 	Vector3 up(0.0f, 1.0f, 0.0f);
 
 	eye = Vector3::Transform(eye, rotYX.Invert());

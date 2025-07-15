@@ -32,9 +32,9 @@ void MiniCharacterBody::Initialize(CommonResources* commonResources)
 	m_pCommonResources = commonResources;
 	// ƒ‚ƒfƒ‹‚ð“Ç‚Ýž‚Þ
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("PlayerBody");
-	Attach(std::make_unique<MiniCharacterHead>(this, DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f));
-	Attach(std::make_unique<MiniCharacterHand>(this, DirectX::SimpleMath::Vector3(0.8f, 0.0f, 0.0f), 0.0f));
-	Attach(std::make_unique<MiniCharacterHand>(this, DirectX::SimpleMath::Vector3(-0.8f, 0.0f, 0.0f), 0.0f));
+	Attach(std::make_unique<MiniCharacterHead>(this, DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f));// “ª•”‚ð’Ç‰Á
+	Attach(std::make_unique<MiniCharacterHand>(this, DirectX::SimpleMath::Vector3(0.8f, 0.0f, 0.0f), 0.0f)); // ‰EŽè‚ð’Ç‰Á
+	Attach(std::make_unique<MiniCharacterHand>(this, DirectX::SimpleMath::Vector3(-0.8f, 0.0f, 0.0f), 0.0f)); // ¶Žè‚ð’Ç‰Á
 }
 
 void MiniCharacterBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
@@ -74,6 +74,8 @@ void MiniCharacterBody::Render(const DirectX::SimpleMath::Matrix& view, const Di
 	m_worldMatrix = Matrix::CreateScale(1) *
 		Matrix::CreateFromQuaternion(m_currentAngle) *
 		Matrix::CreateTranslation(m_currentPosition);
+
+
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 	for (auto& part : m_pMiniCharacterParts)
 	{

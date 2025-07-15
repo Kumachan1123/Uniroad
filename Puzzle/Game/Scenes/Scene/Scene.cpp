@@ -13,7 +13,7 @@ using namespace DirectX::SimpleMath;
 
 
 Scene::Scene(IScene::SceneID sceneID)
-	: m_commonResources{}
+	: m_pCommonResources{}
 	, m_debugCamera{}
 	, m_pFixedCamera{}
 	, m_projectionGame{}
@@ -33,19 +33,19 @@ Scene::~Scene()
 
 void Scene::Initialize(CommonResources* resources)
 {
-	m_commonResources = resources;
+	m_pCommonResources = resources;
 	CreateCamera();
-	const auto deviceResources = m_commonResources->GetDeviceResources();
+	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	// 各種ビューポートを作成する
 	CreateViewports();
 	// マウスを作成する
 	m_pMouse = std::make_unique<MyMouse>();
 	// マウスを初期化する
-	m_pMouse->Initialize(m_commonResources);
+	m_pMouse->Initialize(m_pCommonResources);
 	// マウスにビューポートを設定
 	m_pMouse->SetViewport(m_viewPortControll);
 	// マップ生成
-	m_pCSVMap = std::make_unique<CSVMap>(m_commonResources);
+	m_pCSVMap = std::make_unique<CSVMap>(m_pCommonResources);
 	// CSVマップを読み込む
 	m_pCSVMap->LoadMap("Resources/Map/test.csv");
 	// ミニキャラを作成する
@@ -53,12 +53,12 @@ void Scene::Initialize(CommonResources* resources)
 	// ミニキャラベースにCSVマップを設定
 	m_pMiniCharacterBase->SetCSVMap(m_pCSVMap.get());
 	// ミニキャラを初期化する
-	m_pMiniCharacterBase->Initialize(m_commonResources);
+	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
 
 	// 操作画面の背景を作成する
-	m_pUIBack = std::make_unique<UIBack>(m_commonResources);
+	m_pUIBack = std::make_unique<UIBack>(m_pCommonResources);
 	// 操作画面の背景を初期化する
 	m_pUIBack->Create(deviceResources);
 	// パネルを作成する
@@ -68,7 +68,7 @@ void Scene::Initialize(CommonResources* resources)
 	// パネルにマップ情報を渡す
 	m_pPanel->SetCSVMap(m_pCSVMap.get());
 	// パネルを初期化する
-	m_pPanel->Initialize(m_commonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	m_pPanel->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// 次のタイルを作成する
 	m_pNextTiles = std::make_unique<NextTiles>();
 	// 次のタイルにマウスを設定
@@ -76,7 +76,7 @@ void Scene::Initialize(CommonResources* resources)
 	// 次のタイルにマップ情報を渡す
 	m_pNextTiles->SetCSVMap(m_pCSVMap.get());
 	// 次のタイルを初期化する
-	m_pNextTiles->Initialize(m_commonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	m_pNextTiles->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 
 }
 
@@ -102,8 +102,8 @@ void Scene::Update(float elapsedTime)
 }
 void Scene::Render()
 {
-	const auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
+	const auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 
 	// --- 左側: ゲーム画面用ビューポート ---
 	context->RSSetViewports(1, &m_viewPortGame);
@@ -111,6 +111,7 @@ void Scene::Render()
 	// ここでゲーム画面を描画
 	// ビュー行列を取得
 	m_view = m_pFixedCamera->GetViewMatrix();
+	//m_view = m_debugCamera->GetViewMatrix();
 	// CSVマップの描画
 	m_pCSVMap->Render(m_view, m_projectionGame);
 	// ミニキャラの描画
@@ -128,10 +129,10 @@ void Scene::Render()
 
 	// --- デバッグ情報（例） ---
 	// ビューポートを元の設定に戻す
-	const auto& viewPort = m_commonResources->GetDeviceResources()->GetScreenViewport();
+	const auto& viewPort = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
 	context->RSSetViewports(1, &viewPort);
 
-	const auto debugString = m_commonResources->GetDebugString();
+	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("Use ViewPort.");
 }
 
@@ -155,8 +156,9 @@ IScene::SceneID Scene::GetNextSceneID() const
 //---------------------------------------------------------
 void Scene::CreateCamera()
 {
-	// デバッグカメラを作成する
-	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
+	// 出力サイズを取得する
+	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
+	//// デバッグカメラを作成する
 	//m_debugCamera = std::make_unique<mylib::DebugCamera>();
 	//m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
 	// 固定カメラを作成する
@@ -178,7 +180,7 @@ void Scene::CreateCamera()
 
 void Scene::CreateViewports()
 {
-	RECT rect = m_commonResources->GetDeviceResources()->GetOutputSize();
+	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// --- 左側: ゲーム画面用ビューポート ---
 	D3D11_VIEWPORT viewportLeft = {};
 	viewportLeft.TopLeftX = 0;

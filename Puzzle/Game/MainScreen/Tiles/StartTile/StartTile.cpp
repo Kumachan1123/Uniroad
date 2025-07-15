@@ -29,6 +29,13 @@ void StartTile::OnEnter(MiniCharacter* character)
 */
 void StartTile::OnExit(MiniCharacter* character)
 {
+
 	// フラグを解除する
 	character->ResetEnteredTiles();
+}
+
+void StartTile::OnCenterReached(MiniCharacter* character)
+{
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(character);
 }

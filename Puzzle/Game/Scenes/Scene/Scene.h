@@ -53,7 +53,7 @@ private:
 	void CreateViewports();
 private:
 	// 共通リソース
-	CommonResources* m_commonResources;
+	CommonResources* m_pCommonResources;
 	// デバッグカメラ
 	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// 固定カメラ

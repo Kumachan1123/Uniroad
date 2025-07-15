@@ -13,6 +13,8 @@
 */
 void GoalTile::OnEnter(MiniCharacter* character)
 {
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(character);
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this)) return;
 
@@ -30,6 +32,8 @@ void GoalTile::OnEnter(MiniCharacter* character)
 */
 void GoalTile::OnExit(MiniCharacter* character)
 {
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(character);
 	// フラグを解除する
 	character->ResetEnteredTiles();
 }
@@ -37,7 +41,9 @@ void GoalTile::OnExit(MiniCharacter* character)
 void GoalTile::OnCenterReached(MiniCharacter* character)
 {
 	using namespace DirectX::SimpleMath;
-
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(character);
+	// キャラクターの速度をゼロにする
 	character->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
 	// キャラクターを動かすフラグを止める
 	character->SetMoving(false);

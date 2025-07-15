@@ -77,6 +77,9 @@
     <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\StartTile\StartTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -122,6 +125,9 @@
     <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\StartTile\StartTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -39,11 +39,14 @@ void MiniCharacterHand::Initialize(CommonResources* commonResources)
 void MiniCharacterHand::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	m_time += elapsedTime;
-	// 現在の位置を更新する
-	m_currentPosition = currentPosition + m_initialPosition;
-	//m_currentPosition.x += Easing::Reflect(Easing::EaseInSine, m_time) / 4; // イージングを使ってX座標を変化させる
-	m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time) / 8; // イージングを使ってY座標を変化させる
-	// 現在の回転角を更新する
+	// 本体の回転で手のオフセットを回す
+	DirectX::SimpleMath::Vector3 handOffsetRotated = DirectX::SimpleMath::Vector3::Transform(m_initialPosition, currentAngle);
+	m_currentPosition = currentPosition + handOffsetRotated;
+
+	// Y座標アニメーション
+	m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time) / 8;
+
+	// 回転角の更新
 	m_currentAngle = m_rotationMiniCharacterAngle * m_initialAngle * currentAngle;
 }
 
@@ -52,11 +55,15 @@ void MiniCharacterHand::Render(const DirectX::SimpleMath::Matrix& view, const Di
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
-	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(1) *
+
+	m_worldMatrix =
+		Matrix::CreateScale(1) *
 		Matrix::CreateFromQuaternion(m_currentAngle) *
-		Matrix::CreateTranslation(m_currentPosition);
+		Matrix::CreateTranslation(m_currentPosition) *
+		Matrix::CreateFromQuaternion(m_pParent->GetParent()->GetParent()->GetAngle()) *
+		Matrix::CreateTranslation(m_pParent->GetParent()->GetParent()->GetPosition());
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
+
 }
 
 void MiniCharacterHand::Finalize()
