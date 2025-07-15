@@ -50,6 +50,7 @@ void UnicycleWheel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	{
 		return; // キャラクターが動いていない場合は何もしない
 	}
+
 	m_MiniCharacterVelocity = pMiniCharacter->GetVelocity();
 	// 速度に応じてホイールの回転速度を変える
 	float wheelSpeed = m_MiniCharacterVelocity.Length(); // 適当な係数で調整

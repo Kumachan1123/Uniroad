@@ -161,4 +161,10 @@ private:
 	bool m_hasEnteredTile;
 	// 移動フラグ
 	bool m_isMoving;
+	// 落下タイマーが有効か
+	bool m_fallTimerActive;
+	// 落下タイマー
+	float m_fallTimer;
+	// 一度だけ落下処理を実行させるためのフラグ
+	bool m_hasFallen;
 };

@@ -18,6 +18,9 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_enteredTilePtr(nullptr)
 	, m_hasEnteredTile(false)
 	, m_isMoving(true)
+	, m_fallTimer(0.0f)
+	, m_fallTimerActive(false)
+	, m_hasFallen(false)
 	, m_initialPosition(initialPosition)
 	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))
 	, m_currentPosition{}
@@ -45,7 +48,7 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	assert(resources);
 	// 共通リソースを設定する
 	m_pCommonResources = resources;
-
+	// モデルを読み込む
 	m_initialPosition = GetParent()->GetCSVMap()->GetStart().pos;
 	UpdateSpeedByStartTile();
 	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
@@ -74,30 +77,53 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 			// 前の位置を更新
 			m_prevPosition = m_currentPosition;
 		}
-
-
 	}
 	if (isAtTileCenter)
 	{
 		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
-		if (currentTile.tileBasePtr)
-			currentTile.tileBasePtr->OnCenterReached(this);
+		if (currentTile.tileBasePtr)currentTile.tileBasePtr->OnCenterReached(this);
 	}
-	else if (currentTileName == ""/* && isAtTileCenter*/)
+	else if (currentTileName == "")
 	{
 		// 移動を停止させて3秒後に落下させる
 		//m_currentVelocity += Vector3(0.0f, -9.8f, 0.0f); // 重力を適用
 		//m_currentVelocity = Vector3::Zero; // 落下中は移動しない
 		m_isMoving = false;
-		//m_initialPosition = m_currentPosition;// 落下後の位置を初期位置に設定
+		// 落下タイマーを開始（初回のみ）
+		if (!m_fallTimerActive)
+		{
+			m_fallTimerActive = true;
+			m_fallTimer = 0.0f;
+		}
+	}
+	// 落下タイマー処理
+	if (m_fallTimerActive && !m_hasFallen)
+	{
+		// タイマーを更新
+		m_fallTimer += elapsedTime;
+		// 3秒経過したら落下処理を開始
+		if (m_fallTimer >= 3.0f)
+		{
+			// 落下処理
+			m_currentVelocity = Vector3::Zero; // 落下開始時の速度をリセット
+			m_isMoving = false; // 落下を開始する
+			m_hasFallen = true; // 一度だけ落下処理
+		}
+	}
+	// ここから重力による落下処理
+	const float gravity = -9.8f; // 重力加速度
+	if (m_hasFallen)
+	{
+		m_currentVelocity.y += gravity * elapsedTime; // 毎フレーム重力加速度を加算
+		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime; // 位置更新
+	}
+	else if (m_isMoving)
+	{
+		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4; // 通常移動
 	}
 
-
-	// 時間経過でプレイヤーを移動
-	if (m_isMoving)m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4; // 速度を設定
-
-	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition + m_MiniCharacterVelocity;
+
 
 	// 1. 目標回転を計算（速度ベクトルから）
 	Quaternion targetQuat;

@@ -70,7 +70,8 @@ void CSVMap::InitializeTileDictionary()
 	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
 	// ‹ó”’
 	m_tileDictionary["0"] = TileInfo{ "", false };
-
+	// ƒƒ_ƒ‹1
+	m_tileDictionary["m1"] = TileInfo{ "Medal1", false };
 
 }
 /*

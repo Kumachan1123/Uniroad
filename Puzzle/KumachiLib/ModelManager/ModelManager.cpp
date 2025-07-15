@@ -95,6 +95,17 @@ void ModelManager::LoadJsonFile()
 		m_pEffectFactory->SetDirectory(L"Resources/Models");
 		// モデルを読み込む
 		m_pModelMap[key] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory);
+		// 敵弾モデルのエフェクトを設定する
+		m_pModelMap[key]->UpdateEffects([&](DirectX::IEffect* effect)
+			{
+				// エフェクトをBasicEffectにキャスト
+				auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
+				// 各ライトを無効にする
+				basicEffect->SetLightEnabled(0, true);
+				//basicEffect->SetLightDirection(0, DirectX::SimpleMath::Vector3(0, -1, 1));
+				basicEffect->SetLightEnabled(1, false);
+				basicEffect->SetLightEnabled(2, false);
+			});
 	}
 
 }
