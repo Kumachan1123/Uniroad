@@ -82,7 +82,22 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 				, Vector2(posX, posY)
 				, Vector2(0.6f, 0.6f)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
-				, UIType::SELECT);
+				, UIType::TILE);
+			// アイテムを配置する
+			const MapTileData& itemData = m_pCSVItem->GetTileData(row, col);
+			// アイテムがない場合はスキップ
+			if (itemData.tileInfo.modelName.empty())continue;
+			// アイテムの位置を計算
+			Vector2 itemPos = Vector2(posX, posY);
+			// アイテムのテクスチャキーを取得
+			std::string itemTextureKey = itemData.tileInfo.modelName;
+			// アイテムを追加
+			Add(itemTextureKey
+				, itemPos
+				, Vector2(0.45f, 0.45f)
+				, KumachiLib::ANCHOR::MIDDLE_CENTER
+				, UIType::ITEM);
+
 		}
 	}
 }
@@ -97,7 +112,7 @@ void Panel::Update(const float elapsedTime)
 	//m_menuIndex = -1;
 	m_pMouse->SetHitPanelIndex(-1);
 	// UI要素ごとにヒット判定を行う
-	for (int i = 0; i < m_pUI.size(); i++)
+	for (int i = 0; i < m_pTiles.size(); i++)
 	{
 		// マウスがビューポート外ならスキップ
 		if (m_pMouse->GetPosition().x < 0 || m_pMouse->GetPosition().y < 0 ||
@@ -105,11 +120,11 @@ void Panel::Update(const float elapsedTime)
 			m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())
 			continue;
 		// ヒット判定（UI要素ごと）
-		if (m_pUI[i]->IsHit(m_pMouse->GetPosition()))
+		if (m_pTiles[i]->IsHit(m_pMouse->GetPosition()))
 		{
 			m_pMouse->SetHit(true); // マウスのヒットフラグをセット
 			m_pMouse->SetHitPanelIndex(i);// 当たったパネルのインデックスをセット
-			m_pMouse->SetPanelPosition(m_pUI[i]->GetPosition()); // 当たったパネルの位置をセット
+			m_pMouse->SetPanelPosition(m_pTiles[i]->GetPosition()); // 当たったパネルの位置をセット
 			// 当たったパネルの行番号を設定
 			m_pMouse->SetHitPanelRowIndex(i / m_mapSizeX);
 			// 当たったパネルの列番号を設定
@@ -121,23 +136,49 @@ void Panel::Update(const float elapsedTime)
 	m_time += elapsedTime;
 
 	// 全UI要素の経過時間を更新
-	for (int i = 0; i < m_pUI.size(); i++)
+	for (int i = 0; i < m_pTiles.size(); i++)
 	{
-		m_pUI[i]->SetTime(m_pUI[i]->GetTime() + elapsedTime);
+		m_pTiles[i]->SetTime(m_pTiles[i]->GetTime() + elapsedTime);
+
+	}
+	for (int i = 0; i < m_pItems.size(); i++)
+	{
+		m_pItems[i]->SetTime(m_pItems[i]->GetTime() + elapsedTime);
 	}
 }
-
-
+/*
+*	@brief 描画
+*	@details 継承したことで生まれた空の関数
+*	@param なし
+*	@return なし
+*/
 void Panel::Render()
 {
-	// UIの数だけ繰り返す
-	for (unsigned int i = 0; i < m_pUI.size(); i++)
-	{
-		// 描画
-		m_pUI[i]->Render();
-	}
-
+	// ここでは何もしない
+	return;
 }
+
+/*
+*	@brief タイル情報の描画
+*	@details パネルに配置されたタイル情報を描画する
+*	@param なし
+*	@return なし
+*/
+void Panel::DrawTiles()
+{
+	for (unsigned int i = 0; i < m_pTiles.size(); i++)m_pTiles[i]->Render();
+}
+/*
+*	@brief アイテム情報の描画
+*	@details パネルに配置されたアイテム情報を描画する
+*	@param なし
+*	@return なし
+*/
+void Panel::DrawItems()
+{
+	for (int i = 0; i < m_pItems.size(); i++)m_pItems[i]->Render();
+}
+
 
 void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor, UIType type)
 {
@@ -148,9 +189,10 @@ void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& posi
 	// ウィンドウサイズを設定
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 	// UIの種類に応じて処理を分岐
-	if (type == UIType::SELECT)// 選択可能なアイテムなら
-	{
-		// アイテムを新しく追加		
-		m_pUI.push_back(std::move(userInterface));
-	}
+	// 選択可能なアイテムなら
+	if (type == UIType::TILE)m_pTiles.push_back(std::move(userInterface));
+	// アイテムなら
+	else if (type == UIType::ITEM)m_pItems.push_back(std::move(userInterface));
+	// 未知のUIタイプ
+	else throw std::runtime_error("Unknown UIType in Panel::Add");
 }

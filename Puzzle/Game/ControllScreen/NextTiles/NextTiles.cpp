@@ -61,7 +61,7 @@ void NextTiles::Initialize(CommonResources* resources, int width, int height)
 		, Vector2(290.0f, 300.0f)
 		, Vector2(0.6f, 0.6f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::NON_SELECT);
+		, UIType::ITEM);
 	// 使うタイルを宣言
 	// 直進(横)
 	m_tilesDictionary.push_back("StraightHorizontal");
@@ -224,7 +224,7 @@ void NextTiles::Add(const std::string& key, const DirectX::SimpleMath::Vector2& 
 	// テクスチャのキーを設定
 	tileInfo.textureKey = key;
 	// 選択可能ならタイルとして、選択不可なら背景として追加		
-	if (type == UIType::SELECT)m_pTile.push_back(std::move(tileInfo));
+	if (type == UIType::TILE)m_pTile.push_back(std::move(tileInfo));
 	else m_pBack.push_back(std::move(tileInfo));
 }
 
@@ -259,7 +259,7 @@ void NextTiles::AddNextTiles()
 		, position
 		, Vector2(0.6f, 0.6f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::SELECT);
+		, UIType::TILE);
 	// 初期位置を保存
 	m_initialPositions.push_back(position);
 

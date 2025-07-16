@@ -58,38 +58,31 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+
 	// ----- タイルによる進行方向の自動制御 -----
 	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
 	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
 	if (currentTileName != m_prevTileName)
 	{
-		// タイルを移動した瞬間
 		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
-		// 前のタイルのOnExitを呼び出す
 		if (prevTile.tileBasePtr) prevTile.tileBasePtr->OnExit(this);
-		// 新しいタイルのOnEnterを呼び出す
 		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
 		if (currentTile.tileBasePtr ||
 			(m_prevTileName == "" && currentTileName != ""))
 		{
 			currentTile.tileBasePtr->OnEnter(this);
 			m_prevTileName = currentTileName;
-			// 前の位置を更新
 			m_prevPosition = m_currentPosition;
 		}
 	}
 	if (isAtTileCenter)
 	{
 		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
-		if (currentTile.tileBasePtr)currentTile.tileBasePtr->OnCenterReached(this);
+		if (currentTile.tileBasePtr) currentTile.tileBasePtr->OnCenterReached(this);
 	}
 	else if (currentTileName == "")
 	{
-		// 移動を停止させて3秒後に落下させる
-		//m_currentVelocity += Vector3(0.0f, -9.8f, 0.0f); // 重力を適用
-		//m_currentVelocity = Vector3::Zero; // 落下中は移動しない
 		m_isMoving = false;
-		// 落下タイマーを開始（初回のみ）
 		if (!m_fallTimerActive)
 		{
 			m_fallTimerActive = true;
@@ -99,33 +92,54 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 落下タイマー処理
 	if (m_fallTimerActive && !m_hasFallen)
 	{
-		// タイマーを更新
 		m_fallTimer += elapsedTime;
-		// 3秒経過したら落下処理を開始
 		if (m_fallTimer >= 3.0f)
 		{
-			// 落下処理
-			m_currentVelocity = Vector3::Zero; // 落下開始時の速度をリセット
-			m_isMoving = false; // 落下を開始する
-			m_hasFallen = true; // 一度だけ落下処理
+			m_currentVelocity = Vector3::Zero;
+			m_isMoving = false;
+			m_hasFallen = true;
 		}
 	}
-	// ここから重力による落下処理
-	const float gravity = -9.8f; // 重力加速度
+	// 落下カウンター中に空白タイルから復帰したら、リセット
+	if (m_fallTimerActive && !m_hasFallen && currentTileName != "")
+	{
+		m_fallTimerActive = false;
+		m_fallTimer = 0.0f;
+		m_isMoving = true;
+		m_hasFallen = false;
+	}
+	const float gravity = -9.8f;
 	if (m_hasFallen)
 	{
-		m_currentVelocity.y += gravity * elapsedTime; // 毎フレーム重力加速度を加算
-		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime; // 位置更新
+		m_currentVelocity.y += gravity * elapsedTime;
+		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime;
 	}
 	else if (m_isMoving)
 	{
-		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4; // 通常移動
+		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4;
 	}
-
 	m_currentPosition = currentPosition + m_initialPosition + m_MiniCharacterVelocity;
 
+	// ====== ここから「揺れ演出」追加 ======
 
-	// 1. 目標回転を計算（速度ベクトルから）
+	// 揺れクォータニオン（デフォルトは回転なし）
+	Quaternion shakeQuat = Quaternion::Identity;
+	if (m_fallTimerActive && !m_hasFallen)
+	{
+		float shakeAmount = 0.18f; // 揺れの強さ
+		float shakeSpeed = 7.0f;   // 揺れの速さ
+		float time = m_fallTimer;
+
+		float progress = std::min(time / 3.0f, 1.0f);
+		float amp = shakeAmount * (0.5f + 1.0f * progress);
+
+		float xSwing = sinf(time * shakeSpeed) * amp * (0.8f + 0.4f * sinf(time * 2.0f));
+		float zSwing = cosf(time * shakeSpeed * 0.7f) * amp * (0.7f + 0.6f * cosf(time * 3.1f));
+
+		shakeQuat = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
+	}
+
+	// 目標回転を計算（速度ベクトルから）
 	Quaternion targetQuat;
 	if (m_currentVelocity.LengthSquared() > 0.0f)
 	{
@@ -136,21 +150,18 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	{
 		targetQuat = Quaternion::Identity;
 	}
-
-	// 2. 現在の回転から徐々に補間
-	float rotateSpeed = 0.05f; // 0～1の範囲で補間速度（小さいほどゆっくり）
+	float rotateSpeed = 0.05f;
 	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
-	// 現在の回転角を更新する
-	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle;
 
-	// 砲塔部品を更新する
+	// ====== 揺れを加味した回転を適用 ======
+	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * shakeQuat;
+
+	// 砲塔部品を更新する（親のm_currentAngleをそのまま渡すことで全体が一緒に揺れる）
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 	{
-		// 砲塔部品を更新する
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 	}
 }
-
 void MiniCharacter::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
 	MiniCharacterPart->Initialize(m_pCommonResources);

@@ -37,6 +37,7 @@ void MiniCharacterHead::Initialize(CommonResources* commonResources)
 
 void MiniCharacterHead::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	UNREFERENCED_PARAMETER(elapsedTime);
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
 	// 現在の回転角を更新する

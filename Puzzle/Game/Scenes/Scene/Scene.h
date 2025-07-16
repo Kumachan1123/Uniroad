@@ -18,6 +18,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
+#include "Game/MainScreen/CSVItem/CSVItem.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
 #include "Game/ControllScreen/UIBack/UIBack.h"
@@ -26,6 +27,7 @@
 #include "Game/Mouse/Mouse.h"
 // 前方宣言
 class CommonResources;
+class CSVItem;
 class MiniCharacterBase;
 class NextTiles;
 class Panel;
@@ -60,6 +62,8 @@ private:
 	std::unique_ptr<FixedCamera> m_pFixedCamera;
 	// CSVマップ
 	std::unique_ptr<CSVMap> m_pCSVMap;
+	// CSVアイテム
+	std::unique_ptr<CSVItem> m_pCSVItem;
 	// ミニキャラベース
 	std::unique_ptr<MiniCharacterBase> m_pMiniCharacterBase;
 	// 操作画面の背景

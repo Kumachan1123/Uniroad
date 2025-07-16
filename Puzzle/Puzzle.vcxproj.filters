@@ -80,6 +80,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
+    <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
+    <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -147,6 +149,7 @@
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />

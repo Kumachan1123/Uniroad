@@ -48,6 +48,10 @@ void Scene::Initialize(CommonResources* resources)
 	m_pCSVMap = std::make_unique<CSVMap>(m_pCommonResources);
 	// CSVマップを読み込む
 	m_pCSVMap->LoadMap("Resources/Map/test.csv");
+	// CSVアイテムを作成する
+	m_pCSVItem = std::make_unique<CSVItem>(m_pCommonResources);
+	// CSVアイテムを読み込む
+	m_pCSVItem->LoadItem("Resources/Item/test.csv");
 	// ミニキャラを作成する
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
 	// ミニキャラベースにCSVマップを設定
@@ -56,7 +60,6 @@ void Scene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
-
 	// 操作画面の背景を作成する
 	m_pUIBack = std::make_unique<UIBack>(m_pCommonResources);
 	// 操作画面の背景を初期化する
@@ -67,6 +70,8 @@ void Scene::Initialize(CommonResources* resources)
 	m_pPanel->SetMouse(m_pMouse.get());
 	// パネルにマップ情報を渡す
 	m_pPanel->SetCSVMap(m_pCSVMap.get());
+	// パネルにアイテム情報を渡す
+	m_pPanel->SetCSVItem(m_pCSVItem.get());
 	// パネルを初期化する
 	m_pPanel->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// 次のタイルを作成する
@@ -114,6 +119,9 @@ void Scene::Render()
 	//m_view = m_debugCamera->GetViewMatrix();
 	// CSVマップの描画
 	m_pCSVMap->Render(m_view, m_projectionGame);
+	// CSVアイテムの描画
+	m_pCSVItem->Render(m_view, m_projectionGame);
+
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projectionGame);
 
@@ -121,10 +129,12 @@ void Scene::Render()
 	context->RSSetViewports(1, &m_viewPortControll);
 	// 操作画面の背景を描画
 	m_pUIBack->Render();
-	// パネルを描画
-	m_pPanel->Render();
+	// パネル(タイル)を描画
+	m_pPanel->DrawTiles();
 	// 次のタイルを描画
 	m_pNextTiles->Render();
+	// パネル(アイテム)を描画
+	m_pPanel->DrawItems();
 
 
 	// --- デバッグ情報（例） ---

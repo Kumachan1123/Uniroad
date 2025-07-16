@@ -21,8 +21,8 @@ public:
 	//UIの種類
 	enum class UIType
 	{
-		SELECT,		// 選択可能UI
-		NON_SELECT	// 選択不可能UI
+		TILE,	// タイル
+		ITEM	// アイテム
 	};
 public:
 	// public関数

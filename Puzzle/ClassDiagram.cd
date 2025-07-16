@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ModelManager" Collapsed="true">
+    <Position X="21.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAgAAAAACAAQAAAFAAAAAAAAAJCAIAAAAAAACIAAA=</HashCode>
+      <FileName>KumachiLib\ModelManager\ModelManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MyMouse" Collapsed="true">
+    <Position X="23.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>0IQBAAJgIChAA6NAiAIEAFRYAAAAGgAEAAAmCgAAAgg=</HashCode>
+      <FileName>Game\Mouse\Mouse.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NextTiles" Collapsed="true">
+    <Position X="0.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EFcQAAAAAAEIAQAAqBAABABBEACAAAAMAlAkDQAAAAA=</HashCode>
+      <FileName>Game\ControllScreen\NextTiles\NextTiles.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Panel" Collapsed="true">
+    <Position X="2.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IBYAAAAAAAIAAYABiBAQBABAAACBAAANAFAkDAgAAAA=</HashCode>
+      <FileName>Game\ControllScreen\Panel\Panel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RightDownTile" Collapsed="true">
+    <Position X="10.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\RightDownTile\RightDownTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RightUpTile" Collapsed="true">
+    <Position X="12.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\RightUpTile\RightUpTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="5.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQwEEAAEQABAQAQiAAAAAAAQAAFkAIAEBAEjFAAAAA=</HashCode>
+      <FileName>Game\Scenes\Scene\Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="25.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQACEAQAAAAIUACAAAAAAAAAAAAgAgABBAAAgAAAgQ=</HashCode>
+      <FileName>Game\SceneManager\SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Screen" Collapsed="true">
+    <Position X="27" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAIAgAABBAAAIAAAAQAAAAkAAAAAABAAAA=</HashCode>
+      <FileName>Game\Screen\Screen.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sheep" Collapsed="true">
+    <Position X="8" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UBQECAAAErKQAQoACAAAAAAEBKRCggBAADAAAAQAAAE=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\Sheep\Sheep.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StartTile" Collapsed="true">
+    <Position X="14.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\StartTile\StartTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StraightHorizontalTile" Collapsed="true">
+    <Position X="1.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\StraightHorizontalTile\StraightHorizontalTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StraightVerticalTile" Collapsed="true">
+    <Position X="5.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TextureManager" Collapsed="true">
+    <Position X="28.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAACAAAAAQAADQAAAAAABAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>KumachiLib\TextureManager\TextureManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileBase" Collapsed="true">
+    <Position X="10.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\TileBase\TileBase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TileFactory" Collapsed="true">
+    <Position X="21.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\TileFactory\TileFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIBack" Collapsed="true">
+    <Position X="23.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQAAIAAJIAACIAACBIAABAAAQAAAECgABAAABBAAgA=</HashCode>
+      <FileName>Game\ControllScreen\UIBack\UIBack.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnicycleBody" Collapsed="true">
+    <Position X="10.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UBQECAAQErCAAQoACAAAAAAEBKRCggBAADEAAEQAAAE=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UnicycleWheel" Collapsed="true">
+    <Position X="17" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UhQECAAYErCAAQgACABAAAAEBCRCggBAADEAAAQAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LeftDownTile" Collapsed="true">
+    <Position X="3.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LeftUpTile" Collapsed="true">
+    <Position X="8" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAQAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\LeftUpTile\LeftUpTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiniCharacter" Collapsed="true">
+    <Position X="1.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UAQEmkFUEvDAIQ4GCIACAAAEBKRCokVABLEAAIQCgIE=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\MiniCharacter.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiniCharacterBase" Collapsed="true">
+    <Position X="3.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UAQESAAAArGAAQoACAAAAABEBKRCggAAADAEAAQAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiniCharacterBody" Collapsed="true">
+    <Position X="5.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UBQECAAAErKAAQoACAAAAAAEBqRCggBAADAAAAQAAAE=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiniCharacterHand" Collapsed="true">
+    <Position X="12.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UhQECAAQErCAAQgACAEAAAAEBCRCggBAADEAAAQAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiniCharacterHead" Collapsed="true">
+    <Position X="14.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UgQECAAQErCAAQgACACAAAAEFCRCggBAADEAAAQAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Canvas" Collapsed="true">
+    <Position X="23.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ARAFABAAJaACBKEAiBYYAgAAAQAFAkCgIFECAgBAAgA=</HashCode>
+      <FileName>Game\ControllScreen\Canvas\Canvas.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CommonResources" Collapsed="true">
+    <Position X="25.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQABAAAAAAAAQxEAIAAAAAMAAAACIABQAAAAAigAGAA=</HashCode>
+      <FileName>Game\CommonResources\CommonResources.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CreateShader" Collapsed="true">
+    <Position X="27" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAEAAUAAAAAAAAAABAACAACIACIgCQAAACA=</HashCode>
+      <FileName>KumachiLib\CreateShader\CreateShader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CrossTile" Collapsed="true">
+    <Position X="19.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAAAAAAAAAAAQAAAEAIAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\CrossTile\CrossTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSVItem" Collapsed="true">
+    <Position X="28.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAQACAAQAhACAAAAAAAAQABQAAAABAAQAAAABA=</HashCode>
+      <FileName>Game\MainScreen\CSVItem\CSVItem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSVMap" Collapsed="true">
+    <Position X="21.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAACAEQAhACAAIAQEAAQABAAAAABAAYAAAABA=</HashCode>
+      <FileName>Game\MainScreen\CSVMap\CSVMap.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DrawCollision" Collapsed="true">
+    <Position X="23.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAQAAUAAAAAAAAAAAAAAgACAIJAAAAAAAAg=</HashCode>
+      <FileName>KumachiLib\DrawCollision\DrawCollision.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DrawPolygon" Collapsed="true">
+    <Position X="25.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAJCAAIEgAAGAAAAIBAEACAEBAAAACCIBAAgCAAAAAg=</HashCode>
+      <FileName>KumachiLib\DrawPolygon\DrawPolygon.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FixedCamera" Collapsed="true">
+    <Position X="27" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAACAAEQAQAAAAAIAAACACBAYQAAAEAwABAAAAA=</HashCode>
+      <FileName>Game\Camera\FixedCamera\FixedCamera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Game" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAQAQwAwEGCAAggAEAAAiAAABCAJAiAgxIUAQ=</HashCode>
+      <FileName>Game.h</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="GoalTile" Collapsed="true">
+    <Position X="17" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAEAIAAAAACAAA=</HashCode>
+      <FileName>Game\MainScreen\Tiles\GoalTile\GoalTile.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IComponent" Collapsed="true">
+    <Position X="9" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQECAAAAKCAAQgQAAAAAAAABARAggAAABAAAAQAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\Interface\IComponent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IComposite" Collapsed="true">
+    <Position X="5.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\Interface\IComposite.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ILeaf" Collapsed="true">
+    <Position X="14.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Game\MainScreen\MiniCharacter\Interface\ILeaf.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IScene" Collapsed="true">
+    <Position X="5.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAQAABAQAAAAAAAAAAAAAAgAAAABAAAAAAAAA=</HashCode>
+      <FileName>Game\SceneManager\IScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IUI" Collapsed="true">
+    <Position X="1.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAAAQAAAAAEAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Game\Interface\IUI\IUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AudioManager" Collapsed="true">
+    <Position X="21.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAACACAAABwAAAAAAAQgIAAAAAAAAABUAABCAAAA=</HashCode>
+      <FileName>KumachiLib\AudioManager\AudioManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>

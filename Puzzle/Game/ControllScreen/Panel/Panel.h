@@ -21,11 +21,13 @@
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
+#include "Game/MainScreen/CSVItem/CSVItem.h"
 #include "Game/TileDatas/TileDatas.h"
 #include "Game/Mouse/Mouse.h"
 
 // 前方宣言
 class CommonResources;
+class CSVItem;
 
 // パネルクラス
 class Panel : public IUI
@@ -38,6 +40,8 @@ public:
 	void SetIsHit(bool hit) { m_hit = hit; }
 	// CSVマップを設定
 	void SetCSVMap(CSVMap* pCSVMap) { m_pCSVMap = pCSVMap; }
+	// CSVアイテムを設定
+	void SetCSVItem(CSVItem* pCSVItem) { m_pCSVItem = pCSVItem; }
 	// マウスポインターを設定
 	void SetMouse(MyMouse* pMouse) { m_pMouse = pMouse; }
 	// ビューポートを設定
@@ -62,16 +66,20 @@ public:
 		KumachiLib::ANCHOR anchor,					// アンカー
 		UIType type) override;						// UIの種類
 
+	// タイル情報の描画
+	void DrawTiles();
+	// アイテム情報の描画
+	void DrawItems();
 private:
 	// private関数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	// 選択可能UI
-	std::vector<std::unique_ptr<Canvas>> m_pUI;
-	// 選択中であることを表示するUI
-	std::unique_ptr<Canvas> m_pSelectedUI;
+	// タイル
+	std::vector<std::unique_ptr<Canvas>> m_pTiles;
+	// アイテム
+	std::vector<std::unique_ptr<Canvas>> m_pItems;
 	// マウスのポインター
 	MyMouse* m_pMouse;
 	// ウィンドウの幅と高さ
@@ -86,6 +94,8 @@ private:
 	int m_mapSizeX, m_mapSizeY;
 	// CSVマップ
 	CSVMap* m_pCSVMap;
+	// CSVアイテム
+	CSVItem* m_pCSVItem;
 	// 操作用ビューポート
 	D3D11_VIEWPORT m_viewPortControll;
 };
