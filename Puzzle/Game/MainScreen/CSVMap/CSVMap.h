@@ -19,7 +19,7 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/DrawCollision/DrawCollision.h"
-#include "Game/TileDatas/TileDatas.h"
+#include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
 #include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
 // 前方宣言
 class CommonResources;
@@ -59,7 +59,9 @@ private:
 	// private関数
 	// 辞書を初期化する
 	void InitializeTileDictionary();
-
+private:
+	// 場外のタイルデータ
+	const MapTileData m_outOfMapData = { {""},DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f) };
 private:
 	CommonResources* m_pCommonResources;
 	//マップ

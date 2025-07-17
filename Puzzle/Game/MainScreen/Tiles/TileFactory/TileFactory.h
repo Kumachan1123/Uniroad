@@ -5,6 +5,7 @@
 #pragma once
 // 自作ヘッダーファイル
 #include "Game/MainScreen/Tiles/TileBase/TileBase.h"
+#include "Game/MainScreen/Tiles/BlockTile/BlockTile.h"
 #include "Game/MainScreen/Tiles/StraightVerticalTile/StraightVerticalTile.h"
 #include "Game/MainScreen/Tiles/StraightHorizontalTile/StraightHorizontalTile.h"
 #include "Game/MainScreen/Tiles/LeftUpTile/LeftUpTile.h"
@@ -15,11 +16,12 @@
 #include "Game/MainScreen/Tiles/GoalTile/GoalTile.h"
 #include "Game/MainScreen/Tiles/CrossTile/CrossTile.h"
 
+// タイルファクトリークラス
 class TileFactory
 {
 public:
 	// public関数
+	// タイル名に基づいてタイルを生成する
 	static std::unique_ptr<TileBase> CreateTileByName(const std::string& name);
-
 };
 

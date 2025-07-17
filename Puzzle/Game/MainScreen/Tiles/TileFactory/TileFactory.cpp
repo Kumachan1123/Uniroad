@@ -40,6 +40,9 @@ std::unique_ptr<TileBase> TileFactory::CreateTileByName(const std::string& name)
 	// ゴールタイル
 	if (name == "Goal")
 		return std::make_unique<GoalTile>();
+	// 侵入不可タイル
+	if (name == "Block")
+		return std::make_unique<BlockTile>();
 
 	return nullptr;
 }

@@ -22,7 +22,8 @@
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/CSVItem/CSVItem.h"
-#include "Game/TileDatas/TileDatas.h"
+#include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
+#include "Game/MainScreen/Items/ItemDatas/ItemDatas.h"
 #include "Game/Mouse/Mouse.h"
 
 // ‘O•ûéŒ¾

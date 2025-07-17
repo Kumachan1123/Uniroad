@@ -191,9 +191,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
+    <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
+    <ClInclude Include="Game\MainScreen\Items\ItemDatas\ItemDatas.h" />
+    <ClInclude Include="Game\MainScreen\Items\ItemFactory\ItemFactory.h" />
+    <ClInclude Include="Game\MainScreen\Items\Medal\Medal.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\BlockTile\BlockTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
@@ -226,7 +231,7 @@
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\Scene\Scene.h" />
     <ClInclude Include="Game\Screen\Screen.h" />
-    <ClInclude Include="Game\TileDatas\TileDatas.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\TileDatas\TileDatas.h" />
     <ClInclude Include="KumachiLib\Anchor\Anchor.h" />
     <ClInclude Include="KumachiLib\AudioManager\AudioManager.h" />
     <ClInclude Include="KumachiLib\BinaryFile\BinaryFile.h" />
@@ -260,9 +265,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
+    <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
+    <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\BlockTile\BlockTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />

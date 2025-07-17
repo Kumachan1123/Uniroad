@@ -57,6 +57,13 @@ public:
 	DirectX::SimpleMath::Quaternion GetAngle() const { return m_currentAngle; }
 	// 現在の回転角を設定する
 	void SetAngle(const DirectX::SimpleMath::Quaternion& currentAngle) { m_currentAngle = currentAngle; }
+	// 揺れを取得する
+	DirectX::SimpleMath::Quaternion GetShakeQuaternion() const { return m_shakeQuaternion; }
+	// 揺れを設定する
+	void SetShakeQuaternion(const DirectX::SimpleMath::Quaternion& shakeQuaternion) { m_shakeQuaternion = shakeQuaternion; }
+
+
+
 	// 質量を取得する
 	float GetMass() const { return m_mass; }
 	// 質量を設定する
@@ -79,6 +86,10 @@ public:
 	bool IsMoving() const { return m_isMoving; }
 	// 移動フラグを設定
 	void SetMoving(bool isMoving) { m_isMoving = isMoving; }
+	// 落下タイマーが有効かどうかを取得
+	bool IsFallTimerActive() const { return m_fallTimerActive; }
+	// 落下タイマーが有効かどうかを設定
+	void SetFallTimerActive(bool active) { m_fallTimerActive = active; }
 public:
 	// コンストラクタ
 	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -144,7 +155,9 @@ private:
 	// プレイヤー回転角
 	DirectX::SimpleMath::Quaternion m_rotationMiniCharacterAngle;
 	// プレイヤー速度
-	DirectX::SimpleMath::Vector3 m_MiniCharacterVelocity;
+	DirectX::SimpleMath::Vector3 m_miniCharacterVelocity;
+	// プレイヤーの揺れ
+	DirectX::SimpleMath::Quaternion m_shakeQuaternion;
 	// 質量
 	float m_mass;
 	// 部品配列

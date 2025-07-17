@@ -49,7 +49,7 @@ void CSVMap::InitializeTileDictionary()
 {
 	// タイルの種類とその情報を辞書に登録
 	// 通常の床
-	m_tileDictionary["w"] = TileInfo{ "Block", true };
+	m_tileDictionary["b"] = TileInfo{ "Block", true };
 	// スタート地点
 	m_tileDictionary["s"] = TileInfo{ "Start", true };
 	// ゴール地点
@@ -70,8 +70,7 @@ void CSVMap::InitializeTileDictionary()
 	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
 	// 空白
 	m_tileDictionary["0"] = TileInfo{ "", false };
-	// メダル1
-	m_tileDictionary["m1"] = TileInfo{ "Medal1", false };
+
 
 }
 /*
@@ -271,6 +270,13 @@ const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) 
 	int closestRow = -1;
 	int closestCol = -1;
 
+	// そもそもマップの外だったら空のデータを渡す
+	if (pos.x < -MAXCOL || pos.x >= MAXRAW || pos.z < -MAXCOL || pos.z >= MAXCOL)
+	{
+		// 空のタイル情報を返す
+
+		return m_outOfMapData;
+	}
 
 
 	// マップデータを走査して最も近いタイルを探す

@@ -66,8 +66,8 @@ void UnicycleWheel::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
 
-	m_worldMatrix =
-		Matrix::CreateScale(1) *
+	// ƒ[ƒ‹ƒhs—ñ‚ð¶¬‚·‚é
+	m_worldMatrix = Matrix::CreateScale(1) *
 		Matrix::CreateFromQuaternion(m_currentAngle) *
 		Matrix::CreateTranslation(m_currentPosition);
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);

@@ -84,13 +84,13 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
 				, UIType::TILE);
 			// アイテムを配置する
-			const MapTileData& itemData = m_pCSVItem->GetTileData(row, col);
+			const MapItemData& itemData = m_pCSVItem->GetTileData(row, col);
 			// アイテムがない場合はスキップ
-			if (itemData.tileInfo.modelName.empty())continue;
+			if (itemData.itemInfo.modelName.empty())continue;
 			// アイテムの位置を計算
 			Vector2 itemPos = Vector2(posX, posY);
 			// アイテムのテクスチャキーを取得
-			std::string itemTextureKey = itemData.tileInfo.modelName;
+			std::string itemTextureKey = itemData.itemInfo.modelName;
 			// アイテムを追加
 			Add(itemTextureKey
 				, itemPos
@@ -105,11 +105,9 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 void Panel::Update(const float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
-	// マウスの状態を取得
-	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	//m_hit = false;
-	m_pMouse->SetHit(false); // マウスのヒットフラグをリセット
-	//m_menuIndex = -1;
+	// マウスのヒットフラグをリセット
+	m_pMouse->SetHit(false);
+	// マウスのヒットパネルインデックスをリセット
 	m_pMouse->SetHitPanelIndex(-1);
 	// UI要素ごとにヒット判定を行う
 	for (int i = 0; i < m_pTiles.size(); i++)
