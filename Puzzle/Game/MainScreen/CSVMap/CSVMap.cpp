@@ -271,6 +271,13 @@ const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) 
 	int closestRow = -1;
 	int closestCol = -1;
 
+	// そもそもマップの外だったら空のデータを渡す
+	if (pos.x < -MAXCOL || pos.x >= MAXRAW || pos.z < -MAXCOL || pos.z >= MAXCOL)
+	{
+		// 空のタイル情報を返す
+
+		return m_outOfMapData;
+	}
 
 
 	// マップデータを走査して最も近いタイルを探す

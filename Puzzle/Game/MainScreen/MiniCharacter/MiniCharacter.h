@@ -57,6 +57,13 @@ public:
 	DirectX::SimpleMath::Quaternion GetAngle() const { return m_currentAngle; }
 	// 現在の回転角を設定する
 	void SetAngle(const DirectX::SimpleMath::Quaternion& currentAngle) { m_currentAngle = currentAngle; }
+	// 揺れを取得する
+	DirectX::SimpleMath::Quaternion GetShakeQuaternion() const { return m_shakeQuaternion; }
+	// 揺れを設定する
+	void SetShakeQuaternion(const DirectX::SimpleMath::Quaternion& shakeQuaternion) { m_shakeQuaternion = shakeQuaternion; }
+
+
+
 	// 質量を取得する
 	float GetMass() const { return m_mass; }
 	// 質量を設定する
@@ -144,7 +151,10 @@ private:
 	// プレイヤー回転角
 	DirectX::SimpleMath::Quaternion m_rotationMiniCharacterAngle;
 	// プレイヤー速度
-	DirectX::SimpleMath::Vector3 m_MiniCharacterVelocity;
+	DirectX::SimpleMath::Vector3 m_miniCharacterVelocity;
+	// プレイヤーの揺れ
+	DirectX::SimpleMath::Quaternion m_shakeQuaternion;
+
 	// 質量
 	float m_mass;
 	// 部品配列

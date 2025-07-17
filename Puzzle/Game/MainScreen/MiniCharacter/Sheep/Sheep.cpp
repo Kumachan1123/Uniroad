@@ -30,9 +30,6 @@ void Sheep::Initialize(CommonResources* commonResources)
 	m_pCommonResources = commonResources;
 	// ƒ‚ƒfƒ‹‚ğ“Ç‚İ‚Ş
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Sheep");
-	//Attach(std::make_unique<MiniCharacterHead>(this, DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f), 0.0f));// “ª•”‚ğ’Ç‰Á
-	//Attach(std::make_unique<MiniCharacterHand>(this, DirectX::SimpleMath::Vector3(0.8f, 0.0f, 0.0f), 0.0f)); // ‰Eè‚ğ’Ç‰Á
-	//Attach(std::make_unique<MiniCharacterHand>(this, DirectX::SimpleMath::Vector3(-0.8f, 0.0f, 0.0f), 0.0f)); // ¶è‚ğ’Ç‰Á
 	Attach(std::make_unique<UnicycleBody>(this, DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f), 0.0f));// “ª•”‚ğ’Ç‰Á
 
 }

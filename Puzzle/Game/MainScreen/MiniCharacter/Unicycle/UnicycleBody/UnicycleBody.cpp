@@ -54,6 +54,7 @@ void UnicycleBody::Render(const DirectX::SimpleMath::Matrix& view, const DirectX
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
+
 	// ƒ[ƒ‹ƒhs—ñ‚ğ¶¬‚·‚é
 	m_worldMatrix = Matrix::CreateScale(1) *
 		Matrix::CreateFromQuaternion(m_currentAngle) *

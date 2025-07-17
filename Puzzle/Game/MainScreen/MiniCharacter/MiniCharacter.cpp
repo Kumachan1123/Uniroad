@@ -29,7 +29,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_prevTileName("Start")
 	, m_rotationMiniCharacterAngle{}
 	, m_mass{}
-	, m_MiniCharacterVelocity{}
+	, m_miniCharacterVelocity{}
 
 
 {
@@ -112,21 +112,21 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	if (m_hasFallen)
 	{
 		m_currentVelocity.y += gravity * elapsedTime;
-		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime;
+		m_miniCharacterVelocity += m_currentVelocity * elapsedTime;
 	}
 	else if (m_isMoving)
 	{
-		m_MiniCharacterVelocity += m_currentVelocity * elapsedTime / 4;
+		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3;
 	}
-	m_currentPosition = currentPosition + m_initialPosition + m_MiniCharacterVelocity;
+	m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
 
 	// ====== ここから「揺れ演出」追加 ======
 
 	// 揺れクォータニオン（デフォルトは回転なし）
-	Quaternion shakeQuat = Quaternion::Identity;
+	m_shakeQuaternion = Quaternion::Identity;
 	if (m_fallTimerActive && !m_hasFallen)
 	{
-		float shakeAmount = 0.18f; // 揺れの強さ
+		float shakeAmount = 0.075f; // 揺れの強さ
 		float shakeSpeed = 7.0f;   // 揺れの速さ
 		float time = m_fallTimer;
 
@@ -136,7 +136,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 		float xSwing = sinf(time * shakeSpeed) * amp * (0.8f + 0.4f * sinf(time * 2.0f));
 		float zSwing = cosf(time * shakeSpeed * 0.7f) * amp * (0.7f + 0.6f * cosf(time * 3.1f));
 
-		shakeQuat = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
+		m_shakeQuaternion = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
 	}
 
 	// 目標回転を計算（速度ベクトルから）
@@ -154,7 +154,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
 
 	// ====== 揺れを加味した回転を適用 ======
-	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * shakeQuat;
+	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
 
 	// 砲塔部品を更新する（親のm_currentAngleをそのまま渡すことで全体が一緒に揺れる）
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)

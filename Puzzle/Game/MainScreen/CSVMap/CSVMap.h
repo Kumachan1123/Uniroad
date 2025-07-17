@@ -59,7 +59,9 @@ private:
 	// private関数
 	// 辞書を初期化する
 	void InitializeTileDictionary();
-
+private:
+	// 場外のタイルデータ
+	const MapTileData m_outOfMapData = { {""},		DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f) };
 private:
 	CommonResources* m_pCommonResources;
 	//マップ
