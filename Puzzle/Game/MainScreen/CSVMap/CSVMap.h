@@ -19,7 +19,7 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/DrawCollision/DrawCollision.h"
-#include "Game/TileDatas/TileDatas.h"
+#include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
 #include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
 // 前方宣言
 class CommonResources;

@@ -47,9 +47,9 @@ void CSVItem::InitializeTileDictionary()
 {
 	// タイルの種類とその情報を辞書に登録
 	// 空白
-	m_tileDictionary["0"] = TileInfo{ "", false };
+	m_tileDictionary["0"] = ItemInfo{ "", false };
 	// メダル
-	m_tileDictionary["m"] = TileInfo{ "Medal", false };
+	m_tileDictionary["m"] = ItemInfo{ "Medal", false };
 	//// メダル2
 	//m_tileDictionary["m2"] = TileInfo{ "Medal2", false };
 	//// メダル3
@@ -74,9 +74,9 @@ void CSVItem::LoadItem(const std::string& filePath)
 	if (!file.is_open()) return;
 	// CSV読み込む前に2次元配列を確保する
 	// 行数確保
-	m_mapData.resize(MAXCOL);
+	m_mapItemData.resize(MAXCOL);
 	// 各行に列数確保
-	for (int i = 0; i < MAXCOL; ++i)m_mapData[i].resize(MAXRAW);
+	for (int i = 0; i < MAXCOL; ++i)m_mapItemData[i].resize(MAXRAW);
 	// アイテムの初期化
 	std::string line;
 	// 行番号を初期化
@@ -102,36 +102,35 @@ void CSVItem::LoadItem(const std::string& filePath)
 			// セルの文字列が空の場合はスキップ
 			auto it = m_tileDictionary.find(cell);
 			// セルの文字列が辞書に存在する場合
-			if (it != m_tileDictionary.end())
+			if (it != m_tileDictionary.end() && it->second.modelName != "")
 			{
 				// タイル情報を取得
-				const TileInfo& tileInfo = it->second;
+				const ItemInfo& tileInfo = it->second;
 				// タイルの位置計算（アイテム中心補正）
 				float x = static_cast<float>(col * 2) - offsetX;
 				float z = static_cast<float>(row * 2) - offsetZ;
 				// ワールド座標を計算
 				Vector3 pos(x, 3.0f, z);
 				// タイルを生成
-				std::unique_ptr<TileBase> tileBase = TileFactory::CreateTileByName(tileInfo.modelName);
-				// アイテムデータにタイル情報を保存
-				m_mapData[row][col] = MapTileData{ tileInfo, pos, tileInfo.hasCollision,std::move(tileBase) };
-				// ワールド行列を作成（スケーリングと位置の設定）
-				Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
-				// モデル取得
-				DirectX::Model* model = m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName);
-				// タイルデータ保存
-				m_tiles.push_back(TileRenderData{ model, world });
-				// 当たり判定
-				if (tileInfo.hasCollision)
-				{
-					// 当たり判定用のボックスを作成
-					BoundingBox box;
-					// ボックスの中心と拡大率を設定
-					box.Center = pos;
-					// 拡大率を設定
-					box.Extents = tileInfo.scale;
+				std::unique_ptr<ItemBase> itemBase = ItemFactory::CreateItemByName(tileInfo.modelName);
+				// アイテムを初期化
+				itemBase->Initialize(m_pCommonResources, tileInfo);
+				// アイテムの位置を設定
+				itemBase->SetPosition(pos);
+				// アイテムのワールド行列を設定
+				itemBase->SetWorldMatrix(Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos));
+				// アイテムのモデルを設定
+				itemBase->SetModel(m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName));
 
-				}
+				//// ワールド行列を作成（スケーリングと位置の設定）
+				//Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
+				//// モデル取得
+				//DirectX::Model* model = m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName);
+				// アイテムデータにタイル情報を保存
+				m_mapItemData[row][col] = MapItemData{ tileInfo, pos, std::move(itemBase) };
+				//// タイルデータ保存
+				//m_tiles.push_back(ItemRenderData{ model, world });
+
 			}
 			else
 			{
@@ -143,12 +142,12 @@ void CSVItem::LoadItem(const std::string& filePath)
 				// ワールド行列を作成（スケーリングと位置の設定）
 				Matrix world = Matrix::CreateScale(Vector3::One) * Matrix::CreateTranslation(pos);
 				// セルの文字列が辞書に存在しない場合は空のタイルを追加
-				m_tiles.push_back(TileRenderData{ nullptr, Matrix::Identity });
+				m_tiles.push_back(ItemRenderData{ nullptr, Matrix::Identity });
 
 				// デフォルトの床タイルを使用
-				const TileInfo& emptyTileInfo = m_tileDictionary[""];
+				const ItemInfo& emptyItemInfo = m_tileDictionary[""];
 				// アイテムデータに空のタイル情報を保存
-				m_mapData[row][col] = MapTileData{ emptyTileInfo, pos, false };
+				m_mapItemData[row][col] = MapItemData{ emptyItemInfo, pos };
 			}
 			// アイテムの列に値を設定
 			++col;
@@ -166,6 +165,17 @@ void CSVItem::LoadItem(const std::string& filePath)
 void CSVItem::Update(float elapsedTime)
 {
 	m_time += elapsedTime; // 経過時間を更新
+	for (int col = 0; col < MAXCOL; ++col)
+	{
+		for (int row = 0; row < MAXRAW; ++row)
+		{
+			// アイテムの更新
+			if (m_mapItemData[col][row].itemBasePtr)
+			{
+				m_mapItemData[col][row].itemBasePtr->Update(elapsedTime);
+			}
+		}
+	}
 }
 /*
 *	@brief 当たり判定を描画する
@@ -213,17 +223,27 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 	// 回転させる
 	world = Matrix::CreateRotationY(m_time) * Matrix::CreateTranslation(Vector3(0.0f, 0.0f, 0.0f));
 
-
-	// 全タイルを描画する
-	for (const auto& tile : m_tiles)
+	for (int col = 0; col < MAXCOL; ++col)
 	{
-		// モデルが存在する場合のみ描画
-		if (tile.model)
+		for (int row = 0; row < MAXRAW; ++row)
 		{
-			// モデルの描画
-			tile.model->Draw(context, *states, world * tile.world, view, proj, false);
+			// アイテムの更新
+			if (m_mapItemData[col][row].itemBasePtr)
+			{
+				m_mapItemData[col][row].itemBasePtr->Render(view, proj);
+			}
 		}
 	}
+	//// 全タイルを描画する
+	//for (const auto& tile : m_tiles)
+	//{
+	//	// モデルが存在する場合のみ描画
+	//	if (tile.model)
+	//	{
+	//		// モデルの描画
+	//		tile.model->Draw(context, *states, world * tile.world, view, proj, false);
+	//	}
+	//}
 	const auto debugString = m_pCommonResources->GetDebugString();
 	//// 当たり判定の描画
 	//DrawCollision(view, proj);
@@ -237,10 +257,10 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 *	@param col 列番号
 *	@return 指定位置のタイル情報への参照
 */
-const  MapTileData& CSVItem::GetTileData(int row, int col) const
+const  MapItemData& CSVItem::GetTileData(int row, int col) const
 {
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
-	return m_mapData[row][col];
+	return m_mapItemData[row][col];
 }
 /*
 *	@brief 指定座標のタイル情報を取得する
@@ -248,7 +268,7 @@ const  MapTileData& CSVItem::GetTileData(int row, int col) const
 *	@param pos ワールド座標
 *	@return 指定座標のタイル情報への参照
 */
-const MapTileData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos) const
+const MapItemData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos) const
 {
 	// DirectXとSimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
@@ -264,7 +284,7 @@ const MapTileData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos)
 	{
 		for (int col = 0; col < MAXRAW; ++col)
 		{
-			const MapTileData& tile = m_mapData[row][col];
+			const MapItemData& tile = m_mapItemData[row][col];
 			// タイルの位置との距離を計算
 			float distance = (tile.pos - pos).LengthSquared();
 			// 最小距離を更新
@@ -279,6 +299,6 @@ const MapTileData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos)
 	// 最も近いタイルの情報を返す
 	assert(closestRow >= 0 && closestRow < MAXCOL && closestCol >= 0 && closestCol < MAXRAW);
 
-	return m_mapData[closestRow][closestCol];
+	return m_mapItemData[closestRow][closestCol];
 }
 

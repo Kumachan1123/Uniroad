@@ -19,8 +19,8 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/DrawCollision/DrawCollision.h"
-#include "Game/TileDatas/TileDatas.h"
-#include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
+#include "Game/MainScreen/Items/ItemDatas/ItemDatas.h"
+#include "Game/MainScreen/Items/ItemFactory/ItemFactory.h"
 // 前方宣言
 class CommonResources;
 
@@ -30,9 +30,9 @@ class CSVItem
 public:
 	// アクセサ
 	// 指定位置のタイル情報を取得する(行, 列)
-	const MapTileData& GetTileData(int row, int col) const;
+	const MapItemData& GetTileData(int row, int col) const;
 	// 指定座標のタイル情報を取得する(ワールド座標)
-	const MapTileData& GetTileData(const DirectX::SimpleMath::Vector3& pos) const;
+	const MapItemData& GetTileData(const DirectX::SimpleMath::Vector3& pos) const;
 
 	// マップの最大列数と行数を取得する
 	const int GetMaxCol() const { return MAXCOL; }// 列数
@@ -66,11 +66,13 @@ private:
 	const int MAXCOL = 5;
 	const int MAXRAW = 5;
 	// タイルの辞書
-	std::unordered_map<std::string, TileInfo> m_tileDictionary;
+	std::unordered_map<std::string, ItemInfo> m_tileDictionary;
 	// タイルのレンダリングデータ
-	std::vector<TileRenderData> m_tiles;
+	std::vector<ItemRenderData> m_tiles;
 	// マップデータ
-	std::vector<std::vector<MapTileData>> m_mapData;
+	std::vector<std::vector<MapItemData>> m_mapItemData;
+	// アイテム配列
+	std::vector<std::unique_ptr<ItemBase>> m_itemArray;
 	// 時間
 	float m_time;
 };
