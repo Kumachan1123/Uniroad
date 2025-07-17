@@ -274,7 +274,6 @@ const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) 
 	if (pos.x < -MAXCOL || pos.x >= MAXRAW || pos.z < -MAXCOL || pos.z >= MAXCOL)
 	{
 		// ‹ó‚Ìƒ^ƒCƒ‹î•ñ‚ğ•Ô‚·
-
 		return m_outOfMapData;
 	}
 

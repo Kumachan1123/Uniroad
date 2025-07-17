@@ -48,14 +48,23 @@ void Medal::Initialize(CommonResources* resources, const ItemInfo& info)
 */
 void Medal::Update(float elapsedTime)
 {
+	// DirectX::SimpleMathの名前空間を使用
+	using namespace DirectX::SimpleMath;
 	// 時間を加算
 	m_time += elapsedTime;
 	// 時間経過で回転させる
-	m_rotation = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f, 0.0f, 0.0f);
+	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f, 0.0f, 0.0f);
 }
-
+/*
+*	@brief 当たり判定描画
+*	@details メダルの当たり判定を描画する
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
+*	@return なし
+*/
 void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	// DirectX::SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// モデルが設定されていない場合は何もしない
 	if (m_pModel == nullptr) return;
@@ -64,9 +73,9 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	// 共通のステートを取得
 	auto states = m_pCommonResources->GetCommonStates();
 	// ワールド行列を設定
-	m_worldMatrix = DirectX::SimpleMath::Matrix::CreateScale(m_itemInfo.scale) *
-		DirectX::SimpleMath::Matrix::CreateFromQuaternion(m_rotation) *
-		DirectX::SimpleMath::Matrix::CreateTranslation(m_position);
+	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) *
+		Matrix::CreateFromQuaternion(m_rotation) *
+		Matrix::CreateTranslation(m_position);
 
 	// レンダリング
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
@@ -74,12 +83,15 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 
 void Medal::OnGet(MiniCharacter* miniCharacter)
 {
+	UNREFERENCED_PARAMETER(miniCharacter);
 }
 
 void Medal::OnUse(MiniCharacter* miniCharacter)
 {
+	UNREFERENCED_PARAMETER(miniCharacter);
 }
 
 void Medal::OnDiscard(MiniCharacter* miniCharacter)
 {
+	UNREFERENCED_PARAMETER(miniCharacter);
 }

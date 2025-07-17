@@ -143,7 +143,6 @@ void CSVItem::LoadItem(const std::string& filePath)
 				Matrix world = Matrix::CreateScale(Vector3::One) * Matrix::CreateTranslation(pos);
 				// セルの文字列が辞書に存在しない場合は空のタイルを追加
 				m_tiles.push_back(ItemRenderData{ nullptr, Matrix::Identity });
-
 				// デフォルトの床タイルを使用
 				const ItemInfo& emptyItemInfo = m_tileDictionary[""];
 				// アイテムデータに空のタイル情報を保存
@@ -164,16 +163,16 @@ void CSVItem::LoadItem(const std::string& filePath)
 */
 void CSVItem::Update(float elapsedTime)
 {
-	m_time += elapsedTime; // 経過時間を更新
+	// 経過時間を更新
+	m_time += elapsedTime;
+	// 列の数繰り返す
 	for (int col = 0; col < MAXCOL; ++col)
 	{
+		// 行の数繰り返す
 		for (int row = 0; row < MAXRAW; ++row)
 		{
-			// アイテムの更新
-			if (m_mapItemData[col][row].itemBasePtr)
-			{
-				m_mapItemData[col][row].itemBasePtr->Update(elapsedTime);
-			}
+			// アイテムがあるなら更新
+			if (m_mapItemData[col][row].itemBasePtr)m_mapItemData[col][row].itemBasePtr->Update(elapsedTime);
 		}
 	}
 }
@@ -213,40 +212,17 @@ void CSVItem::DrawCollision(const DirectX::SimpleMath::Matrix& view, const Direc
 void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	using namespace DirectX::SimpleMath;
-	// デバイスコンテキストを取得
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	// 共通のステートを取得
-	auto states = m_pCommonResources->GetCommonStates();
-
-	// ワールド行列を生成
-	Matrix world = Matrix::Identity;
-	// 回転させる
-	world = Matrix::CreateRotationY(m_time) * Matrix::CreateTranslation(Vector3(0.0f, 0.0f, 0.0f));
-
+	// 列の数繰り返す
 	for (int col = 0; col < MAXCOL; ++col)
 	{
+		// 行の数繰り返す
 		for (int row = 0; row < MAXRAW; ++row)
 		{
-			// アイテムの更新
-			if (m_mapItemData[col][row].itemBasePtr)
-			{
-				m_mapItemData[col][row].itemBasePtr->Render(view, proj);
-			}
+			// アイテムがあるなら更新
+			if (m_mapItemData[col][row].itemBasePtr)m_mapItemData[col][row].itemBasePtr->Render(view, proj);
 		}
 	}
-	//// 全タイルを描画する
-	//for (const auto& tile : m_tiles)
-	//{
-	//	// モデルが存在する場合のみ描画
-	//	if (tile.model)
-	//	{
-	//		// モデルの描画
-	//		tile.model->Draw(context, *states, world * tile.world, view, proj, false);
-	//	}
-	//}
-	const auto debugString = m_pCommonResources->GetDebugString();
-	//// 当たり判定の描画
-	//DrawCollision(view, proj);
+
 }
 
 

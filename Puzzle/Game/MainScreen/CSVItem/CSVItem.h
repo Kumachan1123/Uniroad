@@ -63,8 +63,10 @@ private:
 private:
 	CommonResources* m_pCommonResources;
 	//マップ
-	const int MAXCOL = 5;
+	// 最大行
 	const int MAXRAW = 5;
+	// 最大列
+	const int MAXCOL = 5;
 	// タイルの辞書
 	std::unordered_map<std::string, ItemInfo> m_tileDictionary;
 	// タイルのレンダリングデータ
