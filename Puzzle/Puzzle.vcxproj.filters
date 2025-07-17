@@ -81,6 +81,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\BlockTile\BlockTile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -130,6 +131,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\BlockTile\BlockTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

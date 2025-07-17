@@ -13,14 +13,13 @@
 *	@return なし
 */
 CSVItem::CSVItem(CommonResources* resources)
+	: m_time(0.0f) // 経過時間
+	, m_pCommonResources(resources) // 共通リソースへのポインタ
 {
-	// 共通リソースへのポインタを保存
-	m_pCommonResources = resources;
 	// アイテムのタイルの辞書を初期化
 	InitializeTileDictionary();
 	// 当たり判定描画の初期化
 	DrawCollision::Initialize(m_pCommonResources);
-
 }
 /*
 *	@brief デストラクタ
@@ -162,6 +161,16 @@ void CSVItem::LoadItem(const std::string& filePath)
 	}
 }
 /*
+*	@brief 更新処理
+*	@details アイテムの更新処理を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void CSVItem::Update(float elapsedTime)
+{
+	m_time += elapsedTime; // 経過時間を更新
+}
+/*
 *	@brief 当たり判定を描画する
 *	@details デバッグモードで当たり判定のボックスを描画する。
 *	@param view ビュー行列
@@ -196,10 +205,18 @@ void CSVItem::DrawCollision(const DirectX::SimpleMath::Matrix& view, const Direc
 */
 void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	using namespace DirectX::SimpleMath;
 	// デバイスコンテキストを取得
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// 共通のステートを取得
 	auto states = m_pCommonResources->GetCommonStates();
+
+	// ワールド行列を生成
+	Matrix world = Matrix::Identity;
+	// 回転させる
+	world = Matrix::CreateRotationY(m_time) * Matrix::CreateTranslation(Vector3(0.0f, 0.0f, 0.0f));
+
+
 	// 全タイルを描画する
 	for (const auto& tile : m_tiles)
 	{
@@ -207,7 +224,7 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 		if (tile.model)
 		{
 			// モデルの描画
-			tile.model->Draw(context, *states, tile.world, view, proj, false);
+			tile.model->Draw(context, *states, world * tile.world, view, proj, false);
 		}
 	}
 	const auto debugString = m_pCommonResources->GetDebugString();

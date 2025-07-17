@@ -194,6 +194,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\BlockTile\BlockTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
+    <ClCompile Include="Game\MainScreen\Tiles\BlockTile\BlockTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\LeftDownTile\LeftDownTile.cpp" />

@@ -86,6 +86,10 @@ public:
 	bool IsMoving() const { return m_isMoving; }
 	// 移動フラグを設定
 	void SetMoving(bool isMoving) { m_isMoving = isMoving; }
+	// 落下タイマーが有効かどうかを取得
+	bool IsFallTimerActive() const { return m_fallTimerActive; }
+	// 落下タイマーが有効かどうかを設定
+	void SetFallTimerActive(bool active) { m_fallTimerActive = active; }
 public:
 	// コンストラクタ
 	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -154,7 +158,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_miniCharacterVelocity;
 	// プレイヤーの揺れ
 	DirectX::SimpleMath::Quaternion m_shakeQuaternion;
-
 	// 質量
 	float m_mass;
 	// 部品配列

@@ -96,6 +96,9 @@ void Scene::Update(float elapsedTime)
 	m_pMouse->Update(elapsedTime);
 	// 操作画面の背景の更新
 	m_pUIBack->Update(elapsedTime);
+	//
+	m_pCSVItem->Update(elapsedTime);
+
 	// パネルの更新
 	m_pPanel->Update(elapsedTime);
 	// 次のタイルの更新

@@ -49,6 +49,8 @@ public:
 	~CSVItem();
 	// CSV形式のアイテム配置を読み込む
 	void LoadItem(const std::string& filePath);
+	// 更新処理
+	void Update(float elapsedTime);
 	// 当たり判定描画
 	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 描画
@@ -69,5 +71,6 @@ private:
 	std::vector<TileRenderData> m_tiles;
 	// マップデータ
 	std::vector<std::vector<MapTileData>> m_mapData;
-
+	// 時間
+	float m_time;
 };

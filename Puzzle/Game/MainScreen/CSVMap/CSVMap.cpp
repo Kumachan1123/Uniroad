@@ -49,7 +49,7 @@ void CSVMap::InitializeTileDictionary()
 {
 	// タイルの種類とその情報を辞書に登録
 	// 通常の床
-	m_tileDictionary["w"] = TileInfo{ "Block", true };
+	m_tileDictionary["b"] = TileInfo{ "Block", true };
 	// スタート地点
 	m_tileDictionary["s"] = TileInfo{ "Start", true };
 	// ゴール地点
@@ -70,8 +70,7 @@ void CSVMap::InitializeTileDictionary()
 	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
 	// 空白
 	m_tileDictionary["0"] = TileInfo{ "", false };
-	// メダル1
-	m_tileDictionary["m1"] = TileInfo{ "Medal1", false };
+
 
 }
 /*
