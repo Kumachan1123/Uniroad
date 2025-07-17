@@ -23,6 +23,5 @@ public:
 	// public関数
 	// タイル名に基づいてタイルを生成する
 	static std::unique_ptr<TileBase> CreateTileByName(const std::string& name);
-
 };
 

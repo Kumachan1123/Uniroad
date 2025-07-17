@@ -191,6 +191,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
+    <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
+    <ClInclude Include="Game\MainScreen\Items\ItemFactory\ItemFactory.h" />
+    <ClInclude Include="Game\MainScreen\Items\Medal\Medal.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
@@ -261,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
+    <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />

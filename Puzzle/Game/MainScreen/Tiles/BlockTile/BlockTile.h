@@ -11,6 +11,8 @@
 class BlockTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	BlockTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;

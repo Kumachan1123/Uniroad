@@ -1,12 +1,18 @@
+/*
+*	@file TileBase.h
+*	@brief タイルのベースクラス
+*/
 #pragma once
-//// 自作ヘッダーファイル
-//#include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
+
+// 前方宣言
 class MiniCharacter;
+
 // タイルベースクラス
 class TileBase
 {
 public:
 	// public関数
+	// デストラクタ
 	virtual ~TileBase() = default;
 	// タイルに入ったときの処理
 	virtual void OnEnter(MiniCharacter* miniCharacter) = 0;

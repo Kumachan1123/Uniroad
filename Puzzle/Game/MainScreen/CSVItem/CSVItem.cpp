@@ -48,12 +48,12 @@ void CSVItem::InitializeTileDictionary()
 	// タイルの種類とその情報を辞書に登録
 	// 空白
 	m_tileDictionary["0"] = TileInfo{ "", false };
-	// メダル1
-	m_tileDictionary["m1"] = TileInfo{ "Medal1", false };
-	// メダル2
-	m_tileDictionary["m2"] = TileInfo{ "Medal2", false };
-	// メダル3
-	m_tileDictionary["m3"] = TileInfo{ "Medal3", false };
+	// メダル
+	m_tileDictionary["m"] = TileInfo{ "Medal", false };
+	//// メダル2
+	//m_tileDictionary["m2"] = TileInfo{ "Medal2", false };
+	//// メダル3
+	//m_tileDictionary["m3"] = TileInfo{ "Medal3", false };
 
 }
 
@@ -87,7 +87,6 @@ void CSVItem::LoadItem(const std::string& filePath)
 	// 中心補正値を計算
 	float offsetX = mapWidth / 2.0f - 1.0f;
 	float offsetZ = mapHeight / 2.0f - 1.0f;
-
 	// アイテムの行と列を読み込む
 	while (std::getline(file, line) && row < MAXCOL)
 	{
@@ -105,7 +104,6 @@ void CSVItem::LoadItem(const std::string& filePath)
 			// セルの文字列が辞書に存在する場合
 			if (it != m_tileDictionary.end())
 			{
-
 				// タイル情報を取得
 				const TileInfo& tileInfo = it->second;
 				// タイルの位置計算（アイテム中心補正）
@@ -132,8 +130,7 @@ void CSVItem::LoadItem(const std::string& filePath)
 					box.Center = pos;
 					// 拡大率を設定
 					box.Extents = tileInfo.scale;
-					// ボックスの拡大率を2倍にする（当たり判定用）
-					//m_wallBox.push_back(box);
+
 				}
 			}
 			else
