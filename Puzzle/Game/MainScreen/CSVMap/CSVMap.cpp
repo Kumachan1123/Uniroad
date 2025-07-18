@@ -301,6 +301,38 @@ const MapTileData& CSVMap::GetTileData(const DirectX::SimpleMath::Vector3& pos) 
 	return m_mapData[closestRow][closestCol];
 }
 
+int CSVMap::GetRowFromPosition(const DirectX::SimpleMath::Vector3& pos) const
+{
+	// DirectXとSimpleMathの名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// マップの行数を取得
+	int rowCount = static_cast<int>(m_mapData.size());
+	// 指定位置の行番号を計算
+	int row = static_cast<int>((pos.z + MAXCOL) / 2.0f);
+	// 行番号が範囲外の場合は0を返す
+	if (row < 0 || row >= rowCount)
+	{
+		return -1; // 範囲外なら0を返す
+	}
+	return row;
+}
+
+int CSVMap::GetColFromPosition(const DirectX::SimpleMath::Vector3& pos) const
+{
+	// DirectXとSimpleMathの名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// マップの列数を取得
+	int colCount = static_cast<int>(m_mapData[0].size());
+	// 指定位置の列番号を計算
+	int col = static_cast<int>((pos.x + MAXRAW) / 2.0f);
+	// 列番号が範囲外の場合は0を返す
+	if (col < 0 || col >= colCount)
+	{
+		return -1; // 範囲外なら0を返す
+	}
+	return col;
+}
+
 /*
 *	@brief 指定した位置に指定したモデルを配置する
 *	@details 指定された行と列の位置に、指定されたモデル名のタイルを配置する。

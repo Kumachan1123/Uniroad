@@ -55,7 +55,6 @@
     <ClInclude Include="Game\Interface\IUI\IUI.h" />
     <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
     <ClInclude Include="Game\ControllScreen\NextTiles\NextTiles.h" />
-    <ClInclude Include="Game\TileDatas\TileDatas.h" />
     <ClInclude Include="Game\Mouse\Mouse.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComponent.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComposite.h" />
@@ -85,6 +84,9 @@
     <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemFactory\ItemFactory.h" />
     <ClInclude Include="Game\MainScreen\Items\Medal\Medal.h" />
+    <ClInclude Include="Game\MainScreen\Items\ItemDatas\ItemDatas.h" />
+    <ClInclude Include="Game\MainScreen\Tiles\TileDatas\TileDatas.h" />
+    <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -136,6 +138,8 @@
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\BlockTile\BlockTile.cpp" />
     <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
+    <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
+    <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -156,6 +160,7 @@
     <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="ClassDiagram.cd" />
+    <None Include="HLSL\Counter\Counter.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -170,5 +175,7 @@
     <FxCompile Include="HLSL\Tile\GS_Tile.hlsl" />
     <FxCompile Include="HLSL\Tile\PS_Tile.hlsl" />
     <FxCompile Include="HLSL\Tile\VS_Tile.hlsl" />
+    <FxCompile Include="HLSL\Counter\PS_Counter.hlsl" />
+    <FxCompile Include="HLSL\Counter\VS_Counter.hlsl" />
   </ItemGroup>
 </Project>

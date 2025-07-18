@@ -83,152 +83,19 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// 現在いるタイルの名前を取得
-	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
-	// 現在の位置がタイルの中心にいるかどうかを判定
-	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
-	// 今いるタイルと前フレームでいたタイルが異なる場合、タイルのイベントを処理する
-	if (currentTileName != m_prevTileName)
-	{
-		// 前のタイルのイベントを処理
-		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
-		// 前のタイルが存在する場合、Exitイベントを呼び出す
-		if (prevTile.tileBasePtr) prevTile.tileBasePtr->OnExit(this);
-		// 現在のタイルのイベントを処理
-		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
-		// 現在のタイルが存在する場合、Enterイベントを呼び出す
-		if (currentTile.tileBasePtr ||// 現在のタイルが存在する場合
-			(m_prevTileName == "" && currentTileName != ""))// 前のタイルが空白で、現在のタイルが存在する場合
-		{
-			// Enterイベントを呼び出す
-			currentTile.tileBasePtr->OnEnter(this);
-			// 現在のタイル名を更新
-			m_prevTileName = currentTileName;
-			// 前の位置を更新
-			m_prevPosition = m_currentPosition;
-		}
-	}
-	// 現在の位置がタイルの中心にいるかどうかを確認
-	if (isAtTileCenter)
-	{
-		// タイルの中心にいる場合、移動フラグを更新
-		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
-		// 現在のタイルが存在する場合、CenterReachedイベントを呼び出す
-		if (currentTile.tileBasePtr) currentTile.tileBasePtr->OnCenterReached(this);
-	}
-	// 現在のタイル名が空白である場合
-	else if (currentTileName == "")
-	{
-		// 空白タイルにいる場合、移動フラグを折る
-		m_isMoving = false;
-		// 落下タイマーを開始
-		if (!m_fallTimerActive)
-		{
-			// 落下タイマーを有効にする
-			m_fallTimerActive = true;
-			// 落下タイマーをリセット
-			m_fallTimer = 0.0f;
-		}
-	}
+	// タイルイベントを更新する
+	UpdateTileEvents();
 	// 落下タイマー処理
-	// 落下タイマーが有効で、まだ落下していない場合
-	if (m_fallTimerActive && !m_hasFallen)
-	{
-		// 落下タイマーを更新
-		m_fallTimer += elapsedTime;
-		// 落下タイマーが3秒を超えたら、落下処理を実行
-		if (m_fallTimer >= 3.0f)
-		{
-			// 速度を0にする
-			m_currentVelocity = Vector3::Zero;
-			// 移動フラグを折る
-			m_isMoving = false;
-			// 落下フラグを立てる
-			m_hasFallen = true;
-		}
-	}
-	// 落下カウンター中に空白タイルから復帰したら、リセット
-	if (m_fallTimerActive && !m_hasFallen && (currentTileName != "" && currentTileName != "Block"))
-	{
-		// 落下タイマーを無効にする
-		m_fallTimerActive = false;
-		// 落下タイマーをリセット
-		m_fallTimer = 0.0f;
-		// 移動フラグを立てる
-		m_isMoving = true;
-		// 落下フラグを折る
-		m_hasFallen = false;
-	}
-	// 重力を定義
-	const float gravity = -9.8f;
-	// 落下中の場合
-	if (m_hasFallen)
-	{
-		// 落下中は重力を適用する
-		m_currentVelocity.y += gravity * elapsedTime;
-		// 速度に適用する
-		m_miniCharacterVelocity += m_currentVelocity * elapsedTime;
-	}
-	// 落下していない場合
-	else if (m_isMoving)
-	{
-		// 通常通りの移動処理
-		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3;
-	}
-	// 座標に速度を適用する
-	m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
-
-	// ====== ここから「揺れ演出」追加 ======
-
-	// 揺れクォータニオン（デフォルトは回転なし）
-	m_shakeQuaternion = Quaternion::Identity;
-	// 落下タイマーが有効で、まだ落下していない場合
-	if (m_fallTimerActive && !m_hasFallen)
-	{
-		// 揺れの強さ
-		float shakeAmount = 0.075f;
-		// 揺れの速さ
-		float shakeSpeed = 7.0f;
-		// 落下タイマーの時間を取得
-		float time = m_fallTimer;
-		// 揺れの進行度を計算（0.0fから1.0fの範囲）
-		float progress = std::min(time / 3.0f, 1.0f);
-		// 揺れの振幅を計算（進行度に応じて変化）
-		float amp = shakeAmount * (0.5f + 1.0f * progress);
-		// 揺れの角度を計算
-		float xSwing = sinf(time * shakeSpeed) * amp * (0.8f + 0.4f * sinf(time * 2.0f));
-		// z軸の揺れは少し小さくする
-		float zSwing = cosf(time * shakeSpeed * 0.7f) * amp * (0.7f + 0.6f * cosf(time * 3.1f));
-		// 揺れクォータニオンを作成
-		m_shakeQuaternion = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
-	}
-	// 目標回転を計算（速度ベクトルから）
-	Quaternion targetQuat;
-	// 現在の速度がゼロでない場合、回転を計算
-	if (m_currentVelocity.LengthSquared() > 0.0f)
-	{
-		// 現在の速度ベクトルからヨー角を計算
-		float yaw = atan2f(m_currentVelocity.x, m_currentVelocity.z);
-		// ヨー角からクォータニオンを作成
-		targetQuat = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f);
-	}
-	else
-	{
-		// 速度がゼロの場合は、回転なし
-		targetQuat = Quaternion::Identity;
-	}
-	// 現在の回転角を更新する
-	float rotateSpeed = 0.05f;
-	// 滑らかに回転させるために、現在の回転角と目標回転角を補間
-	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
-	// 揺れを加味した回転を適用
-	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
+	UpdateFallTimer(elapsedTime);
+	// 重力を加味した座標移動を行う
+	ApplyGravity(elapsedTime, currentPosition);
+	// 揺れ演出
+	Shake(elapsedTime);
+	// 回転の補間
+	InterpolateRotation(currentAngle);
 	// 砲塔部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
-	{
-		// 部品を更新する
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	}
 }
 /*
 *	@brief プレイヤーの部品を追加する
@@ -286,6 +153,205 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 void MiniCharacter::Finalize()
 {
 
+}
+/*
+*	@brief タイルイベントを更新する
+*	@details タイルの中心への移動やタイルのイベントを更新する
+*	@param なし
+*	@return なし
+*/
+void MiniCharacter::UpdateTileEvents()
+{
+	// 現在いるタイルの名前を取得
+	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
+	// 現在の位置がタイルの中心にいるかどうかを判定
+	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
+	// 今いるタイルと前フレームでいたタイルが異なる場合、タイルのイベントを処理する
+	if (currentTileName != m_prevTileName)
+	{
+		// 前のタイルのイベントを処理
+		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
+		// 前のタイルが存在する場合、Exitイベントを呼び出す
+		if (prevTile.tileBasePtr) prevTile.tileBasePtr->OnExit(this);
+		// 現在のタイルのイベントを処理
+		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
+		// 現在のタイルが存在する場合、Enterイベントを呼び出す
+		if (currentTile.tileBasePtr ||// 現在のタイルが存在する場合
+			(m_prevTileName == "" && currentTileName != ""))// 前のタイルが空白で、現在のタイルが存在する場合
+		{
+			// Enterイベントを呼び出す
+			currentTile.tileBasePtr->OnEnter(this);
+			// 現在のタイル名を更新
+			m_prevTileName = currentTileName;
+			// 前の位置を更新
+			m_prevPosition = m_currentPosition;
+		}
+	}
+	// 現在の位置がタイルの中心にいるかどうかを確認
+	if (isAtTileCenter)
+	{
+		// タイルの中心にいる場合、移動フラグを更新
+		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
+		// 現在のタイルが存在する場合、CenterReachedイベントを呼び出す
+		if (currentTile.tileBasePtr) currentTile.tileBasePtr->OnCenterReached(this);
+		// 行と列を取得
+		int row = GetParent()->GetCSVMap()->GetRowFromPosition(m_currentPosition);
+		int col = GetParent()->GetCSVMap()->GetColFromPosition(m_currentPosition);
+		// そのタイルにアイテムがあるなら獲得する
+		const auto& item = GetParent()->GetCSVItem()->GetItemData(row, col);
+		// アイテムが存在する場合
+		if (item.itemInfo.modelName != "" && item.itemBasePtr != nullptr)
+		{
+			// アイテムを獲得する
+			item.itemBasePtr->OnGet(this);
+			// アイテムを消す
+			GetParent()->GetCSVItem()->RemoveItem(row, col);
+		}
+	}
+	// 現在のタイル名が空白である場合
+	else if (currentTileName == "")
+	{
+		// 空白タイルにいる場合、移動フラグを折る
+		m_isMoving = false;
+		// 落下タイマーを開始
+		if (!m_fallTimerActive)
+		{
+			// 落下タイマーを有効にする
+			m_fallTimerActive = true;
+			// 落下タイマーをリセット
+			m_fallTimer = 0.0f;
+		}
+	}
+}
+/*
+*	@brief 落下タイマーを更新する
+*	@details 落下タイマー更新・落下フラグ管理・復帰管理処理
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void MiniCharacter::UpdateFallTimer(float elapsedTime)
+{
+	using namespace DirectX::SimpleMath;
+	// 落下タイマーが有効で、まだ落下していない場合
+	if (m_fallTimerActive && !m_hasFallen)
+	{
+		// 落下タイマーを更新
+		m_fallTimer += elapsedTime;
+		// 落下タイマーが3秒を超えたら、落下処理を実行
+		if (m_fallTimer >= 3.0f)
+		{
+			// 速度を0にする
+			m_currentVelocity = Vector3::Zero;
+			// 移動フラグを折る
+			m_isMoving = false;
+			// 落下フラグを立てる
+			m_hasFallen = true;
+		}
+	}
+	const auto& currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
+	// 落下カウンター中に空白タイルから復帰したら、リセット
+	if (m_fallTimerActive && !m_hasFallen && (currentTileName != "" && currentTileName != "Block"))
+	{
+		// 落下タイマーを無効にする
+		m_fallTimerActive = false;
+		// 落下タイマーをリセット
+		m_fallTimer = 0.0f;
+		// 移動フラグを立てる
+		m_isMoving = true;
+		// 落下フラグを折る
+		m_hasFallen = false;
+	}
+}
+/*
+*	@brief プレイヤーに重力を適用する
+*	@details 重力・速度・座標更新処理
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void MiniCharacter::ApplyGravity(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition)
+{
+	// 重力を定義
+	const float gravity = -9.8f;
+	// 落下中の場合
+	if (m_hasFallen)
+	{
+		// 落下中は重力を適用する
+		m_currentVelocity.y += gravity * elapsedTime;
+		// 速度に適用する
+		m_miniCharacterVelocity += m_currentVelocity * elapsedTime;
+	}
+	// 落下していない場合
+	else if (m_isMoving)
+	{
+		// 通常通りの移動処理
+		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3;
+	}
+	// 座標に速度を適用する
+	m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
+}
+/*
+*	@brief プレイヤーを揺らす
+*	@details 揺れクォータニオンを計算する
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void MiniCharacter::Shake(float elapsedTime)
+{
+	using namespace DirectX::SimpleMath;
+	// 揺れクォータニオン（デフォルトは回転なし）
+	m_shakeQuaternion = Quaternion::Identity;
+	// 落下タイマーが有効で、まだ落下していない場合
+	if (m_fallTimerActive && !m_hasFallen)
+	{
+		// 揺れの強さ
+		float shakeAmount = 0.075f;
+		// 揺れの速さ
+		float shakeSpeed = 7.0f;
+		// 落下タイマーの時間を取得
+		float time = m_fallTimer;
+		// 揺れの進行度を計算（0.0fから1.0fの範囲）
+		float progress = std::min(time / 3.0f, 1.0f);
+		// 揺れの振幅を計算（進行度に応じて変化）
+		float amp = shakeAmount * (0.5f + 1.0f * progress);
+		// 揺れの角度を計算
+		float xSwing = sinf(time * shakeSpeed) * amp * (0.8f + 0.4f * sinf(time * 2.0f));
+		// z軸の揺れは少し小さくする
+		float zSwing = cosf(time * shakeSpeed * 0.7f) * amp * (0.7f + 0.6f * cosf(time * 3.1f));
+		// 揺れクォータニオンを作成
+		m_shakeQuaternion = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
+	}
+}
+/*
+*	@brief プレイヤーの回転を補間する
+*	@details プレイヤーの回転を補間して、滑らかな回転を実現する。
+*	@param currentAngle 現在の回転角
+*	@return なし
+*
+*/
+void MiniCharacter::InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle)
+{
+	using namespace DirectX::SimpleMath;
+	// 目標回転を計算（速度ベクトルから）
+	Quaternion targetQuat;
+	// 現在の速度がゼロでない場合、回転を計算
+	if (m_currentVelocity.LengthSquared() > 0.0f)
+	{
+		// 現在の速度ベクトルからヨー角を計算
+		float yaw = atan2f(m_currentVelocity.x, m_currentVelocity.z);
+		// ヨー角からクォータニオンを作成
+		targetQuat = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f);
+	}
+	else
+	{
+		// 速度がゼロの場合は、回転なし
+		targetQuat = Quaternion::Identity;
+	}
+	// 現在の回転角を更新する
+	float rotateSpeed = 0.05f;
+	// 滑らかに回転させるために、現在の回転角と目標回転角を補間
+	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
+	// 揺れを加味した回転を適用
+	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
 }
 
 /*

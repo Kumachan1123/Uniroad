@@ -25,12 +25,15 @@
 #include "Game/ControllScreen/NextTiles/NextTiles.h"
 #include "Game/ControllScreen/Panel/Panel.h"
 #include "Game/Mouse/Mouse.h"
+#include "Game/ControllScreen/MedalCounter/MedalCounter.h"
+
 // 前方宣言
 class CommonResources;
 class CSVItem;
 class MiniCharacterBase;
 class NextTiles;
 class Panel;
+class MedalCounter;
 namespace mylib
 {
 	class DebugCamera;
@@ -74,6 +77,8 @@ private:
 	std::unique_ptr<NextTiles> m_pNextTiles;
 	// マウス
 	std::unique_ptr<MyMouse> m_pMouse;
+	// メダルカウンター
+	std::unique_ptr<MedalCounter> m_pMedalCounter;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列

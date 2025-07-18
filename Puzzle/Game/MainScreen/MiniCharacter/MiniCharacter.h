@@ -72,6 +72,9 @@ public:
 	DirectX::Model* GetModel() { return nullptr; }
 	// CSVマップを取得する
 	CSVMap* GetCSVMap() { return nullptr; }
+	// CSVアイテムを取得する
+	CSVItem* GetCSVItem() { return nullptr; }
+
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 	// タイルに入ったかどうかを確認する
@@ -108,6 +111,18 @@ public:
 	// 後処理を行う
 	void Finalize();
 private:
+	// private関数
+	// タイル関連の処理
+	void UpdateTileEvents();
+	// 落下タイマー関連の処理
+	void UpdateFallTimer(float elapsedTime);
+	// 重力を加味した座標移動
+	void ApplyGravity(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition);
+	// 揺れ演出
+	void Shake(float elapsedTime);
+	// 回転の補間
+	void InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle);
+
 	//　速度を更新する
 	void UpdateSpeedByStartTile();
 	// タイルの中心にいるかどうかを確認する

@@ -45,6 +45,8 @@ public:
 	DirectX::Model* GetModel() { return m_pModel; }
 	// CSVマップを取得する
 	CSVMap* GetCSVMap() { return nullptr; }
+	// CSVアイテムを取得する
+	CSVItem* GetCSVItem() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:

@@ -6,6 +6,8 @@
 #include "CSVItem.h"
 
 
+
+
 /*
 *	@brief コンストラクタ
 *	@details 生成時に共通リソースへのポインタを受け取り、初期化を行う。
@@ -15,6 +17,7 @@
 CSVItem::CSVItem(CommonResources* resources)
 	: m_time(0.0f) // 経過時間
 	, m_pCommonResources(resources) // 共通リソースへのポインタ
+	, m_collectedMedals(0) // 収集したメダルの数
 {
 	// アイテムのタイルの辞書を初期化
 	InitializeTileDictionary();
@@ -222,29 +225,30 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 			if (m_mapItemData[col][row].itemBasePtr)m_mapItemData[col][row].itemBasePtr->Render(view, proj);
 		}
 	}
-
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("CountMedals:%i", m_collectedMedals);
 }
 
 
 /*
-*	@brief 指定位置のタイル情報を取得する
+*	@brief 指定位置のタイルのアイテム情報を取得する
 *	@details 指定された列と行の位置にあるタイルの情報を取得する。
 *	@param row 行番号
 *	@param col 列番号
 *	@return 指定位置のタイル情報への参照
 */
-const  MapItemData& CSVItem::GetTileData(int row, int col) const
+const  MapItemData& CSVItem::GetItemData(int row, int col) const
 {
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
 	return m_mapItemData[row][col];
 }
 /*
-*	@brief 指定座標のタイル情報を取得する
+*	@brief 指定座標のタイルのアイテム情報を取得する
 *	@details 指定されたワールド座標に最も近いタイルの情報を取得する。
 *	@param pos ワールド座標
 *	@return 指定座標のタイル情報への参照
 */
-const MapItemData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos) const
+const MapItemData& CSVItem::GetItemData(const DirectX::SimpleMath::Vector3& pos) const
 {
 	// DirectXとSimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
@@ -252,15 +256,13 @@ const MapItemData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos)
 	float minDistance = std::numeric_limits<float>::max();
 	int closestRow = -1;
 	int closestCol = -1;
-
-
-
 	// アイテムデータを走査して最も近いタイルを探す
-	for (int row = 0; row < MAXCOL; ++row)
+	for (int row = 0; row < MAXRAW; ++row)
 	{
-		for (int col = 0; col < MAXRAW; ++col)
+		for (int col = 0; col < MAXCOL; ++col)
 		{
 			const MapItemData& tile = m_mapItemData[row][col];
+
 			// タイルの位置との距離を計算
 			float distance = (tile.pos - pos).LengthSquared();
 			// 最小距離を更新
@@ -277,4 +279,16 @@ const MapItemData& CSVItem::GetTileData(const DirectX::SimpleMath::Vector3& pos)
 
 	return m_mapItemData[closestRow][closestCol];
 }
-
+/*
+*	@brief 指定座標のタイルのアイテムを消す
+*	@details 指定されたワールド座標にあるタイルのアイテム情報を消去する。
+*	@param pos ワールド座標
+*	@return なし
+*/
+void CSVItem::RemoveItem(int row, int col)
+{
+	// DirectXとSimpleMathの名前空間を使用
+	// アイテムのポインタをリセットして消去
+	m_mapItemData[row][col].itemBasePtr.reset(); // アイテムを消去
+	return; // 見つかったら終了
+}

@@ -80,10 +80,16 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	// レンダリング
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 }
-
+/*
+*	@brief アイテムの取得時処理
+*	@details メダルを取得したとき、取った枚数を加算する
+*	@param miniCharacter ミニキャラクターへのポインタ
+*	@return なし
+*/
 void Medal::OnGet(MiniCharacter* miniCharacter)
 {
-	UNREFERENCED_PARAMETER(miniCharacter);
+	// ミニキャラクターのメダル枚数を加算
+	miniCharacter->GetParent()->GetCSVItem()->CountMedals();
 }
 
 void Medal::OnUse(MiniCharacter* miniCharacter)

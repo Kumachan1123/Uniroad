@@ -33,7 +33,10 @@ public:
 	const MapTileData& GetTileData(int row, int col) const;
 	// 指定座標のタイル情報を取得する(ワールド座標)
 	const MapTileData& GetTileData(const DirectX::SimpleMath::Vector3& pos) const;
-
+	// 指定座標の行番号を取得する
+	int GetRowFromPosition(const DirectX::SimpleMath::Vector3& pos) const;
+	// 指定座標の列番号を取得する
+	int GetColFromPosition(const DirectX::SimpleMath::Vector3& pos) const;
 	// マップの最大列数と行数を取得する
 	const int GetMaxCol() const { return MAXCOL; }// 列数
 	const int GetMaxRow() const { return MAXRAW; }// 行数

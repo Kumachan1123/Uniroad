@@ -190,6 +190,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemDatas\ItemDatas.h" />
@@ -264,6 +265,7 @@
     <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
     <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
     <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
@@ -329,12 +331,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Particle\Particle.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="HLSL\Counter\PS_Counter.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Counter\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Counter\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\Counter\VS_Counter.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Counter\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Counter\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="HLSL\CRT\PS_CRT.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

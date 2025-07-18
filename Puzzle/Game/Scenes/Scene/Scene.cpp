@@ -56,6 +56,8 @@ void Scene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
 	// ミニキャラベースにCSVマップを設定
 	m_pMiniCharacterBase->SetCSVMap(m_pCSVMap.get());
+	// ミニキャラベースにCSVアイテムを設定
+	m_pMiniCharacterBase->SetCSVItem(m_pCSVItem.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -82,6 +84,10 @@ void Scene::Initialize(CommonResources* resources)
 	m_pNextTiles->SetCSVMap(m_pCSVMap.get());
 	// 次のタイルを初期化する
 	m_pNextTiles->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// メダルカウンターを作成する
+	m_pMedalCounter = std::make_unique<MedalCounter>();
+	// メダルカウンターを初期化する
+	m_pMedalCounter->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 
 }
 
@@ -96,7 +102,7 @@ void Scene::Update(float elapsedTime)
 	m_pMouse->Update(elapsedTime);
 	// 操作画面の背景の更新
 	m_pUIBack->Update(elapsedTime);
-	//
+	// CSVアイテムの更新
 	m_pCSVItem->Update(elapsedTime);
 
 	// パネルの更新
@@ -107,6 +113,8 @@ void Scene::Update(float elapsedTime)
 	Vector3 position(0.0f, 0.0f, 0.0f);
 	Quaternion angle(Quaternion::Identity);
 	m_pMiniCharacterBase->Update(elapsedTime, position, angle);
+	// メダルカウンターの更新
+	m_pMedalCounter->Update(elapsedTime);
 }
 void Scene::Render()
 {
@@ -127,7 +135,6 @@ void Scene::Render()
 
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projectionGame);
-
 	// --- 右側: 操作画面用ビューポート ---
 	context->RSSetViewports(1, &m_viewPortControll);
 	// 操作画面の背景を描画
@@ -140,10 +147,13 @@ void Scene::Render()
 	m_pPanel->DrawItems();
 
 
+
 	// --- デバッグ情報（例） ---
 	// ビューポートを元の設定に戻す
 	const auto& viewPort = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
 	context->RSSetViewports(1, &viewPort);
+	// メダルカウンターの描画
+	m_pMedalCounter->Render();
 
 	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("Use ViewPort.");

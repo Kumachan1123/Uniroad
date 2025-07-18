@@ -84,7 +84,7 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
 				, UIType::TILE);
 			// アイテムを配置する
-			const MapItemData& itemData = m_pCSVItem->GetTileData(row, col);
+			const MapItemData& itemData = m_pCSVItem->GetItemData(row, col);
 			// アイテムがない場合はスキップ
 			if (itemData.itemInfo.modelName.empty())continue;
 			// アイテムの位置を計算

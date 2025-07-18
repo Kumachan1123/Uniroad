@@ -6,7 +6,7 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/MainScreen/Items/ItemBase/ItemBase.h"
-
+#include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
 // 前方宣言
 class CommonResources;
 

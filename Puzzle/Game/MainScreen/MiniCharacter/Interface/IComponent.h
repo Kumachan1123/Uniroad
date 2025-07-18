@@ -1,6 +1,7 @@
 #pragma once
 class CommonResources;
 class CSVMap;
+class CSVItem;
 // IComponentインターフェースを定義する
 class IComponent
 {
@@ -29,6 +30,8 @@ public:
 	virtual DirectX::Model* GetModel() = 0;
 	// CSVマップを取得する
 	virtual CSVMap* GetCSVMap() = 0;
+	// CSVアイテムを取得する 
+	virtual CSVItem* GetCSVItem() = 0;
 
 public:
 	// 仮想デストラクタ

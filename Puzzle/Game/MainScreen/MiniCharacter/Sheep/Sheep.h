@@ -21,6 +21,9 @@
 #include "Game/MainScreen/MiniCharacter/MiniCharacterHead/MiniCharacterHead.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterHand/MiniCharacterHand.h"
 #include "Game/MainScreen/MiniCharacter/Unicycle/UnicycleBody/UnicycleBody.h"
+
+
+// 前方宣言
 class CommonResources;
 class Sheep : public IComposite
 {
@@ -50,6 +53,8 @@ public:
 	DirectX::Model* GetModel() { return m_pModel; }
 	// CSVマップを取得する
 	CSVMap* GetCSVMap() { return nullptr; }
+	// CSVアイテムを取得する
+	CSVItem* GetCSVItem() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:

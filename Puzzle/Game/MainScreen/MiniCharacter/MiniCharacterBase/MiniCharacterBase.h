@@ -15,6 +15,7 @@
 #include "Game/Scenes/Scene/Scene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
+#include "Game/MainScreen/CSVItem/CSVItem.h"
 class CommonResources;
 class MiniCharacterBase : public IComposite
 {
@@ -46,6 +47,10 @@ public:
 	CSVMap* GetCSVMap() { return m_pCSVMap; }
 	// CSVマップを設定する
 	void SetCSVMap(CSVMap* csvMap) { m_pCSVMap = csvMap; }
+	// CSVアイテムを取得する
+	CSVItem* GetCSVItem() { return m_pCSVItem; }
+	// CSVアイテムを設定する
+	void SetCSVItem(CSVItem* csvItem) { m_pCSVItem = csvItem; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -70,7 +75,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// CSVマップ
 	CSVMap* m_pCSVMap;
-
+	// CSVアイテム
+	CSVItem* m_pCSVItem;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

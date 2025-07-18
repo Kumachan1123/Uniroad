@@ -29,18 +29,19 @@ class CSVItem
 {
 public:
 	// アクセサ
-	// 指定位置のタイル情報を取得する(行, 列)
-	const MapItemData& GetTileData(int row, int col) const;
-	// 指定座標のタイル情報を取得する(ワールド座標)
-	const MapItemData& GetTileData(const DirectX::SimpleMath::Vector3& pos) const;
-
+	// 指定位置のタイルのアイテム情報を取得する(行, 列)
+	const MapItemData& GetItemData(int row, int col) const;
+	// 指定座標のタイルのアイテム情報を取得する(ワールド座標)
+	const MapItemData& GetItemData(const DirectX::SimpleMath::Vector3& pos) const;
+	// 指定座標のタイルのアイテム情報を消す(獲得後に呼ぶ)
+	void  RemoveItem(int row, int col);
 	// マップの最大列数と行数を取得する
 	const int GetMaxCol() const { return MAXCOL; }// 列数
 	const int GetMaxRow() const { return MAXRAW; }// 行数
-	//// 指定した位置に指定したモデルを配置する
-	//void SetTileModel(int row, int col, const std::string& modelName);
-	//// スタート地点を返す
-	//const MapTileData& GetStart() const;
+	// 獲得された枚数を加算する
+	void CountMedals() { m_collectedMedals++; }
+	// 獲得されたメダルの枚数を取得する
+	int GetCollectedMedals() const { return m_collectedMedals; }
 public:
 	// public関数
 	// コンストラクタ
@@ -77,4 +78,6 @@ private:
 	std::vector<std::unique_ptr<ItemBase>> m_itemArray;
 	// 時間
 	float m_time;
+	// 獲得されたメダル
+	int m_collectedMedals;
 };
