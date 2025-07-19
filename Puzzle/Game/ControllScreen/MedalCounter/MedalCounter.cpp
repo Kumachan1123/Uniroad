@@ -24,6 +24,8 @@ MedalCounter::MedalCounter()
 	, m_collectedMedalCountSave(0)// 収集したメダルの数を保存する変数
 	, m_viewportWidth(0)// ビューポートの幅
 	, m_viewportHeight(0)// ビューポートの高さ
+	, m_frameRows{ 1 }//	画像の行数
+	, m_frameCols{ 10 }//	画像の列数
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 {
@@ -44,6 +46,10 @@ void MedalCounter::Initialize(CommonResources* resources, int width, int height)
 
 	// メダル画像
 	m_pMedalTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));
+	// 「×」画像
+	m_pXTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Multiply"));
+	// 数字画像
+	m_pNumberTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Number"));
 
 	// 描画クラスの初期化
 	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());
@@ -95,7 +101,13 @@ void MedalCounter::Update(float elapsedTime)
 void MedalCounter::Render()
 {
 	// メダル画像描画
-	DrawQuad(m_pMedalTextures, m_verticesRemaining, MEDAL_POS_X, MEDAL_POS_Y, MEDAL_SIZE_X, MEDAL_SIZE_Y, 0, 1, 1);
+	DrawQuad(m_pMedalTextures, m_verticesMedal, MEDAL_POS_X, MEDAL_POS_Y, MEDAL_SIZE_X, MEDAL_SIZE_Y, 0, 1, 1);
+	// 「×」画像描画
+	DrawQuad(m_pXTextures, m_verticesX, X_POS_X, X_POS_Y, X_SIZE_X, X_SIZE_Y, 0, 1, 1);
+	// 10の位の数字画像描画
+	DrawQuad(m_pNumberTextures, m_verticesMedal, NUMBER10_POS_X, NUMBER10_POS_Y, NUMBER10_SIZE_X, NUMBER10_SIZE_Y, m_collectedMedalCount.unit10, m_frameCols, m_frameRows);
+	// 1の位の数字画像描画
+	DrawQuad(m_pNumberTextures, m_verticesMedal, NUMBER1_POS_X, NUMBER1_POS_Y, NUMBER1_SIZE_X, NUMBER1_SIZE_Y, m_collectedMedalCount.unit1, m_frameCols, m_frameRows);
 
 }
 

@@ -113,6 +113,9 @@ void Scene::Update(float elapsedTime)
 	Vector3 position(0.0f, 0.0f, 0.0f);
 	Quaternion angle(Quaternion::Identity);
 	m_pMiniCharacterBase->Update(elapsedTime, position, angle);
+	// メダルカウンターに現在のメダル数を設定
+	m_pMedalCounter->SetCollectedMedalCount(m_pCSVItem->GetCollectedMedals());
+
 	// メダルカウンターの更新
 	m_pMedalCounter->Update(elapsedTime);
 }
