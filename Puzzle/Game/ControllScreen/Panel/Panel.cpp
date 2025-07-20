@@ -24,6 +24,8 @@ Panel::Panel(int mapSizeX, int mapSizeY)
 	, m_menuIndex(0) // 現在選択されているメニューのインデックス
 	, m_mapSizeX(mapSizeX) // マップのサイズX
 	, m_mapSizeY(mapSizeY) // マップのサイズY
+	, m_row(-1) // 行番号（保存用）
+	, m_col(-1) // 列番号（保存用）
 {
 }
 /*
@@ -91,6 +93,9 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			Vector2 itemPos = Vector2(posX, posY);
 			// アイテムのテクスチャキーを取得
 			std::string itemTextureKey = itemData.itemInfo.modelName;
+			// 行と列を保存
+			m_row = row;
+			m_col = col;
 			// アイテムを追加
 			Add(itemTextureKey
 				, itemPos
@@ -141,7 +146,8 @@ void Panel::Update(const float elapsedTime)
 	}
 	for (int i = 0; i < m_pItems.size(); i++)
 	{
-		m_pItems[i]->SetTime(m_pItems[i]->GetTime() + elapsedTime);
+		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
+			m_pItems[i].first->SetTime(m_pItems[i].first->GetTime() + elapsedTime);
 	}
 }
 /*
@@ -174,7 +180,13 @@ void Panel::DrawTiles()
 */
 void Panel::DrawItems()
 {
-	for (int i = 0; i < m_pItems.size(); i++)m_pItems[i]->Render();
+	for (int i = 0; i < m_pItems.size(); i++)
+	{
+		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
+		{
+			m_pItems[i].first->Render();
+		}
+	}
 }
 
 
@@ -190,7 +202,18 @@ void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& posi
 	// 選択可能なアイテムなら
 	if (type == UIType::TILE)m_pTiles.push_back(std::move(userInterface));
 	// アイテムなら
-	else if (type == UIType::ITEM)m_pItems.push_back(std::move(userInterface));
+	else if (type == UIType::ITEM)
+	{
+		// アイテム情報を設定
+		ItemInfo itemInfo{};
+		itemInfo.isCollected = false; // 収集済みフラグを初期化
+		itemInfo.row = m_row; // 行番号を設定
+		itemInfo.col = m_col; // 列番号を設定
+		std::pair<std::unique_ptr<Canvas>, ItemInfo> item;
+		item.first = std::move(userInterface); // UIオブジェクトをセット
+		item.second = itemInfo; // アイテム情報をセット
+		m_pItems.push_back(std::move(item));
+	}
 	// 未知のUIタイプ
 	else throw std::runtime_error("Unknown UIType in Panel::Add");
 }

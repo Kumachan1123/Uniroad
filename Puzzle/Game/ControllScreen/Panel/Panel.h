@@ -34,6 +34,15 @@ class CSVItem;
 class Panel : public IUI
 {
 public:
+	// 構造体
+	// アイテムの情報
+	struct ItemInfo
+	{
+		int row;		// 行番号
+		int col;		// 列番号
+		bool isCollected;	// 収集済みかどうか
+	};
+public:
 	// アクセサ
 	// UIにヒットしたかどうか取得
 	bool GetIsHit()const { return m_hit; }
@@ -80,7 +89,7 @@ private:
 	// タイル
 	std::vector<std::unique_ptr<Canvas>> m_pTiles;
 	// アイテム
-	std::vector<std::unique_ptr<Canvas>> m_pItems;
+	std::vector<std::pair<std::unique_ptr<Canvas>, ItemInfo>> m_pItems;
 	// マウスのポインター
 	MyMouse* m_pMouse;
 	// ウィンドウの幅と高さ
@@ -99,4 +108,8 @@ private:
 	CSVItem* m_pCSVItem;
 	// 操作用ビューポート
 	D3D11_VIEWPORT m_viewPortControll;
+	// 行（保存用）
+	int m_row;
+	// 列（保存用）
+	int m_col;
 };

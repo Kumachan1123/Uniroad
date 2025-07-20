@@ -126,7 +126,7 @@ private:
 	//　速度を更新する
 	void UpdateSpeedByStartTile();
 	// タイルの中心にいるかどうかを確認する
-	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.005f) const;
+	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.01f) const;
 
 public:
 	// ノードカウントアップした後ノードカウントを取得する

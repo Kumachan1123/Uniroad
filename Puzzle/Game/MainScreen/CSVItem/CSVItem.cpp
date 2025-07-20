@@ -175,7 +175,7 @@ void CSVItem::Update(float elapsedTime)
 		for (int row = 0; row < MAXRAW; ++row)
 		{
 			// アイテムがあるなら更新
-			if (m_mapItemData[col][row].itemBasePtr)m_mapItemData[col][row].itemBasePtr->Update(elapsedTime);
+			if (m_mapItemData[col][row].itemBasePtr != nullptr)m_mapItemData[col][row].itemBasePtr->Update(elapsedTime);
 		}
 	}
 }
@@ -222,7 +222,7 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 		for (int row = 0; row < MAXRAW; ++row)
 		{
 			// アイテムがあるなら更新
-			if (m_mapItemData[col][row].itemBasePtr)m_mapItemData[col][row].itemBasePtr->Render(view, proj);
+			if (m_mapItemData[col][row].itemBasePtr != nullptr)	m_mapItemData[col][row].itemBasePtr->Render(view, proj);
 		}
 	}
 	const auto debugString = m_pCommonResources->GetDebugString();
@@ -289,6 +289,6 @@ void CSVItem::RemoveItem(int row, int col)
 {
 	// DirectXとSimpleMathの名前空間を使用
 	// アイテムのポインタをリセットして消去
-	m_mapItemData[row][col].itemBasePtr.reset(); // アイテムを消去
+	m_mapItemData[row][col].itemBasePtr = nullptr; // アイテムを消去
 	return; // 見つかったら終了
 }
