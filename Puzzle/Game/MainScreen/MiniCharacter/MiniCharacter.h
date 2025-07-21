@@ -119,7 +119,7 @@ private:
 	// d—Í‚ğ‰Á–¡‚µ‚½À•WˆÚ“®
 	void ApplyGravity(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition);
 	// —h‚ê‰‰o
-	void Shake(float elapsedTime);
+	void Shake();
 	// ‰ñ“]‚Ì•âŠÔ
 	void InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle);
 

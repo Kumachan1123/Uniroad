@@ -12,9 +12,16 @@
 */
 Medal::Medal()
 	:m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	, m_pMiniCharacter(nullptr) // ミニキャラクターへのポインタ
 	, m_itemInfo() // アイテム情報
+	, m_row(-1) // 行番号（保存用）
+	, m_col(-1) // 列番号（保存用）
 	, m_pModel(nullptr) // モデルへのポインタ
 	, m_time(0.0f) // 経過時間
+	, m_deleteTime(0.0f) // メダルが獲得されて消えるまでの時間
+	, m_rotationSpeed(0.0f) // 回転速度
+	, m_rotation(DirectX::SimpleMath::Quaternion::Identity) // 回転
+	, m_isCollected(false) // メダルが獲得されたかどうか
 {
 }
 /*
@@ -39,6 +46,8 @@ void Medal::Initialize(CommonResources* resources, const ItemInfo& info)
 	m_pCommonResources = resources;
 	// アイテム情報を設定
 	m_itemInfo = info;
+	// 初期の回転速度を設定
+	m_rotationSpeed = DEFAULT_ROTATION_SPEED;
 }
 /*
 *	@brief 更新
@@ -52,8 +61,26 @@ void Medal::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 時間を加算
 	m_time += elapsedTime;
+	// 獲得されたら
+	if (m_isCollected)
+	{
+		// 消えるまでの時間を加算
+		m_deleteTime += elapsedTime;
+		// Y座標を滑らかに変える
+		m_position.y += Easing::EaseInCirc(m_deleteTime / 3.0f);
+
+		// 獲得されたら消えるまでの時間が2秒を超えたら
+		if (m_deleteTime > 2.0f)
+		{
+			// アイテムを削除
+			m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);
+			// 処理を終える
+			return;
+		}
+	}
+
 	// 時間経過で回転させる
-	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f, 0.0f, 0.0f);
+	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f * m_rotationSpeed, 0.0f, 0.0f);
 }
 /*
 *	@brief 当たり判定描画
@@ -88,8 +115,16 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 */
 void Medal::OnGet(MiniCharacter* miniCharacter)
 {
+	// 既に獲得されている場合は何もしない
+	if (m_isCollected) return;
 	// ミニキャラクターのメダル枚数を加算
 	miniCharacter->GetParent()->GetCSVItem()->CountMedals();
+	// 回転速度を獲得時の速度に設定
+	m_rotationSpeed = COLLECTED_ROTATION_SPEED;
+	// メダルが獲得されたフラグを設定
+	m_isCollected = true;
+	// ポインターを設定
+	m_pMiniCharacter = miniCharacter;
 }
 
 void Medal::OnUse(MiniCharacter* miniCharacter)

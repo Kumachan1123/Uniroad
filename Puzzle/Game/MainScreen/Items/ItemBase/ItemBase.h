@@ -25,7 +25,14 @@ public:
 	virtual const DirectX::SimpleMath::Matrix& GetWorldMatrix() const = 0;
 	// アイテムのワールド行列を設定する
 	virtual void SetWorldMatrix(const DirectX::SimpleMath::Matrix& world) = 0;
-
+	// アイテムのある行番号を取得する
+	virtual int GetRow() const = 0;
+	// アイテムのある行番号を設定する
+	virtual void SetRow(int row) = 0;
+	// アイテムのある列番号を取得する
+	virtual int GetCol() const = 0;
+	// アイテムのある列番号を設定する
+	virtual void SetCol(int col) = 0;
 
 	// public関数
 public:

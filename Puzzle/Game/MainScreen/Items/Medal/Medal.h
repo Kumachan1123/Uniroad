@@ -7,6 +7,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/MainScreen/Items/ItemBase/ItemBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
+#include "KumachiLib/Easing/Easing.h"
 // 前方宣言
 class CommonResources;
 
@@ -27,6 +28,14 @@ public:
 	const DirectX::SimpleMath::Matrix& GetWorldMatrix() const override { return m_worldMatrix; }
 	// アイテムのワールド行列を設定する
 	void SetWorldMatrix(const DirectX::SimpleMath::Matrix& world) override { m_worldMatrix = world; }
+	// アイテムのある行番号を取得する
+	int GetRow() const override { return m_row; }
+	// アイテムのある行番号を設定する
+	void SetRow(int row) override { m_row = row; }
+	// アイテムのある列番号を取得する
+	int GetCol() const override { return m_col; }
+	// アイテムのある列番号を設定する
+	void SetCol(int col) override { m_col = col; }
 
 public:
 	// public関数
@@ -47,6 +56,12 @@ public:
 	// アイテムを破棄したときの処理
 	void OnDiscard(MiniCharacter* miniCharacter) override;
 private:
+	// 定数
+	// デフォルトの回転速度
+	static constexpr float DEFAULT_ROTATION_SPEED = 1.0f;
+	// 獲得されて消えるまでの回転速度
+	static constexpr float COLLECTED_ROTATION_SPEED = 100.0f;
+private:
 	// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
@@ -64,4 +79,16 @@ private:
 	DirectX::SimpleMath::Matrix m_worldMatrix;
 	// 時間
 	float m_time;
+	// 回転速度
+	float m_rotationSpeed;
+	// メダルが獲得されて消えるまでの時間
+	float m_deleteTime;
+	// メダルが獲得されたかどうか
+	bool m_isCollected;
+	// ミニキャラのポインター
+	MiniCharacter* m_pMiniCharacter;
+	// このアイテムがある行番号
+	int m_row;
+	// このアイテムがある列番号
+	int m_col;
 };

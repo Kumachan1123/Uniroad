@@ -90,7 +90,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 重力を加味した座標移動を行う
 	ApplyGravity(elapsedTime, currentPosition);
 	// 揺れ演出
-	Shake(elapsedTime);
+	Shake();
 	// 回転の補間
 	InterpolateRotation(currentAngle);
 	// 砲塔部品を更新する　
@@ -205,7 +205,7 @@ void MiniCharacter::UpdateTileEvents()
 			// アイテムを獲得する
 			item.itemBasePtr->OnGet(this);
 			// アイテムを消す
-			GetParent()->GetCSVItem()->RemoveItem(row, col);
+			//GetParent()->GetCSVItem()->RemoveItem(row, col);
 		}
 	}
 	// 現在のタイル名が空白である場合
@@ -292,10 +292,9 @@ void MiniCharacter::ApplyGravity(float elapsedTime, const DirectX::SimpleMath::V
 /*
 *	@brief プレイヤーを揺らす
 *	@details 揺れクォータニオンを計算する
-*	@param elapsedTime 経過時間
 *	@return なし
 */
-void MiniCharacter::Shake(float elapsedTime)
+void MiniCharacter::Shake()
 {
 	using namespace DirectX::SimpleMath;
 	// 揺れクォータニオン（デフォルトは回転なし）

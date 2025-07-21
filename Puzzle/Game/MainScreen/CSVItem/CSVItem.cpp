@@ -53,11 +53,6 @@ void CSVItem::InitializeTileDictionary()
 	m_tileDictionary["0"] = ItemInfo{ "", false };
 	// メダル
 	m_tileDictionary["m"] = ItemInfo{ "Medal", false };
-	//// メダル2
-	//m_tileDictionary["m2"] = TileInfo{ "Medal2", false };
-	//// メダル3
-	//m_tileDictionary["m3"] = TileInfo{ "Medal3", false };
-
 }
 
 /*
@@ -124,6 +119,9 @@ void CSVItem::LoadItem(const std::string& filePath)
 				itemBase->SetWorldMatrix(Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos));
 				// アイテムのモデルを設定
 				itemBase->SetModel(m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName));
+				// アイテムに行と列の情報を設定
+				itemBase->SetRow(row);// 行番号を設定
+				itemBase->SetCol(col);// 列番号を設定
 
 				//// ワールド行列を作成（スケーリングと位置の設定）
 				//Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
