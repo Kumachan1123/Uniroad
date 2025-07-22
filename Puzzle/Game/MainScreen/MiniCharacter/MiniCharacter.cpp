@@ -64,9 +64,11 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	assert(resources);
 	// 共通リソースを設定する
 	m_pCommonResources = resources;
-	// モデルを読み込む
-	m_initialPosition = GetParent()->GetCSVMap()->GetStart().pos;
 	// 初期位置を設定する
+	m_initialPosition = GetParent()->GetCSVMap()->GetStart().pos;
+	// 現在位置に反映
+	m_currentPosition = m_initialPosition;
+	// スタート地点の前後左右のタイルを調べてプレイヤーの速度を更新する
 	UpdateSpeedByStartTile();
 	// ヒツジパーツをアタッチ
 	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
