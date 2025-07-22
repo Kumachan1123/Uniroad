@@ -16,6 +16,7 @@
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/CSVItem/CSVItem.h"
+#include "Game/ControllScreen/NextTiles/NextTiles.h"
 class CommonResources;
 class MiniCharacterBase : public IComposite
 {
@@ -51,6 +52,10 @@ public:
 	CSVItem* GetCSVItem() { return m_pCSVItem; }
 	// CSVアイテムを設定する
 	void SetCSVItem(CSVItem* csvItem) { m_pCSVItem = csvItem; }
+	// 次に現れるタイルのクラスを取得する
+	NextTiles* GetNextTiles() { return m_pNextTiles; }
+	// 次に現れるタイルのクラスを設定する
+	void SetNextTiles(NextTiles* nextTiles) { m_pNextTiles = nextTiles; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -77,6 +82,8 @@ private:
 	CSVMap* m_pCSVMap;
 	// CSVアイテム
 	CSVItem* m_pCSVItem;
+	// 次に現れるタイルのクラス
+	NextTiles* m_pNextTiles;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

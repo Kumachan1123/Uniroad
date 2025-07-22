@@ -2,6 +2,7 @@
 class CommonResources;
 class CSVMap;
 class CSVItem;
+class NextTiles;
 // IComponentインターフェースを定義する
 class IComponent
 {
@@ -32,6 +33,8 @@ public:
 	virtual CSVMap* GetCSVMap() = 0;
 	// CSVアイテムを取得する 
 	virtual CSVItem* GetCSVItem() = 0;
+	// 次に現れるタイルのクラスを取得する
+	virtual NextTiles* GetNextTiles() = 0;
 
 public:
 	// 仮想デストラクタ

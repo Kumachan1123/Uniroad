@@ -44,6 +44,8 @@ public:
 	void SetTileModel(int row, int col, const std::string& modelName);
 	// スタート地点を返す
 	const MapTileData& GetStart() const;
+	// マップデータを渡す
+	const std::vector<std::vector<MapTileData>>& GetMapData() const { return m_mapData; }
 public:
 	// public関数
 	// コンストラクタ

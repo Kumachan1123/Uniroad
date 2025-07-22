@@ -31,11 +31,14 @@ class CommonResources;
 class NextTiles : public IUI
 {
 private:
+	// タイル情報を保持する構造体
 	struct TileInfo
 	{
 		std::string textureKey; // テクスチャのキー
 		std::unique_ptr<Canvas> canvas; // キャンバスオブジェクト
 	};
+	// 進行方向ごとの列挙型
+	enum class Direction { UP, DOWN, LEFT, RIGHT };
 public:
 	// アクセサ
 	// UIにヒットしたかどうか取得
@@ -48,6 +51,10 @@ public:
 	void SetMouse(MyMouse* pMouse) { m_pMouse = pMouse; }
 	// ビューポートを設定
 	void SetViewport(const D3D11_VIEWPORT& viewport) { m_viewPortControll = viewport; }
+	// ミニキャラの進行方向(速度ベクトル)を設定
+	void SetMiniCharacterVelocity(const DirectX::SimpleMath::Vector3& velocity) { m_miniCharacterVelocity = velocity; }
+	// ミニキャラが今いるタイルの名前を設定
+	void SetMiniCharacterTileName(const std::string& tileName) { m_miniCharacterTileName = tileName; }
 public:
 	// public関数
 	// コンストラクタ
@@ -75,6 +82,62 @@ private:
 	void AddToPanel();
 	// 元の位置にタイルを戻す
 	void ResetTilePosition();
+	// 今いるタイルと進行方向から次に進めるタイルを取得
+	std::vector<std::string> GetAvailableNextTiles(const std::string& currentTileName, const DirectX::SimpleMath::Vector3& velocity) const;
+	// タイルの接続可能なタイルを取得
+	Direction GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3& velocity) const;
+private:
+	// タイル種ごとの進行可能タイル
+	std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>> tileConnectionTable =
+	{
+		{"DefaultStraightVertical",
+		{
+			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
+		}},
+		{"DefaultStraightHorizontal",
+		{
+			{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
+			{Direction::RIGHT,{  "StraightHorizontal","LeftDown", "LeftUp"}}
+		}},
+		{"StraightVertical",
+		{
+			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
+		}},
+		{"StraightHorizontal",
+		{
+			{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
+			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+		}},
+		{"RightDown",
+			{
+			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
+			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+		}},
+		{"LeftDown",
+			{
+			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
+			{Direction::LEFT,{"StraightHorizontal","RightDown", "RightUp"}},
+		}},
+		{"RightUp",
+			{
+			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+		}},
+		{"LeftUp",
+			{
+			{Direction::UP,{ "StraightHorizontal","RightDown", "LeftDown"}},
+			{Direction::LEFT,{   "StraightHorizontal","RightDown", "RightUp"}},
+		}},
+		{"Cross",
+				{
+			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
+			{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
+			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+		}}
+	};
 
 private:
 	// private関数
@@ -108,4 +171,10 @@ private:
 	D3D11_VIEWPORT m_viewPortControll;
 	// 使うタイルの辞書
 	std::vector<std::string> m_tilesDictionary;
+	// ミニキャラの速度ベクトル
+	DirectX::SimpleMath::Vector3 m_miniCharacterVelocity;
+	// ミニキャラが今いるタイルの名前
+	std::string m_miniCharacterTileName;
+	// 最後に置いたタイルの名前
+	std::string m_lastPlacedTileName;
 };

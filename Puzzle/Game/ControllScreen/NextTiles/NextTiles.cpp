@@ -18,12 +18,13 @@ NextTiles::NextTiles()
 	, m_pCSVMap(nullptr) // CSVマップへのポインタ
 	, m_hit(false) // UIにヒットしたかどうか
 	, m_pMouse(nullptr) // マウスへのポインタ
-	, m_time(7.0f) // 経過時間
+	, m_time(0.0f) // 経過時間
 	, m_windowHeight(0) // ウィンドウの高さ
 	, m_windowWidth(0) // ウィンドウの幅
 	, m_draggingIndex(-1) // ドラッグ中のUIインデックス
 	, m_menuIndex(0) // 現在選択されているメニューのインデックス
 	, m_initialPositions{} // 各選択可能UIの初期位置リスト
+	, m_lastPlacedTileName("") // 最後に置いたタイルの名前
 {
 }
 /*
@@ -140,7 +141,7 @@ void NextTiles::Update(const float elapsedTime)
 	// 経過時間を加算
 	m_time += elapsedTime;
 	// 10秒ごとにUIを追加する
-	if (m_time >= 1.0f)
+	if (m_time >= 2.0f)
 	{
 		// UIを追加
 		AddNextTiles();
@@ -226,11 +227,12 @@ void NextTiles::Add(const std::string& key, const DirectX::SimpleMath::Vector2& 
 	// 選択可能ならタイルとして、選択不可なら背景として追加		
 	if (type == UIType::TILE)m_pTile.push_back(std::move(tileInfo));
 	else m_pBack.push_back(std::move(tileInfo));
+
 }
 
 /*
 *	@brief 定期的にUIを追加する
-*	@details 更新中に10秒に一個UIを追加する
+*	@details 更新中に定期的に一個UIを追加する
 *	@param なし
 *	@return なし
 */
@@ -240,12 +242,21 @@ void NextTiles::AddNextTiles()
 	using namespace DirectX::SimpleMath;
 	// UIの数が5個以上なら追加しない
 	if (m_pTile.size() == 5)return;
+	// 基準となるタイル
+	std::string tileName;
+	// 最後に置いたタイルがない場合は今ミニキャラがいるタイルを基準にする
+	if (m_lastPlacedTileName == "")
+		tileName = m_miniCharacterTileName;
+	else
+		tileName = m_lastPlacedTileName;
+	// 次に進めるタイルのリストを取得
+	std::vector<std::string> availableTiles = GetAvailableNextTiles(m_lastPlacedTileName, m_miniCharacterVelocity);
 	// 乱数の設定
 	std::random_device seed;
 	// メルセンヌ・ツイスタ法
 	std::default_random_engine engine(seed());
 	// ランダムな範囲を設定
-	std::uniform_int_distribution<int> rand(0, (int)m_tilesDictionary.size() - 1);
+	std::uniform_int_distribution<int> rand(0, (int)availableTiles.size() - 1);
 	// ランダムなインデックスを取得
 	int randomIndex = rand(engine);
 	// Y座標を調整
@@ -255,7 +266,7 @@ void NextTiles::AddNextTiles()
 	// 位置を設定
 	Vector2 position(positionX, positionY);
 	// UI追加
-	Add(m_tilesDictionary[randomIndex]
+	Add(availableTiles[randomIndex]
 		, position
 		, Vector2(0.6f, 0.6f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
@@ -296,6 +307,8 @@ void NextTiles::AddToPanel()
 			Vector2 position(positionX, positionY);
 			// タイルの位置を更新
 			m_pTile[i].canvas->SetPosition(Vector2(m_pTile[i].canvas->GetPosition().x, positionY));
+			// 最後に置いたタイルを保存
+			m_lastPlacedTileName = m_pTile[i].textureKey;
 		}
 
 
@@ -317,5 +330,49 @@ void NextTiles::ResetTilePosition()
 {
 	// ドラッグ中のタイルがある場合は元の位置に戻す
 	m_pTile[m_draggingIndex].canvas->SetPosition(m_initialPositions[m_draggingIndex]);
+}
+/*
+*	@brief 接続可能な次のタイルを取得
+*	@details 現在のタイル名と速度から接続可能な次のタイルを取得する
+*	@param currentTileName 現在のタイル名
+*	@param velocity ミニキャラの速度ベクトル
+*	@return 接続可能な次のタイルの名前のリスト
+*/
+std::vector<std::string> NextTiles::GetAvailableNextTiles(const std::string& currentTileName, const DirectX::SimpleMath::Vector3& velocity) const
+{
+	// 該当タイルがない場合にとりあえず渡す配列
+	std::vector<std::string> errorStrings = { "StraightVertical", "StraightHorizontal", "RightDown", "LeftDown", "RightUp", "LeftUp", "Cross" };
+	// 現在のタイル名が空の場合はエラー配列を返す
+	if (currentTileName.empty()) return errorStrings;
+	// 進行方向を取得
+	Direction dir = GetDirectionFromVelocity(velocity);
+	// 接続可能なタイルを取得
+	auto tileIt = tileConnectionTable.find(currentTileName);
+	// 接続可能なタイルが見つからない場合はエラー配列を返す
+	if (tileIt == tileConnectionTable.end())return errorStrings;
+	// 接続可能なタイルの方向を取得
+	auto dirIt = tileIt->second.find(dir);
+	// 方向が見つからない場合はエラー配列を返す
+	if (dirIt == tileIt->second.end()) return errorStrings;
+	// 接続可能なタイルのリストを返す
+	return dirIt->second;
+}
+/*
+*	@brief 速度から進行方向を取得
+*	@details ミニキャラの速度ベクトルから進行方向を取得する
+*	@param velocity ミニキャラの速度ベクトル
+*	@return 進行方向
+*/
+NextTiles::Direction NextTiles::GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3& velocity) const
+{
+	// 速度ベクトルのX, Z成分をチェックして進行方向を決定
+	// Z成分が正なら上、負なら下
+	if (velocity.z > 0) return Direction::UP;
+	if (velocity.z < 0) return Direction::DOWN;
+	// X成分が正なら右、負なら左
+	if (velocity.x > 0) return Direction::RIGHT;
+	if (velocity.x < 0) return Direction::LEFT;
+	// 速度ゼロや斜めは例外処理
+	return Direction::UP; // デフォルト
 }
 

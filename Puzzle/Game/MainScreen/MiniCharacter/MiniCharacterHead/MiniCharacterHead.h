@@ -46,6 +46,8 @@ public:
 	CSVMap* GetCSVMap() { return nullptr; }
 	// CSVアイテムを取得する
 	CSVItem* GetCSVItem() { return nullptr; }
+	// 次に現れるタイルのクラスを取得する
+	NextTiles* GetNextTiles() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:

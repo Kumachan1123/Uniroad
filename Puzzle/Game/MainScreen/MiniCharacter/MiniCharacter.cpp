@@ -95,6 +95,9 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	Shake();
 	// 回転の補間
 	InterpolateRotation(currentAngle);
+	// 次に生成されるタイルを決めるために速度ベクトルを設定する
+	if (m_currentVelocity != Vector3::Zero)
+		m_parent->GetNextTiles()->SetMiniCharacterVelocity(m_currentVelocity);
 	// 砲塔部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
@@ -224,6 +227,8 @@ void MiniCharacter::UpdateTileEvents()
 			m_fallTimer = 0.0f;
 		}
 	}
+	// 今いるタイルから進めるタイルを決めるために名前を保存
+	if (currentTileName != "")m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
 }
 /*
 *	@brief 落下タイマーを更新する

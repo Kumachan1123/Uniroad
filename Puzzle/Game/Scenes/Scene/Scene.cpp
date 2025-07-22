@@ -84,6 +84,8 @@ void Scene::Initialize(CommonResources* resources)
 	m_pNextTiles->SetCSVMap(m_pCSVMap.get());
 	// 次のタイルを初期化する
 	m_pNextTiles->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// ミニキャラベースに次のタイルを設定
+	m_pMiniCharacterBase->SetNextTiles(m_pNextTiles.get());
 	// メダルカウンターを作成する
 	m_pMedalCounter = std::make_unique<MedalCounter>();
 	// メダルカウンターを初期化する
@@ -144,10 +146,10 @@ void Scene::Render()
 	m_pUIBack->Render();
 	// パネル(タイル)を描画
 	m_pPanel->DrawTiles();
-	// 次のタイルを描画
-	m_pNextTiles->Render();
 	// パネル(アイテム)を描画
 	m_pPanel->DrawItems();
+	// 次のタイルを描画
+	m_pNextTiles->Render();
 
 
 
