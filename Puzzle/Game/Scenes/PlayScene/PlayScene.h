@@ -1,18 +1,19 @@
 /*
-	@file	Scene.h
+	@file	PlayScene.h
 	@brief	一般的なシーンクラス
 */
 #pragma once
+// 標準ライブラリ
 #include <cassert>
 #include <memory>
+// DirectX
 #include <DeviceResources.h>
-
+// 外部ライブラリ
 #include <Libraries/MyLib/DebugCamera.h>
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/GridFloor.h>
 #include <Libraries/MyLib/InputManager.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
-
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
 #include "Game/CommonResources/CommonResources.h"
@@ -41,15 +42,23 @@ namespace mylib
 }
 
 // 一般的なシーンクラス
-class Scene : public IScene
+class PlayScene : public IScene
 {
 public:
-	Scene(IScene::SceneID sceneID);
-	~Scene()override;
+	// public関数
+	// コンストラクタ
+	PlayScene(IScene::SceneID sceneID);
+	// デストラクタ
+	~PlayScene()override;
+	// 初期化
 	void Initialize(CommonResources* resources) override;
+	// 更新
 	void Update(float elapsedTime)override;
+	// 描画
 	void Render()override;
+	// 終了
 	void Finalize()override;
+	// シーンIDを取得する
 	SceneID GetNextSceneID() const override;
 private:
 	// カメラに関する設定をする

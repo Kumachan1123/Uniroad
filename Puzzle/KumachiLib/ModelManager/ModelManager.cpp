@@ -101,10 +101,9 @@ void ModelManager::LoadJsonFile()
 				// エフェクトをBasicEffectにキャスト
 				auto basicEffect = dynamic_cast<DirectX::BasicEffect*>(effect);
 				// 各ライトを無効にする
-				basicEffect->SetLightEnabled(0, true);
-				//basicEffect->SetLightDirection(0, DirectX::SimpleMath::Vector3(0, -1, 1));
+				basicEffect->SetLightEnabled(0, false);
 				basicEffect->SetLightEnabled(1, false);
-				basicEffect->SetLightEnabled(2, false);
+				basicEffect->SetLightEnabled(2, true);
 			});
 	}
 

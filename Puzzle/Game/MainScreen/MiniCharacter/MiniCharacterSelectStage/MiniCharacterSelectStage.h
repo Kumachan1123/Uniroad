@@ -20,7 +20,7 @@
 // 前方宣言
 class CommonResources;
 
-class MiniCharacter : public IComposite
+class MiniCharacterSelectStage : public IComposite
 {
 public:
 	// 部品ID
@@ -97,9 +97,9 @@ public:
 	void SetFallTimerActive(bool active) { m_fallTimerActive = active; }
 public:
 	// コンストラクタ
-	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
+	MiniCharacterSelectStage(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
-	~MiniCharacter();
+	~MiniCharacterSelectStage();
 	// 初期化する
 	void Initialize(CommonResources* commonResources);
 	// 更新する

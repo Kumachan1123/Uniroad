@@ -186,7 +186,15 @@ void NextTiles::Render()
 		// 背景の描画
 		m_pBack[i].canvas->Render();
 	}
-
+}
+/*
+*	@brief 設置済みタイルを描画
+*	@details 設置済みタイルクラスのタイルを描画する
+*	@param なし
+*	@return なし
+*/
+void NextTiles::DrawPlacedTiles() const
+{
 	// 設置済みタイルの数だけ繰り返す
 	for (unsigned int i = 0; i < m_pPlacedTile.size(); i++)
 	{
@@ -200,6 +208,8 @@ void NextTiles::Render()
 		m_pTile[i].canvas->Render();
 	}
 }
+
+
 /*
 *	@brief UI追加
 *	@details 次のタイルクラスにUIを追加する
@@ -230,6 +240,8 @@ void NextTiles::Add(const std::string& key, const DirectX::SimpleMath::Vector2& 
 	else m_pBack.push_back(std::move(tileInfo));
 
 }
+
+
 
 /*
 *	@brief 定期的にUIを追加する

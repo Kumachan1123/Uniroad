@@ -1,101 +1,114 @@
 /*
-	@file	SceneManager.cpp
-	@brief	シーンマネージャクラス
+*	@file	SceneManager.cpp
+*	@brief	シーンマネージャクラス
 */
-#include "pch.h"
+#include <pch.h>
 #include "SceneManager.h"
-#include "Game/Screen/Screen.h"
-#include "Game/CommonResources/CommonResources.h"
-#include "DeviceResources.h"
-#include "Libraries/MyLib/MemoryLeakDetector.h"
-#include "Libraries/MyLib/InputManager.h"
-#include <cassert>
-
-
-//---------------------------------------------------------
-// コンストラクタ
-//---------------------------------------------------------
+/*
+*	@brief コンストラクタ
+*	@details シーンマネージャクラスのコンストラクタ
+*	@param なし
+*	@return なし
+*/
 SceneManager::SceneManager()
-	:
-	m_currentScene{},
-	m_commonResources{},
-	m_stageNumber{ 0 },
-	m_nowSceneID{ IScene::SceneID::NONE }
+	: m_pCurrentScene{}// 現在のシーン
+	, m_pCommonResources{}// 共通リソース
+	, m_stageNumber{ 0 }// ステージ番号
+	, m_nowSceneID{ IScene::SceneID::NONE }// 現在のシーンID
 {
 }
-
-//---------------------------------------------------------
-// デストラクタ
-//---------------------------------------------------------
-SceneManager::~SceneManager()
-{
-	Finalize();
-}
-
-//---------------------------------------------------------
-// 初期化する
-//---------------------------------------------------------
+/*
+*	@brief デストラクタ
+*	@details シーンマネージャクラスのデストラクタ
+*	@param なし
+*	@return	なし
+*/
+SceneManager::~SceneManager() { Finalize(); }
+/*
+*	@brief 初期化する
+*	@details シーンマネージャクラスの初期化
+*	@param resources 共通リソース
+*	@return なし
+*/
 void SceneManager::Initialize(CommonResources* resources)
 {
+	// リソースがnullptrでないことを確認
 	assert(resources);
-	m_commonResources = resources;
-
-	ChangeScene(IScene::SceneID::LAB);
+	// 共通リソースを取得
+	m_pCommonResources = resources;
+	// タイトルシーンに変更
+	ChangeScene(IScene::SceneID::STAGESELECT);
 }
-
-//---------------------------------------------------------
-// 更新する
-//---------------------------------------------------------
+/*
+*	@brief 更新する
+*	@details シーンマネージャクラスの更新
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
 void SceneManager::Update(float elapsedTime)
 {
-	m_currentScene->Update(elapsedTime);
-
-	// 説明用変数：次のシーン
-	const IScene::SceneID nextSceneID = m_currentScene->GetNextSceneID();
-
-	// シーンを変更しないとき
-	if (nextSceneID == IScene::SceneID::NONE) return;
-
+	// 現在のシーンを更新
+	m_pCurrentScene->Update(elapsedTime);
+	// 次のシーンIDがNONEの場合はここで処理を終わる
+	if (m_pCurrentScene->GetNextSceneID() == IScene::SceneID::NONE) return;
 	// シーンを変更するとき
-	ChangeScene(nextSceneID);
+	ChangeScene(m_pCurrentScene->GetNextSceneID());
 }
-
-//---------------------------------------------------------
-// 描画する
-//---------------------------------------------------------
+/*
+*	@brief 描画する
+*	@details シーンマネージャクラスの描画
+*	@param なし
+*	@return なし
+*/
 void SceneManager::Render()
 {
-	m_currentScene->Render();
+	// 現在のシーンを描画する
+	m_pCurrentScene->Render();
 }
-
-//---------------------------------------------------------
-// 後始末する
-//---------------------------------------------------------
+/*
+*	@brief 終了する
+*	@details シーンを削除する
+*	@param なし
+*	@return なし
+*/
 void SceneManager::Finalize()
 {
-	ReleaseScene();
+	// 現在のシーンを削除する
+	DeleteScene();
 }
 
-//---------------------------------------------------------
-// シーンを変更する
-//---------------------------------------------------------
+/*
+*	@brief シーンを変更する
+*	@details 今のシーンを消して新しいシーンを作成する
+*	@param sceneID 新しいシーンのID
+*	@return なし
+*/
 void SceneManager::ChangeScene(IScene::SceneID sceneID)
 {
-	// DeleteScene();
+	// シーンを削除する
+	DeleteScene();
+	// 新しいシーンを作成する
 	CreateScene(sceneID);
 }
 
-//---------------------------------------------------------
-// シーンを作成する
-//---------------------------------------------------------
+/*
+*	@brief シーンを作成する
+*	@details 新しいシーンを作成する
+*	@param sceneID 新しいシーンのID
+*	@return なし
+*/
 void SceneManager::CreateScene(IScene::SceneID sceneID)
 {
-	assert(m_currentScene == nullptr);
-
+	// 現在のシーンがnullptrであることを確認
+	assert(m_pCurrentScene == nullptr);
+	// シーンIDによって処理を分ける
 	switch (sceneID)
 	{
-	case IScene::SceneID::LAB:
-		m_currentScene = std::make_unique<Scene>(sceneID);
+	case IScene::SceneID::PLAY:
+		m_pCurrentScene = std::make_unique<PlayScene>(sceneID);
+		break;
+	case IScene::SceneID::STAGESELECT:
+		m_pCurrentScene = std::make_unique<StageSelectScene>(sceneID);
 		break;
 		/*case IScene::SceneID::TITLE:
 			m_currentScene = std::make_unique<TitleScene>(sceneID);
@@ -121,12 +134,13 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	}
 
 
-	m_currentScene->Initialize(m_commonResources);
+	m_pCurrentScene->Initialize(m_pCommonResources);
 	SetSceneID(sceneID);
 }
 
-void SceneManager::ReleaseScene()
+void SceneManager::DeleteScene()
 {
-	m_currentScene.reset();
+	m_pCurrentScene.reset();
 }
+
 

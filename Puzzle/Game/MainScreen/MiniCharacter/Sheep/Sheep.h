@@ -16,7 +16,7 @@
 #include "Libraries/MyLib/InputManager.h"
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
-#include "Game/Scenes/Scene/Scene.h"
+#include "Game/Scenes/PlayScene/PlayScene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterHead/MiniCharacterHead.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterHand/MiniCharacterHand.h"

@@ -197,6 +197,7 @@
     <ClInclude Include="Game\MainScreen\Items\ItemDatas\ItemDatas.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemFactory\ItemFactory.h" />
     <ClInclude Include="Game\MainScreen\Items\Medal\Medal.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
@@ -231,7 +232,9 @@
     <ClInclude Include="Game\Mouse\Mouse.h" />
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
-    <ClInclude Include="Game\Scenes\Scene\Scene.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene\StageSelectScene.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene\StageSelect\StageSelect.h" />
     <ClInclude Include="Game\Screen\Screen.h" />
     <ClInclude Include="Game\MainScreen\Tiles\TileDatas\TileDatas.h" />
     <ClInclude Include="KumachiLib\Anchor\Anchor.h" />
@@ -271,6 +274,7 @@
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
     <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
     <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
@@ -299,7 +303,9 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.cpp" />
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Game\Scenes\Scene\Scene.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene\StageSelectScene.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene\StageSelect\StageSelect.cpp" />
     <ClCompile Include="KumachiLib\AudioManager\AudioManager.cpp" />
     <ClCompile Include="KumachiLib\BinaryFile\BinaryFile.cpp" />
     <ClCompile Include="KumachiLib\CreateShader\CreateShader.cpp" />

@@ -14,7 +14,8 @@ public:
 	enum class SceneID : unsigned int
 	{
 		NONE,
-		LAB,
+		STAGESELECT,
+		PLAY,
 		/*TITLE,
 		SETTING,
 		STAGESELECT,
@@ -34,7 +35,6 @@ public:
 	virtual void Render() = 0;
 
 	virtual void Finalize() = 0;
-
 
 	virtual SceneID GetNextSceneID() const = 0;
 };

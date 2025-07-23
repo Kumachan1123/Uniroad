@@ -74,6 +74,10 @@ public:
 		const DirectX::SimpleMath::Vector2& scale,	// スケール
 		KumachiLib::ANCHOR anchor,					// アンカー
 		UIType type) override;						// UIの種類
+	// 設置済みタイルのみ描画
+	void DrawPlacedTiles() const;
+	// 設置候補のタイルのみ描画
+	void DrawNextTiles() const;
 private:
 	// private関数
 	// 更新中に定期的にUIを追加する

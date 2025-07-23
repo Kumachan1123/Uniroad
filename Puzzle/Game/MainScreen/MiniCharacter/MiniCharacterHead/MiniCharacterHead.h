@@ -12,8 +12,8 @@
 #include "Libraries/MyLib/InputManager.h"
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
+#include "Game/Scenes/PlayScene/PlayScene.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
-#include "Game/Scenes/Scene/Scene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/ILeaf.h"
 class CommonResources;
 
@@ -69,7 +69,7 @@ private:
 	// 親
 	IComponent* m_pParent;
 	// プレイヤー
-	//MiniCharacter* m_pMiniCharacter;
+	//MiniCharacterSelectStage* m_pMiniCharacter;
 	// モデル
 	DirectX::Model* m_pModel;
 	// ノード番号

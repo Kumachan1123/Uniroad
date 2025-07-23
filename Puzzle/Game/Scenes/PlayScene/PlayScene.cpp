@@ -1,18 +1,11 @@
 /*
-	@file	Scene.cpp
+	@file	PlayScene.cpp
 	@brief	一般的なシーンクラス
 */
 #include <pch.h>
-#include "Scene.h"
+#include "PlayScene.h"
 
-
-using namespace DirectX;
-using namespace DirectX::SimpleMath;
-
-
-
-
-Scene::Scene(IScene::SceneID sceneID)
+PlayScene::PlayScene(IScene::SceneID sceneID)
 	: m_pCommonResources{}
 	, m_debugCamera{}
 	, m_pFixedCamera{}
@@ -27,12 +20,14 @@ Scene::Scene(IScene::SceneID sceneID)
 {
 }
 
-Scene::~Scene()
+PlayScene::~PlayScene()
 {
 }
 
-void Scene::Initialize(CommonResources* resources)
+void PlayScene::Initialize(CommonResources* resources)
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	m_pCommonResources = resources;
 	CreateCamera();
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
@@ -93,8 +88,10 @@ void Scene::Initialize(CommonResources* resources)
 
 }
 
-void Scene::Update(float elapsedTime)
+void PlayScene::Update(float elapsedTime)
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	m_time += elapsedTime;
 	//// デバッグカメラの更新
 	//m_debugCamera->Update(m_pCommonResources->GetInputManager());
@@ -121,7 +118,7 @@ void Scene::Update(float elapsedTime)
 	// メダルカウンターの更新
 	m_pMedalCounter->Update(elapsedTime);
 }
-void Scene::Render()
+void PlayScene::Render()
 {
 	const auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
@@ -146,11 +143,12 @@ void Scene::Render()
 	m_pUIBack->Render();
 	// パネル(タイル)を描画
 	m_pPanel->DrawTiles();
+	// 設置済みタイルを描画
+	m_pNextTiles->DrawPlacedTiles();
 	// パネル(アイテム)を描画
 	m_pPanel->DrawItems();
-	// 次のタイルを描画
+	// 設置候補のタイルを描画
 	m_pNextTiles->Render();
-
 
 
 	// --- デバッグ情報（例） ---
@@ -164,16 +162,16 @@ void Scene::Render()
 	debugString->AddString("Use ViewPort.");
 }
 
-void Scene::Finalize()
+void PlayScene::Finalize()
 {
 }
 
-IScene::SceneID Scene::GetNextSceneID() const
+IScene::SceneID PlayScene::GetNextSceneID() const
 {
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		return IScene::SceneID::LAB;// ゲームオーバーシーンへ
+		return IScene::SceneID::STAGESELECT;// ゲームオーバーシーンへ
 	}
 	// シーン変更がない場合
 	return IScene::SceneID::NONE;// 何もしない
@@ -182,8 +180,10 @@ IScene::SceneID Scene::GetNextSceneID() const
 //---------------------------------------------------------
 // カメラ、ビュー行列、射影行列を作成する
 //---------------------------------------------------------
-void Scene::CreateCamera()
+void PlayScene::CreateCamera()
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	//// デバッグカメラを作成する
@@ -206,7 +206,7 @@ void Scene::CreateCamera()
 	);
 }
 
-void Scene::CreateViewports()
+void PlayScene::CreateViewports()
 {
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// --- 左側: ゲーム画面用ビューポート ---

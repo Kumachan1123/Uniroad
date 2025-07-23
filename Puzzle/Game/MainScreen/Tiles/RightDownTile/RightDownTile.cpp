@@ -34,7 +34,12 @@ void RightDownTile::OnExit(MiniCharacter* character)
 	// フラグを解除する
 	character->ResetEnteredTiles();
 }
-
+/*
+*	@brief タイルの中心に到達したときの処理
+*	@details キャラクターがタイルの中心に到達したときの処理を定義する。
+*	@param character タイルの中心に到達したキャラクターへのポインタ
+*	@return なし
+*/
 void RightDownTile::OnCenterReached(MiniCharacter* character)
 {
 	using namespace DirectX::SimpleMath;

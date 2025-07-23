@@ -17,7 +17,7 @@ MiniCharacterHead::MiniCharacterHead(IComponent* parent, const DirectX::SimpleMa
 	, m_mass{}
 	, m_MiniCharacterVelocity{}
 {
-	//m_pMiniCharacter = dynamic_cast<MiniCharacter*>(parent->GetParent()->GetParent());
+	//m_pMiniCharacter = dynamic_cast<MiniCharacterSelectStage*>(parent->GetParent()->GetParent());
 }
 
 MiniCharacterHead::~MiniCharacterHead()

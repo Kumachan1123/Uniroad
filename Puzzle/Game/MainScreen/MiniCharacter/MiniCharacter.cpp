@@ -1,5 +1,5 @@
 /*
-*	@file MiniCharacter.cpp
+*	@file MiniCharacterSelectStage.cpp
 *	@brief ミニキャラクターの処理を定義するクラス
 *	@details ミニキャラクターの位置、角度、速度などを管理し、タイルのイベントを処理する。
 */
@@ -96,7 +96,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 回転の補間
 	InterpolateRotation(currentAngle);
 	// 次に生成されるタイルを決めるために速度ベクトルを設定する
-	if (m_currentVelocity != Vector3::Zero)
+	if (m_parent->GetNextTiles() != nullptr && m_currentVelocity != Vector3::Zero)
 		m_parent->GetNextTiles()->SetMiniCharacterVelocity(m_currentVelocity);
 	// 砲塔部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
@@ -198,10 +198,14 @@ void MiniCharacter::UpdateTileEvents()
 		// タイルの中心にいる場合、移動フラグを更新
 		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
 		// 現在のタイルが存在する場合、CenterReachedイベントを呼び出す
-		if (currentTile.tileBasePtr) currentTile.tileBasePtr->OnCenterReached(this);
+		if (currentTile.tileBasePtr)
+			currentTile.tileBasePtr->OnCenterReached(this);
 		// 行と列を取得
 		int row = GetParent()->GetCSVMap()->GetRowFromPosition(m_currentPosition);
 		int col = GetParent()->GetCSVMap()->GetColFromPosition(m_currentPosition);
+		// CSVアイテムが存在する場合、アイテムを取得する
+		const auto& csvItem = GetParent()->GetCSVItem();
+		if (!csvItem)return;
 		// そのタイルにアイテムがあるなら獲得する
 		const auto& item = GetParent()->GetCSVItem()->GetItemData(row, col);
 		// アイテムが存在する場合
@@ -228,7 +232,7 @@ void MiniCharacter::UpdateTileEvents()
 		}
 	}
 	// 今いるタイルから進めるタイルを決めるために名前を保存
-	if (currentTileName != "")m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
+	if (m_parent->GetNextTiles() != nullptr && currentTileName != "")m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
 }
 /*
 *	@brief 落下タイマーを更新する
@@ -436,6 +440,10 @@ void MiniCharacter::UpdateSpeedByStartTile()
 				// ループを抜ける
 				break;
 			}
+		}
+		else
+		{
+			m_currentVelocity = Vector3::Left; // デフォルトは後ろ向き
 		}
 	}
 }

@@ -45,7 +45,7 @@
     <ClInclude Include="Libraries\MyLib\GridFloor.h" />
     <ClInclude Include="Libraries\MyLib\InputManager.h" />
     <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h" />
-    <ClInclude Include="Game\Scenes\Scene\Scene.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\MainScreen\CSVMap\CSVMap.h" />
     <ClInclude Include="Game\ControllScreen\Canvas\Canvas.h" />
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
@@ -88,6 +88,9 @@
     <ClInclude Include="Game\MainScreen\Tiles\TileDatas\TileDatas.h" />
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene\StageSelectScene.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene\StageSelect\StageSelect.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -108,7 +111,7 @@
     <ClCompile Include="Libraries\MyLib\DebugString.cpp" />
     <ClCompile Include="Libraries\MyLib\GridFloor.cpp" />
     <ClCompile Include="Libraries\MyLib\InputManager.cpp" />
-    <ClCompile Include="Game\Scenes\Scene\Scene.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\MainScreen\CSVMap\CSVMap.cpp" />
     <ClCompile Include="Game\ControllScreen\Canvas\Canvas.cpp" />
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
@@ -142,6 +145,9 @@
     <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene\StageSelectScene.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene\StageSelect\StageSelect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
