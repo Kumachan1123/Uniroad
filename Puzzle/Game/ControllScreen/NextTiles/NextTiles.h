@@ -23,6 +23,7 @@
 #include "Game/Mouse/Mouse.h"
 #include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
+#include "Game/ControllScreen/TileConnectionTable/TileConnectionTable.h"
 
 // 前方宣言
 class CommonResources;
@@ -37,8 +38,7 @@ private:
 		std::string textureKey; // テクスチャのキー
 		std::unique_ptr<Canvas> canvas; // キャンバスオブジェクト
 	};
-	// 進行方向ごとの列挙型
-	enum class Direction { UP, DOWN, LEFT, RIGHT };
+
 public:
 	// アクセサ
 	// UIにヒットしたかどうか取得
@@ -87,57 +87,57 @@ private:
 	// タイルの接続可能なタイルを取得
 	Direction GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3& velocity) const;
 private:
-	// タイル種ごとの進行可能タイル
-	std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>> tileConnectionTable =
-	{
-		{"DefaultStraightVertical",
-		{
-			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
-		}},
-		{"DefaultStraightHorizontal",
-		{
-			{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-			{Direction::RIGHT,{  "StraightHorizontal","LeftDown", "LeftUp"}}
-		}},
-		{"StraightVertical",
-		{
-			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
-		}},
-		{"StraightHorizontal",
-		{
-			{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-		}},
-		{"RightDown",
-			{
-			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-		}},
-		{"LeftDown",
-			{
-			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-			{Direction::LEFT,{"StraightHorizontal","RightDown", "RightUp"}},
-		}},
-		{"RightUp",
-			{
-			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-		}},
-		{"LeftUp",
-			{
-			{Direction::UP,{ "StraightHorizontal","RightDown", "LeftDown"}},
-			{Direction::LEFT,{   "StraightHorizontal","RightDown", "RightUp"}},
-		}},
-		{"Cross",
-				{
-			{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-			{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-			{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-			{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-		}}
-	};
+	//// タイル種ごとの進行可能タイル
+	//std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>> tileConnectionTable =
+	//{
+	//	{"DefaultStraightVertical",
+	//	{
+	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
+	//	}},
+	//	{"DefaultStraightHorizontal",
+	//	{
+	//		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
+	//		{Direction::RIGHT,{  "StraightHorizontal","LeftDown", "LeftUp"}}
+	//	}},
+	//	{"StraightVertical",
+	//	{
+	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
+	//	}},
+	//	{"StraightHorizontal",
+	//	{
+	//		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
+	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+	//	}},
+	//	{"RightDown",
+	//		{
+	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
+	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+	//	}},
+	//	{"LeftDown",
+	//		{
+	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
+	//		{Direction::LEFT,{"StraightHorizontal","RightDown", "RightUp"}},
+	//	}},
+	//	{"RightUp",
+	//		{
+	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+	//	}},
+	//	{"LeftUp",
+	//		{
+	//		{Direction::UP,{ "StraightHorizontal","RightDown", "LeftDown"}},
+	//		{Direction::LEFT,{   "StraightHorizontal","RightDown", "RightUp"}},
+	//	}},
+	//	{"Cross",
+	//			{
+	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
+	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
+	//		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
+	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+	//	}}
+	//};
 
 private:
 	// private関数
@@ -177,4 +177,6 @@ private:
 	std::string m_miniCharacterTileName;
 	// 最後に置いたタイルの名前
 	std::string m_lastPlacedTileName;
+	// 前回生成したタイル名
+	std::string m_previousTileName;
 };

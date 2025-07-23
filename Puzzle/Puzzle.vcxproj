@@ -191,6 +191,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
+    <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemDatas\ItemDatas.h" />
@@ -266,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
+    <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
     <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
     <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
