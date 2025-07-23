@@ -61,9 +61,6 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\ILeaf.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacter.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.h" />
-    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.h" />
-    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.h" />
-    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.h" />
     <ClInclude Include="KumachiLib\Easing\Easing.h" />
     <ClInclude Include="Game\MainScreen\Tiles\TileBase\TileBase.h" />
     <ClInclude Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.h" />
@@ -123,9 +120,6 @@
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacter.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.cpp" />
-    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBody\MiniCharacterBody.cpp" />
-    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHand\MiniCharacterHand.cpp" />
-    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterHead\MiniCharacterHead.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\StraightHorizontalTile\StraightHorizontalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\TileFactory\TileFactory.cpp" />

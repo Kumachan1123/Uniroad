@@ -140,9 +140,9 @@ void NextTiles::Update(const float elapsedTime)
 		}
 	}
 	// 経過時間を加算
-	m_time += elapsedTime;
+	if (!m_pMouse->IsMouseDrag())m_time += elapsedTime;
 	// 10秒ごとにUIを追加する
-	if (m_time >= 2.0f)
+	if (m_time >= 1.5f)
 	{
 		// UIを追加
 		AddNextTiles();
@@ -186,6 +186,12 @@ void NextTiles::Render()
 		// 背景の描画
 		m_pBack[i].canvas->Render();
 	}
+	// タイルの数だけ繰り返す
+	for (unsigned int i = 0; i < m_pTile.size(); i++)
+	{
+		// タイルの描画
+		m_pTile[i].canvas->Render();
+	}
 }
 /*
 *	@brief 設置済みタイルを描画
@@ -201,12 +207,7 @@ void NextTiles::DrawPlacedTiles() const
 		// 設置済みタイルの描画
 		m_pPlacedTile[i].canvas->Render();
 	}
-	// タイルの数だけ繰り返す
-	for (unsigned int i = 0; i < m_pTile.size(); i++)
-	{
-		// タイルの描画
-		m_pTile[i].canvas->Render();
-	}
+
 }
 
 
@@ -253,8 +254,8 @@ void NextTiles::AddNextTiles()
 {
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
-	// UIの数が5個以上なら追加しない
-	if (m_pTile.size() == 5)return;
+	//// UIの数が5個以上なら追加しない
+	//if (m_pTile.size() == 5)return;
 	// 基準となるタイル
 	std::string tileName;
 	// 最後に置いたタイルがない場合は今ミニキャラがいるタイルを基準にする
@@ -278,6 +279,14 @@ void NextTiles::AddNextTiles()
 	const float positionX = 290.0f;
 	// 位置を設定
 	Vector2 position(positionX, positionY);
+	// 5個たまってたら一番古いタイルを消す
+	if (m_pTile.size() == 5)
+	{
+		// 先頭を削除（eraseで前詰め）
+		m_pTile.erase(m_pTile.begin());
+		// 初期位置も同様
+		m_initialPositions.erase(m_initialPositions.begin());
+	}
 	// UI追加
 	Add(availableTiles[randomIndex]
 		, position
@@ -286,7 +295,12 @@ void NextTiles::AddNextTiles()
 		, UIType::TILE);
 	// 初期位置を保存
 	m_initialPositions.push_back(position);
-
+	// 位置を詰め直す（必要なら全タイル再配置も検討）
+	for (size_t i = 0; i < m_pTile.size(); ++i) {
+		float newY = 480.0f - (float)i * 90.0f;
+		m_pTile[i].canvas->SetPosition(Vector2(positionX, newY));
+		m_initialPositions[i] = Vector2(positionX, newY);
+	}
 
 }
 /*
