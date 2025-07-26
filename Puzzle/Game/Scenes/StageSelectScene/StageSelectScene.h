@@ -8,6 +8,9 @@
 #include <memory>
 // DirectX
 #include <DeviceResources.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <DirectXColors.h>
 // 外部ライブラリ
 #include <Libraries/MyLib/DebugCamera.h>
 #include <Libraries/MyLib/DebugString.h>
@@ -26,7 +29,11 @@
 // 前方宣言
 class CommonResources;
 class MiniCharacterBase;
-
+namespace mylib
+{
+	class DebugCamera;
+	class GridFloor;
+}
 // ステージセレクトシーンクラス
 class StageSelectScene : public IScene
 {
@@ -51,6 +58,22 @@ private:
 	void CreateCamera();
 	// 各種ビューポートを設定する
 	void CreateViewports();
+	// マウス座標からワールドレイを生成
+	DirectX::SimpleMath::Ray ScreenPointToRay(
+		int mouseX, int mouseY,
+		int screenWidth, int screenHeight,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& projection);
+	// Planeとレイの交差判定
+	bool RayIntersectPlane(
+		const DirectX::SimpleMath::Ray& ray,
+		const DirectX::SimpleMath::Plane& plane,
+		DirectX::SimpleMath::Vector3& outIntersection);
+	// 線描画（デバッグ）
+	void DrawDebugLine(const DirectX::SimpleMath::Vector3 p[4],
+		const DirectX::SimpleMath::Color& color,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj);
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -73,5 +96,11 @@ private:
 	IScene::SceneID m_nextSceneID;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
+	// グリッド床
+	std::unique_ptr<mylib::GridFloor> m_pGridFloor;
+	// デバッグ矩形描画フラグ
+	bool m_bDrawDebugPlane;
+	// 頂点配列
+	DirectX::SimpleMath::Vector3 m_debugPlaneVerticesPosition[4];
 };
 

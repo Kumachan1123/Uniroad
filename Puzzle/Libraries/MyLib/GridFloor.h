@@ -26,8 +26,8 @@ namespace mylib
 			ID3D11DeviceContext* context,
 			DirectX::CommonStates* states,
 			const DirectX::FXMVECTOR& color = DirectX::Colors::White,
-			float size = 50.0f,	// 床の大きさ
-			size_t divs = 25	// 分割数
+			float size = 13.5f,	// 床の大きさ
+			size_t divs = 7	// 分割数
 		);
 
 		// デストラクタ

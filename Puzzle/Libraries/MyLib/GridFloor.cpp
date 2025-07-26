@@ -63,7 +63,7 @@ void mylib::GridFloor::Render(
 
 	// ブレンドステート、デプスステンシルステート、カリングを指定する
 	context->OMSetBlendState(m_commonStates->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(m_commonStates->DepthDefault(), 0);
+	context->OMSetDepthStencilState(m_commonStates->DepthNone(), 0);
 	context->RSSetState(m_commonStates->CullNone());
 
 	// 変換行列を設定する
