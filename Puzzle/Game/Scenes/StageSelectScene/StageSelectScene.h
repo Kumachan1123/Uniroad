@@ -25,6 +25,7 @@
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterSelectStage/MiniCharacterSelectStage.h"
 #include "Game/Scenes/StageSelectScene/StageSelect/StageSelect.h"
+#include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
 
 // 前方宣言
 class CommonResources;
@@ -56,24 +57,6 @@ public:
 private:
 	// カメラに関する設定をする
 	void CreateCamera();
-	// 各種ビューポートを設定する
-	void CreateViewports();
-	// マウス座標からワールドレイを生成
-	DirectX::SimpleMath::Ray ScreenPointToRay(
-		int mouseX, int mouseY,
-		int screenWidth, int screenHeight,
-		const DirectX::SimpleMath::Matrix& view,
-		const DirectX::SimpleMath::Matrix& projection);
-	// Planeとレイの交差判定
-	bool RayIntersectPlane(
-		const DirectX::SimpleMath::Ray& ray,
-		const DirectX::SimpleMath::Plane& plane,
-		DirectX::SimpleMath::Vector3& outIntersection);
-	// 線描画（デバッグ）
-	void DrawDebugLine(const DirectX::SimpleMath::Vector3 p[4],
-		const DirectX::SimpleMath::Color& color,
-		const DirectX::SimpleMath::Matrix& view,
-		const DirectX::SimpleMath::Matrix& proj);
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -86,6 +69,8 @@ private:
 	std::unique_ptr<StageSelect> m_pStageSelect;
 	// CSVマップ
 	std::unique_ptr<CSVMap> m_pCSVMap;
+	// 平面
+	std::unique_ptr<PlaneArea> m_pPlaneArea;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列
@@ -98,9 +83,5 @@ private:
 	bool m_isChangeScene;
 	// グリッド床
 	std::unique_ptr<mylib::GridFloor> m_pGridFloor;
-	// デバッグ矩形描画フラグ
-	bool m_bDrawDebugPlane;
-	// 頂点配列
-	DirectX::SimpleMath::Vector3 m_debugPlaneVerticesPosition[4];
 };
 
