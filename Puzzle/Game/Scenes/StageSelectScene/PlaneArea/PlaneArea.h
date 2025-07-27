@@ -33,6 +33,8 @@ public:
 	void SetView(const DirectX::SimpleMath::Matrix& view) { m_view = view; }
 	// 射影行列を設定
 	void SetProjection(const DirectX::SimpleMath::Matrix& projection) { m_projection = projection; }
+	// 平面の頂点配列を配列に登録
+	void AddPlane(const std::vector<DirectX::SimpleMath::Vector3>& vertices) { m_debugPlaneVerticesPosition.push_back(vertices); }
 public:
 	// public関数
 	// コンストラクタ
@@ -58,14 +60,19 @@ private:
 		const DirectX::SimpleMath::Ray& ray,
 		const DirectX::SimpleMath::Plane& plane,
 		DirectX::SimpleMath::Vector3& outIntersection);
+	bool RayIntersectPlane(const DirectX::SimpleMath::Ray& ray,
+		const DirectX::SimpleMath::Plane& plane,
+		const std::vector<DirectX::SimpleMath::Vector3>& rectVertices,
+		DirectX::SimpleMath::Vector3& outIntersection);
 	// 線描画（デバッグ）
-	void DrawDebugLine(const DirectX::SimpleMath::Vector3 p[4]);
+	void DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& vertices);
 private:
 	// privateメンバ変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// 頂点配列
-	DirectX::SimpleMath::Vector3 m_debugPlaneVerticesPosition[4];
+	//DirectX::SimpleMath::Vector3 m_debugPlaneVerticesPosition[4];
+	std::vector<std::vector<DirectX::SimpleMath::Vector3>> m_debugPlaneVerticesPosition;
 	// 色
 	DirectX::SimpleMath::Color m_color;
 	// 射影行列

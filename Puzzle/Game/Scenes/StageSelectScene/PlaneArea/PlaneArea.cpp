@@ -65,18 +65,10 @@ void PlaneArea::Initialize()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// 頂点設定
-	Vector3 p0(-1, 0, -1);
-	Vector3 p1(1, 0, -1);
-	Vector3 p2(1, 0, 1);
-	Vector3 p3(-1, 0, 1);
+
 	// 色設定
 	m_color = Color(1, 0, 0);
-	// 各頂点を配列に登録
-	m_debugPlaneVerticesPosition[0] = p0;
-	m_debugPlaneVerticesPosition[1] = p1;
-	m_debugPlaneVerticesPosition[2] = p2;
-	m_debugPlaneVerticesPosition[3] = p3;
+
 }
 /*
 *	@brief 更新
@@ -107,7 +99,14 @@ void PlaneArea::Update(float elapsedTime)
 	Plane plane(Vector3(0.0f, 1.0f, 0.0f), 0.0f); // Y=0の平面
 	// レイと平面の交差判定
 	Vector3 intersection;
-	bool hit = RayIntersectPlane(ray, plane, intersection);
+	// 当たり判定を初期化
+	bool hit = false;
+	// 平面の頂点配列をループして交差判定
+	for (const auto& rect : m_debugPlaneVerticesPosition)
+	{
+		// レイと平面の交差判定を行い、当たっていたらヒットフラグをtrueにする
+		if (RayIntersectPlane(ray, plane, rect, intersection))hit = true;
+	}
 	// --- デバッグ情報---
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// レイと当たったかを表示
@@ -122,7 +121,8 @@ void PlaneArea::Update(float elapsedTime)
 void PlaneArea::Render()
 {
 	// 平面を描画
-	DrawDebugLine(m_debugPlaneVerticesPosition);
+	for (const auto& vertices : m_debugPlaneVerticesPosition)
+		DrawDebugLine(vertices);
 }
 /*
 *	@brief 終了処理
@@ -163,44 +163,90 @@ DirectX::SimpleMath::Ray PlaneArea::ScreenPointToRay(int mouseX, int mouseY, int
 	dir.Normalize();
 	return Ray(rayStartWorld, dir);
 }
+
 /*
-*	@brief Planeとレイの交差判定
-*	@details レイと平面の交差判定を行う
+*	@brief Planeとレイの交差判定（矩形領域対応版）
+*	@details レイと平面の交差判定を行い、交点が矩形上か判定する
 *	@param ray レイ
-*	@param planePoint 平面上の点
-*	@param planeNormal 平面の法線
+*	@param plane 平面
+*	@param rectVertices 矩形の4頂点（順番は一周するように）
 *	@param outIntersection 交差点の出力
 *	@return 交差したかどうかの真偽値
 */
-bool PlaneArea::RayIntersectPlane(const DirectX::SimpleMath::Ray& ray, const DirectX::SimpleMath::Plane& plane, DirectX::SimpleMath::Vector3& outIntersection)
+bool PlaneArea::RayIntersectPlane(
+	const DirectX::SimpleMath::Ray& ray,
+	const DirectX::SimpleMath::Plane& plane,
+	const std::vector<DirectX::SimpleMath::Vector3>& rectVertices,
+	DirectX::SimpleMath::Vector3& outIntersection)
 {
+	// DirectX::SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
+	// 平面との交点計算
+	// 平面の法線を取得
 	const Vector3& n = plane.Normal();
+	// 平面のD値を取得
 	float d = plane.D();
-
+	// レイの方向ベクトルと平面の法線の内積を計算
 	float denom = ray.direction.Dot(n);
-	if (fabs(denom) < 1e-6f) return false; // 平行
-
-	// 平面上の点は -d * n で取れる（ax+by+cz+d=0より）
+	// 交差判定
+	if (fabs(denom) < 1e-6f) return false;
+	// 平面のD値を使って平面上の点を計算
 	Vector3 planePoint = -d * n;
-
+	// レイと平面の交点を計算
 	float t = (planePoint - ray.position).Dot(n) / denom;
+	// 交点がレイの前方にあるか判定(falseの場合は平面の裏側)
 	if (t < 0) return false;
-
+	// 交点の位置を計算
 	outIntersection = ray.position + t * ray.direction;
-	if (outIntersection.x < -1.0f || outIntersection.x > 1.0f ||
-		outIntersection.z < -1.0f || outIntersection.z > 1.0f)
+	// 交点が矩形上か判定
+	// 三角形2つに分割して両方で判定
+	if (rectVertices.size() >= 4)
 	{
-		return false;
+		// 矩形の4頂点を取得
+		const Vector3& v0 = rectVertices[0];
+		const Vector3& v1 = rectVertices[1];
+		const Vector3& v2 = rectVertices[2];
+		const Vector3& v3 = rectVertices[3];
+		// 2Dで内包判定
+		auto PointInTriangle = [](const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c)
+			{
+				// 三角形の頂点a, b, cと点pが与えられたとき、点pが三角形内にあるかを判定
+				Vector3 v0 = c - a;// 三角形の辺aからcへのベクトル
+				Vector3 v1 = b - a;// 三角形の辺aからbへのベクトル
+				Vector3 v2 = p - a;// 三角形の頂点aから点pへのベクトル
+				// ベクトルの内積を計算
+				float dot00 = v0.Dot(v0);// 辺aからcへのベクトルの長さの二乗
+				float dot01 = v0.Dot(v1);// 辺aからcへのベクトルと辺aからbへのベクトルの内積
+				float dot02 = v0.Dot(v2);// 辺aからcへのベクトルと点pへのベクトルの内積
+				float dot11 = v1.Dot(v1);// 辺aからbへのベクトルの長さの二乗
+				float dot12 = v1.Dot(v2);// 辺aからbへのベクトルと点pへのベクトルの内積
+				// バリデーション
+				float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);// 逆数を計算
+				float u = (dot11 * dot02 - dot01 * dot12) * invDenom;// uパラメータを計算
+				float v = (dot00 * dot12 - dot01 * dot02) * invDenom;// vパラメータを計算
+				// u, vが0以上かつu + vが1以下ならば、点pは三角形内にある
+				return (u >= 0) && (v >= 0) && (u + v <= 1);
+			};
+		// rectVertices[0,1,2]三角形 or [0,2,3]三角形のどちらかに入ってるか判定
+		if (PointInTriangle(outIntersection, v0, v1, v2) ||// rectVertices[0,1,2]三角形
+			PointInTriangle(outIntersection, v0, v2, v3))// rectVertices[0,2,3]三角形
+			return true;// 矩形内にある
 	}
-
-	return true;
+	// 矩形の頂点が4つ未満の場合は、矩形として扱わない
+	return false;
 }
-
-void PlaneArea::DrawDebugLine(const DirectX::SimpleMath::Vector3 p[4])
+/*
+*	@brief ワイヤーフレーム矩形を描画
+*	@details ワイヤーフレーム矩形を描画する
+*	@param p 矩形の4つの頂点
+*	@return なし
+*/
+void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& vertices)
 {
+	// DirectXとSimpleMath名前空間を使用
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// デバイスコンテキストを取得
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// ベーシックエフェクトにワールド行列を設定
 	m_pBasicEffect->SetWorld(Matrix::Identity);
@@ -218,10 +264,10 @@ void PlaneArea::DrawDebugLine(const DirectX::SimpleMath::Vector3 p[4])
 	// 描画開始
 	m_pBatch->Begin();
 	// 各頂点を描画
-	m_pBatch->DrawLine(VertexPositionColor(p[0], m_color), VertexPositionColor(p[1], m_color));
-	m_pBatch->DrawLine(VertexPositionColor(p[1], m_color), VertexPositionColor(p[2], m_color));
-	m_pBatch->DrawLine(VertexPositionColor(p[2], m_color), VertexPositionColor(p[3], m_color));
-	m_pBatch->DrawLine(VertexPositionColor(p[3], m_color), VertexPositionColor(p[0], m_color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[0], m_color), VertexPositionColor(vertices[1], m_color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[1], m_color), VertexPositionColor(vertices[2], m_color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[2], m_color), VertexPositionColor(vertices[3], m_color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[3], m_color), VertexPositionColor(vertices[0], m_color));
 	// 描画終了
 	m_pBatch->End();
 }

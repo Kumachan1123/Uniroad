@@ -73,6 +73,32 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pStageSelect->Initialize();
 	// ïΩñ ÇçÏê¨Ç∑ÇÈ
 	m_pPlaneArea = std::make_unique<PlaneArea>(m_pCommonResources);
+	// í∏ì_ê›íË
+	std::vector<Vector3> vertices1 =
+	{
+		Vector3(-1, 0, -1),
+		Vector3(1, 0, -1),
+		Vector3(1, 0, 1),
+		Vector3(-1, 0, 1)
+	};
+	std::vector<Vector3> vertices2 =
+	{
+		Vector3(-5, 0, -1),
+		Vector3(-3, 0, -1),
+		Vector3(-3, 0, 1),
+		Vector3(-5, 0, 1)
+	};
+	std::vector<Vector3> vertices3 =
+	{
+		Vector3(3, 0, -1),
+		Vector3(5, 0, -1),
+		Vector3(5, 0, 1),
+		Vector3(3, 0, 1)
+	};
+	// ïΩñ Ç…í∏ì_îzóÒÇìoò^
+	m_pPlaneArea->AddPlane(vertices1);
+	m_pPlaneArea->AddPlane(vertices2);
+	m_pPlaneArea->AddPlane(vertices3);
 	// ïΩñ Çèâä˙âªÇ∑ÇÈ
 	m_pPlaneArea->Initialize();
 }
