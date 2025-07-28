@@ -76,24 +76,24 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 頂点設定
 	std::vector<Vector3> vertices1 =
 	{
-		Vector3(-5, 0, -1),
-		Vector3(-3, 0, -1),
-		Vector3(-3, 0, 1),
-		Vector3(-5, 0, 1)
+		Vector3(-5.0f, 0.5f, 0.0f),
+		Vector3(-3.0f, 0.5f, 0.0f),
+		Vector3(-3.0f, 0.5f, 2.0f),
+		Vector3(-5.0f, 0.5f, 2.0f)
 	};
 	std::vector<Vector3> vertices2 =
 	{
-		Vector3(-1, 0, -1),
-		Vector3(1, 0, -1),
-		Vector3(1, 0, 1),
-		Vector3(-1, 0, 1)
+		Vector3(-1.0f,0.5f, 0.0f),
+		Vector3(1.0f,0.5f, 0.0f),
+		Vector3(1.0f,0.5f, 2.0f),
+		Vector3(-1.0f,0.5f, 2.0f)
 	};
 	std::vector<Vector3> vertices3 =
 	{
-		Vector3(3, 0, -1),
-		Vector3(5, 0, -1),
-		Vector3(5, 0, 1),
-		Vector3(3, 0, 1)
+		Vector3(3.0f,0.5f, 0.0f),
+		Vector3(5.0f,0.5f, 0.0f),
+		Vector3(5.0f,0.5f, 2.0f),
+		Vector3(3.0f,0.5f, 2.0f)
 	};
 	// 平面に頂点配列を登録
 	m_pPlaneArea->AddPlane(vertices1);
@@ -116,9 +116,10 @@ void StageSelectScene::Update(float elapsedTime)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 固定カメラの更新
-	m_pFixedCamera->Update();
+	//m_pFixedCamera->Update();
+	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_pFixedCamera->GetViewMatrix();
+	m_view = m_debugCamera->GetViewMatrix();
 	// 座標を初期化
 	Vector3 position(0.0f, 0.0f, 0.0f);
 	// 角度を初期化
@@ -211,12 +212,12 @@ void StageSelectScene::CreateCamera()
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	//// デバッグカメラを作成する
-	//m_debugCamera = std::make_unique<mylib::DebugCamera>();
-	//m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
-	// 固定カメラを作成する
-	m_pFixedCamera = std::make_unique<FixedCamera>();
-	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
+	// デバッグカメラを作成する
+	m_debugCamera = std::make_unique<mylib::DebugCamera>();
+	m_debugCamera->Initialize(rect.right, rect.bottom);
+	//// 固定カメラを作成する
+	//m_pFixedCamera = std::make_unique<FixedCamera>();
+	//m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
 
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(

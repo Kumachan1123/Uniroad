@@ -67,6 +67,7 @@ private:
 	CommonResources* m_pCommonResources;
 	// カメラ
 	std::unique_ptr<FixedCamera> m_pFixedCamera;
+	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// ミニキャラベース
 	std::unique_ptr<MiniCharacterBase> m_pMiniCharacterBase;
 	// ステージセレクト
