@@ -18,7 +18,29 @@ PlaneArea::PlaneArea(CommonResources* resources)
 	, m_pInputLayout(nullptr) // 入力レイアウトへのポインタ
 	, m_view(DirectX::SimpleMath::Matrix::Identity) // ビュー行列
 	, m_projection(DirectX::SimpleMath::Matrix::Identity) // 射影行列
-	, m_color(DirectX::SimpleMath::Color(1, 0, 1)) // 色
+	, m_hitPlaneIndex(-1) // 当たった平面の番号
+	, m_isHitPlane(false) // 何らかの平面と当たっているか
+{
+
+}
+/*
+*	@brief デストラクタ
+*	@details 平面エリアクラスのデストラクタ
+*	@param なし
+*	@return なし
+*/
+PlaneArea::~PlaneArea()
+{
+	// 終了処理
+	Finalize();
+}
+/*
+*	@brief 初期化
+*	@details 平面エリアクラスの初期化を行う
+*	@param なし
+*	@return なし
+*/
+void PlaneArea::Initialize()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
@@ -43,31 +65,7 @@ PlaneArea::PlaneArea(CommonResources* resources)
 		VertexPositionColor::InputElementCount,
 		shaderByteCode, byteCodeLength,
 		&m_pInputLayout);
-}
-/*
-*	@brief デストラクタ
-*	@details 平面エリアクラスのデストラクタ
-*	@param なし
-*	@return なし
-*/
-PlaneArea::~PlaneArea()
-{
-	// 終了処理
-	Finalize();
-}
-/*
-*	@brief 初期化
-*	@details 平面エリアクラスの初期化を行う
-*	@param なし
-*	@return なし
-*/
-void PlaneArea::Initialize()
-{
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
 
-	// 色設定
-	m_color = Color(1, 0, 0);
 
 }
 /*
@@ -100,17 +98,16 @@ void PlaneArea::Update(float elapsedTime)
 	// レイと平面の交差判定
 	Vector3 intersection;
 	// 当たり判定を初期化
-	bool hit = false;
+	m_isHitPlane = false;
+	// 当たった平面の番号を-1にする
+	SetHitPlaneIndex(-1);
 	// 平面の頂点配列をループして交差判定
-	for (const auto& rect : m_debugPlaneVerticesPosition)
+	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); ++i)
 	{
 		// レイと平面の交差判定を行い、当たっていたらヒットフラグをtrueにする
-		if (RayIntersectPlane(ray, plane, rect, intersection))hit = true;
+		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))m_isHitPlane = true;
 	}
-	// --- デバッグ情報---
-	const auto debugString = m_pCommonResources->GetDebugString();
-	// レイと当たったかを表示
-	debugString->AddString("Ray Hit:%s", hit ? "true" : "false");
+
 }
 /*
 *	@brief 描画
@@ -121,8 +118,8 @@ void PlaneArea::Update(float elapsedTime)
 void PlaneArea::Render()
 {
 	// 平面を描画
-	for (const auto& vertices : m_debugPlaneVerticesPosition)
-		DrawDebugLine(vertices);
+	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); ++i)
+		DrawDebugLine(m_debugPlaneVerticesPosition[i], m_debugPlaneVerticesColor[i]);
 }
 /*
 *	@brief 終了処理
@@ -174,11 +171,15 @@ DirectX::SimpleMath::Ray PlaneArea::ScreenPointToRay(int mouseX, int mouseY, int
 *	@return 交差したかどうかの真偽値
 */
 bool PlaneArea::RayIntersectPlane(
+	int index,
 	const DirectX::SimpleMath::Ray& ray,
 	const DirectX::SimpleMath::Plane& plane,
 	const std::vector<DirectX::SimpleMath::Vector3>& rectVertices,
 	DirectX::SimpleMath::Vector3& outIntersection)
 {
+	// --- デバッグ情報---
+	const auto debugString = m_pCommonResources->GetDebugString();
+
 	// DirectX::SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 平面との交点計算
@@ -230,18 +231,29 @@ bool PlaneArea::RayIntersectPlane(
 		// rectVertices[0,1,2]三角形 or [0,2,3]三角形のどちらかに入ってるか判定
 		if (PointInTriangle(outIntersection, v0, v1, v2) ||// rectVertices[0,1,2]三角形
 			PointInTriangle(outIntersection, v0, v2, v3))// rectVertices[0,2,3]三角形
-			return true;// 矩形内にある
+		{
+			// 当たった平面の色を白にする
+			m_debugPlaneVerticesColor[index] = Color(1, 1, 1);
+			// 当たった平面の番号を記録
+			SetHitPlaneIndex(index);
+			// 矩形内にある
+			return true;
+		}
 	}
+	// 当たってない平面の色は赤に戻す
+	m_debugPlaneVerticesColor[index] = Color(1, 0, 0);
+
 	// 矩形の頂点が4つ未満の場合は、矩形として扱わない
 	return false;
 }
 /*
 *	@brief ワイヤーフレーム矩形を描画
 *	@details ワイヤーフレーム矩形を描画する
-*	@param p 矩形の4つの頂点
+*	@param vertices 頂点の配列（4つの頂点）
+*	@param color 描画する色
 *	@return なし
 */
-void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& vertices)
+void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& vertices, const DirectX::SimpleMath::Color& color)
 {
 	// DirectXとSimpleMath名前空間を使用
 	using namespace DirectX;
@@ -264,10 +276,10 @@ void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& v
 	// 描画開始
 	m_pBatch->Begin();
 	// 各頂点を描画
-	m_pBatch->DrawLine(VertexPositionColor(vertices[0], m_color), VertexPositionColor(vertices[1], m_color));
-	m_pBatch->DrawLine(VertexPositionColor(vertices[1], m_color), VertexPositionColor(vertices[2], m_color));
-	m_pBatch->DrawLine(VertexPositionColor(vertices[2], m_color), VertexPositionColor(vertices[3], m_color));
-	m_pBatch->DrawLine(VertexPositionColor(vertices[3], m_color), VertexPositionColor(vertices[0], m_color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[0], color), VertexPositionColor(vertices[1], color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[1], color), VertexPositionColor(vertices[2], color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[2], color), VertexPositionColor(vertices[3], color));
+	m_pBatch->DrawLine(VertexPositionColor(vertices[3], color), VertexPositionColor(vertices[0], color));
 	// 描画終了
 	m_pBatch->End();
 }

@@ -6,17 +6,17 @@
 #include "PlayScene.h"
 
 PlayScene::PlayScene(IScene::SceneID sceneID)
-	: m_pCommonResources{}
-	, m_debugCamera{}
-	, m_pFixedCamera{}
-	, m_projectionGame{}
-	, m_projectionControll{}
-	, m_time{ 0.0f }
-	, m_isChangeScene{}
-	, m_viewPortGame{}
-	, m_viewPortControll{}
-	, m_nowSceneID{ sceneID }// 現在のシーンID
-
+	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	, m_debugCamera(nullptr) // デバッグカメラへのポインタ
+	, m_pFixedCamera(nullptr) // 固定カメラへのポインタ
+	, m_projectionGame() // ゲーム画面用の射影行列
+	, m_projectionControll() // 操作画面用の射影行列
+	, m_time(0.0f) // 経過時間
+	, m_isChangeScene(false) // シーン変更フラグ
+	, m_viewPortGame() // ゲーム画面用のビューポート
+	, m_viewPortControll() // 操作画面用のビューポート
+	, m_nowSceneID(sceneID)// 現在のシーンID
+	, m_stageNumber(-1) // ステージ番号
 {
 }
 
@@ -39,14 +39,16 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMouse->Initialize(m_pCommonResources);
 	// マウスにビューポートを設定
 	m_pMouse->SetViewport(m_viewPortControll);
+	// ステージ番号を文字列にする
+	std::string stagePath = std::to_string(m_stageNumber);
 	// マップ生成
 	m_pCSVMap = std::make_unique<CSVMap>(m_pCommonResources);
 	// CSVマップを読み込む
-	m_pCSVMap->LoadMap("Resources/Map/test.csv");
+	m_pCSVMap->LoadMap("Resources/Map/" + stagePath + ".csv");
 	// CSVアイテムを作成する
 	m_pCSVItem = std::make_unique<CSVItem>(m_pCommonResources);
 	// CSVアイテムを読み込む
-	m_pCSVItem->LoadItem("Resources/Item/test.csv");
+	m_pCSVItem->LoadItem("Resources/Item/" + stagePath + ".csv");
 	// ミニキャラを作成する
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
 	// ミニキャラベースにCSVマップを設定

@@ -18,7 +18,7 @@ StageSelectScene::StageSelectScene(IScene::SceneID sceneID)
 	, m_view() // ビュー行列
 	, m_projection() // 射影行列
 	, m_isChangeScene(false) // シーン変更フラグ
-	, m_stageNumber(0) // ステージ番号
+	, m_stageNumber(-1) // ステージ番号
 	, m_nextSceneID(sceneID) // 次のシーンID
 {
 }
@@ -76,17 +76,17 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 頂点設定
 	std::vector<Vector3> vertices1 =
 	{
-		Vector3(-1, 0, -1),
-		Vector3(1, 0, -1),
-		Vector3(1, 0, 1),
-		Vector3(-1, 0, 1)
-	};
-	std::vector<Vector3> vertices2 =
-	{
 		Vector3(-5, 0, -1),
 		Vector3(-3, 0, -1),
 		Vector3(-3, 0, 1),
 		Vector3(-5, 0, 1)
+	};
+	std::vector<Vector3> vertices2 =
+	{
+		Vector3(-1, 0, -1),
+		Vector3(1, 0, -1),
+		Vector3(1, 0, 1),
+		Vector3(-1, 0, 1)
 	};
 	std::vector<Vector3> vertices3 =
 	{
@@ -97,8 +97,11 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	};
 	// 平面に頂点配列を登録
 	m_pPlaneArea->AddPlane(vertices1);
+	m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
 	m_pPlaneArea->AddPlane(vertices2);
+	m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
 	m_pPlaneArea->AddPlane(vertices3);
+	m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
 }
@@ -128,11 +131,16 @@ void StageSelectScene::Update(float elapsedTime)
 	m_pPlaneArea->SetProjection(m_projection);
 	// 平面を更新
 	m_pPlaneArea->Update(elapsedTime);
-
-	// キーステートを取得
-	const auto& keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
-	// スペースキーが押されたらシーン変更フラグを立てる
-	if (keyState.Space)m_isChangeScene = true;
+	// マウスステートを取得
+	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	// 左クリックを検知
+	if (mouseState.leftButton && m_pPlaneArea->GetHitPlaneIndex() > -1)
+	{
+		// ステージ番号を取得
+		m_stageNumber = m_pPlaneArea->GetHitPlaneIndex();
+		// シーン遷移
+		m_isChangeScene = true;
+	}
 
 
 }
@@ -152,12 +160,14 @@ void StageSelectScene::Render()
 	m_pStageSelect->Render(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
-	//// グリッド床の描画
-	//m_pGridFloor->Render(context, m_view, m_projection);
 	// 平面の描画
 	m_pPlaneArea->Render();
-	// --- デバッグ情報（例） ---
+	// --- デバッグ情報---
 	const auto debugString = m_pCommonResources->GetDebugString();
+	// レイと当たったかを表示
+	debugString->AddString("Ray Hit:%s", m_pPlaneArea->IsHitPlane() ? "true" : "false");
+	// レイと当たったかを表示
+	debugString->AddString("HitRayIndex:%i", m_pPlaneArea->GetHitPlaneIndex());
 }
 
 /*

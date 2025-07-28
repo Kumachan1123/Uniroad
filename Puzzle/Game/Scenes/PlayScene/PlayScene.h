@@ -60,6 +60,10 @@ public:
 	void Finalize()override;
 	// シーンIDを取得する
 	SceneID GetNextSceneID() const override;
+	// ステージ番号を取得する
+	int GetStageNumber() const override { return m_stageNumber; }
+	// ステージ番号を設定する
+	void SetStageNumber(int stageNumber) override { m_stageNumber = stageNumber; }
 private:
 	// カメラに関する設定をする
 	void CreateCamera();
@@ -104,5 +108,6 @@ private:
 	float m_time;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
-
+	// ステージ番号
+	int m_stageNumber;
 };
