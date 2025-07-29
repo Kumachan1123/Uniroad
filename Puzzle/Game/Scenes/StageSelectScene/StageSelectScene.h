@@ -20,6 +20,7 @@
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
 #include "Game/CommonResources/CommonResources.h"
+#include "KumachiLib/MouseClick/MouseClick.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"

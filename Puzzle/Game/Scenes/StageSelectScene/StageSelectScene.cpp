@@ -132,10 +132,9 @@ void StageSelectScene::Update(float elapsedTime)
 	m_pPlaneArea->SetProjection(m_projection);
 	// 平面を更新
 	m_pPlaneArea->Update(elapsedTime);
-	// マウスステートを取得
 	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// 左クリックを検知
-	if (mouseState.leftButton && m_pPlaneArea->GetHitPlaneIndex() > -1)
+	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > -1)
 	{
 		// ステージ番号を取得
 		m_stageNumber = m_pPlaneArea->GetHitPlaneIndex();

@@ -243,6 +243,7 @@
     <ClInclude Include="KumachiLib\DrawPolygon\DrawPolygon.h" />
     <ClInclude Include="KumachiLib\Easing\Easing.h" />
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
+    <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
@@ -308,6 +309,7 @@
     <ClCompile Include="KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="KumachiLib\DrawPolygon\DrawPolygon.cpp" />
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
+    <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />
