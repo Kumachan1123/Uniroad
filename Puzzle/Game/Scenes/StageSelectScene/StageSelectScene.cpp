@@ -18,6 +18,7 @@ StageSelectScene::StageSelectScene(IScene::SceneID sceneID)
 	, m_view() // ビュー行列
 	, m_projection() // 射影行列
 	, m_isChangeScene(false) // シーン変更フラグ
+	, m_isMiniCharacterMove(false) // ミニキャラが移動したかどうか
 	, m_stageNumber(-1) // ステージ番号
 	, m_nextSceneID(sceneID) // 次のシーンID
 {
@@ -55,18 +56,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	const auto states = m_pCommonResources->GetCommonStates();
 	// グリッド床を作成する
 	m_pGridFloor = std::make_unique<mylib::GridFloor>(device, context, states);
-	// ミニキャラを作成する
-	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
-	// ミニキャラベースにCSVマップを設定
-	m_pMiniCharacterBase->SetCSVMap(nullptr);
-	// ミニキャラベースにCSVアイテムを設定
-	m_pMiniCharacterBase->SetCSVItem(nullptr);
-	// ミニキャラベースに次のタイルを設定
-	m_pMiniCharacterBase->SetNextTiles(nullptr);
-	// ミニキャラを初期化する
-	m_pMiniCharacterBase->Initialize(m_pCommonResources);
-	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
+
 	// ステージセレクトを作成する
 	m_pStageSelect = std::make_unique<StageSelect>(m_pCommonResources);
 	// ステージセレクトを初期化する
@@ -86,6 +76,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 		std::vector<Vector3> vertices = CreatePlaneVertices(center, width, depth, center.y);
 		// 平面に頂点配列を登録
 		m_pPlaneArea->AddPlane(vertices);
+		// 平面の中心座標を登録する
+		m_pPlaneArea->AddPlanePosition(center);
 		// 平面の色を赤に設定
 		m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
 		// ステージの入り口を作成する
@@ -97,7 +89,20 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	}
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
-
+	// ミニキャラを作成する
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	// ミニキャラベースにCSVマップを設定
+	m_pMiniCharacterBase->SetCSVMap(nullptr);
+	// ミニキャラベースにCSVアイテムを設定
+	m_pMiniCharacterBase->SetCSVItem(nullptr);
+	// ミニキャラベースに次のタイルを設定
+	m_pMiniCharacterBase->SetNextTiles(nullptr);
+	// ミニキャラに平面を設定
+	m_pMiniCharacterBase->SetPlaneArea(m_pPlaneArea.get());
+	// ミニキャラを初期化する
+	m_pMiniCharacterBase->Initialize(m_pCommonResources);
+	// ミニキャラベースにミニキャラをアタッチ
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(0.0f, -0.5f, 0.0f), 0.0f));
 
 }
 /*
@@ -112,11 +117,11 @@ void StageSelectScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
-	//m_debugCamera->Update(m_pCommonResources->GetInputManager());
+	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_pFixedCamera->GetViewMatrix();
+	m_view = m_debugCamera->GetViewMatrix();
 	// 座標を初期化
-	Vector3 position(0.0f, 0.0f, 0.0f);
+	Vector3 position(0.0f, -0.5f, -1.75f);
 	// 角度を初期化
 	Quaternion angle(Quaternion::Identity);
 	// ミニキャラの更新
@@ -139,7 +144,11 @@ void StageSelectScene::Update(float elapsedTime)
 		// シーン遷移
 		m_isChangeScene = true;
 	}
-
+	// 何か選ばれているなら移動フラグを立てる
+	if (m_pPlaneArea->GetHitPlaneIndex() > -1)
+	{
+		m_pMiniCharacterBase->SetMoving(true);
+	}
 
 }
 

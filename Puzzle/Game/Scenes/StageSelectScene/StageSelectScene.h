@@ -91,5 +91,7 @@ private:
 	bool m_isChangeScene;
 	// グリッド床
 	std::unique_ptr<mylib::GridFloor> m_pGridFloor;
+	// ミニキャラの移動フラグ
+	bool m_isMiniCharacterMove;
 };
 

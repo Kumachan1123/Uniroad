@@ -61,9 +61,6 @@ public:
 	DirectX::SimpleMath::Quaternion GetShakeQuaternion() const { return m_shakeQuaternion; }
 	// 揺れを設定する
 	void SetShakeQuaternion(const DirectX::SimpleMath::Quaternion& shakeQuaternion) { m_shakeQuaternion = shakeQuaternion; }
-
-
-
 	// 質量を取得する
 	float GetMass() const { return m_mass; }
 	// 質量を設定する
@@ -76,7 +73,6 @@ public:
 	CSVItem* GetCSVItem() { return nullptr; }
 	// 次に現れるタイルのクラスを取得する
 	NextTiles* GetNextTiles() { return nullptr; }
-
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 	// タイルに入ったかどうかを確認する
@@ -175,6 +171,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_miniCharacterVelocity;
 	// プレイヤーの揺れ
 	DirectX::SimpleMath::Quaternion m_shakeQuaternion;
+	// 目的地
+	DirectX::SimpleMath::Vector3 m_destinationPosition;
+
 	// 質量
 	float m_mass;
 	// 部品配列

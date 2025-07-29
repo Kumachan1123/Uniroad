@@ -9,9 +9,15 @@ MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMa
 	, m_nodes{}
 	, m_initialPosition(initialPosition)
 	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))
-	, m_currentPosition(0.0f, 0.0f, 0.0f)
+	, m_currentPosition(initialPosition)
 	, m_currentAngle{}
 	, m_mass(0.0f)
+	, m_pCommonResources(nullptr)
+	, m_pCSVMap(nullptr)
+	, m_pCSVItem(nullptr)
+	, m_pNextTiles(nullptr)
+	, m_pPlaneArea(nullptr)
+	, m_isMoving(false)
 {
 }
 

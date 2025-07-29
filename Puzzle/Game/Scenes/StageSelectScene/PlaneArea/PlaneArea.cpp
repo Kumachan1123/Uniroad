@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "PlaneArea.h"
 
+
 /*
 *	@brief コンストラクタ
 *	@details 平面エリアクラスのコンストラクタ
@@ -282,4 +283,17 @@ void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& v
 	m_pBatch->DrawLine(VertexPositionColor(vertices[3], color), VertexPositionColor(vertices[0], color));
 	// 描画終了
 	m_pBatch->End();
+}
+/*
+*	@brief 平面の位置を取得
+*	@details 指定したインデックスの平面の位置を取得する
+*	@param index 平面のインデックス
+*	@return 指定したインデックスの平面の位置
+*/
+DirectX::SimpleMath::Vector3 PlaneArea::GetPlanePosition(int index) const
+{
+	if (index < 0)
+		return m_positions[0]; // インデックスが負の場合は最初の位置を返す
+	// 指定したインデックスの平面の位置を返す
+	return m_positions[index];
 }

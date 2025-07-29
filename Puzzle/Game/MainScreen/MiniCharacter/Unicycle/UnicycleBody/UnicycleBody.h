@@ -41,6 +41,10 @@ public:
 	DirectX::SimpleMath::Quaternion GetAngle() const { return m_currentAngle; }
 	// Œ»İ‚Ì‰ñ“]Šp‚ğİ’è‚·‚é
 	void SetAngle(const DirectX::SimpleMath::Quaternion& currentAngle) { m_currentAngle = currentAngle; }
+	// Œ»İ‚Ì‘¬“x‚ğæ“¾‚·‚é
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return 	DirectX::SimpleMath::Vector3::Zero; }
+	// ˆÚ“®ƒtƒ‰ƒO‚ğæ“¾
+	bool IsMoving() const { return false; }
 	// ¿—Ê‚ğæ“¾‚·‚é
 	float GetMass() const { return m_mass; }
 	// ¿—Ê‚ğİ’è‚·‚é

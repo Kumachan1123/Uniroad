@@ -38,24 +38,26 @@ void UnicycleWheel::Initialize(CommonResources* commonResources)
 
 void UnicycleWheel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	// 必要な名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// 親を取得する
+	const auto pMiniCharacter = m_pParent->GetParent()->GetParent();
+
+	// 時間を加算
 	m_time += elapsedTime;
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
 	// 現在の回転角を更新する
 	m_currentAngle = m_rotationMiniCharacterAngle * m_initialAngle * currentAngle;
-	// キャラクターそのものから速度ベクトルを取得する
-	MiniCharacter* pMiniCharacter = dynamic_cast<MiniCharacter*>(m_pParent->GetParent()->GetParent());
-	// IsMoving() が true の場合のみ速度を取得する
-	if (!pMiniCharacter || !pMiniCharacter->IsMoving())
-	{
-		return; // キャラクターが動いていない場合は何もしない
-	}
+	// IsMoving() が true の場合のみこれ以降の処理を行う
+	if (!pMiniCharacter || !pMiniCharacter->IsMoving())return;
 
+	// キャラクターそのものから速度ベクトルを取得する
 	m_MiniCharacterVelocity = pMiniCharacter->GetVelocity();
 	// 速度に応じてホイールの回転速度を変える
-	float wheelSpeed = m_MiniCharacterVelocity.Length(); // 適当な係数で調整
-
-
+	float wheelSpeed = m_MiniCharacterVelocity.Length();
+	// 親がMiniCharacterの時じゃない（プレイシーンじゃない）場合ホイールの回転速度を調整する
+	if (!dynamic_cast<MiniCharacter*>(pMiniCharacter))wheelSpeed = 1.0f;
 	// 時間経過でホイールを回転させる
 	m_currentAngle = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, m_time * wheelSpeed) * m_currentAngle;
 }

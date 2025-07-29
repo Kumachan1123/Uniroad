@@ -64,8 +64,6 @@ void MiniCharacterSelectStage::Initialize(CommonResources* resources)
 	assert(resources);
 	// 共通リソースを設定する
 	m_pCommonResources = resources;
-	// 初期位置を設定する
-	m_initialPosition = Vector3(0.0f, 0.0f, 0.0f);
 	// 現在位置に反映
 	m_currentPosition = m_initialPosition;
 	// スタート地点の前後左右のタイルを調べてプレイヤーの速度を更新する
@@ -85,19 +83,25 @@ void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMa
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	//// タイルイベントを更新する
-	//UpdateTileEvents();
-	//// 落下タイマー処理
-	//UpdateFallTimer(elapsedTime);
-	//// 重力を加味した座標移動を行う
-	//ApplyGravity(elapsedTime, currentPosition);
-	// 揺れ演出
-	Shake();
 	// 回転の補間
 	InterpolateRotation(currentAngle);
-	//// 次に生成されるタイルを決めるために速度ベクトルを設定する
-	//if (m_parent->GetNextTiles() != nullptr && m_currentVelocity != Vector3::Zero)
-	//	m_parent->GetNextTiles()->SetMiniCharacterVelocity(m_currentVelocity);
+	// 座標に速度を適用する
+	//m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
+
+	// 親コンポーネントのポインターに変換
+	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
+	// 親コンポーネントが存在することを確認
+	assert(parent);
+	// 目的地を設定
+	if (parent->GetPlaneArea()->GetHitPlaneIndex() > -1)
+		m_destinationPosition = parent->GetPlaneArea()->GetPlanePosition(parent->GetPlaneArea()->GetHitPlaneIndex());
+	// 目的地にむかって速度を更新する
+	m_currentVelocity = (m_destinationPosition - m_currentPosition) * elapsedTime * 1.0f; // 速度を調整
+	//m_currentVelocity = Lerp(m_currentPosition, m_destinationPosition, elapsedTime);
+	m_currentVelocity.y = 0.0f;
+	// プレイヤーの位置を更新する
+	m_currentPosition += m_currentVelocity;
+	m_currentPosition.y = m_initialPosition.y;
 	// 砲塔部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);

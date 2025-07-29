@@ -23,6 +23,8 @@ public:
 	virtual DirectX::SimpleMath::Quaternion GetAngle() const = 0;
 	// 現在の回転角を設定する
 	virtual void SetAngle(const DirectX::SimpleMath::Quaternion& angle) = 0;
+	// 現在の速度を取得する
+	virtual DirectX::SimpleMath::Vector3 GetVelocity() const = 0;
 	// 質量を取得する
 	virtual float GetMass() const = 0;
 	// 質量を設定する
@@ -35,6 +37,8 @@ public:
 	virtual CSVItem* GetCSVItem() = 0;
 	// 次に現れるタイルのクラスを取得する
 	virtual NextTiles* GetNextTiles() = 0;
+	// 移動フラグを取得
+	virtual bool IsMoving() const = 0;
 
 public:
 	// 仮想デストラクタ

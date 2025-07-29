@@ -37,6 +37,10 @@ public:
 	void AddPlane(const std::vector<DirectX::SimpleMath::Vector3>& vertices) { m_debugPlaneVerticesPosition.push_back(vertices); }
 	// 平面の色を設定
 	void SetPlaneColor(const DirectX::SimpleMath::Color& color) { m_debugPlaneVerticesColor.push_back(color); }
+	// 指定された平面の中心座標を取得する
+	DirectX::SimpleMath::Vector3 GetPlanePosition(int index) const;
+	// 平面の中心座標を登録する
+	void AddPlanePosition(const DirectX::SimpleMath::Vector3& position) { m_positions.push_back(position); }
 	// 当たった平面の番号を取得する
 	int GetHitPlaneIndex() const { return m_hitPlaneIndex; }
 	// 当たった平面の番号を設定する
@@ -76,10 +80,11 @@ private:
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// 頂点配列
-	//DirectX::SimpleMath::Vector3 m_debugPlaneVerticesPosition[4];
 	std::vector<std::vector<DirectX::SimpleMath::Vector3>> m_debugPlaneVerticesPosition;
 	// 色
 	std::vector<DirectX::SimpleMath::Color> m_debugPlaneVerticesColor;
+	// 平面の中心座標
+	std::vector<DirectX::SimpleMath::Vector3> m_positions;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列

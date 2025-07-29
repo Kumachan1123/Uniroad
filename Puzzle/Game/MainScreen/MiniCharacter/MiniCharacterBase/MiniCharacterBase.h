@@ -17,7 +17,12 @@
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/CSVItem/CSVItem.h"
 #include "Game/ControllScreen/NextTiles/NextTiles.h"
+#include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
+
+// 前方宣言
 class CommonResources;
+
+// ミニキャラクターのベースクラス
 class MiniCharacterBase : public IComposite
 {
 public:
@@ -38,6 +43,8 @@ public:
 	DirectX::SimpleMath::Quaternion GetAngle() const { return m_currentAngle; }
 	// 現在の回転角を設定する
 	void SetAngle(const DirectX::SimpleMath::Quaternion& currentAngle) { m_currentAngle = currentAngle; }
+	// 現在の速度を取得する
+	DirectX::SimpleMath::Vector3 GetVelocity() const { return 	DirectX::SimpleMath::Vector3::Zero; }
 	// 質量を取得する
 	float GetMass() const { return m_mass; }
 	// 質量を設定する
@@ -52,10 +59,18 @@ public:
 	CSVItem* GetCSVItem() { return m_pCSVItem; }
 	// CSVアイテムを設定する
 	void SetCSVItem(CSVItem* csvItem) { m_pCSVItem = csvItem; }
+	// 平面エリアを取得する
+	PlaneArea* GetPlaneArea() { return m_pPlaneArea; }
+	// 平面エリアを設定する
+	void SetPlaneArea(PlaneArea* planeArea) { m_pPlaneArea = planeArea; }
 	// 次に現れるタイルのクラスを取得する
 	NextTiles* GetNextTiles() { return m_pNextTiles; }
 	// 次に現れるタイルのクラスを設定する
 	void SetNextTiles(NextTiles* nextTiles) { m_pNextTiles = nextTiles; }
+	// 移動フラグを取得する
+	bool IsMoving() const { return m_isMoving; }
+	// 移動フラグを設定する
+	void SetMoving(bool isMoving) { m_isMoving = isMoving; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -84,6 +99,8 @@ private:
 	CSVItem* m_pCSVItem;
 	// 次に現れるタイルのクラス
 	NextTiles* m_pNextTiles;
+	// 平面エリア
+	PlaneArea* m_pPlaneArea;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号
@@ -102,4 +119,6 @@ private:
 	float m_mass;
 	// ノード配列
 	std::vector<std::unique_ptr<IComponent>> m_nodes;
+	// ミニキャラの移動フラグ
+	bool m_isMoving;
 };
