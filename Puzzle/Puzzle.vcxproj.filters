@@ -89,6 +89,8 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\StageSelect\StageSelect.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.h" />
+    <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene\StageGate\StageGate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -144,6 +146,8 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\StageSelect\StageSelect.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.cpp" />
+    <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene\StageGate\StageGate.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -22,12 +22,11 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/MouseClick/MouseClick.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
-#include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterSelectStage/MiniCharacterSelectStage.h"
 #include "Game/Scenes/StageSelectScene/StageSelect/StageSelect.h"
 #include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
-
+#include "Game/Scenes/StageSelectScene/StageGate/StageGate.h"
 // 前方宣言
 class CommonResources;
 class MiniCharacterBase;
@@ -60,8 +59,11 @@ public:
 	// ステージ番号を設定する
 	void SetStageNumber(int stageNumber) override { m_stageNumber = stageNumber; }
 private:
+	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
+	// 平面の中心座標を基に４つの頂点を設定する
+	std::vector<DirectX::SimpleMath::Vector3> CreatePlaneVertices(const DirectX::SimpleMath::Vector3& center, float width, float depth, float y = 0.5f) const;
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -73,8 +75,8 @@ private:
 	std::unique_ptr<MiniCharacterBase> m_pMiniCharacterBase;
 	// ステージセレクト
 	std::unique_ptr<StageSelect> m_pStageSelect;
-	// CSVマップ
-	std::unique_ptr<CSVMap> m_pCSVMap;
+	// ステージの入り口
+	std::vector<std::unique_ptr<StageGate>> m_pStageGates;
 	// 平面
 	std::unique_ptr<PlaneArea> m_pPlaneArea;
 	// 射影行列

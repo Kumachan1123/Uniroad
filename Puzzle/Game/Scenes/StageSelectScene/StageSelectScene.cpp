@@ -74,36 +74,31 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 平面を作成する
 	m_pPlaneArea = std::make_unique<PlaneArea>(m_pCommonResources);
 	// 頂点設定
-	std::vector<Vector3> vertices1 =
+	for (int i = 0; i < 3; ++i)
 	{
-		Vector3(-5.0f, 0.5f, 0.0f),
-		Vector3(-3.0f, 0.5f, 0.0f),
-		Vector3(-3.0f, 0.5f, 2.0f),
-		Vector3(-5.0f, 0.5f, 2.0f)
-	};
-	std::vector<Vector3> vertices2 =
-	{
-		Vector3(-1.0f,0.5f, 0.0f),
-		Vector3(1.0f,0.5f, 0.0f),
-		Vector3(1.0f,0.5f, 2.0f),
-		Vector3(-1.0f,0.5f, 2.0f)
-	};
-	std::vector<Vector3> vertices3 =
-	{
-		Vector3(3.0f,0.5f, 0.0f),
-		Vector3(5.0f,0.5f, 0.0f),
-		Vector3(5.0f,0.5f, 2.0f),
-		Vector3(3.0f,0.5f, 2.0f)
-	};
-	// 平面に頂点配列を登録
-	m_pPlaneArea->AddPlane(vertices1);
-	m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
-	m_pPlaneArea->AddPlane(vertices2);
-	m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
-	m_pPlaneArea->AddPlane(vertices3);
-	m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
+		// 中心座標を計算
+		Vector3 center(-4.0f + 4.0f * (float)i, 0.5f, 2.0f);
+		// 横幅
+		float width = 2.0f;
+		// 奥行き
+		float depth = 2.0f;
+		// 平面の頂点を作成
+		std::vector<Vector3> vertices = CreatePlaneVertices(center, width, depth, center.y);
+		// 平面に頂点配列を登録
+		m_pPlaneArea->AddPlane(vertices);
+		// 平面の色を赤に設定
+		m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
+		// ステージの入り口を作成する
+		m_pStageGates.push_back(std::make_unique<StageGate>(m_pCommonResources));
+		// ステージの入り口を初期化する
+		m_pStageGates.back()->Initialize();
+		// ステージの入り口の位置を設定
+		m_pStageGates.back()->SetPosition(Vector3(-4.0f + 4.0f * (float)i, 0.0f, 2.0f));
+	}
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
+
+
 }
 /*
 *	@brief 更新
@@ -116,10 +111,10 @@ void StageSelectScene::Update(float elapsedTime)
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 固定カメラの更新
-	//m_pFixedCamera->Update();
-	m_debugCamera->Update(m_pCommonResources->GetInputManager());
+	m_pFixedCamera->Update();
+	//m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_debugCamera->GetViewMatrix();
+	m_view = m_pFixedCamera->GetViewMatrix();
 	// 座標を初期化
 	Vector3 position(0.0f, 0.0f, 0.0f);
 	// 角度を初期化
@@ -132,6 +127,9 @@ void StageSelectScene::Update(float elapsedTime)
 	m_pPlaneArea->SetProjection(m_projection);
 	// 平面を更新
 	m_pPlaneArea->Update(elapsedTime);
+	// ステートの入り口を更新
+	for (auto& gate : m_pStageGates)gate->Update(elapsedTime);
+	// マウスステートを取得
 	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// 左クリックを検知
 	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > -1)
@@ -154,10 +152,12 @@ void StageSelectScene::Update(float elapsedTime)
 void StageSelectScene::Render()
 {
 	using namespace DirectX::SimpleMath;
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	//auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 	// ステージセレクトの描画
 	m_pStageSelect->Render(m_view, m_projection);
+	// ステージの入り口の描画
+	for (auto& gate : m_pStageGates)gate->Render(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 	// 平面の描画
@@ -214,9 +214,9 @@ void StageSelectScene::CreateCamera()
 	// デバッグカメラを作成する
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
 	m_debugCamera->Initialize(rect.right, rect.bottom);
-	//// 固定カメラを作成する
-	//m_pFixedCamera = std::make_unique<FixedCamera>();
-	//m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
+	// 固定カメラを作成する
+	m_pFixedCamera = std::make_unique<FixedCamera>();
+	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
 
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
@@ -224,4 +224,28 @@ void StageSelectScene::CreateCamera()
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
 		0.1f, 100.0f
 	);
+}
+/*
+*	@brief 平面の中心座標を基に４つの頂点を設定する
+*	@details 平面の中心座標を基に、幅と奥行きを指定して４つの頂点を設定する
+*	@param center 平面の中心座標
+*	@param width 平面の幅
+*	@param depth 平面の奥行き
+*	@param y 平面の高さ（デフォルトは0.5f）
+*	@return ４つの頂点の座標を格納したベクトル
+*/
+std::vector<DirectX::SimpleMath::Vector3> StageSelectScene::CreatePlaneVertices(const DirectX::SimpleMath::Vector3& center, float width, float depth, float y) const
+{
+	// 名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	// 平面の頂点を計算する
+	float halfW = width / 2.0f;
+	// 平面の奥行きの半分を計算する
+	float halfD = depth / 2.0f;
+	return {
+		Vector3(center.x - halfW, y, center.z - halfD), // 左下
+		Vector3(center.x + halfW, y, center.z - halfD), // 右下
+		Vector3(center.x + halfW, y, center.z + halfD), // 右上
+		Vector3(center.x - halfW, y, center.z + halfD)  // 左上
+	};
 }
