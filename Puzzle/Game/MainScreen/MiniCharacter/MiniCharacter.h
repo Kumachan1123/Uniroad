@@ -197,4 +197,6 @@ private:
 	float m_fallTimer;
 	// 一度だけ落下処理を実行させるためのフラグ
 	bool m_hasFallen;
+	// ゲームオーバーフラグを切り替える時間
+	float m_gameOverSwitchTime;
 };

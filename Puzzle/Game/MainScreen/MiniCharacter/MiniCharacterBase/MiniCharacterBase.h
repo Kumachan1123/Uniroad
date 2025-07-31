@@ -75,6 +75,10 @@ public:
 	DirectX::SimpleMath::Vector3 GetCameraPosition() const { return m_cameraPosition; }
 	// カメラに渡す座標を設定する
 	void SetCameraPosition(const DirectX::SimpleMath::Vector3& cameraPosition) { m_cameraPosition = cameraPosition; }
+	// ゲームオーバーフラグを取得する
+	bool IsGameOver() const { return m_isGameOver; }
+	// ゲームオーバーフラグを設定する
+	void SetGameOver(bool isGameOver) { m_isGameOver = isGameOver; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -127,4 +131,6 @@ private:
 	std::vector<std::unique_ptr<IComponent>> m_nodes;
 	// ミニキャラの移動フラグ
 	bool m_isMoving;
+	// ゲームオーバーフラグ
+	bool m_isGameOver;
 };

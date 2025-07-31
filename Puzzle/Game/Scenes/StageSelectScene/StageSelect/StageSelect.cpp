@@ -46,7 +46,9 @@ void StageSelect::Render(const DirectX::SimpleMath::Matrix& view, const DirectX:
 	using namespace DirectX::SimpleMath;
 	const auto& context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	const auto& states = m_pCommonResources->GetCommonStates();
-	m_pModel->Draw(context, *states, Matrix::Identity, view, proj, false);
+	const auto& device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	// ƒ‚ƒfƒ‹‚Ì•`‰æ
+	m_pModel->Draw(context, *states, Matrix::Identity, view, proj);
 }
 
 void StageSelect::Finalize()

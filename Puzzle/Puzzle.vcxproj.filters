@@ -92,6 +92,7 @@
     <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\StageGate\StageGate.h" />
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
+    <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\StageGate\StageGate.cpp" />
     <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
+    <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -27,6 +27,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_hasEnteredTile(false)// 入った直後フラグ
 	, m_isMoving(true)// 移動フラグ
 	, m_fallTimer(0.0f)// 落下タイマー
+	, m_gameOverSwitchTime(0.0f)// ゲームオーバーのスイッチ時間
 	, m_fallTimerActive(false)// 落下タイマーが有効かどうか
 	, m_hasFallen(false)// 一度だけ落下処理を実行させるためのフラグ
 	, m_initialPosition(initialPosition)// 初期位置
@@ -101,6 +102,13 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 砲塔部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	// ゲームオーバーのスイッチ時間が3秒を超えたら、ゲームオーバーにする
+	if (m_gameOverSwitchTime >= 3.0f)
+	{
+		// 親にゲームオーバーを通知する
+		const auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
+		parent->SetGameOver(true);
+	}
 }
 /*
 *	@brief プレイヤーの部品を追加する
@@ -290,6 +298,15 @@ void MiniCharacter::ApplyGravity(float elapsedTime, const DirectX::SimpleMath::V
 		m_currentVelocity.y += gravity * elapsedTime;
 		// 速度に適用する
 		m_miniCharacterVelocity += m_currentVelocity * elapsedTime;
+		// ゲームオーバーフラグが立っていない場合、時間をカウント
+		const auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
+		if (m_gameOverSwitchTime <= 3.0f)
+		{
+			// ゲームオーバーのスイッチ時間を更新
+			m_gameOverSwitchTime += elapsedTime;
+
+		}
+
 	}
 	// 落下していない場合
 	else if (m_isMoving)

@@ -231,6 +231,7 @@
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
+    <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\StageGate\StageGate.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\StageSelectScene.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
+    <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\StageGate\StageGate.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\StageSelectScene.cpp" />

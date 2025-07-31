@@ -18,6 +18,7 @@ MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMa
 	, m_pNextTiles(nullptr)
 	, m_pPlaneArea(nullptr)
 	, m_isMoving(false)
+	, m_isGameOver(false)
 {
 }
 

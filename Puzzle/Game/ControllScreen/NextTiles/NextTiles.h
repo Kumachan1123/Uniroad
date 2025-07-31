@@ -88,59 +88,8 @@ private:
 	std::vector<std::string> GetAvailableNextTiles(const std::string& currentTileName, const DirectX::SimpleMath::Vector3& velocity) const;
 	// タイルの接続可能なタイルを取得
 	Direction GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3& velocity) const;
-private:
-	//// タイル種ごとの進行可能タイル
-	//std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>> tileConnectionTable =
-	//{
-	//	{"DefaultStraightVertical",
-	//	{
-	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
-	//	}},
-	//	{"DefaultStraightHorizontal",
-	//	{
-	//		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-	//		{Direction::RIGHT,{  "StraightHorizontal","LeftDown", "LeftUp"}}
-	//	}},
-	//	{"StraightVertical",
-	//	{
-	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
-	//	}},
-	//	{"StraightHorizontal",
-	//	{
-	//		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-	//	}},
-	//	{"RightDown",
-	//		{
-	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-	//	}},
-	//	{"LeftDown",
-	//		{
-	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-	//		{Direction::LEFT,{"StraightHorizontal","RightDown", "RightUp"}},
-	//	}},
-	//	{"RightUp",
-	//		{
-	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-	//	}},
-	//	{"LeftUp",
-	//		{
-	//		{Direction::UP,{ "StraightHorizontal","RightDown", "LeftDown"}},
-	//		{Direction::LEFT,{   "StraightHorizontal","RightDown", "RightUp"}},
-	//	}},
-	//	{"Cross",
-	//			{
-	//		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-	//		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-	//		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-	//		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
-	//	}}
-	//};
-
+	// 接続可能なタイルを抽選
+	std::string GetRandomConnectableTile(const std::vector<std::string>& availableTiles, const std::string& previousTileName) const;
 private:
 	// private関数
 	// デバイスリソース

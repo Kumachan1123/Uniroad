@@ -254,25 +254,17 @@ void NextTiles::AddNextTiles()
 {
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
-	//// UIの数が5個以上なら追加しない
-	//if (m_pTile.size() == 5)return;
 	// 基準となるタイル
 	std::string tileName;
 	// 最後に置いたタイルがない場合は今ミニキャラがいるタイルを基準にする
-	if (m_lastPlacedTileName == "")
-		tileName = m_miniCharacterTileName;
-	else
-		tileName = m_lastPlacedTileName;
+	//if (m_lastPlacedTileName == "")
+	//	tileName = m_miniCharacterTileName;
+	//else
+	tileName = m_lastPlacedTileName;
 	// 次に進めるタイルのリストを取得
 	std::vector<std::string> availableTiles = GetAvailableNextTiles(tileName, m_miniCharacterVelocity);
-	// 乱数の設定
-	std::random_device seed;
-	// メルセンヌ・ツイスタ法
-	std::default_random_engine engine(seed());
-	// ランダムな範囲を設定
-	std::uniform_int_distribution<int> rand(0, (int)availableTiles.size() - 1);
-	// ランダムなインデックスを取得
-	int randomIndex = rand(engine);
+	// 接続可能なタイルをランダムに選ぶ
+	std::string selectedTile = GetRandomConnectableTile(availableTiles, m_previousTileName);
 	// Y座標を調整
 	float positionY = 480.0f - (float(m_pTile.size()) * 90.0f);
 	// X座標は固定
@@ -288,7 +280,7 @@ void NextTiles::AddNextTiles()
 		m_initialPositions.erase(m_initialPositions.begin());
 	}
 	// UI追加
-	Add(availableTiles[randomIndex]
+	Add(selectedTile
 		, position
 		, Vector2(0.6f, 0.6f)
 		, KumachiLib::ANCHOR::MIDDLE_CENTER
@@ -301,7 +293,8 @@ void NextTiles::AddNextTiles()
 		m_pTile[i].canvas->SetPosition(Vector2(positionX, newY));
 		m_initialPositions[i] = Vector2(positionX, newY);
 	}
-
+	// 前回生成したタイル名を更新
+	m_previousTileName = selectedTile;
 }
 /*
 *	@brief 新しいパネルを配置
@@ -385,12 +378,33 @@ Direction NextTiles::GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3
 {
 	// 速度ベクトルのX, Z成分をチェックして進行方向を決定
 	// Z成分が正なら上、負なら下
-	if (velocity.z > 0) return Direction::UP;
-	if (velocity.z < 0) return Direction::DOWN;
+	if (velocity.z < 0) return Direction::UP;
+	if (velocity.z > 0) return Direction::DOWN;
 	// X成分が正なら右、負なら左
 	if (velocity.x > 0) return Direction::RIGHT;
 	if (velocity.x < 0) return Direction::LEFT;
 	// 速度ゼロや斜めは例外処理
 	return Direction::UP; // デフォルト
+}
+/*
+*	@brief 接続可能なタイルをランダムに取得
+*	@details 接続可能なタイルのリストからランダムに一つ選ぶ
+*	@param availableTiles 接続可能なタイルのリスト
+*	@param previousTileName 前回生成したタイル名
+*	@return ランダムに選ばれた接続可能なタイルの名前
+*/
+std::string NextTiles::GetRandomConnectableTile(const std::vector<std::string>& availableTiles, const std::string& previousTileName) const
+{
+	// 乱数設定
+	std::random_device seed;
+	std::default_random_engine engine(seed());
+	std::uniform_int_distribution<int> rand(0, (int)availableTiles.size() - 1);
+	int randomIndex = rand(engine);
+	std::string selected = availableTiles[randomIndex];
+	// もし前回と同じなら再帰呼び出し
+	if (selected == previousTileName)
+		return GetRandomConnectableTile(availableTiles, previousTileName);
+	// 選ばれたタイルを返す
+	return selected;
 }
 
