@@ -110,19 +110,8 @@ public:
 	void Finalize();
 private:
 	// private関数
-	// タイル関連の処理
-	void UpdateTileEvents();
-	// 落下タイマー関連の処理
-	void UpdateFallTimer(float elapsedTime);
-	// 重力を加味した座標移動
-	void ApplyGravity(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition);
-	// 揺れ演出
-	void Shake();
 	// 回転の補間
 	void InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle);
-
-	//　速度を更新する
-	void UpdateSpeedByStartTile();
 	// タイルの中心にいるかどうかを確認する
 	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.01f) const;
 

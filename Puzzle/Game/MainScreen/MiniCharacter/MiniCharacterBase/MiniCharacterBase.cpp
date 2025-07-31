@@ -72,6 +72,12 @@ void MiniCharacterBase::Render(const DirectX::SimpleMath::Matrix& view, const Di
 		//ノードを描画する
 		node->Render(view, proj);
 	}
+	// ---デバッグ表示---
+	const auto debugString = m_pCommonResources->GetDebugString();
+
+	// 座標表示
+	debugString->AddString("MiniCharacter Position: (%f, %f, %f)",
+		m_cameraPosition.x, m_cameraPosition.y, m_cameraPosition.z);
 }
 
 void MiniCharacterBase::Finalize()

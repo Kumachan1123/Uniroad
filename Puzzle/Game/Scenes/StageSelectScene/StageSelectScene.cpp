@@ -56,7 +56,6 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	const auto states = m_pCommonResources->GetCommonStates();
 	// グリッド床を作成する
 	m_pGridFloor = std::make_unique<mylib::GridFloor>(device, context, states);
-
 	// ステージセレクトを作成する
 	m_pStageSelect = std::make_unique<StageSelect>(m_pCommonResources);
 	// ステージセレクトを初期化する
@@ -64,7 +63,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 平面を作成する
 	m_pPlaneArea = std::make_unique<PlaneArea>(m_pCommonResources);
 	// 頂点設定
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		// 中心座標を計算
 		Vector3 center(-4.0f + 4.0f * (float)i, 0.5f, 2.0f);
@@ -117,9 +116,22 @@ void StageSelectScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
+	// トラッキングカメラに追従対象の座標を設定
+	m_pTrackingCamera->SetTargetPosition(m_pMiniCharacterBase->GetCameraPosition());
+	// トラッキングカメラの更新
+	m_pTrackingCamera->Update();
+	// デバッグカメラの更新
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
-	// ビュー行列を取得
-	m_view = m_debugCamera->GetViewMatrix();
+	//#ifndef DEBUG
+	//	const auto KeyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
+	//	if (KeyState.Space)
+	//		m_view = m_pTrackingCamera->GetViewMatrix();
+	//	else
+	//		m_view = m_pFixedCamera->GetViewMatrix();
+	//
+	//#endif
+		// ビュー行列を取得
+	m_view = m_pTrackingCamera->GetViewMatrix();
 	// 座標を初期化
 	Vector3 position(0.0f, -0.5f, -1.75f);
 	// 角度を初期化
@@ -226,7 +238,9 @@ void StageSelectScene::CreateCamera()
 	// 固定カメラを作成する
 	m_pFixedCamera = std::make_unique<FixedCamera>();
 	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
-
+	// トラッキングカメラを作成する
+	m_pTrackingCamera = std::make_unique<TrackingCamera>();
+	m_pTrackingCamera->Initialize((int)(rect.right), rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),

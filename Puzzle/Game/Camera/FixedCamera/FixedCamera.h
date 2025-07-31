@@ -4,7 +4,7 @@
 *	@details 特定の位置と方向を持ち、常にその位置からシーンを描画する
 */
 #pragma once
-// デバッグ用カメラクラス
+// 固定カメラクラス
 class FixedCamera
 {
 public:

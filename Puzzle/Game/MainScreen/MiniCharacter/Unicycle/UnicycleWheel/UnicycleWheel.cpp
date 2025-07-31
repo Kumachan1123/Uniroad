@@ -55,9 +55,9 @@ void UnicycleWheel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// キャラクターそのものから速度ベクトルを取得する
 	m_MiniCharacterVelocity = pMiniCharacter->GetVelocity();
 	// 速度に応じてホイールの回転速度を変える
-	float wheelSpeed = m_MiniCharacterVelocity.Length();
+	float wheelSpeed = m_MiniCharacterVelocity.Length() * elapsedTime * 60;
 	// 親がMiniCharacterの時じゃない（プレイシーンじゃない）場合ホイールの回転速度を調整する
-	if (!dynamic_cast<MiniCharacter*>(pMiniCharacter))wheelSpeed = 1.0f;
+	if (!dynamic_cast<MiniCharacter*>(pMiniCharacter))wheelSpeed = 1.0f * elapsedTime * 30;
 	// 時間経過でホイールを回転させる
 	m_currentAngle = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, m_time * wheelSpeed) * m_currentAngle;
 }

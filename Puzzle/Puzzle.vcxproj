@@ -190,6 +190,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
@@ -269,6 +270,7 @@
     <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />

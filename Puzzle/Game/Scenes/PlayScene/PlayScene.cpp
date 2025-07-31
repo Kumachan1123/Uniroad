@@ -44,11 +44,11 @@ void PlayScene::Initialize(CommonResources* resources)
 	// マップ生成
 	m_pCSVMap = std::make_unique<CSVMap>(m_pCommonResources);
 	// CSVマップを読み込む
-	m_pCSVMap->LoadMap("Resources/Map/" + stagePath + ".csv");
+	m_pCSVMap->LoadMap("Resources/Map/" + stagePath + "_map.csv");
 	// CSVアイテムを作成する
 	m_pCSVItem = std::make_unique<CSVItem>(m_pCommonResources);
 	// CSVアイテムを読み込む
-	m_pCSVItem->LoadItem("Resources/Item/" + stagePath + ".csv");
+	m_pCSVItem->LoadItem("Resources/Item/" + stagePath + "_item.csv");
 	// ミニキャラを作成する
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
 	// ミニキャラベースにCSVマップを設定

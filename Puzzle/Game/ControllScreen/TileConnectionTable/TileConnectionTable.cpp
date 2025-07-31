@@ -40,8 +40,8 @@ static const std::unordered_map<std::string, std::unordered_map<Direction, std::
 	{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}},
 	{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}}},
 	{"LeftUp",{
-		{Direction::UP,{ "StraightHorizontal","RightDown", "LeftDown"}},
-		{Direction::DOWN,{   "StraightHorizontal","RightDown", "RightUp"}},
+		{Direction::UP,{ "StraightVertical","RightDown", "LeftDown"}},
+		{Direction::DOWN,{   "StraightVertical","RightDown", "RightUp"}},
 		{Direction::RIGHT,{ "StraightHorizontal","RightDown", "LeftDown"}},
 		{Direction::LEFT,{   "StraightHorizontal","RightDown", "RightUp"}}}},
 	{"Cross",{

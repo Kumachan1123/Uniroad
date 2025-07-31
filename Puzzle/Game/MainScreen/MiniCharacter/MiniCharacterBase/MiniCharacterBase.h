@@ -71,6 +71,10 @@ public:
 	bool IsMoving() const { return m_isMoving; }
 	// 移動フラグを設定する
 	void SetMoving(bool isMoving) { m_isMoving = isMoving; }
+	// カメラに渡す座標を取得する
+	DirectX::SimpleMath::Vector3 GetCameraPosition() const { return m_cameraPosition; }
+	// カメラに渡す座標を設定する
+	void SetCameraPosition(const DirectX::SimpleMath::Vector3& cameraPosition) { m_cameraPosition = cameraPosition; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -115,6 +119,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_currentPosition;
 	// 現在の回転角
 	DirectX::SimpleMath::Quaternion m_currentAngle;
+	// カメラに渡す座標
+	DirectX::SimpleMath::Vector3 m_cameraPosition;
 	// 質量
 	float m_mass;
 	// ノード配列

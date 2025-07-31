@@ -22,6 +22,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/MouseClick/MouseClick.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
+#include "Game/Camera/TrackingCamera/TrackingCamera.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterSelectStage/MiniCharacterSelectStage.h"
 #include "Game/Scenes/StageSelectScene/StageSelect/StageSelect.h"
@@ -68,8 +69,11 @@ private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
-	// カメラ
+	// 固定カメラ
 	std::unique_ptr<FixedCamera> m_pFixedCamera;
+	// トラッキングカメラ
+	std::unique_ptr<TrackingCamera> m_pTrackingCamera;
+	// デバッグカメラ
 	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// ミニキャラベース
 	std::unique_ptr<MiniCharacterBase> m_pMiniCharacterBase;
