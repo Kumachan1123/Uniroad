@@ -18,8 +18,8 @@ void BlockTile::OnEnter(MiniCharacter* character)
 	if (character->HasEnteredTile(this)) return;
 	// キャラクターを動かすフラグを折る
 	character->SetMoving(false);
-	// 落下タイマーを有効にする
-	character->SetFallTimerActive(true);
+	// キャラクターの速度ベクトルをゼロにする
+	character->SetVelocity(Vector3::Zero);
 	// 通過記録
 	character->SetEnteredTile(this);
 }

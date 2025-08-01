@@ -256,11 +256,8 @@ void NextTiles::AddNextTiles()
 	using namespace DirectX::SimpleMath;
 	// 基準となるタイル
 	std::string tileName;
-	// 最後に置いたタイルがない場合は今ミニキャラがいるタイルを基準にする
-	//if (m_lastPlacedTileName == "")
-	//	tileName = m_miniCharacterTileName;
-	//else
-	tileName = m_lastPlacedTileName;
+	// 今ミニキャラがいるタイルを基準にする
+	tileName = m_miniCharacterTileName;
 	// 次に進めるタイルのリストを取得
 	std::vector<std::string> availableTiles = GetAvailableNextTiles(tileName, m_miniCharacterVelocity);
 	// 接続可能なタイルをランダムに選ぶ
