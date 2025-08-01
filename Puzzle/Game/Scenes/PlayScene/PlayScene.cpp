@@ -119,8 +119,8 @@ void PlayScene::Update(float elapsedTime)
 
 	// メダルカウンターの更新
 	m_pMedalCounter->Update(elapsedTime);
-	// ゲームオーバーになったらシーン変更フラグを立てる
-	if (m_pMiniCharacterBase->IsGameOver())	m_isChangeScene = true;
+	// ゲームオーバーかゲームクリアになったらシーン変更フラグを立てる
+	if (m_pMiniCharacterBase->IsGameOver() || m_pMiniCharacterBase->IsGameClear())	m_isChangeScene = true;
 }
 void PlayScene::Render()
 {

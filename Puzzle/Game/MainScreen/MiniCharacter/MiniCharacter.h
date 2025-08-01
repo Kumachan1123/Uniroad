@@ -95,6 +95,10 @@ public:
 	bool IsFallTimerActive() const { return m_fallTimerActive; }
 	// 落下タイマーが有効かどうかを設定
 	void SetFallTimerActive(bool active) { m_fallTimerActive = active; }
+	// ゲームクリアフラグを切り替える時間を取得する
+	float GetGameClearSwitchTime() const { return m_gameClearSwitchTime; }
+	// ゲームクリアフラグを切り替える時間を設定する
+	void SetGameClearSwitchTime(float time) { m_gameClearSwitchTime = time; }
 public:
 	// コンストラクタ
 	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -124,7 +128,6 @@ private:
 	void Shake();
 	// 回転の補間
 	void InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle);
-
 	//　速度を更新する
 	void UpdateSpeedByStartTile();
 	// タイルの中心にいるかどうかを確認する
@@ -199,4 +202,6 @@ private:
 	bool m_hasFallen;
 	// ゲームオーバーフラグを切り替える時間
 	float m_gameOverSwitchTime;
+	// ゲームクリアフラグを切り替える時間
+	float m_gameClearSwitchTime;
 };

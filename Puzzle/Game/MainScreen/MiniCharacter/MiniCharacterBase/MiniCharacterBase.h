@@ -79,6 +79,10 @@ public:
 	bool IsGameOver() const { return m_isGameOver; }
 	// ゲームオーバーフラグを設定する
 	void SetGameOver(bool isGameOver) { m_isGameOver = isGameOver; }
+	// ゲームクリアフラグを取得する
+	bool IsGameClear() const { return m_isGameClear; }
+	// ゲームクリアフラグを設定する
+	void SetGameClear(bool isGameClear) { m_isGameClear = isGameClear; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -133,4 +137,6 @@ private:
 	bool m_isMoving;
 	// ゲームオーバーフラグ
 	bool m_isGameOver;
+	// ゲームクリアフラグ
+	bool m_isGameClear;
 };

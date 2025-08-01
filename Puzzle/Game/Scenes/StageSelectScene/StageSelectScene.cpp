@@ -49,13 +49,6 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// カメラを作成する
 	CreateCamera();
-	// デバイスリソースを取得する
-	const auto deviceResources = m_pCommonResources->GetDeviceResources();
-	const auto context = deviceResources->GetD3DDeviceContext();
-	const auto device = deviceResources->GetD3DDevice();
-	const auto states = m_pCommonResources->GetCommonStates();
-	// グリッド床を作成する
-	m_pGridFloor = std::make_unique<mylib::GridFloor>(device, context, states);
 	// ステージセレクトを作成する
 	m_pStageSelect = std::make_unique<StageSelect>(m_pCommonResources);
 	// ステージセレクトを初期化する
@@ -66,7 +59,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	for (int i = 0; i < FileCounter::CountFilesInFolder("Resources/Map/", ".csv"); ++i)
 	{
 		// 中心座標を計算
-		Vector3 center(-4.0f + 4.0f * (float)i, 0.5f, 2.0f);
+		Vector3 center(4.0f * (float)i, 0.5f, 2.0f);
 		// 横幅
 		float width = 2.0f;
 		// 奥行き
@@ -84,7 +77,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 		// ステージの入り口を初期化する
 		m_pStageGates.back()->Initialize();
 		// ステージの入り口の位置を設定
-		m_pStageGates.back()->SetPosition(Vector3(-4.0f + 4.0f * (float)i, 0.0f, 2.0f));
+		m_pStageGates.back()->SetPosition(center);
 	}
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();

@@ -1,37 +1,77 @@
+/*
+*	@file MiniCharacterBase.cpp
+*	@brief ミニキャラクターのベースクラス
+*/
 #include <pch.h>
 #include "MiniCharacterBase.h"
-
+/*
+*	@brief ミニキャラクターのベースクラスのコンストラクタ
+*	@details ミニキャラクターのベースクラスのコンストラクタ。
+*	@param parent 親コンポーネントへのポインタ
+*	@param initialPosition 初期位置
+*	@param initialAngle 初期角度
+*	@return なし
+*/
 MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle)
-	:m_pParent(parent)
-	, m_nodeNumber{}
-	, m_partNumber{}
-	, m_partID{}
-	, m_nodes{}
-	, m_initialPosition(initialPosition)
-	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))
-	, m_currentPosition(initialPosition)
-	, m_currentAngle{}
-	, m_mass(0.0f)
-	, m_pCommonResources(nullptr)
-	, m_pCSVMap(nullptr)
-	, m_pCSVItem(nullptr)
-	, m_pNextTiles(nullptr)
-	, m_pPlaneArea(nullptr)
-	, m_isMoving(false)
-	, m_isGameOver(false)
+	:m_pParent(parent)// 親コンポーネントへのポインタ
+	, m_nodeNumber(MiniCharacterBase::GetNodeNumber())// ノード番号を取得する
+	, m_partNumber(MiniCharacterBase::GetPartNumber())// 部品番号を取得する
+	, m_partID(MiniCharacterBase::GetPartID())// 部品IDを取得する
+	, m_initialPosition(initialPosition)// 初期位置を設定する
+	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))// 初期回転角を設定する
+	, m_currentPosition(initialPosition)// 現在の位置を初期位置に設定する
+	, m_currentAngle(m_initialAngle)// 現在の回転角を初期回転角に設定する
+	, m_mass(0.0f) // 質量を初期化する
+	, m_pCommonResources(nullptr) // 共通リソースへのポインタを初期化する
+	, m_pCSVMap(nullptr) // CSVマップへのポインタを初期化する
+	, m_pCSVItem(nullptr) // CSVアイテムへのポインタを初期化する
+	, m_pNextTiles(nullptr) // 次に現れるタイルのクラスへのポインタを初期化する
+	, m_pPlaneArea(nullptr) // 平面エリアへのポインタを初期化する
+	, m_isMoving(false)// ミニキャラの移動フラグを初期化する
+	, m_isGameOver(false) // ゲームオーバーフラグを初期化する
+	, m_isGameClear(false)	// ゲームクリアフラグを初期化する
 {
 }
-
+/*
+*	@brief ミニキャラクターのベースクラスのデストラクタ
+*	@details ミニキャラクターのベースクラスのデストラクタ。
+*	@param なし
+*	@return なし
+*/
 MiniCharacterBase::~MiniCharacterBase()
 {
+	// ノードをクリアする
+	Finalize();
+	// 共通リソースへのポインタをnullptrにする
+	m_pCommonResources = nullptr;
+	// CSVマップへのポインタをnullptrにする
+	m_pCSVMap = nullptr;
+	// CSVアイテムへのポインタをnullptrにする
+	m_pCSVItem = nullptr;
+	// 次に現れるタイルのクラスへのポインタをnullptrにする
+	m_pNextTiles = nullptr;
+	// 平面エリアへのポインタをnullptrにする
+	m_pPlaneArea = nullptr;
 }
-
+/*
+*	@brief ミニキャラクターのベースクラスの初期化
+*	@details ミニキャラクターのベースクラスの初期化。
+*	@param commonResources 共通リソースへのポインタ
+*	@return なし
+*/
 void MiniCharacterBase::Initialize(CommonResources* commonResources)
 {
+	// 共通リソースへのポインタを設定する
 	m_pCommonResources = commonResources;
 }
-
-
+/*
+*	@brief ミニキャラクターのベースクラスの更新
+*	@details ミニキャラクターのベースクラスの更新。
+*	@param elapsedTime 経過時間
+*	@param currentPosition 現在の位置
+*	@param currentAngle 現在の回転角
+*	@return なし
+*/
 void MiniCharacterBase::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	// 現在の位置を更新する
@@ -39,49 +79,61 @@ void MiniCharacterBase::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 	// 現在の回転角を更新する
 	m_currentAngle = currentAngle;
 	// ノードを更新する
-	for (auto& node : m_nodes)
-	{
-		node->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	}
+	for (auto& node : m_nodes)node->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
-
+/*
+*	@brief ミニキャラクターのベースクラスに部品を追加する
+*	@details ミニキャラクターのベースクラスに部品を追加する。
+*	@param MiniCharacterPart 追加する部品のユニークポインタ
+*	@return なし
+*/
 void MiniCharacterBase::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
+	// 追加した部品を初期化する
 	MiniCharacterPart->Initialize(m_pCommonResources);
+	// ノードに追加する
 	m_nodes.emplace_back(std::move(MiniCharacterPart));
-
 }
-
+/*
+*	@brief ミニキャラクターのベースクラスから部品を削除する
+*	@details ミニキャラクターのベースクラスから部品を削除する。
+*	@param MiniCharacterPart 削除する部品のユニークポインタ
+*	@return なし
+*/
 void MiniCharacterBase::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
 	// 部品を削除する
 	auto it = std::find_if(m_nodes.begin(), m_nodes.end(),
-		[&MiniCharacterPart](const std::unique_ptr<IComponent>& node) {
+		[&MiniCharacterPart](const std::unique_ptr<IComponent>& node)
+		{
 			return node.get() == MiniCharacterPart.get();
 		});
 	// 削除する部品が見つかった場合は部品を削除する
-	if (it != m_nodes.end())
-	{
-		m_nodes.erase(it);
-	}
+	if (it != m_nodes.end())	m_nodes.erase(it);
 }
-
+/*
+*	@brief ミニキャラクターのベースクラスの描画
+*	@details ミニキャラクターのベースクラスの描画。
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
+*	@return なし
+*/
 void MiniCharacterBase::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {	// ノードを描画する
-	for (auto& node : m_nodes)
-	{
-		//ノードを描画する
-		node->Render(view, proj);
-	}
+	for (auto& node : m_nodes)node->Render(view, proj);
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
-
 	// 座標表示
-	debugString->AddString("MiniCharacter Position: (%f, %f, %f)",
-		m_cameraPosition.x, m_cameraPosition.y, m_cameraPosition.z);
+	debugString->AddString("MiniCharacter Position: (%f, %f, %f)", m_cameraPosition.x, m_cameraPosition.y, m_cameraPosition.z);
 }
-
+/*
+*	@brief ミニキャラクターのベースクラスの後処理
+*	@details ミニキャラクターのベースクラスの後処理。
+*	@param なし
+*	@return なし
+*/
 void MiniCharacterBase::Finalize()
-{	// ノードをクリアする
+{
+	// ノードをクリアする
 	m_nodes.clear();
 }

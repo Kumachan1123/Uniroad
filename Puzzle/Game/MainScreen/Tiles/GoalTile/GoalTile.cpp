@@ -44,7 +44,17 @@ void GoalTile::OnCenterReached(MiniCharacter* character)
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(character);
 	// キャラクターの速度をゼロにする
-	character->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+	character->SetVelocity(Vector3::Zero);
 	// キャラクターを動かすフラグを止める
 	character->SetMoving(false);
+	// 5秒後にゲームクリアのフラグを立てる
+	if (character->GetGameClearSwitchTime() > 5.0f)
+	{
+		// ベースクラスのポインターを取得
+		const auto& pMinicharacterBase = dynamic_cast<MiniCharacterBase*>(character->GetParent());
+		// ベースクラスのポインターが取れたらゲームクリアフラグを立てる
+		if (pMinicharacterBase)pMinicharacterBase->SetGameClear(true);
+		// 取れなかったらエラー
+		else assert(false && "MiniCharacterBase is not set correctly.");
+	}
 }
