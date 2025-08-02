@@ -1,19 +1,18 @@
 /*
-*	@file Medal.h
-*	@brief メダルクラス
+*	@file GoalLock.h
+*	@brief ゴールロックのアイテムを定義するクラス
 */
 #pragma once
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/MainScreen/Items/ItemBase/ItemBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
-#include "KumachiLib/Easing/Easing.h"
 
 // 前方宣言
 class CommonResources;
 
-// メダルクラス
-class Medal : public ItemBase
+// ゴールロッククラス
+class GoalLock : public ItemBase
 {
 public:
 	// アクセサ
@@ -41,9 +40,9 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	Medal();
+	GoalLock();
 	// デストラクタ
-	~Medal() override;
+	~GoalLock() override;
 	// 初期化
 	void Initialize(CommonResources* resources, const ItemInfo& info) override;
 	// 更新
@@ -57,24 +56,18 @@ public:
 	// アイテムを破棄したときの処理
 	void OnDiscard(MiniCharacter* miniCharacter) override;
 private:
-	// 定数
-	// デフォルトの回転速度
-	static constexpr float DEFAULT_ROTATION_SPEED = 1.0f;
-	// 獲得されて消えるまでの回転速度
-	static constexpr float COLLECTED_ROTATION_SPEED = 100.0f;
-private:
 	// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
-	// メダルのモデル
+	// ゴールロックのモデル
 	DirectX::Model* m_pModel;
-	// メダルの情報
+	// ゴールロックの情報
 	ItemInfo m_itemInfo;
-	// メダルの位置
+	// ゴールロックの位置
 	DirectX::SimpleMath::Vector3 m_position;
-	// メダルのスケール
+	// ゴールロックのスケール
 	DirectX::SimpleMath::Vector3 m_scale;
-	// メダルの回転
+	// ゴールロックの回転
 	DirectX::SimpleMath::Quaternion m_rotation;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
@@ -82,9 +75,9 @@ private:
 	float m_time;
 	// 回転速度
 	float m_rotationSpeed;
-	// メダルが獲得されて消えるまでの時間
+	// ゴールロックが獲得されて消えるまでの時間
 	float m_deleteTime;
-	// メダルが獲得されたかどうか
+	// ゴールロックが獲得されたかどうか
 	bool m_isCollected;
 	// ミニキャラのポインター
 	MiniCharacter* m_pMiniCharacter;
@@ -92,4 +85,5 @@ private:
 	int m_row;
 	// このアイテムがある列番号
 	int m_col;
+
 };

@@ -194,6 +194,7 @@
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
+    <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemDatas\ItemDatas.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemFactory\ItemFactory.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
+    <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
     <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
     <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.cpp" />

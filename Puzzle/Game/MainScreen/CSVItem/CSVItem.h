@@ -35,8 +35,6 @@ public:
 	const MapItemData& GetItemData(const DirectX::SimpleMath::Vector3& pos) const;
 	// 指定座標のタイルのアイテム情報を消す(獲得後に呼ぶ)(行, 列)
 	void  RemoveItem(int row, int col);
-
-
 	// マップの最大列数と行数を取得する
 	const int GetMaxCol() const { return MAXCOL; }// 列数
 	const int GetMaxRow() const { return MAXRAW; }// 行数
@@ -44,6 +42,10 @@ public:
 	void CountMedals() { m_collectedMedals++; }
 	// 獲得されたメダルの枚数を取得する
 	int GetCollectedMedals() const { return m_collectedMedals; }
+	// ゴールがアンロックされたかどうかを取得する
+	bool IsGoalUnlocked() const { return m_goalUnlocked; }
+	// ゴールをアンロックする
+	void UnlockGoal() { m_goalUnlocked = true; }
 public:
 	// public関数
 	// コンストラクタ
@@ -82,4 +84,8 @@ private:
 	float m_time;
 	// 獲得されたメダル
 	int m_collectedMedals;
+	// 生成されたメダル数
+	int m_createdMedals;
+	// ゴールアンロックフラグ
+	bool m_goalUnlocked;
 };

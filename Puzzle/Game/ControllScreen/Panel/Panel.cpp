@@ -99,7 +99,8 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			// ƒAƒCƒeƒ€‚ð’Ç‰Á
 			Add(itemTextureKey
 				, itemPos
-				, Vector2(0.45f, 0.45f)
+				, Vector2(0.6f, 0.6f)
+				//, Vector2(0.45f, 0.45f)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
 				, UIType::ITEM);
 

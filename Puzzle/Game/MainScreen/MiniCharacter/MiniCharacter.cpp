@@ -103,15 +103,10 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 砲塔部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	// ゲームオーバーのスイッチ時間が3秒を超えたら、親にゲームオーバーを通知するしてゲームオーバーにする
-	if (m_gameOverSwitchTime >= 3.0f)
-		dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameOver(true);
-	// 今いるタイルがゴールならゲームクリアのスイッチ時間を更新(ゴールタイル側でゲームクリアのフラグを立てる)
-	if (GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName == "Goal")
-		m_gameClearSwitchTime += elapsedTime;
-	// 途中で止まった場合、ゲームオーバーのスイッチ時間を更新
-	else if (m_currentVelocity == Vector3::Zero)
-		m_gameOverSwitchTime += elapsedTime;
+	// ゲームオーバー、ゲームクリア分岐処理
+	HandleGameOverAndClear(elapsedTime);
+
+
 }
 /*
 *	@brief プレイヤーの部品を追加する
@@ -476,5 +471,28 @@ bool MiniCharacter::IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, 
 	float distance = (charPos - tileCenter).Length();
 	// 距離が許容誤差以下であれば、タイルの中心にいると判断
 	return distance < epsilon;
+}
+/*
+*	@brief ゲームオーバーとクリアの処理を行う
+*	@details ゲームオーバーやクリアの処理を行う。
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void MiniCharacter::HandleGameOverAndClear(float elapsedTime)
+{
+	// SimpleMathの名前空間を使うためにusing宣言を追加
+	using namespace DirectX::SimpleMath;
+	// ゴールがアンロックされているかどうかを取得
+	bool goalUnlocked = GetParent()->GetCSVItem()->IsGoalUnlocked();
+	// 現在のタイルを取得
+	const auto& tile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
+	// 現在のタイルの名前を取得
+	std::string goalTileName = tile.tileInfo.modelName;
+	// 現在の位置がタイルの中心にいるかどうかを判定
+	bool isCenter = IsAtTileCenter(m_currentPosition, tile.pos);
+	// アンロックされたゴールの真上にいるならクリア
+	if (goalTileName == "Goal" && goalUnlocked == true && isCenter)	dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameClear(true);
+	// 途中で止まるか落ちている場合、ゲームオーバー
+	else if (m_currentVelocity.y < Vector3::Zero.y || m_currentVelocity == Vector3::Zero)dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameOver(true);
 }
 

@@ -4,10 +4,6 @@
 */
 #include <pch.h>
 #include "CSVItem.h"
-
-
-
-
 /*
 *	@brief コンストラクタ
 *	@details 生成時に共通リソースへのポインタを受け取り、初期化を行う。
@@ -18,6 +14,8 @@ CSVItem::CSVItem(CommonResources* resources)
 	: m_time(0.0f) // 経過時間
 	, m_pCommonResources(resources) // 共通リソースへのポインタ
 	, m_collectedMedals(0) // 収集したメダルの数
+	, m_createdMedals(0) // 生成したメダルの数
+	, m_goalUnlocked(true)// ゴールロックが解除されているかどうか
 {
 	// アイテムのタイルの辞書を初期化
 	InitializeTileDictionary();
@@ -53,6 +51,8 @@ void CSVItem::InitializeTileDictionary()
 	m_tileDictionary["0"] = ItemInfo{ "", false };
 	// メダル
 	m_tileDictionary["m"] = ItemInfo{ "Medal", false };
+	// ゴールロック
+	m_tileDictionary["l"] = ItemInfo{ "GoalLock", false };
 }
 
 /*
@@ -122,16 +122,13 @@ void CSVItem::LoadItem(const std::string& filePath)
 				// アイテムに行と列の情報を設定
 				itemBase->SetRow(row);// 行番号を設定
 				itemBase->SetCol(col);// 列番号を設定
-
-				//// ワールド行列を作成（スケーリングと位置の設定）
-				//Matrix world = Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos);
-				//// モデル取得
-				//DirectX::Model* model = m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName);
 				// アイテムデータにタイル情報を保存
 				m_mapItemData[row][col] = MapItemData{ tileInfo, pos, std::move(itemBase) };
-				//// タイルデータ保存
-				//m_tiles.push_back(ItemRenderData{ model, world });
-
+				// 生成したアイテムがメダルならカウント
+				if (tileInfo.modelName == "Medal") m_createdMedals++;
+				// ゴールロックが生成されたら解除フラグをfalseにする
+				if (tileInfo.modelName == "GoalLock")
+					m_goalUnlocked = false;
 			}
 			else
 			{
@@ -174,6 +171,17 @@ void CSVItem::Update(float elapsedTime)
 		{
 			// アイテムがあるなら更新
 			if (m_mapItemData[col][row].itemBasePtr != nullptr)m_mapItemData[col][row].itemBasePtr->Update(elapsedTime);
+			// ゴールロック以外はスキップ
+			if (!dynamic_cast<GoalLock*>(m_mapItemData[col][row].itemBasePtr.get())) continue;
+			// メダルの数が一致したら
+			if (m_collectedMedals == m_createdMedals)
+			{
+				// ロックを削除
+				RemoveItem(col, row);
+				// ゴールをアンロック
+				m_goalUnlocked = true;
+			}
+
 		}
 	}
 }
@@ -225,6 +233,7 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 	}
 	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("CountMedals:%i", m_collectedMedals);
+	debugString->AddString("GoalUnlocked:%s", m_goalUnlocked ? "true" : "false");
 }
 
 

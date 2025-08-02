@@ -16,6 +16,9 @@ std::unique_ptr<ItemBase> ItemFactory::CreateItemByName(const std::string& name)
 	// メダル
 	if (name == "Medal")
 		return std::make_unique<Medal>();
+	// ゴールロック
+	if (name == "GoalLock")
+		return std::make_unique<GoalLock>();
 
 	return nullptr;
 }

@@ -110,4 +110,6 @@ private:
 	bool m_isChangeScene;
 	// ステージ番号
 	int m_stageNumber;
+	// シーンチェンジカウント
+	float m_sceneChangeCount;
 };

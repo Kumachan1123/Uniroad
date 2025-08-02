@@ -6,6 +6,7 @@
 // 自作ヘッダーファイル
 #include "Game/MainScreen/Items/ItemBase/ItemBase.h"
 #include "Game/MainScreen/Items/Medal/Medal.h"
+#include "Game/MainScreen/Items/GoalLock/GoalLock.h"
 
 class ItemFactory
 {

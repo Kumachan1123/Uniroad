@@ -84,9 +84,9 @@ public:
 	// メダル画像の位置Y
 	const float MEDAL_POS_Y = 1.0f;
 	// メダル画像のサイズX
-	const float MEDAL_SIZE_X = 0.1f;
+	const float MEDAL_SIZE_X = 0.11f;
 	// メダル画像のサイズY
-	const float MEDAL_SIZE_Y = 0.1f / 0.58f;
+	const float MEDAL_SIZE_Y = 0.11f / 0.58f;
 	// 「×」画像の位置X
 	const float X_POS_X = -0.9f;
 	// 「×」画像の位置Y

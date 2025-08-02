@@ -1,16 +1,16 @@
 /*
-*	@file Medal.cpp
-*	@brief メダルクラス
+*	@file GoalLock.cpp
+*	@brief ゴールロックの処理を定義するクラス
 */
 #include "pch.h"
-#include "Medal.h"
+#include "GoalLock.h"
 /*
 *	@brief コンストラクタ
-*	@details メダルクラスのコンストラクタ
+*	@details ゴールロックのコンストラクタ
 *	@param なし
 *	@return なし
 */
-Medal::Medal()
+GoalLock::GoalLock()
 	:m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_pMiniCharacter(nullptr) // ミニキャラクターへのポインタ
 	, m_itemInfo() // アイテム情報
@@ -18,79 +18,57 @@ Medal::Medal()
 	, m_col(-1) // 列番号（保存用）
 	, m_pModel(nullptr) // モデルへのポインタ
 	, m_time(0.0f) // 経過時間
-	, m_deleteTime(0.0f) // メダルが獲得されて消えるまでの時間
+	, m_deleteTime(0.0f) // 獲得されて消えるまでの時間
 	, m_rotationSpeed(0.0f) // 回転速度
 	, m_rotation(DirectX::SimpleMath::Quaternion::Identity) // 回転
-	, m_isCollected(false) // メダルが獲得されたかどうか
+	, m_isCollected(false) // 獲得されたかどうか
 {
 }
+
 /*
 *	@brief デストラクタ
-*	@details メダルクラスのデストラクタ
+*	@details ゴールロックのデストラクタ
 *	@param なし
 *	@return なし
 */
-Medal::~Medal()
+GoalLock::~GoalLock()
 {
 	// 何もしない
 }
+
 /*
 *	@brief 初期化
-*	@details メダルクラスの初期化を行う
+*	@details ゴールロックの初期化を行う
 *	@param resources 共通リソースへのポインタ
 *	@param info アイテム情報
 *	@return なし
 */
-void Medal::Initialize(CommonResources* resources, const ItemInfo& info)
+void GoalLock::Initialize(CommonResources* resources, const ItemInfo& info)
 {
 	// 共通リソースへのポインタを設定
 	m_pCommonResources = resources;
 	// アイテム情報を設定
 	m_itemInfo = info;
-	// 初期の回転速度を設定
-	m_rotationSpeed = DEFAULT_ROTATION_SPEED;
 }
 /*
 *	@brief 更新
-*	@details メダルの更新処理を行う
+*	@details ゴールロックの更新処理を行う
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void Medal::Update(float elapsedTime)
+void GoalLock::Update(float elapsedTime)
 {
-	// DirectX::SimpleMathの名前空間を使用
-	using namespace DirectX::SimpleMath;
-	// 時間を加算
+	// 経過時間を加算
 	m_time += elapsedTime;
-	// 獲得されたら
-	if (m_isCollected)
-	{
-		// 消えるまでの時間を加算
-		m_deleteTime += elapsedTime;
-		// Y座標を滑らかに変える
-		m_position.y += Easing::EaseInCirc(m_deleteTime / 3.0f);
-
-		// 獲得されたら消えるまでの時間が2秒を超えたら
-		if (m_deleteTime > 2.0f)
-		{
-			// アイテムを削除
-			OnDiscard(m_pMiniCharacter);
-			// 処理を終える
-			return;
-		}
-	}
-
-	// 時間経過で回転させる
-	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f * m_rotationSpeed, 0.0f, 0.0f);
 }
 /*
-*	@brief 当たり判定描画
-*	@details メダルの当たり判定を描画する
+*	@brief ゴールロックの描画
+*	@details ゴールロックの描画処理を行う
 *	@param view ビュー行列
 *	@param proj プロジェクション行列
 *	@return なし
 */
-void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void GoalLock::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 	// DirectX::SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
@@ -109,40 +87,37 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 }
 /*
 *	@brief アイテムの取得時処理
-*	@details メダルを取得したとき、取った枚数を加算する
+*	@details ゴールロックを取得したときの処理を行う
 *	@param miniCharacter ミニキャラクターへのポインタ
 *	@return なし
 */
-void Medal::OnGet(MiniCharacter* miniCharacter)
+void GoalLock::OnGet(MiniCharacter* miniCharacter)
 {
-	// 既に獲得されている場合は何もしない
-	if (m_isCollected) return;
-	// ミニキャラクターのメダル枚数を加算
-	miniCharacter->GetParent()->GetCSVItem()->CountMedals();
-	// 回転速度を獲得時の速度に設定
-	m_rotationSpeed = COLLECTED_ROTATION_SPEED;
-	// メダルが獲得されたフラグを設定
-	m_isCollected = true;
-	// ポインターを設定
+	// ミニキャラクターへのポインタを設定
 	m_pMiniCharacter = miniCharacter;
+	// 獲得されたフラグを設定
+	m_isCollected = true;
+	// 獲得されて消えるまでの時間をリセット
+	m_deleteTime = 0.0f;
 }
 /*
 *	@brief アイテムの使用時処理
-*	@details メダルを使用したときの処理を行う
+*	@details ゴールロックを使用したときの処理を行う
 *	@param miniCharacter ミニキャラクターへのポインタ
 *	@return なし
 */
-void Medal::OnUse(MiniCharacter* miniCharacter)
+void GoalLock::OnUse(MiniCharacter* miniCharacter)
 {
 	UNREFERENCED_PARAMETER(miniCharacter);
 }
+
 /*
 *	@brief アイテムの破棄時処理
-*	@details メダルを破棄したときの処理を行う
+*	@details ゴールロックを破棄したときの処理を行う
 *	@param miniCharacter ミニキャラクターへのポインタ
 *	@return なし
 */
-void Medal::OnDiscard(MiniCharacter* miniCharacter)
+void GoalLock::OnDiscard(MiniCharacter* miniCharacter)
 {
 	// アイテムを削除
 	m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);

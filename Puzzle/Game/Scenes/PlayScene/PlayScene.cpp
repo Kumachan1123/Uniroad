@@ -12,6 +12,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	, m_projectionGame() // ゲーム画面用の射影行列
 	, m_projectionControll() // 操作画面用の射影行列
 	, m_time(0.0f) // 経過時間
+	, m_sceneChangeCount(0.0f) // シーン変更カウント
 	, m_isChangeScene(false) // シーン変更フラグ
 	, m_viewPortGame() // ゲーム画面用のビューポート
 	, m_viewPortControll() // 操作画面用のビューポート
@@ -111,16 +112,15 @@ void PlayScene::Update(float elapsedTime)
 	// 次のタイルの更新
 	m_pNextTiles->Update(elapsedTime);
 	// ミニキャラの更新
-	Vector3 position(0.0f, 0.0f, 0.0f);
-	Quaternion angle(Quaternion::Identity);
-	m_pMiniCharacterBase->Update(elapsedTime, position, angle);
+	m_pMiniCharacterBase->Update(elapsedTime, Vector3::Zero, Quaternion::Identity);
 	// メダルカウンターに現在のメダル数を設定
 	m_pMedalCounter->SetCollectedMedalCount(m_pCSVItem->GetCollectedMedals());
-
 	// メダルカウンターの更新
 	m_pMedalCounter->Update(elapsedTime);
 	// ゲームオーバーかゲームクリアになったらシーン変更フラグを立てる
-	if (m_pMiniCharacterBase->IsGameOver() || m_pMiniCharacterBase->IsGameClear())	m_isChangeScene = true;
+	if (m_pMiniCharacterBase->IsGameOver() || m_pMiniCharacterBase->IsGameClear())
+		m_sceneChangeCount += elapsedTime;
+	if (m_sceneChangeCount >= 3.0f)	m_isChangeScene = true;
 }
 void PlayScene::Render()
 {
@@ -164,6 +164,8 @@ void PlayScene::Render()
 
 	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("Use ViewPort.");
+	debugString->AddString("IsGameOver:%s", m_pMiniCharacterBase->IsGameOver() ? "true" : "false");
+	debugString->AddString("IsGameClear:%s", m_pMiniCharacterBase->IsGameClear() ? "true" : "false");
 }
 
 void PlayScene::Finalize()
