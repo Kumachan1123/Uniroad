@@ -134,6 +134,7 @@ void Medal::OnGet(MiniCharacter* miniCharacter)
 */
 void Medal::OnUse(MiniCharacter* miniCharacter)
 {
+	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(miniCharacter);
 }
 /*
@@ -144,6 +145,8 @@ void Medal::OnUse(MiniCharacter* miniCharacter)
 */
 void Medal::OnDiscard(MiniCharacter* miniCharacter)
 {
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(miniCharacter);
 	// アイテムを削除
 	m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);
 }

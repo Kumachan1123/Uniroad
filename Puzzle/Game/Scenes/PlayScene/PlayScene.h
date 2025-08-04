@@ -27,6 +27,8 @@
 #include "Game/ControllScreen/Panel/Panel.h"
 #include "Game/Mouse/Mouse.h"
 #include "Game/ControllScreen/MedalCounter/MedalCounter.h"
+#include "Game/Scenes/PlayScene/ResultAnimation/ResultAnimation.h"
+#include "KumachiLib/Easing/Easing.h"
 
 // 前方宣言
 class CommonResources;
@@ -69,13 +71,17 @@ private:
 	void CreateCamera();
 	// 各種ビューポートを設定する
 	void CreateViewports();
+	// デバッグ文字を表示
+	void DrawDebugString();
 private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバッグカメラ
 	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
-	// 固定カメラ
-	std::unique_ptr<FixedCamera> m_pFixedCamera;
+	// 固定カメラ(プレイ中）
+	std::unique_ptr<FixedCamera> m_pFixedCameraPlay;
+	// 固定カメラ(リザルト用)
+	std::unique_ptr<FixedCamera> m_pFixedCameraResult;
 	// CSVマップ
 	std::unique_ptr<CSVMap> m_pCSVMap;
 	// CSVアイテム
@@ -92,12 +98,16 @@ private:
 	std::unique_ptr<MyMouse> m_pMouse;
 	// メダルカウンター
 	std::unique_ptr<MedalCounter> m_pMedalCounter;
+	// 結果アニメーション
+	std::unique_ptr<ResultAnimation> m_pResultAnimation;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
-	// 射影行列
+	// 射影行列(ゲーム画面用)
 	DirectX::SimpleMath::Matrix m_projectionGame;
-	// 射影行列
+	// 射影行列(操作画面用)
 	DirectX::SimpleMath::Matrix m_projectionControll;
+	// 射影行列(リザルト用)
+	DirectX::SimpleMath::Matrix m_projectionResult;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 	// ゲーム画面用ビューポート　

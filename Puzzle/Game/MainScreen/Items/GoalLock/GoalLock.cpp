@@ -108,6 +108,7 @@ void GoalLock::OnGet(MiniCharacter* miniCharacter)
 */
 void GoalLock::OnUse(MiniCharacter* miniCharacter)
 {
+	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(miniCharacter);
 }
 
@@ -119,6 +120,8 @@ void GoalLock::OnUse(MiniCharacter* miniCharacter)
 */
 void GoalLock::OnDiscard(MiniCharacter* miniCharacter)
 {
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(miniCharacter);
 	// アイテムを削除
 	m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);
 }

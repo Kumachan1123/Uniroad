@@ -51,7 +51,7 @@ static const std::unordered_map<std::string, std::unordered_map<Direction, std::
 		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}}}
 };
 
-static const std::vector<std::string> s_dammyArray = { "StraightVertical", "StraightHorizontal", "RightDown", "LeftDown", "RightUp", "LeftUp", "Cross" };
+static const std::vector<std::string> s_dammyArray = { "StraightVertical", "StraightHorizontal", "RightDown", "LeftDown", "RightUp", "LeftUp" };
 
 const std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>>& TileConnectionTable::GetTable()
 {

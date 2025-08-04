@@ -26,6 +26,10 @@ MedalCounter::MedalCounter()
 	, m_viewportHeight(0)// ビューポートの高さ
 	, m_frameRows{ 1 }//	画像の行数
 	, m_frameCols{ 10 }//	画像の列数
+	, m_verticesMedal{} // メダルの頂点配列
+	, m_verticesX{} // 「×」の頂点配列
+	, m_verticesNumber1{} // 1の位の数字の頂点配列
+	, m_verticesNumber10{} // 10の位の数字の頂点配列
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 {
@@ -111,7 +115,9 @@ void MedalCounter::Render()
 
 }
 
-void MedalCounter::DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture, DirectX::VertexPositionTexture* vertices, float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
+void MedalCounter::DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
+	DirectX::VertexPositionTexture* vertices,
+	float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;

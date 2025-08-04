@@ -237,8 +237,8 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 		}
 	}
 	const auto debugString = m_pCommonResources->GetDebugString();
-	for (int i = 0; i < 5; ++i)
-		debugString->AddString("MapPos%f,%f", GetTileData(i, 4).pos.x, GetTileData(i, 4).pos.z);
+	//for (int i = 0; i < 5; ++i)
+	//	debugString->AddString("MapPos%f,%f", GetTileData(i, 4).pos.x, GetTileData(i, 4).pos.z);
 	//// “–‚½‚è”»’è‚Ì•`‰æ
 	//DrawCollision(view, proj);
 }

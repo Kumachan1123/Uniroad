@@ -120,7 +120,7 @@ void StageSelectScene::Update(float elapsedTime)
 	//	if (KeyState.Space)
 	//		m_view = m_pTrackingCamera->GetViewMatrix();
 	//	else
-	//		m_view = m_pFixedCamera->GetViewMatrix();
+	//		m_view = m_pFixedCameraPlay->GetViewMatrix();
 	//
 	//#endif
 		// ƒrƒ…[s—ñ‚ğæ“¾

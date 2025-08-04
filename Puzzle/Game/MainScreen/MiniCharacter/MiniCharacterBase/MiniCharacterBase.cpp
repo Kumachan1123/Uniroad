@@ -79,7 +79,17 @@ void MiniCharacterBase::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 	// 現在の回転角を更新する
 	m_currentAngle = currentAngle;
 	// ノードを更新する
-	for (auto& node : m_nodes)node->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	for (auto& node : m_nodes)
+	{
+		// ノードの更新処理を呼び出す
+		node->Update(elapsedTime, m_currentPosition, m_currentAngle);
+		// nodeがMiniCharacterなら
+		if (dynamic_cast<MiniCharacter*>(node.get()))
+		{
+			// 座標をカメラに渡す座標とする
+			m_cameraPosition = node->GetPosition();
+		}
+	}
 }
 /*
 *	@brief ミニキャラクターのベースクラスに部品を追加する

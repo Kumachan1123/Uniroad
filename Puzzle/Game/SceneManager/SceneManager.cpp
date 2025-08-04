@@ -49,7 +49,6 @@ void SceneManager::Update(float elapsedTime)
 {
 	// 現在のシーンを更新
 	m_pCurrentScene->Update(elapsedTime);
-
 	// 次のシーンIDがNONEの場合はここで処理を終わる
 	if (m_pCurrentScene->GetNextSceneID() == IScene::SceneID::NONE) return;
 	// シーンを変更するとき
@@ -107,13 +106,12 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	// シーンIDによって処理を分ける
 	switch (sceneID)
 	{
-	case IScene::SceneID::PLAY:
-
-		m_pCurrentScene = std::make_unique<PlayScene>(sceneID);
-		m_pCurrentScene->SetStageNumber(m_stageNumber); // ステージ番号を設定
-		break;
 	case IScene::SceneID::STAGESELECT:
 		m_pCurrentScene = std::make_unique<StageSelectScene>(sceneID);
+		break;
+	case IScene::SceneID::PLAY:
+		m_pCurrentScene = std::make_unique<PlayScene>(sceneID);
+		m_pCurrentScene->SetStageNumber(m_stageNumber); // ステージ番号を設定
 		break;
 		/*case IScene::SceneID::TITLE:
 			m_currentScene = std::make_unique<TitleScene>(sceneID);

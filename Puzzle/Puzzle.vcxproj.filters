@@ -93,6 +93,8 @@
     <ClInclude Include="Game\Scenes\StageSelectScene\StageGate\StageGate.h" />
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
+    <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -152,6 +154,8 @@
     <ClCompile Include="Game\Scenes\StageSelectScene\StageGate\StageGate.cpp" />
     <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
+    <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

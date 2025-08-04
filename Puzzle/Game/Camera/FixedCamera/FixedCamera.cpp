@@ -17,6 +17,7 @@ FixedCamera::FixedCamera()
 	, m_target(0.0f, 0.0f, 0.0f)// 注視点を原点に設定
 	, m_up(0.0f, 1.0f, 0.0f) // 上方向をY軸正方向に設定
 	, m_sx(0.0f), m_sy(0.0f)// 相対スケールを初期化
+	, m_cameraDistance(DEFAULT_CAMERA_DISTANCE) // カメラの距離をデフォルト値に設定
 	, m_view(DirectX::SimpleMath::Matrix::Identity) // ビュー行列を単位行列で初期化
 {
 }
@@ -29,10 +30,18 @@ FixedCamera::FixedCamera()
 */
 void FixedCamera::Initialize(int screenWidth, int screenHeight)
 {
+	using namespace DirectX::SimpleMath;
 	// 相対スケールを計算
 	CalculateRerativeScale(screenWidth, screenHeight);
+	// カメラの距離をデフォルト値に設定
+	m_cameraDistance = Vector3(DEFAULT_CAMERA_DISTANCE);
 	// ビュー行列を計算
 	CalculateViewMatrix();
+	// 視点をデフォルトの位置に設定
+	// 視点を設定
+	Vector3 eye(0.0f, 1.0f, 1.0f);
+	eye *= m_cameraDistance; // デフォルトのカメラ距離を適用
+	m_eye = eye;
 }
 /*
 *	@brief 更新する
@@ -54,22 +63,16 @@ void FixedCamera::Update()
 void FixedCamera::CalculateViewMatrix()
 {
 	using namespace DirectX::SimpleMath;
-	// 視点を設定
-	Vector3 eye(0.0f, 1.0f, 1.0f);
-	// 注視点を原点に設定
-	Vector3 target(0.0f, 0.0f, 0.0f);
+
+
 	// 上方向をY軸正方向に設定
 	Vector3 up(0.0f, 1.0f, 0.0f);
-	// デフォルトのカメラ距離を適用
-	eye *= DEFAULT_CAMERA_DISTANCE;
-	// 視点を設定
-	m_eye = eye;
-	// 注視点を設定
-	m_target = target;
+
+
 	// 上方向を設定
 	m_up = up;
 	// ビュー行列を計算する
-	m_view = Matrix::CreateLookAt(eye, target, up);
+	m_view = Matrix::CreateLookAt(m_eye, m_target, up);
 }
 /*
 *	@brief 相対スケールを計算する

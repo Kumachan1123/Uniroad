@@ -50,6 +50,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 */
 MiniCharacter::~MiniCharacter()
 {
+	// 終了処理
 	Finalize();
 }
 /*
@@ -85,7 +86,7 @@ void MiniCharacter::Initialize(CommonResources* resources)
 */
 void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	using namespace DirectX;
+	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
 	// タイルイベントを更新する
 	UpdateTileEvents();
@@ -480,6 +481,8 @@ bool MiniCharacter::IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, 
 */
 void MiniCharacter::HandleGameOverAndClear(float elapsedTime)
 {
+	// 未使用警告非表示
+	UNREFERENCED_PARAMETER(elapsedTime);
 	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
 	// ゴールがアンロックされているかどうかを取得

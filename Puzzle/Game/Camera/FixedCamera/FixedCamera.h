@@ -13,10 +13,18 @@ public:
 	const DirectX::SimpleMath::Matrix& GetViewMatrix() const { return m_view; }
 	// 視点を取得する
 	const DirectX::SimpleMath::Vector3& GetEyePosition() const { return m_eye; }
+	// 視点を設定する
+	void SetEyePosition(const DirectX::SimpleMath::Vector3& eye) { m_eye = eye; }
 	// 注視点を取得する
 	const DirectX::SimpleMath::Vector3& GetTargetPosition() const { return m_target; }
+	// 注視点を設定する
+	void SetTargetPosition(const DirectX::SimpleMath::Vector3& target) { m_target = target; }
 	// カメラの頭の方向を取得する
 	const DirectX::SimpleMath::Vector3& GetUpPosition() const { return m_up; }
+	// カメラの距離を取得する
+	const DirectX::SimpleMath::Vector3& GetCameraDistance() const { return m_cameraDistance; }
+	// カメラの距離を設定する
+	void SetCameraDistance(const DirectX::SimpleMath::Vector3& distance) { m_cameraDistance = distance; }
 public:
 	// publicなメンバ関数
 	// コンストラクタ
@@ -28,8 +36,6 @@ public:
 	// 更新する
 	void Update();
 private:
-	//// 変位を計測する
-	//void Motion(int x, int y);
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
 	// 相対スケールを計算する
@@ -37,22 +43,16 @@ private:
 private:
 	// デフォルトでカメラが注視点からどのくらい離れているか
 	static const float DEFAULT_CAMERA_DISTANCE;
-	//// 横回転（Ｙ軸回転）
-	//float m_yAngle, m_yTmp;
-	//// 縦回転（Ｘ軸回転）
-	//float m_xAngle, m_xTmp;
-	//// マウスでドラッグされた座標
-	//int m_x, m_y;
 	// 相対スケール
 	float m_sx, m_sy;
 	// 生成されたビュー行列
 	DirectX::SimpleMath::Matrix m_view;
-	//// スクロールホイール値
-	//int m_scrollWheelValue;
 	// 視点
 	DirectX::SimpleMath::Vector3 m_eye;
 	// 注視点
 	DirectX::SimpleMath::Vector3 m_target;
 	// カメラの頭の方向
 	DirectX::SimpleMath::Vector3 m_up;
+	// カメラの距離
+	DirectX::SimpleMath::Vector3 m_cameraDistance;
 };

@@ -1,14 +1,19 @@
 /*
-	@file	PlayScene.cpp
-	@brief	一般的なシーンクラス
+*	@file	PlayScene.cpp
+*	@brief	プレイシーンクラス
 */
 #include <pch.h>
 #include "PlayScene.h"
-
+/*
+*	@brief コンストラクタ
+*	@details プレイシーンクラスのコンストラクタ
+*	@param sceneID シーンID
+*	@return なし
+*/
 PlayScene::PlayScene(IScene::SceneID sceneID)
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_debugCamera(nullptr) // デバッグカメラへのポインタ
-	, m_pFixedCamera(nullptr) // 固定カメラへのポインタ
+	, m_pFixedCameraPlay(nullptr) // 固定カメラへのポインタ
 	, m_projectionGame() // ゲーム画面用の射影行列
 	, m_projectionControll() // 操作画面用の射影行列
 	, m_time(0.0f) // 経過時間
@@ -18,22 +23,33 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	, m_viewPortControll() // 操作画面用のビューポート
 	, m_nowSceneID(sceneID)// 現在のシーンID
 	, m_stageNumber(-1) // ステージ番号
-{
-}
-
-PlayScene::~PlayScene()
-{
-}
-
+{}
+/*
+*	@brief デストラクタ
+*	@details プレイシーンクラスのデストラクタ
+*	@param なし
+*	@return なし
+*/
+PlayScene::~PlayScene() {}
+/*
+*	@brief 初期化
+*	@details プレイシーンクラスの初期化を行う
+*	@param resources 共通リソースへのポインタ
+*	@return なし
+*/
 void PlayScene::Initialize(CommonResources* resources)
 {
+	// 名前空間のエイリアス
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// 共通リソースをセット
 	m_pCommonResources = resources;
+	// 各カメラを作成
 	CreateCamera();
-	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	// 各種ビューポートを作成する
 	CreateViewports();
+	// デバイスリソースを取得
+	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	// マウスを作成する
 	m_pMouse = std::make_unique<MyMouse>();
 	// マウスを初期化する
@@ -88,25 +104,58 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMedalCounter = std::make_unique<MedalCounter>();
 	// メダルカウンターを初期化する
 	m_pMedalCounter->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
-
+	// 結果アニメーションを作成する
+	m_pResultAnimation = std::make_unique<ResultAnimation>();
+	// 結果アニメーションを初期化する
+	m_pResultAnimation->Initialize(m_pCommonResources);
 }
-
+/*
+*   @brief 更新処理
+*   @details プレイシーンの全てのゲームオブジェクト・UIの更新
+*   @param elapsedTime 前フレームからの経過時間
+*	@return なし
+*/
 void PlayScene::Update(float elapsedTime)
 {
-	using namespace DirectX;
+	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
+	// 経過時間を加算
 	m_time += elapsedTime;
-	//// デバッグカメラの更新
-	//m_debugCamera->Update(m_pCommonResources->GetInputManager());
-	// 固定カメラの更新
-	m_pFixedCamera->Update();
+	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
+	if (m_pResultAnimation->IsAnimationEnable())
+	{
+		// リザルト用固定カメラの更新
+		m_pFixedCameraResult->Update();
+		// ビュー行列を取得
+		m_view = m_pFixedCameraResult->GetViewMatrix();
+		// 結果アニメーションの更新
+		m_pResultAnimation->Update(elapsedTime);
+		// ゲームクリアなら以下の処理も行う
+		if (m_pMiniCharacterBase->IsGameClear())
+		{
+			// カメラの位置を滑らかに変える
+			m_pFixedCameraResult->SetCameraDistance(Vector3(0.0f, 1.75f, 10.0f));
+			Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
+			// カメラのターゲット位置をミニキャラのカメラ位置に設定
+			m_pFixedCameraResult->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
+			// カメラの座標を更新
+			m_pFixedCameraResult->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCameraResult->GetCameraDistance());
+		}
+	}
+	// リザルトでない場合は通常の更新を行う
+	else
+	{
+		// プレイ画面用固定カメラの更新
+		m_pFixedCameraPlay->Update();
+		// ビュー行列を取得
+		m_view = m_pFixedCameraPlay->GetViewMatrix();
+	}
 	// マウスの更新
 	m_pMouse->Update(elapsedTime);
 	// 操作画面の背景の更新
 	m_pUIBack->Update(elapsedTime);
 	// CSVアイテムの更新
 	m_pCSVItem->Update(elapsedTime);
-
 	// パネルの更新
 	m_pPanel->Update(elapsedTime);
 	// 次のタイルの更新
@@ -117,121 +166,177 @@ void PlayScene::Update(float elapsedTime)
 	m_pMedalCounter->SetCollectedMedalCount(m_pCSVItem->GetCollectedMedals());
 	// メダルカウンターの更新
 	m_pMedalCounter->Update(elapsedTime);
-	// ゲームオーバーかゲームクリアになったらシーン変更フラグを立てる
-	if (m_pMiniCharacterBase->IsGameOver() || m_pMiniCharacterBase->IsGameClear())
-		m_sceneChangeCount += elapsedTime;
-	if (m_sceneChangeCount >= 3.0f)	m_isChangeScene = true;
+	// 結果アニメーションに結果を渡す
+	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
 }
+/*
+*	@brief 描画処理
+*	@details プレイシーンの全てのゲームオブジェクト・UIの描画
+*	@param なし
+*	@return なし
+*/
 void PlayScene::Render()
 {
+	// デバイスコンテキストを取得
 	const auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// 出力サイズを取得
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
+	// 結果アニメーションが有効でない場合（プレイ中）は二つのビューポートに分けて描画
+	if (!m_pResultAnimation->IsAnimationEnable())
+	{
+		// --- 左側: ゲーム画面用ビューポート ---
+		context->RSSetViewports(1, &m_viewPortGame);
+		// ここでゲーム画面を描画
+		// CSVマップの描画
+		m_pCSVMap->Render(m_view, m_projectionGame);
+		// CSVアイテムの描画
+		m_pCSVItem->Render(m_view, m_projectionGame);
+		// ミニキャラの描画
+		m_pMiniCharacterBase->Render(m_view, m_projectionGame);
+		// --- 右側: 操作画面用ビューポート ---
+		context->RSSetViewports(1, &m_viewPortControll);
+		// 操作画面の背景を描画
+		m_pUIBack->Render();
+		// パネル(タイル)を描画
+		m_pPanel->DrawTiles();
+		// 設置済みタイルを描画
+		m_pNextTiles->DrawPlacedTiles();
+		// パネル(アイテム)を描画
+		m_pPanel->DrawItems();
+		// 設置候補のタイルを描画
+		m_pNextTiles->Render();
+		// ビューポートを元の設定に戻す
+		context->RSSetViewports(1, &m_pCommonResources->GetDeviceResources()->GetScreenViewport());
+		// メダルカウンターの描画
+		m_pMedalCounter->Render();
+	}
+	// 結果アニメーションが有効な場合は一つのビューポートでの描画
+	if (m_pResultAnimation->IsAnimationEnable())
+	{
+		// リザルト用固定カメラのビュー行列を取得
+		m_pCSVMap->Render(m_view, m_projectionResult);
+		// CSVアイテムの描画
+		m_pCSVItem->Render(m_view, m_projectionResult);
+		// ミニキャラの描画
+		m_pMiniCharacterBase->Render(m_view, m_projectionResult);
+		// 結果アニメーションの描画
+		m_pResultAnimation->Render();
+	}
 
-	// --- 左側: ゲーム画面用ビューポート ---
-	context->RSSetViewports(1, &m_viewPortGame);
-
-	// ここでゲーム画面を描画
-	// ビュー行列を取得
-	m_view = m_pFixedCamera->GetViewMatrix();
-	//m_view = m_debugCamera->GetViewMatrix();
-	// CSVマップの描画
-	m_pCSVMap->Render(m_view, m_projectionGame);
-	// CSVアイテムの描画
-	m_pCSVItem->Render(m_view, m_projectionGame);
-
-	// ミニキャラの描画
-	m_pMiniCharacterBase->Render(m_view, m_projectionGame);
-	// --- 右側: 操作画面用ビューポート ---
-	context->RSSetViewports(1, &m_viewPortControll);
-	// 操作画面の背景を描画
-	m_pUIBack->Render();
-	// パネル(タイル)を描画
-	m_pPanel->DrawTiles();
-	// 設置済みタイルを描画
-	m_pNextTiles->DrawPlacedTiles();
-	// パネル(アイテム)を描画
-	m_pPanel->DrawItems();
-	// 設置候補のタイルを描画
-	m_pNextTiles->Render();
-
-
-	// --- デバッグ情報（例） ---
-	// ビューポートを元の設定に戻す
-	const auto& viewPort = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
-	context->RSSetViewports(1, &viewPort);
-	// メダルカウンターの描画
-	m_pMedalCounter->Render();
-
-	const auto debugString = m_pCommonResources->GetDebugString();
-	debugString->AddString("Use ViewPort.");
-	debugString->AddString("IsGameOver:%s", m_pMiniCharacterBase->IsGameOver() ? "true" : "false");
-	debugString->AddString("IsGameClear:%s", m_pMiniCharacterBase->IsGameClear() ? "true" : "false");
 }
-
-void PlayScene::Finalize()
-{
-}
-
+/*
+*	@brief 終了
+*	@details プレイシーンクラスの終了を行う
+*	@param なし
+*	@return なし
+*/
+void PlayScene::Finalize() {}
+/*
+*	@brief シーン変更
+*	@details シーン変更の有無を取得する
+*	@param なし
+*	@return 次のシーンID
+*/
 IScene::SceneID PlayScene::GetNextSceneID() const
 {
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		return IScene::SceneID::STAGESELECT;// ゲームオーバーシーンへ
+		// ステージセレクト画面へ
+		return IScene::SceneID::STAGESELECT;
 	}
-	// シーン変更がない場合
-	return IScene::SceneID::NONE;// 何もしない
+	// シーン変更がない場合何もしない
+	return IScene::SceneID::NONE;
 }
-
-//---------------------------------------------------------
-// カメラ、ビュー行列、射影行列を作成する
-//---------------------------------------------------------
+/*
+*	@brief カメラを作成する
+*	@details プレイ中の固定カメラとリザルト用の固定カメラを作成する
+*	@param なし
+*	@return なし
+*/
 void PlayScene::CreateCamera()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	//// デバッグカメラを作成する
-	//m_debugCamera = std::make_unique<mylib::DebugCamera>();
-	//m_debugCamera->Initialize(rect.right * 0.7f, rect.bottom);
-	// 固定カメラを作成する
-	m_pFixedCamera = std::make_unique<FixedCamera>();
-	m_pFixedCamera->Initialize((int)(rect.right * 0.7f), rect.bottom);
-
-	// 射影行列を作成する
+	// プレイ中の固定カメラを作成する
+	m_pFixedCameraPlay = std::make_unique<FixedCamera>();
+	m_pFixedCameraPlay->Initialize((int)(rect.right * 0.7f), rect.bottom);
+	// リザルト用固定カメラを作成する
+	m_pFixedCameraResult = std::make_unique<FixedCamera>();
+	m_pFixedCameraResult->Initialize(rect.right, rect.bottom);
+	// 射影行列(ゲーム画面用)を作成する
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
 		static_cast<float>(rect.right * 0.7f) / static_cast<float>(rect.bottom),
 		0.1f, 100.0f
 	);
+	// 射影行列(操作画面用)を作成する
 	m_projectionControll = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
 		static_cast<float>(rect.right * 0.3f) / static_cast<float>(rect.bottom),
 		0.1f, 100.0f
 	);
+	// 射影行列(リザルト用)を作成する
+	m_projectionResult = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+		XMConvertToRadians(45.0f),
+		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
+		0.1f, 100.0f
+	);
 }
-
+/*
+*	@brief ビューポートを作成する
+*	@details プレイシーンのビューポートを設定する
+*	@param なし
+*	@return なし
+*/
 void PlayScene::CreateViewports()
 {
+	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	// --- 左側: ゲーム画面用ビューポート ---
+	// --- 左側: ゲーム画面用ビューポートの設定 ---
 	D3D11_VIEWPORT viewportLeft = {};
+	// 左上の座標を設定
 	viewportLeft.TopLeftX = 0;
 	viewportLeft.TopLeftY = 0;
-	viewportLeft.Width = (FLOAT)rect.right * 0.7f; // 例: 左7割
+	// 幅と高さを設定
+	viewportLeft.Width = (FLOAT)rect.right * 0.7f; // 左7割
 	viewportLeft.Height = (FLOAT)rect.bottom;
+	// 深度の範囲を設定
 	viewportLeft.MinDepth = 0.0f;
 	viewportLeft.MaxDepth = 1.0f;
+	// ゲーム画面用ビューポートを設定
 	m_viewPortGame = viewportLeft;
-
-	// --- 右側: 操作画面用ビューポート ---
+	// --- 右側: 操作画面用ビューポートの設定 ---
 	D3D11_VIEWPORT viewportRight = {};
+	// 左上の座標を設定
 	viewportRight.TopLeftX = (FLOAT)rect.right * 0.7f;
 	viewportRight.TopLeftY = 0;
-	viewportRight.Width = (FLOAT)rect.right * 0.3f; // 例: 右3割
+	// 幅と高さを設定
+	viewportRight.Width = (FLOAT)rect.right * 0.3f; // 右3割
 	viewportRight.Height = (FLOAT)rect.bottom;
+	// 深度の範囲を設定
 	viewportRight.MinDepth = 0.0f;
 	viewportRight.MaxDepth = 1.0f;
+	// 操作画面用ビューポートを設定
 	m_viewPortControll = viewportRight;
+}
+/*
+*	@brief デバッグ文字列を描画する
+*	@details プレイシーンのデバッグ文字列を描画する
+*	@param なし
+*	@return なし
+*/
+void PlayScene::DrawDebugString()
+{
+	// デバッグ文字列を取得
+	const auto debugString = m_pCommonResources->GetDebugString();
+	// ゲームオーバーやゲームクリアの状態をデバッグ文字列に追加
+	debugString->AddString("IsGameOver:%s", m_pMiniCharacterBase->IsGameOver() ? "true" : "false");
+	debugString->AddString("IsGameClear:%s", m_pMiniCharacterBase->IsGameClear() ? "true" : "false");
+	// カメラの位置と被写体座標をデバッグ文字列に追加
+	debugString->AddString("CameraEye:%f,%f,%f", m_pFixedCameraPlay->GetEyePosition().x, m_pFixedCameraPlay->GetEyePosition().y, m_pFixedCameraPlay->GetEyePosition().z);
+	debugString->AddString("CameraTarget:%f,%f,%f", m_pFixedCameraPlay->GetTargetPosition().x, m_pFixedCameraPlay->GetTargetPosition().y, m_pFixedCameraPlay->GetTargetPosition().z);
+
 }
