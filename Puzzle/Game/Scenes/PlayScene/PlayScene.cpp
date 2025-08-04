@@ -168,6 +168,8 @@ void PlayScene::Update(float elapsedTime)
 	m_pMedalCounter->Update(elapsedTime);
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
+	// アニメーションが終わったらシーン変更
+	if (m_pResultAnimation->IsAnimationEnd())m_isChangeScene = true;
 }
 /*
 *	@brief 描画処理
@@ -206,7 +208,8 @@ void PlayScene::Render()
 		// 設置候補のタイルを描画
 		m_pNextTiles->Render();
 		// ビューポートを元の設定に戻す
-		context->RSSetViewports(1, &m_pCommonResources->GetDeviceResources()->GetScreenViewport());
+		const auto& screenViewport = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
+		context->RSSetViewports(1, &screenViewport);
 		// メダルカウンターの描画
 		m_pMedalCounter->Render();
 	}

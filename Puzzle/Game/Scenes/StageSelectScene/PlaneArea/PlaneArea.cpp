@@ -178,9 +178,6 @@ bool PlaneArea::RayIntersectPlane(
 	const std::vector<DirectX::SimpleMath::Vector3>& rectVertices,
 	DirectX::SimpleMath::Vector3& outIntersection)
 {
-	// --- デバッグ情報---
-	const auto debugString = m_pCommonResources->GetDebugString();
-
 	// DirectX::SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 平面との交点計算
