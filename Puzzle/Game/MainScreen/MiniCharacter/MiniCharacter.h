@@ -189,6 +189,10 @@ private:
 	std::set<const TileBase*> m_enteredTiles;
 	// 前フレームで一番近かったタイルの名前
 	std::string m_prevTileName;
+	// 今いるタイルの座標
+	DirectX::SimpleMath::Vector3 m_currentTilePosition;
+	// 前いたタイルの座標
+	DirectX::SimpleMath::Vector3 m_prevTilePosition;
 	// 入ったタイルのポインタ
 	TileBase* m_enteredTilePtr;
 	// 入った直後フラグ

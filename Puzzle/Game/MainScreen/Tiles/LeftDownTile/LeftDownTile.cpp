@@ -14,7 +14,8 @@ void LeftDownTile::OnEnter(MiniCharacter* character)
 {
 	using namespace DirectX::SimpleMath;
 	// 2‰ñ–ÚˆÈ~‚Í‰½‚à‚µ‚È‚¢
-	if (character->HasEnteredTile(this)) return;
+	if (character->HasEnteredTile(this))
+		return;
 	// ¶•ûŒü‚©‚çƒ^ƒCƒ‹‚É“ü‚Á‚½‚ç‰º‚É•ûŒü“]Š·
 	if (character->GetVelocity().x < 0.0f || character->GetVelocity().z > 0.0f)
 		character->SetVelocity(Vector3::Zero);

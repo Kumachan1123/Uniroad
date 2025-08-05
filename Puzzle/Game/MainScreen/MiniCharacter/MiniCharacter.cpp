@@ -155,6 +155,12 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	// 最も近いタイルの名前を表示
 	debugString->AddString("MiniCharacter Tile: %s",
 		GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName.c_str());
+	// 座標表示
+	debugString->AddString("CurrentTile Position: (%f, %f, %f)",
+		m_currentTilePosition.x, m_currentTilePosition.y, m_currentTilePosition.z);
+	// 座標表示
+	debugString->AddString("PrevTile Position: (%f, %f, %f)",
+		m_prevTilePosition.x, m_prevTilePosition.y, m_prevTilePosition.z);
 }
 /*
 *	@brief プレイヤーの後処理を行う
@@ -176,10 +182,15 @@ void MiniCharacter::UpdateTileEvents()
 {
 	// 現在いるタイルの名前を取得
 	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
+	// 現在いるタイルの位置を取得
+	m_currentTilePosition = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos;
+
 	// 現在の位置がタイルの中心にいるかどうかを判定
 	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
+
+
 	// 今いるタイルと前フレームでいたタイルが異なる場合、タイルのイベントを処理する
-	if (currentTileName != m_prevTileName)
+	if (currentTileName != m_prevTileName || m_currentTilePosition != m_prevTilePosition)
 	{
 		// 前のタイルのイベントを処理
 		const auto& prevTile = GetParent()->GetCSVMap()->GetTileData(m_prevPosition);
@@ -197,6 +208,8 @@ void MiniCharacter::UpdateTileEvents()
 			m_prevTileName = currentTileName;
 			// 前の位置を更新
 			m_prevPosition = m_currentPosition;
+			// 今いるタイルの位置を保存
+			m_prevTilePosition = m_currentTilePosition;
 		}
 	}
 	// 現在の位置がタイルの中心にいるかどうかを確認
@@ -239,7 +252,8 @@ void MiniCharacter::UpdateTileEvents()
 		}
 	}
 	// 今いるタイルから進めるタイルを決めるために名前を保存
-	if (m_parent->GetNextTiles() != nullptr && currentTileName != "")m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
+	if (m_parent->GetNextTiles() != nullptr && currentTileName != "")
+		m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
 }
 /*
 *	@brief 落下タイマーを更新する

@@ -131,10 +131,6 @@ void MiniCharacterBase::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 void MiniCharacterBase::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {	// ノードを描画する
 	for (auto& node : m_nodes)node->Render(view, proj);
-	// ---デバッグ表示---
-	const auto debugString = m_pCommonResources->GetDebugString();
-	// 座標表示
-	debugString->AddString("MiniCharacter Position: (%f, %f, %f)", m_cameraPosition.x, m_cameraPosition.y, m_cameraPosition.z);
 }
 /*
 *	@brief ミニキャラクターのベースクラスの後処理
