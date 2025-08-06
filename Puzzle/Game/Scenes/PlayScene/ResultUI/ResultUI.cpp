@@ -104,7 +104,7 @@ void ResultUI::Update(const float elapsedTime)
 		else
 		{
 			// ボタンの座標を更新
-			if (m_pButtons.size() == 0)
+			if (m_pButtons.size() == 1)
 				m_pButtons[i]->SetPosition(Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) + 100));
 			else
 				m_pButtons[i]->SetPosition(Vector2(float(m_windowWidth / 2) - (400) + (i * 400 * 2), float(m_windowHeight / 2 + 200)));
