@@ -22,7 +22,9 @@ public:
 	enum class UIType
 	{
 		TILE,	// タイル
-		ITEM	// アイテム
+		ITEM,	// アイテム
+		BUTTON,	// ボタン
+
 	};
 public:
 	// public関数

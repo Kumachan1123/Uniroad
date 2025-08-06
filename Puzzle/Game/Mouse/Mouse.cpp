@@ -1,6 +1,6 @@
 /*
 *	@file Mouse.cpp
-*	@brief マウスクラス
+*	@brief 特殊なビューポートな画面で使うマウスクラス
 */
 #include <pch.h>
 #include "Mouse.h"

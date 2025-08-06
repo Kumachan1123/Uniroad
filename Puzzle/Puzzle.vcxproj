@@ -233,6 +233,7 @@
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\StageGate\StageGate.h" />
@@ -308,6 +309,7 @@
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\StageGate\StageGate.cpp" />

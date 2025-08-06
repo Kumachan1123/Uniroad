@@ -149,7 +149,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 void SceneManager::DeleteScene()
 {
 	// ステージセレクトシーンの場合は、ステージ番号をマネージャーに渡す
-	if (m_nowSceneID == IScene::SceneID::STAGESELECT)m_stageNumber = m_pCurrentScene->GetStageNumber();
+	if (m_nowSceneID == IScene::SceneID::STAGESELECT || m_nowSceneID == IScene::SceneID::PLAY)m_stageNumber = m_pCurrentScene->GetStageNumber();
 	// 現在のシーンをリセットする
 	m_pCurrentScene.reset();
 }

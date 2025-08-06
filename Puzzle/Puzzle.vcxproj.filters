@@ -95,6 +95,7 @@
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
     <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -1,6 +1,6 @@
 /*
 *	@file Mouse.h
-*	@brief マウスクラス
+*	@brief 特殊なビューポートな画面で使うマウスクラス
 */
 #pragma once
 // DirectX

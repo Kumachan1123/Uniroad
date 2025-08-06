@@ -75,7 +75,7 @@ void ResultAnimation::Update(float elapsedTime)
 	// 各画像のY座標を更新
 	for (int i = 0; i < m_frameCols; ++i)m_positionsY[i] = m_gameclear ? POS_Y * Easing::EaseOutExpo(m_time) : POS_Y * Easing::RandomJitter(m_time);
 	// 5秒経ったらアニメーションを終了
-	if (m_time >= 5.0f)m_animationEnd = true;
+	if (m_time >= 3.0f)m_animationEnd = true;
 }
 /*
 *	@brief 描画
@@ -85,8 +85,7 @@ void ResultAnimation::Update(float elapsedTime)
 */
 void ResultAnimation::Render()
 {
-	// アニメーションが終了している場合は何もしない
-	if (m_animationEnd) return;
+
 	// 画像描画
 	for (int i = 0; i < m_frameCols; ++i)
 	{

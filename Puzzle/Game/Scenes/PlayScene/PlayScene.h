@@ -29,6 +29,7 @@
 #include "Game/ControllScreen/MedalCounter/MedalCounter.h"
 #include "Game/Scenes/PlayScene/ResultAnimation/ResultAnimation.h"
 #include "KumachiLib/Easing/Easing.h"
+#include "Game/Scenes/PlayScene/ResultUI/ResultUI.h"
 
 // 前方宣言
 class CommonResources;
@@ -100,6 +101,9 @@ private:
 	std::unique_ptr<MedalCounter> m_pMedalCounter;
 	// 結果アニメーション
 	std::unique_ptr<ResultAnimation> m_pResultAnimation;
+	// 結果UI
+	std::unique_ptr<ResultUI> m_pResultUI;
+
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列(ゲーム画面用)

@@ -27,6 +27,12 @@ public:
 	static const int LEFT = 0;
 	static const int RIGHT = WIDTH;
 
+	static const int WIDTH_BUTTON = 1920;
+	static const int HEIGHT_BUTTON = 1080;
+
+	static const int CENTER_X_BUTTON = WIDTH_BUTTON / 2;
+	static const int CENTER_Y_BUTTON = HEIGHT_BUTTON / 2;
+
 	Screen() = default;
 	~Screen() = default;
 };

@@ -108,6 +108,12 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pResultAnimation = std::make_unique<ResultAnimation>();
 	// 結果アニメーションを初期化する
 	m_pResultAnimation->Initialize(m_pCommonResources);
+	// 結果UIを作成する
+	m_pResultUI = std::make_unique<ResultUI>();
+	// 結果UIを初期化する
+	m_pResultUI->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// 結果UIにステージ番号を渡す
+	m_pResultUI->SetStageNum(m_stageNumber);
 }
 /*
 *   @brief 更新処理
@@ -124,12 +130,22 @@ void PlayScene::Update(float elapsedTime)
 	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
+		// リザルトUIが無効な場合
+		if (!m_pResultUI->IsEnable() && m_pResultAnimation->IsAnimationEnd())
+		{
+			// 有効にする
+			m_pResultUI->SetEnable(true);
+			// 結果の設定
+			m_pResultUI->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
+		}
 		// リザルト用固定カメラの更新
 		m_pFixedCameraResult->Update();
 		// ビュー行列を取得
 		m_view = m_pFixedCameraResult->GetViewMatrix();
 		// 結果アニメーションの更新
 		m_pResultAnimation->Update(elapsedTime);
+		// 結果UIの更新
+		m_pResultUI->Update(elapsedTime);
 		// ゲームクリアなら以下の処理も行う
 		if (m_pMiniCharacterBase->IsGameClear())
 		{
@@ -140,6 +156,8 @@ void PlayScene::Update(float elapsedTime)
 			m_pFixedCameraResult->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
 			// カメラの座標を更新
 			m_pFixedCameraResult->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCameraResult->GetCameraDistance());
+			// 次のステージ番号を取得
+			m_stageNumber = m_pResultUI->GetStageNum();
 		}
 	}
 	// リザルトでない場合は通常の更新を行う
@@ -169,7 +187,7 @@ void PlayScene::Update(float elapsedTime)
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
 	// アニメーションが終わったらシーン変更
-	if (m_pResultAnimation->IsAnimationEnd())m_isChangeScene = true;
+	if (m_pResultAnimation->IsAnimationEnd() && m_pResultUI->GetSceneNum() > -1)m_isChangeScene = true;
 }
 /*
 *	@brief 描画処理
@@ -224,8 +242,12 @@ void PlayScene::Render()
 		m_pMiniCharacterBase->Render(m_view, m_projectionResult);
 		// 結果アニメーションの描画
 		m_pResultAnimation->Render();
+		// 結果UIの描画
+		if (m_pResultAnimation->IsAnimationEnd())m_pResultUI->Render();
 	}
-
+	const auto debugString = m_pCommonResources->GetDebugString();
+	// 当たったボタン
+	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
 }
 /*
 *	@brief 終了
@@ -245,8 +267,17 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		// ステージセレクト画面へ
-		return IScene::SceneID::STAGESELECT;
+
+		switch (m_pResultUI->GetSceneNum())
+		{
+		case ResultUI::REPLAY: // リプレイ選択
+			// リプレイ画面へ
+			return IScene::SceneID::PLAY;
+		case ResultUI::SELECT_STAGE:// ステージセレクト選択
+			// ステージセレクト画面へ
+			return IScene::SceneID::STAGESELECT;
+		}
+
 	}
 	// シーン変更がない場合何もしない
 	return IScene::SceneID::NONE;

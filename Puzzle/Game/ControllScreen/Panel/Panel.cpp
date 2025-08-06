@@ -16,6 +16,7 @@ Panel::Panel(int mapSizeX, int mapSizeY)
 	, m_viewPortControll() // ビューポートの制御
 	, m_pDR(nullptr) // デバイスリソース
 	, m_pCSVMap(nullptr) // CSVマップへのポインタ
+	, m_pCSVItem(nullptr) // CSVアイテムへのポインタ
 	, m_pMouse(nullptr) // マウスへのポインタ
 	, m_hit(false) // UIにヒットしたかどうか
 	, m_time(0.0f) // 経過時間
@@ -100,14 +101,18 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			Add(itemTextureKey
 				, itemPos
 				, Vector2(0.6f, 0.6f)
-				//, Vector2(0.45f, 0.45f)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
 				, UIType::ITEM);
 
 		}
 	}
 }
-
+/*
+*	@brief 更新
+*	@details パネルの更新を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
 void Panel::Update(const float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
