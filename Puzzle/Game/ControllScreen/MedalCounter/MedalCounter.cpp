@@ -40,6 +40,18 @@ MedalCounter::MedalCounter()
 *	@param なし
 *	@return なし
 */
+MedalCounter::~MedalCounter()
+{
+	// メダルカウンターの終了処理を行う
+	// 共通リソースへのポインタをnullptrに設定
+	m_pCommonResources = nullptr;
+}
+/*
+*	@brief デストラクタ
+*	@details メダルカウンタークラスのデストラクタ(ここでは何もしない)
+*	@param なし
+*	@return なし
+*/
 void MedalCounter::Initialize(CommonResources* resources, int width, int height)
 {
 	// 共通リソースへのポインタを設定

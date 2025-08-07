@@ -139,4 +139,6 @@ private:
 	bool m_isGameOver;
 	// ゲームクリアフラグ
 	bool m_isGameClear;
+	// スピードアップボタンが押されたか
+	bool m_isSpeedUpButtonPressed;
 };

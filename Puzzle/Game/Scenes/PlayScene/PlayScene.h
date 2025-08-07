@@ -30,6 +30,7 @@
 #include "Game/Scenes/PlayScene/ResultAnimation/ResultAnimation.h"
 #include "KumachiLib/Easing/Easing.h"
 #include "Game/Scenes/PlayScene/ResultUI/ResultUI.h"
+#include "Game/MainScreen/SpeedUpUI/SpeedUpUI.h"
 
 // 前方宣言
 class CommonResources;
@@ -103,6 +104,8 @@ private:
 	std::unique_ptr<ResultAnimation> m_pResultAnimation;
 	// 結果UI
 	std::unique_ptr<ResultUI> m_pResultUI;
+	// スピードアップボタン
+	std::unique_ptr<SpeedUpUI> m_pSpeedUpUI;
 
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;

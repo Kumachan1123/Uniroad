@@ -5,7 +5,12 @@
 #include "pch.h"
 #include "ResultUI.h"
 // 無効なメニューインデックス
-const int ResultUI::INVALID_MENU_INDEX = -1;// 無効なメニューインデックス
+const int ResultUI::INVALID_MENU_INDEX = -1;
+// 通常の表示位置補正値(全画面基準）
+const float ResultUI::DISPLAY_OFFSET = -400.0f;
+// ボタンの移動にかかる時間
+const float ResultUI::MOVE_DURATION = 0.3f;
+
 /*
 *	@brief コンストラクタ
 *	@details 結果UIの初期化を行う
@@ -17,12 +22,16 @@ ResultUI::ResultUI()
 	, m_pCommonResources(nullptr) // 共通リソース
 	, m_windowWidth(0)// ウィンドウの幅
 	, m_windowHeight(0) // ウィンドウの高さ
+	, m_prevWindowWidth(0) // 前のウィンドウの幅
+	, m_prevWindowHeight(0) // 前のウィンドウの高さ
 	, m_stageNum(0) // ステージ番号
+	, m_buttonCount(0) // 生成したボタンの数
 	, m_menuIndex(INVALID_MENU_INDEX) // メニューのインデックス
 	, m_num(SceneID::NONE) // シーンID
 	, m_time(0.0f) // 時間
 	, m_hit(false) // ヒットフラグ
 	, m_enable(false) // このクラスが有効かどうか
+	, m_canPress(false) // ボタンが押せるかどうか
 {
 	// なし
 }
@@ -50,11 +59,11 @@ void ResultUI::Initialize(CommonResources* resources, int width, int height)
 	m_pCommonResources = resources;
 	// デバイスリソース取得
 	m_pDR = m_pCommonResources->GetDeviceResources();
-	// ウィンドウ幅
-	m_windowWidth = width;
-	// ウィンドウ高さ
+	// ウィンドウサイズを設定
 	m_windowHeight = height;
-
+	m_windowWidth = width;
+	// 進行度を初期化
+	m_easeTimers.clear();
 }
 /*
 *	@brief 更新
@@ -76,63 +85,118 @@ void ResultUI::Update(const float elapsedTime)
 	m_hit = false;
 	// マウスの座標を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	// ウィンドウハンドルを取得
+	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
+	// ウィンドウサイズを設定
+	GetScreenRect(hwnd, m_windowWidth, m_windowHeight);
+	// 初回とボタン数変化時はリサイズし即座に座標を同期
+	size_t btnCount = m_pButtons.size();
+	// ボタンの数が変わった場合　
+	if (m_prevPositions.size() != btnCount)
+	{
+		// 前の座標と目標座標、イージングタイマーをリサイズ
+		m_prevPositions.resize(btnCount);
+		m_targetPositions.resize(btnCount);
+		m_easeTimers.resize(btnCount, 1.0f);
+		// ボタンの数だけループ
+		for (size_t i = 0; i < btnCount; ++i)
+		{
+			// ボタンの座標を初期化
+			m_prevPositions[i] = m_pButtons[i]->GetPosition();
+			// ボタンの目標座標を初期化
+			m_targetPositions[i] = m_pButtons[i]->GetPosition();
+			// イージングタイマーを初期化
+			m_easeTimers[i] = 1.0f;
+		}
+	}
+	// ウィンドウサイズが変わったかどうかをチェック
+	bool resized = (m_windowWidth != m_prevWindowWidth) || (m_windowHeight != m_prevWindowHeight);
+	// ウィンドウサイズが変わった場合はリサイズ処理を行う
+	if (resized)
+	{
+		// リサイズ時の処理を呼び出す
+		OnResize();
+		// 前のウィンドウサイズを更新
+		m_prevWindowWidth = m_windowWidth;
+		m_prevWindowHeight = m_windowHeight;
+		// リサイズ時はイージングせずreturn
+		return;
+	}
+
 	// ボタンの数だけループ
-	for (int i = 0; i < m_pButtons.size(); i++)
-	{	// ウィンドウハンドルを取得
-		const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
-		// ウィンドウサイズ取得
-		RECT rect;
-		// クライアント領域サイズを取得
-		GetClientRect(hwnd, &rect);
-		// ウィンドウの幅（ピクセル単位）
-		m_windowWidth = static_cast<int>(rect.right);
-		// ウィンドウの高さ（ピクセル単位）
-		m_windowHeight = static_cast<int>(rect.bottom);
+	for (size_t i = 0; i < btnCount; ++i)
+	{
 		// ウィンドウサイズを設定
 		m_pButtons[i]->SetWindowSize(m_windowWidth, m_windowHeight);
+		// 目標座標決定
+		Vector2 newTarget;
 		// ウィンドウサイズに応じてボタンの位置とスケールを調整
+		// ウィンドウモード
 		if (m_windowWidth == Screen::WIDTH)
 		{
 			// ボタンの座標を更新
 			if (m_pButtons.size() == 1)
-				m_pButtons[i]->SetPosition(Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) + 100));
+				newTarget = Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
 			else
-				m_pButtons[i]->SetPosition(Vector2(float(m_windowWidth / 2) - (200) + (i * 200 * 2), float(m_windowHeight / 2) + 100));
+				newTarget = Vector2(float(m_windowWidth / 2) - (DISPLAY_OFFSET / 2) + (i * DISPLAY_OFFSET), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
 			// ボタンのスケールを更新
-			m_pButtons[i]->SetScale(Vector2(0.5f, 0.5f));
+			m_pButtons[i]->SetScale(Vector2::One / 2.0f);
 		}
+		// 全画面
 		else
 		{
 			// ボタンの座標を更新
 			if (m_pButtons.size() == 1)
-				m_pButtons[i]->SetPosition(Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) + 100));
+				newTarget = Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
 			else
-				m_pButtons[i]->SetPosition(Vector2(float(m_windowWidth / 2) - (400) + (i * 400 * 2), float(m_windowHeight / 2 + 200)));
+				newTarget = Vector2(float(m_windowWidth / 2) - (DISPLAY_OFFSET)+(i * DISPLAY_OFFSET * 2), float(m_windowHeight / 2 - DISPLAY_OFFSET / 2.0f));
 			// ボタンのスケールを更新
-			m_pButtons[i]->SetScale(Vector2(1.0f, 1.0f));
+			m_pButtons[i]->SetScale(Vector2::One);
 		}
+		// 目標座標が変わったらイージングをリセット
+		if ((m_targetPositions[i] - newTarget).LengthSquared() > 0.001f)
+		{
+			// 前の座標を更新
+			m_prevPositions[i] = m_pButtons[i]->GetPosition();
+			// 目標座標を更新
+			m_targetPositions[i] = newTarget;
+			// イージングタイマーをリセット
+			m_easeTimers[i] = 0.0f;
+			// ボタンを押せなくする
+			m_canPress = false;
+		}
+		// イージングを適用
+		if (m_easeTimers[i] < 1.0f)
+		{
+			// 経過時間をイージングタイマーに加算
+			m_easeTimers[i] += elapsedTime / MOVE_DURATION;
+			// イージングタイマーが1.0fを超えたら
+			if (m_easeTimers[i] > 1.0f)
+			{
+				// イージングタイマーが1.0fを超えないように制限
+				m_easeTimers[i] = 1.0f;
+				// ボタンを押せるようにする
+				m_canPress = true;
+			}
 
+		}
+		// イージングを適用してボタンの位置を更新
+		float t = Easing::EaseInCubic(m_easeTimers[i]);
+		// 前の座標と目標座標を補間してボタンの位置を更新
+		Vector2 pos = Vector2::Lerp(m_prevPositions[i], m_targetPositions[i], t);
+		// ボタンの位置を設定
+		m_pButtons[i]->SetPosition(pos);
 		// 時間を加算
 		m_pButtons[i]->SetTime(m_pButtons[i]->GetTime() + elapsedTime);
 		// ボタンがヒットしたかどうかをチェック
-		if (m_pButtons[i]->IsHit(mousePos))
+		if (m_pButtons[i]->IsHit(mousePos) && m_canPress)
 		{
 			// ヒットフラグを立てる
 			m_hit = true;
-			// 前回選択したボタンと違う場合はSE再生フラグを立てる（今後実装）
-			//if ((int(m_menuIndex)) != i) m_isSEPlay = false;
-			//// SEが再生されていない場合
-			//if (!m_isSEPlay)
-			//{
-			//	// 選択音の再生
-			//	m_pCommonResources->GetAudioManager()->PlaySound("Select", m_SEVolume);
-			//	// 再生フラグを立てる
-			//	m_isSEPlay = true;
-			//}
 			// ボタンのスケールを更新
 			m_pButtons[i]->SetScale(m_pButtons[i]->GetScale() * 1.2f);
 			// ヒットしたメニューのインデックスを保存
-			m_menuIndex = i;
+			m_menuIndex = static_cast<int>(i);
 			// ヒットしたらループを抜ける
 			break;
 		}
@@ -140,7 +204,7 @@ void ResultUI::Update(const float elapsedTime)
 	// ヒット無しなら選択インデックスを無効値に設定
 	if (!m_hit) m_menuIndex = INVALID_MENU_INDEX;
 	// 左クリックされたら選択メニューのシーンIDを更新
-	if (MouseClick::IsLeftMouseButtonPressed(mouseState))
+	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_canPress)
 		m_num = static_cast<SceneID>(m_menuIndex);
 }
 /*
@@ -155,6 +219,12 @@ void ResultUI::Render()
 	if (!m_enable)return;
 	// ボタンを一斉描画
 	for (unsigned int i = 0; i < m_pButtons.size(); i++)m_pButtons[i]->Render();
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("ResultUI:Hit = %s", m_hit ? "true" : "false");
+	debugString->AddString("ResultUI:MenuIndex = %d", m_menuIndex);
+	debugString->AddString("ResultUI:CanPress = %s", m_canPress ? "true" : "false");
+	for (unsigned int i = 0; i < m_easeTimers.size(); i++)
+		debugString->AddString("ResultUI:EaseTimer[%d] = %f", i, m_easeTimers[i]);
 }
 /*
 *	@brief ボタンを追加
@@ -172,6 +242,7 @@ void ResultUI::Add(const std::string& key,
 	KumachiLib::ANCHOR anchor,
 	UIType type)
 {
+	using namespace DirectX::SimpleMath;
 	// UIオブジェクトの生成
 	std::unique_ptr<Canvas> userInterface = std::make_unique<Canvas>(m_pCommonResources);
 	// 指定画像でUI作成
@@ -180,8 +251,13 @@ void ResultUI::Add(const std::string& key,
 	userInterface->SetWindowSize(m_windowWidth, m_windowHeight);
 	// UIの種類に応じて保存
 	if (type == UIType::BUTTON)m_pButtons.push_back(std::move(userInterface));
-
+	// --- イージング用データも初期化 ---
+	Vector2 pos = m_pButtons.back()->GetPosition();
+	m_prevPositions.push_back(pos);   // 開始位置
+	m_targetPositions.push_back(pos); // 目標位置
+	m_easeTimers.push_back(0.0f);     // 最初は到達済み
 }
+
 /*
 *	@brief シーンから結果を受け取る
 *	@details ゲームオーバーやゲームクリアの結果を受け取り、UIの表示を切り替える
@@ -194,33 +270,94 @@ void ResultUI::SetResult(bool gameOver, bool gameClear)
 	UNREFERENCED_PARAMETER(gameOver); // ゲームオーバーは使用しない
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
-	// ゲームクリアなら次のステージに飛べるようにする
-	if (gameClear)m_stageNum++;
-	// 次のステージが存在していてゲームクリアなら
-	if (m_stageNum < FileCounter::CountFilesInFolder("Resources/Map/", ".csv") && gameClear)
+	using namespace KumachiLib;
+	// ウィンドウハンドルを取得
+	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
+	// ウィンドウサイズを設定
+	GetScreenRect(hwnd, m_windowWidth, m_windowHeight);
+	// 前のウィンドウサイズにも同じ値を設定
+	m_prevWindowHeight = m_windowHeight;
+	m_prevWindowWidth = m_windowWidth;
+	// ゲームクリアかつ今のステージ番号がステージ数以内なら次のステージに飛べるようにする
+	if (gameClear)	m_stageNum++;
+	// 収録しているステージの数を取得
+	int fileCount = FileCounter::CountFilesInFolder("Resources/Map/", ".csv");
+	// 初期座標を定義(ウィンドウモード基準)
+	Vector2 initialPosition = Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
+	// 初期サイズを定義(ウィンドウモード基準)
+	Vector2 initialScale = Vector2::One / 2.0f;
+	// 全画面モードなら
+	if (m_windowWidth == Screen::WIDTH_BUTTON)
 	{
-		// ボタンを追加
-		Add("ToNextStage"
-			, Vector2(Screen::CENTER_X_BUTTON - 400, Screen::CENTER_Y_BUTTON + 200)
-			, Vector2(1.0f)
-			, KumachiLib::ANCHOR::MIDDLE_CENTER
-			, UIType::BUTTON);
+		// 初期座標を再定義
+		initialPosition = Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) - DISPLAY_OFFSET / 2.0f);
+		// 初期サイズを再定義
+		initialScale = Vector2::One;
+	}
+	// 「ステージセレクトへ」ボタンを追加
+	Add("ToStageSelect", initialPosition, initialScale, ANCHOR::MIDDLE_CENTER, UIType::BUTTON);
+	// 設置したボタンをカウント
+	m_buttonCount++;
+	// 次のステージが存在していてゲームクリアなら
+	if (m_stageNum < fileCount && gameClear)
+	{
+		// 「次のステージへ」ボタンを追加
+		Add("ToNextStage", initialPosition, initialScale, ANCHOR::MIDDLE_CENTER, UIType::BUTTON);
+		// 設置したボタンをカウント
+		m_buttonCount++;
 	}
 	// ゲームオーバーなら
 	else if (gameOver)
 	{
-		// ボタンを追加
-		Add("ReTry"
-			, Vector2(Screen::CENTER_X_BUTTON - 400, Screen::CENTER_Y_BUTTON + 200)
-			, Vector2(1.0f)
-			, KumachiLib::ANCHOR::MIDDLE_CENTER
-			, UIType::BUTTON);
+		// 「リトライ」ボタンを追加
+		Add("ReTry", initialPosition, initialScale, ANCHOR::MIDDLE_CENTER, UIType::BUTTON);
+		// 設置したボタンをカウント
+		m_buttonCount++;
 	}
-	// ボタンを追加
-	Add("ToStageSelect"
-		, Vector2(Screen::CENTER_X_BUTTON + 400, Screen::CENTER_Y_BUTTON + 200)
-		, Vector2(1.0f)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::BUTTON);
+	// 最終ステージなら加算したステージ番号を戻す
+	if (m_stageNum >= fileCount)
+		m_stageNum--;
+}
 
+/*
+*	@brief 画面リサイズ時の処理
+*	@details 画面のリサイズに応じてUIの位置やサイズを調整する
+*	@param なし
+*	@return なし
+*/
+void ResultUI::OnResize()
+{
+	// 名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	using namespace DirectX::SimpleMath;
+	size_t btnCount = m_pButtons.size();
+
+	for (size_t i = 0; i < btnCount; ++i)
+	{
+		// ウィンドウサイズに応じて目標座標を再計算
+		Vector2 snapTarget;
+		// ウィンドウサイズが全画面モードなら
+		if (m_windowWidth == Screen::WIDTH)
+		{
+			if (btnCount == 1)
+				snapTarget = Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
+			else
+				snapTarget = Vector2(float(m_windowWidth / 2) - (DISPLAY_OFFSET / 2) + (i * DISPLAY_OFFSET), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
+			m_pButtons[i]->SetScale(Vector2::One / 2.0f);
+		}
+		// ウィンドウサイズが全画面モードでないなら
+		else
+		{
+			if (btnCount == 1)
+				snapTarget = Vector2(float(m_windowWidth / 2), float(m_windowHeight / 2) - DISPLAY_OFFSET / 4.0f);
+			else
+				snapTarget = Vector2(float(m_windowWidth / 2) - (DISPLAY_OFFSET)+(i * DISPLAY_OFFSET * 2), float(m_windowHeight / 2 - DISPLAY_OFFSET / 2.0f));
+			m_pButtons[i]->SetScale(Vector2::One);
+		}
+		// 前の座標と目標座標、イージングタイマーを更新
+		m_prevPositions[i] = snapTarget;
+		m_targetPositions[i] = snapTarget;
+		m_easeTimers[i] = 1.0f;
+		m_pButtons[i]->SetPosition(snapTarget);
+	}
 }

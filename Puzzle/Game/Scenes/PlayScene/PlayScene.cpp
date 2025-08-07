@@ -114,6 +114,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pResultUI->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// 結果UIにステージ番号を渡す
 	m_pResultUI->SetStageNum(m_stageNumber);
+	// スピードアップボタンを作成する
+	m_pSpeedUpUI = std::make_unique<SpeedUpUI>();
+	// スピードアップボタンを初期化する
+	m_pSpeedUpUI->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 }
 /*
 *   @brief 更新処理
@@ -127,9 +131,15 @@ void PlayScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 経過時間を加算
 	m_time += elapsedTime;
+	// スピードアップボタンの更新
+	m_pSpeedUpUI->Update(elapsedTime);
+	// スピードアップボタンが押された場合、ゲーム内経過時間を倍にする
+	float inGameTime = m_pSpeedUpUI->IsPressed() ? elapsedTime * 10.0f : elapsedTime;
 	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
+		// スピードアップボタンを強制的にオフにする
+		m_pSpeedUpUI->SetPressed(false);
 		// リザルトUIが無効な場合
 		if (!m_pResultUI->IsEnable() && m_pResultAnimation->IsAnimationEnd())
 		{
@@ -167,23 +177,23 @@ void PlayScene::Update(float elapsedTime)
 		m_pFixedCameraPlay->Update();
 		// ビュー行列を取得
 		m_view = m_pFixedCameraPlay->GetViewMatrix();
+		// マウスの更新
+		m_pMouse->Update(inGameTime);
+		// 操作画面の背景の更新
+		m_pUIBack->Update(inGameTime);
+		// パネルの更新
+		m_pPanel->Update(inGameTime);
+		// 次のタイルの更新
+		m_pNextTiles->Update(inGameTime);
+		// メダルカウンターに現在のメダル数を設定
+		m_pMedalCounter->SetCollectedMedalCount(m_pCSVItem->GetCollectedMedals());
+		// メダルカウンターの更新
+		m_pMedalCounter->Update(inGameTime);
 	}
-	// マウスの更新
-	m_pMouse->Update(elapsedTime);
-	// 操作画面の背景の更新
-	m_pUIBack->Update(elapsedTime);
 	// CSVアイテムの更新
-	m_pCSVItem->Update(elapsedTime);
-	// パネルの更新
-	m_pPanel->Update(elapsedTime);
-	// 次のタイルの更新
-	m_pNextTiles->Update(elapsedTime);
+	m_pCSVItem->Update(inGameTime);
 	// ミニキャラの更新
-	m_pMiniCharacterBase->Update(elapsedTime, Vector3::Zero, Quaternion::Identity);
-	// メダルカウンターに現在のメダル数を設定
-	m_pMedalCounter->SetCollectedMedalCount(m_pCSVItem->GetCollectedMedals());
-	// メダルカウンターの更新
-	m_pMedalCounter->Update(elapsedTime);
+	m_pMiniCharacterBase->Update(inGameTime, Vector3::Zero, Quaternion::Identity);
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
 	// アニメーションが終わったらシーン変更
@@ -230,6 +240,8 @@ void PlayScene::Render()
 		context->RSSetViewports(1, &screenViewport);
 		// メダルカウンターの描画
 		m_pMedalCounter->Render();
+		// スピードアップボタンの描画
+		m_pSpeedUpUI->Render();
 	}
 	// 結果アニメーションが有効な場合は一つのビューポートでの描画
 	if (m_pResultAnimation->IsAnimationEnable())
@@ -245,9 +257,7 @@ void PlayScene::Render()
 		// 結果UIの描画
 		if (m_pResultAnimation->IsAnimationEnd())m_pResultUI->Render();
 	}
-	const auto debugString = m_pCommonResources->GetDebugString();
-	// 当たったボタン
-	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
+
 }
 /*
 *	@brief 終了
@@ -267,8 +277,8 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-
-		switch (m_pResultUI->GetSceneNum())
+		auto sceneID = m_pResultUI->GetSceneNum();
+		switch (sceneID)
 		{
 		case ResultUI::REPLAY: // リプレイ選択
 			// リプレイ画面へ
@@ -372,5 +382,7 @@ void PlayScene::DrawDebugString()
 	// カメラの位置と被写体座標をデバッグ文字列に追加
 	debugString->AddString("CameraEye:%f,%f,%f", m_pFixedCameraPlay->GetEyePosition().x, m_pFixedCameraPlay->GetEyePosition().y, m_pFixedCameraPlay->GetEyePosition().z);
 	debugString->AddString("CameraTarget:%f,%f,%f", m_pFixedCameraPlay->GetTargetPosition().x, m_pFixedCameraPlay->GetTargetPosition().y, m_pFixedCameraPlay->GetTargetPosition().z);
-
+	// 当たったボタン
+	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
+	debugString->AddString("StageNum:%i", m_stageNumber);
 }

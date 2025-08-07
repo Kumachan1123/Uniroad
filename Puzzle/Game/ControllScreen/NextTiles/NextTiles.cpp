@@ -277,11 +277,7 @@ void NextTiles::AddNextTiles()
 		m_initialPositions.erase(m_initialPositions.begin());
 	}
 	// UI追加
-	Add(selectedTile
-		, position
-		, Vector2(0.6f, 0.6f)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::TILE);
+	Add(selectedTile, position, Vector2(0.6f), KumachiLib::ANCHOR::MIDDLE_CENTER, UIType::TILE);
 	// 初期位置を保存
 	m_initialPositions.push_back(position);
 	// 位置を詰め直す（必要なら全タイル再配置も検討）
@@ -328,8 +324,6 @@ void NextTiles::AddToPanel()
 			// タイルの位置を更新
 			m_pTile[i].canvas->SetPosition(Vector2(m_pTile[i].canvas->GetPosition().x, positionY));
 		}
-
-
 	}
 	else
 	{
@@ -358,7 +352,6 @@ void NextTiles::ResetTilePosition()
 */
 std::vector<std::string> NextTiles::GetAvailableNextTiles(const std::string& currentTileName, const DirectX::SimpleMath::Vector3& velocity) const
 {
-
 	// 進行方向を取得
 	Direction dir = GetDirectionFromVelocity(velocity);
 	// 接続可能なタイルのリストを返す
@@ -394,13 +387,18 @@ std::string NextTiles::GetRandomConnectableTile(const std::vector<std::string>& 
 {
 	// 乱数設定
 	std::random_device seed;
+	// 乱数エンジンを定義
 	std::default_random_engine engine(seed());
+	// 分布を設定
 	std::uniform_int_distribution<int> rand(0, (int)availableTiles.size() - 1);
+	// ランダムにインデックスを取得
 	int randomIndex = rand(engine);
+	// 選ばれたタイル名を取得
 	std::string selected = availableTiles[randomIndex];
+	// m_pTileの一番新しいタイル名を取得
+	std::string currentTileName = m_pTile.empty() ? "" : m_pTile.back().textureKey;
 	// もし前回と同じなら再帰呼び出し
-	if (selected == previousTileName)
-		return GetRandomConnectableTile(availableTiles, previousTileName);
+	if (selected == previousTileName && selected == currentTileName)return GetRandomConnectableTile(availableTiles, previousTileName);
 	// 選ばれたタイルを返す
 	return selected;
 }

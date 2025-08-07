@@ -82,7 +82,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
 	// ミニキャラを作成する
-	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(-2.0f, 0.0f, 2.0f), 0.0f);
 	// ミニキャラベースにCSVマップを設定
 	m_pMiniCharacterBase->SetCSVMap(nullptr);
 	// ミニキャラベースにCSVアイテムを設定
@@ -94,7 +94,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(0.0f, -0.5f, 0.0f), 0.0f));
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(-2.0f, -0.5f, 2.0f), 0.0f));
 
 }
 /*
@@ -115,18 +115,10 @@ void StageSelectScene::Update(float elapsedTime)
 	m_pTrackingCamera->Update();
 	// デバッグカメラの更新
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
-	//#ifndef DEBUG
-	//	const auto KeyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
-	//	if (KeyState.Space)
-	//		m_view = m_pTrackingCamera->GetViewMatrix();
-	//	else
-	//		m_view = m_pFixedCameraPlay->GetViewMatrix();
-	//
-	//#endif
-		// ビュー行列を取得
+	// ビュー行列を取得
 	m_view = m_pTrackingCamera->GetViewMatrix();
 	// 座標を初期化
-	Vector3 position(0.0f, -0.5f, -1.75f);
+	Vector3 position(-2.0f, -0.5f, -1.75f);
 	// 角度を初期化
 	Quaternion angle(Quaternion::Identity);
 	// ミニキャラの更新

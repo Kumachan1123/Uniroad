@@ -34,6 +34,7 @@ MiniCharacterSelectStage::MiniCharacterSelectStage(IComponent* parent, const Dir
 	, m_currentPosition{}// 現在の位置
 	, m_currentVelocity{}// 現在の速度
 	, m_currentAngle{}// 現在の回転角
+	, m_destinationPosition(initialPosition)// 目的地の位置
 	, m_prevTileName("Start")// 前フレームで一番近かったタイルの名前
 	, m_rotationMiniCharacterAngle{}// プレイヤー回転角
 	, m_mass{}// 質量
@@ -91,7 +92,7 @@ void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMa
 	// 親コンポーネントが存在することを確認
 	assert(parent);
 	// 目的地を設定
-	if (parent->GetPlaneArea()->GetHitPlaneIndex() > -1)
+	if (parent->GetPlaneArea()->GetHitPlaneIndex() > -1 && parent->GetPlaneArea()->IsHitPlane())
 		m_destinationPosition = parent->GetPlaneArea()->GetPlanePosition(parent->GetPlaneArea()->GetHitPlaneIndex());
 	// 目的地にむかって速度を更新する
 	m_currentVelocity = (m_destinationPosition - m_currentPosition) * elapsedTime * 3.0f;

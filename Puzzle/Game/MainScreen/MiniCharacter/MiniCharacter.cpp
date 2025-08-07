@@ -5,10 +5,12 @@
 */
 #include <pch.h>
 #include "MiniCharacter.h"
-// 砲塔カウンター
+// ノードカウンター
 int MiniCharacter::s_nodeCount = 0;
 // 部品カウンター
 int MiniCharacter::s_partsNumber = 0;
+// 重力を定義
+const float MiniCharacter::GRAVITY = -9.8f;
 /*
 *	@brief コンストラクタ
 *	@details ミニキャラクターの初期位置と角度を設定し、必要な変数を初期化する。
@@ -29,6 +31,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_fallTimer(0.0f)// 落下タイマー
 	, m_gameOverSwitchTime(0.0f)// ゲームオーバーのスイッチ時間
 	, m_gameClearSwitchTime(0.0f)// ゲームクリアのスイッチ時間
+	, m_speed(1.0f)// 移動速度
 	, m_fallTimerActive(false)// 落下タイマーが有効かどうか
 	, m_hasFallen(false)// 一度だけ落下処理を実行させるためのフラグ
 	, m_initialPosition(initialPosition)// 初期位置
@@ -93,11 +96,11 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 落下タイマー処理
 	UpdateFallTimer(elapsedTime);
 	// 重力を加味した座標移動を行う
-	ApplyGravity(elapsedTime, currentPosition);
+	Moving(elapsedTime, currentPosition);
 	// 揺れ演出
 	Shake();
 	// 回転の補間
-	InterpolateRotation(currentAngle);
+	InterpolateRotation(elapsedTime, currentAngle);
 	// 次に生成されるタイルを決めるために速度ベクトルを設定する
 	if (m_parent->GetNextTiles() != nullptr && m_currentVelocity != Vector3::Zero)
 		m_parent->GetNextTiles()->SetMiniCharacterVelocity(m_currentVelocity);
@@ -300,27 +303,24 @@ void MiniCharacter::UpdateFallTimer(float elapsedTime)
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void MiniCharacter::ApplyGravity(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition)
+void MiniCharacter::Moving(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition)
 {
-	// 重力を定義
-	const float gravity = -9.8f;
 	// 落下中の場合
 	if (m_hasFallen)
 	{
 		// 落下中は重力を適用する
-		m_currentVelocity.y += gravity * elapsedTime;
+		m_currentVelocity.y += GRAVITY * elapsedTime;
 		// 速度に適用する
 		m_miniCharacterVelocity += m_currentVelocity * elapsedTime;
 		// ゲームオーバーのスイッチ時間を更新
 		m_gameOverSwitchTime += elapsedTime;
-
-
 	}
 	// 落下していない場合
 	else if (m_isMoving)
 	{
 		// 通常通りの移動処理
-		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3;
+		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3 * m_speed;
+
 	}
 	// 座標に速度を適用する
 	m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
@@ -359,11 +359,12 @@ void MiniCharacter::Shake()
 /*
 *	@brief プレイヤーの回転を補間する
 *	@details プレイヤーの回転を補間して、滑らかな回転を実現する。
+*	@param elapsedTime 経過時間
 *	@param currentAngle 現在の回転角
 *	@return なし
 *
 */
-void MiniCharacter::InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle)
+void MiniCharacter::InterpolateRotation(float elapsedTime, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	using namespace DirectX::SimpleMath;
 	// 目標回転を計算（速度ベクトルから）
@@ -382,9 +383,9 @@ void MiniCharacter::InterpolateRotation(const DirectX::SimpleMath::Quaternion& c
 		targetQuat = Quaternion::Identity;
 	}
 	// 現在の回転角を更新する
-	float rotateSpeed = 0.05f;
+	float rotateSpeed = 2.0f;
 	// 滑らかに回転させるために、現在の回転角と目標回転角を補間
-	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
+	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, elapsedTime * rotateSpeed);
 	// 揺れを加味した回転を適用
 	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
 }

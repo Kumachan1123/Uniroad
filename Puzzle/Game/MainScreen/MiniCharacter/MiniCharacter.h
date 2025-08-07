@@ -123,15 +123,15 @@ private:
 	// 落下タイマー関連の処理
 	void UpdateFallTimer(float elapsedTime);
 	// 重力を加味した座標移動
-	void ApplyGravity(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition);
+	void Moving(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition);
 	// 揺れ演出
 	void Shake();
 	// 回転の補間
-	void InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle);
+	void InterpolateRotation(float elapsedTime, const DirectX::SimpleMath::Quaternion& currentAngle);
 	//　速度を更新する
 	void UpdateSpeedByStartTile();
 	// タイルの中心にいるかどうかを確認する
-	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.01f) const;
+	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.1f) const;
 	// ゲームオーバー、ゲームクリア分岐処理
 	void HandleGameOverAndClear(float elapsedTime);
 public:
@@ -146,10 +146,13 @@ public:
 	// 部品番号増やす
 	static void IncrementPartsNumber() { s_partsNumber++; }
 private:
-	// 砲塔カウント
+	// private定数
+	// ノードのカウント
 	static int s_nodeCount;
-	// 砲塔部品カウント
+	// 部品カウント
 	static int s_partsNumber;
+	// 重力
+	static const float GRAVITY;
 private:
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -209,4 +212,6 @@ private:
 	float m_gameOverSwitchTime;
 	// ゲームクリアフラグを切り替える時間
 	float m_gameClearSwitchTime;
+	// 移動速度
+	float m_speed;
 };
