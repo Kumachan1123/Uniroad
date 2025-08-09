@@ -1,6 +1,6 @@
 /*
-*	@file		IUI.h
-*	@brief	　UIのインターフェースクラス
+*	@file IGameUI.h
+*	@brief ゲームUIのインターフェースクラス
 */
 #pragma once
 // 標準ライブラリ
@@ -10,11 +10,13 @@
 #include <SimpleMath.h>
 // 自作ヘッダーファイル
 #include "KumachiLib/Anchor/Anchor.h"
+#include "Game/Interface/IUI.h"
+
 // 前方宣言
 class CommonResources;
 
-// UIのインターフェースクラス
-class IUI
+// ゲームUIのインターフェースクラス
+class IGameUI : public IUI
 {
 public:
 	// 列挙型
@@ -24,18 +26,11 @@ public:
 		TILE,	// タイル
 		ITEM,	// アイテム
 		BUTTON,	// ボタン
-
 	};
 public:
 	// public関数
 	// デストラクタ
-	virtual ~IUI() = default;
-	// 初期化
-	virtual void Initialize(CommonResources* resources, int width, int height) = 0;
-	// 更新
-	virtual void Update(const float elapsedTime) = 0;
-	// 描画
-	virtual void Render() = 0;
+	virtual ~IGameUI() = default;
 	// UI追加	
 	virtual void Add(
 		const std::string& key					// テクスチャのキー

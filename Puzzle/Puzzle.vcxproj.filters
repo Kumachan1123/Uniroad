@@ -52,7 +52,7 @@
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Game\ControllScreen\UIBack\UIBack.h" />
     <ClInclude Include="Game\ControllScreen\Panel\Panel.h" />
-    <ClInclude Include="Game\Interface\IUI\IUI.h" />
+    <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
     <ClInclude Include="Game\ControllScreen\NextTiles\NextTiles.h" />
     <ClInclude Include="Game\Mouse\Mouse.h" />
@@ -97,6 +97,9 @@
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
     <ClInclude Include="Game\MainScreen\SpeedUpUI\SpeedUpUI.h" />
+    <ClInclude Include="Game\Interface\IGameUI.h" />
+    <ClInclude Include="Game\Interface\IButton.h" />
+    <ClInclude Include="KumachiLib\Button\Button.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -160,6 +163,7 @@
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
     <ClCompile Include="Game\MainScreen\SpeedUpUI\SpeedUpUI.cpp" />
+    <ClCompile Include="KumachiLib\Button\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

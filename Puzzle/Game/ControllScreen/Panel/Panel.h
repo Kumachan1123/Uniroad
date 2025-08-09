@@ -17,7 +17,7 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/ControllScreen/Canvas/Canvas.h"
-#include "Game/Interface/IUI/IUI.h"
+#include "Game/Interface/IGameUI.h"
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
@@ -31,7 +31,7 @@ class CommonResources;
 class CSVItem;
 
 // パネルクラス
-class Panel : public IUI
+class Panel : public IGameUI
 {
 public:
 	// 構造体

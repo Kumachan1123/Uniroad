@@ -59,14 +59,12 @@ void MedalCounter::Initialize(CommonResources* resources, int width, int height)
 	// ウィンドウの幅と高さを設定
 	m_viewportWidth = width;
 	m_viewportHeight = height;
-
 	// メダル画像
 	m_pMedalTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));
 	// 「×」画像
 	m_pXTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Multiply"));
 	// 数字画像
 	m_pNumberTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Number"));
-
 	// 描画クラスの初期化
 	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());
 	// シェーダーの作成

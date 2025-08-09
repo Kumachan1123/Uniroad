@@ -17,7 +17,7 @@
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/ControllScreen/Canvas/Canvas.h"
-#include "Game/Interface/IUI/IUI.h"
+#include "Game/Interface/IGameUI.h"
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/Mouse/Mouse.h"
@@ -29,7 +29,7 @@
 class CommonResources;
 
 // 次のタイルクラス
-class NextTiles : public IUI
+class NextTiles : public IGameUI
 {
 private:
 	// タイル情報を保持する構造体

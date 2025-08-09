@@ -17,7 +17,7 @@
 #include "KumachiLib/Easing/Easing.h"
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/ControllScreen/Canvas/Canvas.h"
-#include "Game/Interface/IUI/IUI.h"
+#include "Game/Interface/IGameUI.h"
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "KumachiLib/MouseClick/MouseClick.h"
@@ -27,7 +27,7 @@
 class CommonResources;
 
 // Œ‹‰ÊUIƒNƒ‰ƒX
-class ResultUI : public IUI
+class ResultUI : public IGameUI
 {
 public:
 	// —ñ‹“Œ^
