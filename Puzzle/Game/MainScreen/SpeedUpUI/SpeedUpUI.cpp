@@ -97,12 +97,7 @@ void SpeedUpUI::CreateShaders()
 	// シェーダーの構造体にジオメトリシェーダーをセット（使わないのでnullptr）
 	m_shaders.gs = nullptr;
 }
-/*
-*	@brief 更新
-*	@details スピードアップUIの更新処理を行う
-*	@param elapsedTime 経過時間
-*	@return なし
-*/
+
 void SpeedUpUI::Update(float elapsedTime)
 {
 	// 名前空間の使用
@@ -113,51 +108,40 @@ void SpeedUpUI::Update(float elapsedTime)
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 	// 当たり判定を行う
 	m_isHit = Hit(mousePos);
-	// 当たり判定がある場合、マウスの左ボタンが押されていたら押された状態をトグル
-	if (m_isHit && MouseClick::IsLeftMouseButtonPressed(mouseState))m_isPressed = !m_isPressed;
+	if (m_isHit && MouseClick::IsLeftMouseButtonPressed(mouseState))
+	{
+		// マウスが当たったら押された状態をトグル
+		m_isPressed = !m_isPressed;
+	}
 }
-/*
-*	@brief 描画
-*	@details スピードアップUIの描画処理を行う
-*	@param なし
-*	@return なし
-*/
+
 void SpeedUpUI::Render()
 {
-	// ボタンの描画
+	const auto& keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
+	int frameIndex = 0;
+	if (keyState.Space)frameIndex = 1;
 	DrawQuad(m_pTextures, m_vertices, POSITION.x, POSITION.y, SIZE.x, SIZE.y, m_isPressed, m_frameCols, m_frameRows);
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("SpeedUpUI:Hit = %s", m_isHit ? "true" : "false");
+
 }
-/*
-*	@brief 四角形の描画
-*	@details スピードアップUIの四角形を描画する
-*	@param texture 描画するテクスチャのリスト
-*	@param vertices 頂点配列
-*	@param startX 四角形の左上X座標
-*	@param startY 四角形の左上Y座標
-*	@param width 四角形の幅
-*	@param height 四角形の高さ
-*	@param frameIndex アニメーションのフレームインデックス
-*	@param frameCols アニメーションの列数
-*	@param frameRows アニメーションの行数
-*	@return なし
-*/
+
+
 void SpeedUpUI::DrawQuad(
 	std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
 	DirectX::VertexPositionTexture* vertices,
 	float startX, float startY, float width, float height,
 	int frameIndex, int frameCols, int frameRows)
 {
-	// 名前空間の使用
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// アスペクト比を考慮してY方向サイズを補正
 	float aspect = static_cast<float>(m_viewportWidth) / static_cast<float>(m_viewportHeight);
-	// 頂点座標の計算
 	float correctedHeight = height * aspect;
-	// NDC座標系に変換
+
 	Vector2 ndcLT = ToNDC(Vector2(startX, startY));
-	// 右下の座標をNDC座標系に変換
 	Vector2 ndcRB = ToNDC(Vector2(startX + width, startY + correctedHeight));
+
 	// 頂点座標の設定
 	vertices[0] = { VertexPositionTexture(Vector3(ndcLT.x, ndcLT.y, 0), Vector2(0, 0)) };// 左上
 	vertices[1] = { VertexPositionTexture(Vector3(ndcRB.x, ndcLT.y, 0), Vector2(1, 0)) };// 右上
@@ -197,12 +181,7 @@ void SpeedUpUI::DrawQuad(
 	//	シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
 }
-/*
-*	@brief UIとの当たり判定
-*	@details マウスの座標とUIの位置を比較して当たり判定を行う
-*	@param position マウスの座標
-*	@return 当たり判定があればtrue、なければfalse
-*/
+
 bool SpeedUpUI::Hit(const DirectX::SimpleMath::Vector2& position)
 {
 	using namespace DirectX::SimpleMath;
@@ -214,18 +193,20 @@ bool SpeedUpUI::Hit(const DirectX::SimpleMath::Vector2& position)
 	RECT rect;
 	// クライアント領域サイズを取得
 	GetClientRect(hwnd, &rect);
-	// ウィンドウのクライアント領域のサイズを取得
 	float aspect = static_cast<float>(rect.right) / static_cast<float>(rect.bottom);
-	// 表示サイズを補正
 	float correctedHeight = SIZE.y * aspect;
-	// NDC座標系に変換
+
 	Vector2 ndcLT = (Vector2(POSITION.x, POSITION.y));
 	Vector2 ndcRB = (Vector2(POSITION.x + SIZE.x, POSITION.y + correctedHeight));
-	// 左上と右下の座標をスクリーン座標に変換
 	Vector2 leftTop = Vector2(ndcLT.x * rect.right, ndcLT.y * rect.bottom);
 	Vector2 rightBottom = Vector2(ndcRB.x * rect.right, ndcRB.y * rect.bottom);
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("SpeedUpUI:MousePosition = (%.2f, %.2f)", position.x, position.y);
+	debugString->AddString("SpeedUpUI:LeftTop = (%.2f, %.2f)", leftTop.x, leftTop.y);
+	debugString->AddString("SpeedUpUI:RightBottom = (%.2f, %.2f)", rightBottom.x, rightBottom.y);
 	// マウスの座標が画像の範囲内にあるならtrueを返す
-	if (leftTop.x <= position.x && position.x <= rightBottom.x && leftTop.y <= position.y && position.y <= rightBottom.y)return true;
+	if (leftTop.x <= position.x && position.x <= rightBottom.x && leftTop.y <= position.y && position.y <= rightBottom.y)
+		return true;
 	// 当たり判定なしならfalseを返す
 	return false;
 }
