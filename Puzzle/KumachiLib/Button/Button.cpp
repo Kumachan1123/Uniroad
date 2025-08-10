@@ -105,8 +105,8 @@ void Button::CreateShaders()
 /*
 *	@brief 画像を表示
 *	@details ボタンの画像を表示する
-*	@param startX 開始X座標
-*	@param startY 開始Y座標
+*	@param centerX 中心X座標
+*	@param centerY 中心Y座標
 *	@param width 画像の幅
 *	@param height 画像の高さ
 *	@param frameIndex アニメーションのコマ番号
@@ -114,7 +114,7 @@ void Button::CreateShaders()
 *	@param frameRows 画像の行数
 *	@return なし
 */
-void Button::DrawQuad(float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
+void Button::DrawQuad(float centerX, float centerY, float width, float height, int frameIndex, int frameCols, int frameRows)
 {
 	// 名前空間の使用
 	using namespace DirectX;
@@ -122,6 +122,9 @@ void Button::DrawQuad(float startX, float startY, float width, float height, int
 	// アスペクト比を考慮してY方向サイズを補正
 	float aspect = static_cast<float>(m_viewportWidth) / static_cast<float>(m_viewportHeight);
 	float correctedHeight = height * aspect;
+	// ボタンの矩形を設定
+	float startX = centerX - width / 2.0f;
+	float startY = centerY - correctedHeight / 2.0f;
 	// NDC座標系に変換
 	Vector2 ndcLT = ToNDC(Vector2(startX, startY));
 	Vector2 ndcRB = ToNDC(Vector2(startX + width, startY + correctedHeight));

@@ -147,6 +147,7 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 {
 	// 砲塔部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
+#ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// 座標表示
@@ -164,6 +165,7 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	// 座標表示
 	debugString->AddString("PrevTile Position: (%f, %f, %f)",
 		m_prevTilePosition.x, m_prevTilePosition.y, m_prevTilePosition.z);
+#endif
 }
 /*
 *	@brief プレイヤーの後処理を行う

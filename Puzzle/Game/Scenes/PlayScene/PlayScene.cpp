@@ -374,6 +374,7 @@ void PlayScene::CreateViewports()
 */
 void PlayScene::DrawDebugString()
 {
+#ifdef _DEBUG
 	// デバッグ文字列を取得
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// ゲームオーバーやゲームクリアの状態をデバッグ文字列に追加
@@ -385,4 +386,7 @@ void PlayScene::DrawDebugString()
 	// 当たったボタン
 	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
 	debugString->AddString("StageNum:%i", m_stageNumber);
+#endif  
+
+
 }

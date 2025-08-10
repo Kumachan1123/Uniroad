@@ -231,9 +231,11 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 			if (m_mapItemData[col][row].itemBasePtr != nullptr)	m_mapItemData[col][row].itemBasePtr->Render(view, proj);
 		}
 	}
+#ifdef _DEBUG
 	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("CountMedals:%i", m_collectedMedals);
 	debugString->AddString("GoalUnlocked:%s", m_goalUnlocked ? "true" : "false");
+#endif
 }
 
 

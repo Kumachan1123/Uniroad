@@ -219,12 +219,14 @@ void ResultUI::Render()
 	if (!m_enable)return;
 	// ボタンを一斉描画
 	for (unsigned int i = 0; i < m_pButtons.size(); i++)m_pButtons[i]->Render();
+#ifdef _DEBUG
 	const auto debugString = m_pCommonResources->GetDebugString();
 	debugString->AddString("ResultUI:Hit = %s", m_hit ? "true" : "false");
 	debugString->AddString("ResultUI:MenuIndex = %d", m_menuIndex);
 	debugString->AddString("ResultUI:CanPress = %s", m_canPress ? "true" : "false");
 	for (unsigned int i = 0; i < m_easeTimers.size(); i++)
 		debugString->AddString("ResultUI:EaseTimer[%d] = %f", i, m_easeTimers[i]);
+#endif
 }
 /*
 *	@brief ボタンを追加

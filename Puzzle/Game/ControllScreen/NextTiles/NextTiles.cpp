@@ -91,7 +91,6 @@ void NextTiles::Update(const float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	const auto debugString = m_pCommonResources->GetDebugString();
 	m_pMouse->SetHitNewTile(false); // マウスのヒットフラグをリセット
 	m_pMouse->SetHitNewTileIndex(-1);// 当たっている新しく出てきたタイルの番号をリセット
 	// --- ドラッグ中は他UIのヒット判定をしない ---
@@ -169,8 +168,12 @@ void NextTiles::Update(const float elapsedTime)
 	}
 	// 選択中のUIがあるなら座標を変更する
 	if (m_pMouse->GetHitNewTileIndex() >= 0 && mouseState.leftButton)m_pTile[m_pMouse->GetHitNewTileIndex()].canvas->SetPosition(m_pMouse->GetPosition());
+#ifdef _DEBUG
+	// デバッグ用の文字列を取得
+	const auto debugString = m_pCommonResources->GetDebugString();
 	// デバッグ用の文字列を追加
 	debugString->AddString("DragNextTile:%i", m_draggingIndex);
+#endif
 }
 /*
 *	@brief 描画

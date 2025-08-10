@@ -144,6 +144,7 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 {
 	// 砲塔部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
+#ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// 座標表示
@@ -152,6 +153,9 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 	// 速度表示
 	debugString->AddString("MiniCharacter Velocity: (%f, %f, %f)",
 		m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
+#endif // DEBUG
+
+
 
 }
 /*

@@ -72,7 +72,7 @@ public:
 	// XV
 	void Update(const float elapsedTime);
 	// ‰æ‘œ‚ğ•\¦
-	void DrawQuad(float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows);
+	void DrawQuad(float centerX, float centerY, float width, float height, int frameIndex, int frameCols, int frameRows);
 	// “–‚½‚è”»’è
 	bool Hit(const DirectX::SimpleMath::Vector2& mousePosition, const ButtonRect& buttonRect);
 private:

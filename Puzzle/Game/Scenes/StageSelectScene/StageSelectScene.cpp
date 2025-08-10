@@ -168,12 +168,14 @@ void StageSelectScene::Render()
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 	// 平面の描画
 	m_pPlaneArea->Render();
+#ifdef _DEBUG
 	// --- デバッグ情報---
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// レイと当たったかを表示
 	debugString->AddString("Ray Hit:%s", m_pPlaneArea->IsHitPlane() ? "true" : "false");
 	// レイと当たったかを表示
 	debugString->AddString("HitRayIndex:%i", m_pPlaneArea->GetHitPlaneIndex());
+#endif
 }
 
 /*

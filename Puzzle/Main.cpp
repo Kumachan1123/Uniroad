@@ -23,7 +23,7 @@ namespace
 	std::unique_ptr<Game> g_game;// ゲームオブジェクトのグローバルポインター
 }
 // アプリケーション名
-LPCWSTR g_szAppName = L"パズル";
+LPCWSTR g_szAppName = L"ひつじのユニロード";
 // Windowsプロシージャの宣言
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 // ゲーム終了処理の宣言
@@ -67,7 +67,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 	g_game = std::make_unique<Game>();
 	// フルスクリーンモードの初期値を設定(true: フルスクリーン、false: ウィンドウモード)
 	static bool s_fullscreen = true;
-#ifdef _DEBUG// デバッグビルドの場合
 	// 画面モード選択
 	if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)// ユーザーが「はい」を選択した場合
 	{
@@ -79,7 +78,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 		// ウィンドウモードに設定
 		s_fullscreen = false;
 	}
-#endif
+
 	// ウィンドウクラスを登録し、ウィンドウを作成する
 	{
 		// Windowsのウィンドウクラスを定義する構造体

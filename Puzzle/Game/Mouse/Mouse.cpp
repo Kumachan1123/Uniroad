@@ -126,18 +126,20 @@ void MyMouse::Update(const float elapsedTime)
 	m_leftReleased = (!mouseState.leftButton) && m_prevLeftButton;
 	// 最後に、前フレームの状態を更新しておく
 	m_prevLeftButton = mouseState.leftButton;
-	//// ---デバッグ表示---
-	//const auto debugString = m_pCommonResources->GetDebugString();
-	//debugString->AddString("isInside: %s",
-	//	(mouseX_UI >= m_vp_left_UI) && (mouseX_UI < m_vp_left_UI + m_vp_width_UI)
-	//	&& (mouseY_UI >= m_vp_top_UI) && (mouseY_UI < m_vp_top_UI + m_vp_height_UI)
-	//	? "true" : "false"); // マウスがビューポート内にあるか
-	//debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", m_position.x, m_position.y); // ビューポート内マウス座標
-	//debugString->AddString("PanelPosition:%f,%f", GetPanelPosition().x, GetPanelPosition().y);// 当たっているパネルの位置
-	//debugString->AddString("PanelRow:%i, PanelCol:%i", GetHitPanelRowIndex(), GetHitPanelColIndex());// 当たっているパネルの行と列のインデックス
-	//debugString->AddString("HitNextTilePosition: %f, %f", GetNewTilePosition().x, GetNewTilePosition().y);// 当たっている新しいタイルの位置
-	//debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");// ドラッグフラグの状態
-	//debugString->AddString("hitPanel:%i", GetHitPanelIndex());// 当たっているパネルのインデックス
-	//debugString->AddString("hitNextTile:%i", GetHitNewTileIndex());// 当たっている新しく出てきたタイルのインデックス
-	//debugString->AddString("LeftReleased: %s", m_leftReleased ? "true" : "false");// 左ボタンが離されたかどうか
+#ifdef _DEBUG
+	// ---デバッグ表示---
+	const auto debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("isInside: %s",
+		(mouseX_UI >= m_vp_left_UI) && (mouseX_UI < m_vp_left_UI + m_vp_width_UI)
+		&& (mouseY_UI >= m_vp_top_UI) && (mouseY_UI < m_vp_top_UI + m_vp_height_UI)
+		? "true" : "false"); // マウスがビューポート内にあるか
+	debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", m_position.x, m_position.y); // ビューポート内マウス座標
+	debugString->AddString("PanelPosition:%f,%f", GetPanelPosition().x, GetPanelPosition().y);// 当たっているパネルの位置
+	debugString->AddString("PanelRow:%i, PanelCol:%i", GetHitPanelRowIndex(), GetHitPanelColIndex());// 当たっているパネルの行と列のインデックス
+	debugString->AddString("HitNextTilePosition: %f, %f", GetNewTilePosition().x, GetNewTilePosition().y);// 当たっている新しいタイルの位置
+	debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");// ドラッグフラグの状態
+	debugString->AddString("hitPanel:%i", GetHitPanelIndex());// 当たっているパネルのインデックス
+	debugString->AddString("hitNextTile:%i", GetHitNewTileIndex());// 当たっている新しく出てきたタイルのインデックス
+	debugString->AddString("LeftReleased: %s", m_leftReleased ? "true" : "false");// 左ボタンが離されたかどうか
+#endif
 }

@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "SpeedUpUI.h"
 // 表示位置（左上）の定義
-const DirectX::SimpleMath::Vector2 SpeedUpUI::POSITION = DirectX::SimpleMath::Vector2(0.625f, 0.0f);
+const DirectX::SimpleMath::Vector2 SpeedUpUI::POSITION = DirectX::SimpleMath::Vector2(0.665f, 0.07f);
 // 表示サイズの定義
 const DirectX::SimpleMath::Vector2 SpeedUpUI::SIZE = DirectX::SimpleMath::Vector2(0.07f, 0.07f);
 /*
