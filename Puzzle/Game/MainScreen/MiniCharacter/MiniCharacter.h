@@ -20,6 +20,7 @@
 // 前方宣言
 class CommonResources;
 
+// ミニキャラクタークラス
 class MiniCharacter : public IComposite
 {
 public:

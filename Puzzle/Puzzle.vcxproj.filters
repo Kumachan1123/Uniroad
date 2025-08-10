@@ -96,10 +96,16 @@
     <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
-    <ClInclude Include="Game\MainScreen\SpeedUpUI\SpeedUpUI.h" />
+    <ClInclude Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.h" />
     <ClInclude Include="Game\Interface\IGameUI.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
     <ClInclude Include="KumachiLib\Button\Button.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleScene.h" />
+    <ClInclude Include="Game\Interface\IImage.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.h" />
+    <ClInclude Include="KumachiLib\Image\Image.h" />
+    <ClInclude Include="KumachiLib\Rect\Rect.h" />
+    <ClInclude Include="KumachiLib\AnimationStep\AnimationStep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -162,8 +168,11 @@
     <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
-    <ClCompile Include="Game\MainScreen\SpeedUpUI\SpeedUpUI.cpp" />
+    <ClCompile Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
+    <ClCompile Include="KumachiLib\Image\Image.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

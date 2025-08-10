@@ -134,7 +134,7 @@ void StageSelectScene::Update(float elapsedTime)
 	// マウスステートを取得
 	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// 左クリックを検知
-	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > -1)
+	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
 	{
 		// ステージ番号を取得
 		m_stageNumber = m_pPlaneArea->GetHitPlaneIndex();
@@ -142,7 +142,7 @@ void StageSelectScene::Update(float elapsedTime)
 		m_isChangeScene = true;
 	}
 	// 何か選ばれているなら移動フラグを立てる
-	if (m_pPlaneArea->GetHitPlaneIndex() > -1)
+	if (m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
 	{
 		m_pMiniCharacterBase->SetMoving(true);
 	}
@@ -158,8 +158,6 @@ void StageSelectScene::Update(float elapsedTime)
 void StageSelectScene::Render()
 {
 	using namespace DirectX::SimpleMath;
-	//auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-
 	// ステージセレクトの描画
 	m_pStageSelect->Render(m_view, m_projection);
 	// ステージの入り口の描画
@@ -186,6 +184,18 @@ void StageSelectScene::Render()
 */
 void StageSelectScene::Finalize()
 {
+	// ステージセレクトの終了
+	if (m_pStageSelect) m_pStageSelect->Finalize();
+	// 平面の終了
+	if (m_pPlaneArea) m_pPlaneArea->Finalize();
+	// ミニキャラの終了
+	if (m_pMiniCharacterBase) m_pMiniCharacterBase->Finalize();
+	// ステージの入り口の終了
+	for (auto& gate : m_pStageGates) gate->Finalize();
+	// シーン変更フラグをリセット
+	m_isChangeScene = false;
+	// ステージ番号をリセット
+	m_stageNumber = PlaneArea::NO_HIT_PLANE_INDEX;
 }
 
 

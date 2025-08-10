@@ -115,9 +115,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 結果UIにステージ番号を渡す
 	m_pResultUI->SetStageNum(m_stageNumber);
 	// スピードアップボタンを作成する
-	m_pSpeedUpUI = std::make_unique<SpeedUpUI>();
+	m_pSpeedUpButton = std::make_unique<SpeedUpButton>();
 	// スピードアップボタンを初期化する
-	m_pSpeedUpUI->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	m_pSpeedUpButton->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 }
 /*
 *   @brief 更新処理
@@ -132,14 +132,14 @@ void PlayScene::Update(float elapsedTime)
 	// 経過時間を加算
 	m_time += elapsedTime;
 	// スピードアップボタンの更新
-	m_pSpeedUpUI->Update(elapsedTime);
+	m_pSpeedUpButton->Update(elapsedTime);
 	// スピードアップボタンが押された場合、ゲーム内経過時間を倍にする
-	float inGameTime = m_pSpeedUpUI->IsPressed() ? elapsedTime * 10.0f : elapsedTime;
+	float inGameTime = m_pSpeedUpButton->IsPressed() ? elapsedTime * 10.0f : elapsedTime;
 	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
 		// スピードアップボタンを強制的にオフにする
-		m_pSpeedUpUI->SetPressed(false);
+		m_pSpeedUpButton->SetPressed(false);
 		// リザルトUIが無効な場合
 		if (!m_pResultUI->IsEnable() && m_pResultAnimation->IsAnimationEnd())
 		{
@@ -241,7 +241,7 @@ void PlayScene::Render()
 		// メダルカウンターの描画
 		m_pMedalCounter->Render();
 		// スピードアップボタンの描画
-		m_pSpeedUpUI->Render();
+		m_pSpeedUpButton->Render();
 	}
 	// 結果アニメーションが有効な場合は一つのビューポートでの描画
 	if (m_pResultAnimation->IsAnimationEnable())

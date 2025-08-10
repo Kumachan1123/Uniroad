@@ -11,6 +11,7 @@
 #include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "IScene.h"
+#include "Game/Scenes/TitleScene/TitleScene.h"
 #include "Game/Scenes/StageSelectScene/StageSelectScene.h"
 #include "Game/Scenes/PlayScene/PlayScene.h"
 

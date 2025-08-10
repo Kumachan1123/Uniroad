@@ -37,7 +37,7 @@ void SceneManager::Initialize(CommonResources* resources)
 	// 共通リソースを取得
 	m_pCommonResources = resources;
 	// タイトルシーンに変更
-	ChangeScene(IScene::SceneID::STAGESELECT);
+	ChangeScene(IScene::SceneID::TITLE);
 }
 /*
 *	@brief 更新する
@@ -106,12 +106,22 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	// シーンIDによって処理を分ける
 	switch (sceneID)
 	{
-	case IScene::SceneID::STAGESELECT:
+	case IScene::SceneID::STAGESELECT:// ステージセレクトシーン
+		// ステージセレクトシーンを作成
 		m_pCurrentScene = std::make_unique<StageSelectScene>(sceneID);
+		// 処理を抜ける
 		break;
-	case IScene::SceneID::PLAY:
+	case IScene::SceneID::PLAY:// プレイシーン
+		// プレイシーンを作成
 		m_pCurrentScene = std::make_unique<PlayScene>(sceneID);
-		m_pCurrentScene->SetStageNumber(m_stageNumber); // ステージ番号を設定
+		// ステージ番号を設定
+		m_pCurrentScene->SetStageNumber(m_stageNumber);
+		// 処理を抜ける
+		break;
+	case IScene::SceneID::TITLE:// タイトルシーン
+		// タイトルシーンを作成
+		m_pCurrentScene = std::make_unique<TitleScene>(sceneID);
+		// 処理を抜ける
 		break;
 		/*case IScene::SceneID::TITLE:
 			m_currentScene = std::make_unique<TitleScene>(sceneID);

@@ -15,6 +15,7 @@ public:
 	enum class SceneID : unsigned int
 	{
 		NONE,
+		TITLE,
 		STAGESELECT,
 		PLAY,
 

@@ -75,6 +75,11 @@ private:
 		DirectX::SimpleMath::Vector3& outIntersection);
 	// 線描画（デバッグ）
 	void DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& vertices, const DirectX::SimpleMath::Color& color);
+public:
+	// public定数
+	// 当たった平面がない場合のインデックス
+	static const int NO_HIT_PLANE_INDEX = -1;
+
 private:
 	// privateメンバ変数
 	// 共通リソースへのポインタ

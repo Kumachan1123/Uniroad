@@ -1,25 +1,27 @@
 /*
-*	@file SpeedUpUI.cpp
+*	@file SpeedUpButton.cpp
 *	@brief スピードアップボタンクラス
 */
 #include "pch.h"
-#include "SpeedUpUI.h"
+#include "SpeedUpButton.h"
 // 表示位置（左上）の定義
-const DirectX::SimpleMath::Vector2 SpeedUpUI::POSITION = DirectX::SimpleMath::Vector2(0.665f, 0.07f);
+const DirectX::SimpleMath::Vector2 SpeedUpButton::POSITION = DirectX::SimpleMath::Vector2(0.665f, 0.07f);
 // 表示サイズの定義
-const DirectX::SimpleMath::Vector2 SpeedUpUI::SIZE = DirectX::SimpleMath::Vector2(0.07f, 0.07f);
+const DirectX::SimpleMath::Vector2 SpeedUpButton::SIZE = DirectX::SimpleMath::Vector2(0.07f, 0.07f);
 /*
 *	@brief コンストラクタ
 *	@details スピードアップUIの初期化を行う
 *	@param なし
 *	@return なし
 */
-SpeedUpUI::SpeedUpUI()
+SpeedUpButton::SpeedUpButton()
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_isHit(false) // 当たり判定フラグ
 	, m_isPressed(false) // ボタンが押されたフラグ
 	, m_frameRows(2) // 画像の行数
 	, m_frameCols(1) // 画像の列数
+	, m_position(POSITION) // 座標
+	, m_size(SIZE) // サイズ
 {
 }
 /*
@@ -28,7 +30,7 @@ SpeedUpUI::SpeedUpUI()
 *	@param なし
 *	@return なし
 */
-SpeedUpUI::~SpeedUpUI()
+SpeedUpButton::~SpeedUpButton()
 {
 	// 共通リソースへのポインタをnullptrに設定
 	m_pCommonResources = nullptr;
@@ -41,7 +43,7 @@ SpeedUpUI::~SpeedUpUI()
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void SpeedUpUI::Initialize(CommonResources* resources, int width, int height)
+void SpeedUpButton::Initialize(CommonResources* resources, int width, int height)
 {
 	// 共通リソースへのポインタを設定
 	m_pCommonResources = resources;
@@ -55,8 +57,8 @@ void SpeedUpUI::Initialize(CommonResources* resources, int width, int height)
 	// ボタンの初期化
 	m_pButton->Initialize(resources, width, height);
 	// ボタンの矩形を設定
-	m_buttonRect.position = POSITION;
-	m_buttonRect.size = SIZE;
+	m_buttonRect.position = m_position;
+	m_buttonRect.size = m_size;
 }
 /*
 *	@brief 更新
@@ -64,7 +66,7 @@ void SpeedUpUI::Initialize(CommonResources* resources, int width, int height)
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void SpeedUpUI::Update(float elapsedTime)
+void SpeedUpButton::Update(float elapsedTime)
 {
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(elapsedTime);
@@ -85,8 +87,8 @@ void SpeedUpUI::Update(float elapsedTime)
 *	@param なし
 *	@return なし
 */
-void SpeedUpUI::Render()
+void SpeedUpButton::Render()
 {
 	// ボタンの描画
-	m_pButton->DrawQuad(POSITION.x, POSITION.y, SIZE.x, SIZE.y, m_isPressed, m_frameCols, m_frameRows);
+	m_pButton->Render(m_buttonRect, m_isPressed, m_frameCols, m_frameRows);
 }

@@ -1,6 +1,6 @@
 /*
 	@file	PlayScene.h
-	@brief	一般的なシーンクラス
+	@brief	プレイシーンクラス
 */
 #pragma once
 // 標準ライブラリ
@@ -30,7 +30,7 @@
 #include "Game/Scenes/PlayScene/ResultAnimation/ResultAnimation.h"
 #include "KumachiLib/Easing/Easing.h"
 #include "Game/Scenes/PlayScene/ResultUI/ResultUI.h"
-#include "Game/MainScreen/SpeedUpUI/SpeedUpUI.h"
+#include "Game/MainScreen/SpeedUpButton/SpeedUpButton.h"
 
 // 前方宣言
 class CommonResources;
@@ -49,6 +49,14 @@ namespace mylib
 class PlayScene : public IScene
 {
 public:
+	// アクセサ
+	// シーンIDを取得する
+	SceneID GetNextSceneID() const override;
+	// ステージ番号を取得する
+	int GetStageNumber() const override { return m_stageNumber; }
+	// ステージ番号を設定する
+	void SetStageNumber(int stageNumber) override { m_stageNumber = stageNumber; }
+public:
 	// public関数
 	// コンストラクタ
 	PlayScene(IScene::SceneID sceneID);
@@ -62,12 +70,7 @@ public:
 	void Render()override;
 	// 終了
 	void Finalize()override;
-	// シーンIDを取得する
-	SceneID GetNextSceneID() const override;
-	// ステージ番号を取得する
-	int GetStageNumber() const override { return m_stageNumber; }
-	// ステージ番号を設定する
-	void SetStageNumber(int stageNumber) override { m_stageNumber = stageNumber; }
+
 private:
 	// カメラに関する設定をする
 	void CreateCamera();
@@ -105,7 +108,7 @@ private:
 	// 結果UI
 	std::unique_ptr<ResultUI> m_pResultUI;
 	// スピードアップボタン
-	std::unique_ptr<SpeedUpUI> m_pSpeedUpUI;
+	std::unique_ptr<SpeedUpButton> m_pSpeedUpButton;
 
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;

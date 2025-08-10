@@ -19,7 +19,7 @@ PlaneArea::PlaneArea(CommonResources* resources)
 	, m_pInputLayout(nullptr) // 入力レイアウトへのポインタ
 	, m_view(DirectX::SimpleMath::Matrix::Identity) // ビュー行列
 	, m_projection(DirectX::SimpleMath::Matrix::Identity) // 射影行列
-	, m_hitPlaneIndex(-1) // 当たった平面の番号
+	, m_hitPlaneIndex(PlaneArea::NO_HIT_PLANE_INDEX) // 当たった平面の番号
 	, m_isHitPlane(false) // 何らかの平面と当たっているか
 {
 

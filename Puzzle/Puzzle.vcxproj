@@ -195,6 +195,7 @@
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
     <ClInclude Include="Game\Interface\IGameUI.h" />
+    <ClInclude Include="Game\Interface\IImage.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
     <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
@@ -205,7 +206,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
-    <ClInclude Include="Game\MainScreen\SpeedUpUI\SpeedUpUI.h" />
+    <ClInclude Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.h" />
     <ClInclude Include="Game\MainScreen\Tiles\BlockTile\BlockTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
@@ -237,6 +238,9 @@
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleScene.h" />
+    <ClInclude Include="KumachiLib\AnimationStep\AnimationStep.h" />
     <ClInclude Include="KumachiLib\Button\Button.h" />
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.h" />
@@ -252,8 +256,10 @@
     <ClInclude Include="KumachiLib\DrawCollision\DrawCollision.h" />
     <ClInclude Include="KumachiLib\DrawPolygon\DrawPolygon.h" />
     <ClInclude Include="KumachiLib\Easing\Easing.h" />
+    <ClInclude Include="KumachiLib\Image\Image.h" />
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
+    <ClInclude Include="KumachiLib\Rect\Rect.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
@@ -289,7 +295,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
-    <ClCompile Include="Game\MainScreen\SpeedUpUI\SpeedUpUI.cpp" />
+    <ClCompile Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\BlockTile\BlockTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
@@ -315,6 +321,8 @@
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.cpp" />
@@ -326,6 +334,7 @@
     <ClCompile Include="KumachiLib\CreateShader\CreateShader.cpp" />
     <ClCompile Include="KumachiLib\DrawCollision\DrawCollision.cpp" />
     <ClCompile Include="KumachiLib\DrawPolygon\DrawPolygon.cpp" />
+    <ClCompile Include="KumachiLib\Image\Image.cpp" />
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
