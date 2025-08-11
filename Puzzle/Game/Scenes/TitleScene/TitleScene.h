@@ -19,6 +19,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/Scenes/TitleScene/TitleLogo/TitleLogo.h"
+#include "Game/Scenes/TitleScene/TitleButton/TitleButton.h"
 
 // 前方宣言
 class CommonResources;
@@ -64,6 +65,9 @@ private:
 	std::unique_ptr<FixedCamera> m_pFixedCamera;
 	// ロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
+	// ボタン
+	std::unique_ptr<TitleButton> m_pTitleButton;
+
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列

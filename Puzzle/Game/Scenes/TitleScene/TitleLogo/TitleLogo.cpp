@@ -6,7 +6,7 @@
 #include "TitleLogo.h"
 
 // 座標を定義
-const DirectX::SimpleMath::Vector2 TitleLogo::POSITION(0.125f, 0.125f);
+const DirectX::SimpleMath::Vector2 TitleLogo::POSITION(0.125f, 0.15f);
 // サイズを定義
 const DirectX::SimpleMath::Vector2 TitleLogo::SIZE(0.55f / 2.5, 0.35f / 2.5);
 /*
@@ -51,6 +51,8 @@ void TitleLogo::Initialize(CommonResources* resources, int width, int height)
 {
 	// 共通リソースをセット
 	m_pCommonResources = resources;
+	// アニメーションクラスを作成
+	m_pAnimation = std::make_unique<Animation>();
 	// 画像を作成
 	m_pImage = std::make_unique<Image>();
 	// シェーダーパスを渡す
@@ -76,24 +78,8 @@ void TitleLogo::Update(float elapsedTime)
 {
 	// 名前空間の使用
 	using namespace DirectX::SimpleMath;
-	// アニメーションシーケンスが未作成ならば終了
-	if (m_currentStep >= m_animSequence.size()) return;
-	// アニメーション時間を更新
-	m_animStepTime += elapsedTime;
-	// アニメーションステップの更新
-	float duration = m_animSequence[m_currentStep].duration;
-	// 進行度を計算
-	float t = duration > 0.0f ? std::min(m_animStepTime / duration, 1.0f) : 0.0f;
-	// アニメーションを実行
-	m_animSequence[m_currentStep].updateFunc(t);
-	// アニメーションが終了したら
-	if (duration > 0.0f && m_animStepTime >= duration)
-	{
-		// 次のステップへ進む
-		m_currentStep++;
-		// アニメーションステップ時間をリセット
-		m_animStepTime = 0.0f;
-	}
+	// アニメーションを更新
+	m_pAnimation->Update(elapsedTime);
 }
 /*
 *	@brief 画像を表示
@@ -116,56 +102,44 @@ void TitleLogo::CreateAnimationSequence()
 {
 	// 名前空間の使用
 	using namespace DirectX::SimpleMath;
-	// アニメーションシーケンスの初期化
-	m_animSequence =
-	{
-		// フェーズ0: 拡大
-		{
+
+	// フェーズ0: 拡大
+	m_pAnimation->CreateAnimationSequence({
 			0.5f,// 拡大にかける秒数
-			[this](float t)
-			{
+			[this](float t) {
 			// 進行度を計算
 			float easing = Easing::EaseOutBack(t);
 			// 中央固定、サイズだけイージング補間
 			m_logoRect.position = Vector2(0.5f, 0.5f);
 			// サイズをイージング補間
 			m_logoRect.size = Vector2::Lerp(Vector2(0.0f, 0.0f), Vector2(0.55f, 0.35f), easing);
-			}
-		},
-		// フェーズ1: 待機
-		{
+	} });
+	// フェーズ1: 待機
+	m_pAnimation->CreateAnimationSequence({
 			2.0f,// 待機時間
-			[this](float t)
-			{
+			[this](float) {
 			// 0で動かした場所とサイズで固定
 			m_logoRect.position = Vector2(0.5f, 0.5f);
 			m_logoRect.size = Vector2(0.55f, 0.35f);
-			}
-		},
-		// フェーズ2: 移動縮小
-		{
+	} });
+	// フェーズ2: 移動縮小
+	m_pAnimation->CreateAnimationSequence({
 			0.5f, // 移動・縮小にかける秒数
-			[this](float t)
-			{
+			[this](float t) {
 			// 進行度を計算
 			float easing = Easing::EaseInOutCubic(t);
 			// 左上に移動しつつ縮小
 			m_logoRect.position = Vector2::Lerp(Vector2(0.5f, 0.5f), POSITION, easing);
 			// サイズをイージング補間
 			m_logoRect.size = Vector2::Lerp(Vector2(0.55f, 0.35f), SIZE, easing);
-			}
-		}
-	};
+	} });
 	// 最終静止フェーズ用の番兵
-	m_animSequence.push_back({ 0.0f, // 無限
-		[this](float)
-		{
+	m_pAnimation->CreateAnimationSequence({
+			0.0f, // 無限
+			[this](float) {
 			// 最終静止位置とサイズに設定
 			m_logoRect.position = POSITION;
 			m_logoRect.size = SIZE;
-		} });
-	// アニメーションの初期化
-	m_currentStep = 0;
-	// アニメーション時間をリセット
-	m_animStepTime = 0.0f;
+	} });
+
 }

@@ -10,7 +10,8 @@
 #include "Game/Screen/Screen.h"
 #include "KumachiLib/Rect/Rect.h"
 #include "KumachiLib/Easing/Easing.h"
-#include "KumachiLib/AnimationStep/AnimationStep.h"
+//#include "KumachiLib/AnimationStep/AnimationStep.h"
+#include "KumachiLib/Animaiton/Animation.h"
 
 // 前方宣言
 class CommonResources;
@@ -56,6 +57,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// 画像
 	std::unique_ptr<Image> m_pImage;
+	// アニメーション
+	std::unique_ptr<Animation> m_pAnimation;
 	// ロゴの位置
 	DirectX::SimpleMath::Vector2 m_position;
 	// ロゴのサイズ

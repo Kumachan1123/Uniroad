@@ -238,8 +238,10 @@
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleButton\TitleButton.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleScene.h" />
+    <ClInclude Include="KumachiLib\Animaiton\Animation.h" />
     <ClInclude Include="KumachiLib\AnimationStep\AnimationStep.h" />
     <ClInclude Include="KumachiLib\Button\Button.h" />
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
@@ -321,8 +323,10 @@
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
+    <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.cpp" />

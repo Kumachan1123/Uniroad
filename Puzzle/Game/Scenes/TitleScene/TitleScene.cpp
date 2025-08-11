@@ -48,6 +48,10 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pTitleLogo = std::make_unique<TitleLogo>();
 	// ロゴを初期化する
 	m_pTitleLogo->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// ボタンを作成する
+	m_pTitleButton = std::make_unique<TitleButton>();
+	// ボタンを初期化する
+	m_pTitleButton->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// カメラを作成する
 	CreateCamera();
 }
@@ -67,6 +71,23 @@ void TitleScene::Update(float elapsedTime)
 	m_view = m_pFixedCamera->GetViewMatrix();
 	// ロゴを更新
 	m_pTitleLogo->Update(elapsedTime);
+	// ボタンを更新
+	m_pTitleButton->Update(elapsedTime);
+	if (m_pTitleButton->GetHitButtonIndex() == 0 && m_pTitleButton->IsPressed())
+	{
+		// ゲーム開始ボタンが押された場合
+		m_isChangeScene = true; // シーン変更フラグを立てる
+	}
+	else if (m_pTitleButton->GetHitButtonIndex() == 1 && m_pTitleButton->IsPressed())
+	{
+		// 設定メニューボタンが押された場合
+		m_isChangeScene = false; // シーン変更フラグを下げる
+	}
+	else if (m_pTitleButton->GetHitButtonIndex() == 2 && m_pTitleButton->IsPressed())
+	{
+		// ゲーム終了ボタンが押された場合
+		m_isChangeScene = false; // シーン変更フラグを下げる
+	}
 }
 /*
 *	@brief 描画処理
@@ -78,6 +99,8 @@ void TitleScene::Render()
 {
 	// ロゴを描画する
 	m_pTitleLogo->Render();
+	// ボタンを描画する
+	m_pTitleButton->Render();
 }
 /*
 *	@brief シーンIDを取得する
