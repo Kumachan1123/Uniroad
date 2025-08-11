@@ -39,6 +39,8 @@ TitleButton::TitleButton()
 	, m_size(DirectX::SimpleMath::Vector2(0.2f, 0.1f)) // ボタンのサイズ
 	, m_frameRows(1) // 画像の行数
 	, m_frameCols(1) // 画像の列数
+	, m_pressedButtonIndex(-1) // 押されたボタンの番号
+	, m_hitButtonIndex(-1) // 当たったボタンの番号
 {
 
 }
@@ -83,11 +85,13 @@ void TitleButton::Initialize(CommonResources* resources, int width, int height)
 		// シェーダーパスを渡す
 		button->SetVertexShaderFilePath("Resources/Shaders/Counter/VS_Counter.cso");
 		button->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
+		// シェーダーバッファサイズを設定
+		button->SetShaderBufferSize(sizeof(SpriteSheetBuffer));
 		// ボタンの初期化
 		button->Initialize(resources, width, height);
 	}
 	// ボタンの矩形を設定
-	for (size_t i = 0; i < m_buttons.size(); ++i)
+	for (size_t i = 0; i < m_buttons.size(); i++)
 	{
 		// ボタンの位置とサイズを設定
 		Rect buttonRect;
@@ -97,6 +101,8 @@ void TitleButton::Initialize(CommonResources* resources, int width, int height)
 		m_buttonRects.push_back(buttonRect);
 		// 当たり判定フラグを初期化
 		m_isHit.push_back(false);
+		// ホバー時の拡大率を初期化
+		m_hoverScales.push_back(1.0f);
 	}
 	// アニメーションシーケンスを作成
 	CreateAnimationSequence();
@@ -115,19 +121,46 @@ void TitleButton::Update(float elapsedTime)
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// マウスの座標を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
+	// ホバー時の拡大率を定義
+	const float SCALE_ON = 1.125f;
+	// ホバーしていないときの拡大率を定義
+	const float SCALE_OFF = 1.0f;
+	// 補間係数
+	const float SCALE_SPEED = 8.0f;
+	// 当たったボタンの番号を初期化
+	m_hitButtonIndex = -1;
 	// ボタンの数ループ
-	for (size_t i = 0; i < m_buttons.size(); ++i)
+	for (int i = 0; i < m_buttons.size(); i++)
 	{
 		// 当たり判定を行う
 		m_isHit[i] = m_buttons[i]->Hit(mousePos, m_buttonRects[i]);
-		// マウスが当たって左クリックされたら押された状態をトグル
-		if (m_isHit[i] && MouseClick::IsLeftMouseButtonPressed(mouseState))m_isPressed = !m_isPressed;
-
+		// スケールのターゲット値
+		float target = m_isHit[i] ? SCALE_ON : SCALE_OFF;
+		// スムーズに補間
+		m_hoverScales[i] += (target - m_hoverScales[i]) * (1.0f - expf(-SCALE_SPEED * elapsedTime));
 	}
+	// マウスが当たったボタンの番号を設定
+	for (int i = 0; i < m_buttons.size(); i++)
+		if (m_isHit[i])m_hitButtonIndex = i;
+	// マウスが当たって左クリックされたら
+	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pAnimation->IsPaused())
+	{
+		// クリックで再開
+		m_pAnimation->Resume();
+		// アニメーションシーケンスを進める
+		m_pAnimation->AdvanceSequence();
+		// 押されたボタンの番号を設定
+		m_pressedButtonIndex = m_hitButtonIndex;
+		m_isPressed = true;
+	}
+	// アニメーションフェーズが3（移動中）で、アニメーションが一時停止していない場合は一時停止する
+	if (m_pAnimation->GetAnimationPhase() == 2 && !m_pAnimation->IsPaused()) m_pAnimation->Pause();
 	// アニメーションを更新
 	m_pAnimation->Update(elapsedTime);
 	// ボタンを更新
 	for (const auto& button : m_buttons)button->Update(elapsedTime);
+	// 定数バッファを更新
+	UpdateConstantBuffer();
 }
 /*
 *	@brief 描画
@@ -138,9 +171,24 @@ void TitleButton::Update(float elapsedTime)
 void TitleButton::Render()
 {
 	// ボタンを描画
-	for (size_t i = 0; i < m_buttons.size(); ++i)
-		m_buttons[i]->Render(m_buttonRects[i], 0, m_frameCols, m_frameRows);
-
+	for (size_t i = 0; i < m_buttons.size(); i++)
+	{
+		// 矩形の定義
+		Rect rect = m_buttonRects[i];
+		// スケール反映
+		rect.size = SIZES[i] * m_hoverScales[i];
+		// 描画
+		m_buttons[i]->DrawQuadWithBuffer(rect, m_spriteSheetBuffer);
+	}
+#ifdef _DEBUG
+	// デバッグ文字を描画
+	const auto& debugString = m_pCommonResources->GetDebugString();
+	debugString->AddString("AnimationPhase:%i", m_pAnimation->GetAnimationPhase());
+	debugString->AddString("AllAnimationSequenceCount:%i", m_pAnimation->GetAnimationSequenceCount());
+	debugString->AddString("AnimationPaused:%s", m_pAnimation->IsPaused() ? "true" : "false");
+	debugString->AddString("PressedButtonIndex:%i", m_pressedButtonIndex);
+	debugString->AddString("HitButtonIndex:%i", m_hitButtonIndex);
+#endif
 }
 /*
 *	@brief アニメーションシーケンスを作成
@@ -159,19 +207,19 @@ void TitleButton::CreateAnimationSequence()
 			2.5f,// 待機時間
 			[this](float) {
 			// 0で動かした場所とサイズで固定
-			for (size_t i = 0; i < m_buttonRects.size(); ++i)
+			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
 				m_buttonRects[i].position = Vector2(2.5f + i * 0.5f, POSITIONS[i].y);
 			}
 	} });
-	// フェーズ2: 移動縮小
-	const float DURATION = 0.5f; // 各ボタンの移動にかける時間
+	// フェーズ2: 移動 
+	const float DURATION = 1.0f; // 各ボタンの移動にかける時間
 	m_pAnimation->CreateAnimationSequence({
 		DELAYS.back() + DURATION, // 全体の演出時間
 		[this, DELAYS, DURATION](float globalT) {
 			// globalTは0～1でシーケンス全体に対応する進行度
 			float totalTime = globalT * (DELAYS.back() + DURATION); // 実際の経過秒数
-			for (size_t i = 0; i < m_buttonRects.size(); ++i)
+			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / DURATION;
@@ -182,13 +230,13 @@ void TitleButton::CreateAnimationSequence()
 			}
 		}
 		});
-	// 最終静止フェーズ用の番兵
+	// フェーズ3: 固定 
 	m_pAnimation->CreateAnimationSequence({
 			0.0f, // 無限
 			[this](float) {
 			// 最終静止位置とサイズに設定
 			// ボタンの数ループ
-			for (size_t i = 0; i < m_buttonRects.size(); ++i)
+			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
 				// 最終的な位置に設定
 				m_buttonRects[i].position = POSITIONS[i];
@@ -196,17 +244,56 @@ void TitleButton::CreateAnimationSequence()
 				m_buttonRects[i].size = SIZES[i];
 			}
 	} });
+	// フェーズ4: 移動（元の場所へ）
+	m_pAnimation->CreateAnimationSequence({
+		DELAYS.back() + DURATION, // 全体の演出時間
+		[this, DELAYS, DURATION](float globalT) {
+			// globalTは0～1でシーケンス全体に対応する進行度
+			float totalTime = globalT * (DELAYS.back() + DURATION);
+			for (size_t i = 0; i < m_buttonRects.size(); i++)
+			{
+				// 各ボタンの進行度
+				float t = (totalTime - DELAYS[i]) / DURATION;
+				t = Clamp(t, 0.0f, 1.0f);
+				float easing = Easing::EaseInOutCubic(t);
+				// 補間
+				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(1.5f + i  , POSITIONS[i].y), easing);
+			}
+		}
+		});
+	// フェーズ5: 待機
+	m_pAnimation->CreateAnimationSequence({
+			0.0f, // 無限
+			[this](float) {
+			// 0で動かした場所とサイズで固定
+			for (size_t i = 0; i < m_buttonRects.size(); i++)
+			{
+				m_buttonRects[i].position = Vector2(1.5f + i, POSITIONS[i].y);
+				m_buttonRects[i].size = SIZES[i];
+			}
+	} });
 }
 /*
-*	@brief ヒットしたボタンのインデックスを取得
-*	@details タイトルシーンのボタンを管理するクラスで、ヒットしたボタンのインデックスを取得する
+*	@brief 定数バッファを更新
+*	@details タイトルシーンのボタンの定数バッファを更新する
 *	@param なし
-*	@return ヒットしたボタンのインデックス。ヒットしていない場合は-1を返す
+*	@return なし
 */
-int TitleButton::GetHitButtonIndex() const
+void TitleButton::UpdateConstantBuffer()
 {
-	// ヒットしたボタンのインデックスを返す
-	for (size_t i = 0; i < m_isHit.size(); ++i)if (m_isHit[i])return static_cast<int>(i);
-	// ヒットしたボタンがない場合は-1を返す
-	return -1;
+	// 名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// 定数バッファを更新
+	// ワールド行列を単位行列に設定
+	m_spriteSheetBuffer.matWorld = Matrix::Identity;
+	// ビュー行列を単位行列に設定
+	m_spriteSheetBuffer.matView = Matrix::Identity;
+	// プロジェクション行列を単位行列に設定
+	m_spriteSheetBuffer.matProj = Matrix::Identity;
+	// アニメーションのコマを設定
+	m_spriteSheetBuffer.count = Vector4(0.0f);
+	// 高さを設定
+	m_spriteSheetBuffer.height = Vector4((float)(m_frameRows));
+	// 幅を設定
+	m_spriteSheetBuffer.width = Vector4((float)(m_frameCols));
 }

@@ -18,7 +18,6 @@ public:
 		TITLE,
 		STAGESELECT,
 		PLAY,
-
 	};
 
 

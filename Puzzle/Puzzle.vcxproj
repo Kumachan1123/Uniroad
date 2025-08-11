@@ -193,6 +193,7 @@
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
+    <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
     <ClInclude Include="Game\Interface\IGameUI.h" />
     <ClInclude Include="Game\Interface\IImage.h" />
@@ -262,6 +263,7 @@
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
     <ClInclude Include="KumachiLib\Rect\Rect.h" />
+    <ClInclude Include="KumachiLib\ShaderBuffer\ShaderBuffer.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
@@ -289,6 +291,7 @@
     <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
+    <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
     <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
     <ClCompile Include="Game\MainScreen\Items\ItemFactory\ItemFactory.cpp" />
@@ -404,6 +407,22 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\CRT\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\CRT\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\Fade\PS_Fade.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Fade\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Fade\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\Fade\VS_Fade.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Fade\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Fade\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>

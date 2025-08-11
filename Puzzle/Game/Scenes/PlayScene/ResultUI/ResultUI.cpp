@@ -99,7 +99,7 @@ void ResultUI::Update(const float elapsedTime)
 		m_targetPositions.resize(btnCount);
 		m_easeTimers.resize(btnCount, 1.0f);
 		// ボタンの数だけループ
-		for (size_t i = 0; i < btnCount; ++i)
+		for (size_t i = 0; i < btnCount; i++)
 		{
 			// ボタンの座標を初期化
 			m_prevPositions[i] = m_pButtons[i]->GetPosition();
@@ -124,7 +124,7 @@ void ResultUI::Update(const float elapsedTime)
 	}
 
 	// ボタンの数だけループ
-	for (size_t i = 0; i < btnCount; ++i)
+	for (size_t i = 0; i < btnCount; i++)
 	{
 		// ウィンドウサイズを設定
 		m_pButtons[i]->SetWindowSize(m_windowWidth, m_windowHeight);
@@ -334,7 +334,7 @@ void ResultUI::OnResize()
 	using namespace DirectX::SimpleMath;
 	size_t btnCount = m_pButtons.size();
 
-	for (size_t i = 0; i < btnCount; ++i)
+	for (size_t i = 0; i < btnCount; i++)
 	{
 		// ウィンドウサイズに応じて目標座標を再計算
 		Vector2 snapTarget;

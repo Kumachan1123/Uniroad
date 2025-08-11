@@ -4,6 +4,7 @@
 */
 #include "pch.h"
 #include "Animation.h"
+
 /*
 *	@brief コンストラクタ
 *	@details アニメーションクラスのコンストラクタ
@@ -11,10 +12,10 @@
 *	@return なし
 */
 Animation::Animation()
-	: m_animationPhase(0) // アニメーションフェーズ
-	, m_animationTime(0.0f) // アニメーション時間
+	: m_animationTime(0.0f) // アニメーション時間
 	, m_currentStep(0) // 現在のアニメーションステップ
 	, m_animStepTime(0.0f) // アニメーションステップ時間
+	, m_isPaused(false) // 一時停止フラグ
 {
 }
 /*
@@ -36,6 +37,8 @@ void Animation::CreateAnimationSequence(const AnimationStep& sequence)
 */
 void Animation::Update(float elapsedTime)
 {
+	// 一時停止中ならば何もしない
+	if (m_isPaused) return;
 	// アニメーションシーケンスが未作成ならば終了
 	if (m_currentStep >= m_animSequence.size()) return;
 	// アニメーション時間を更新
@@ -54,4 +57,18 @@ void Animation::Update(float elapsedTime)
 		// アニメーションステップ時間をリセット
 		m_animStepTime = 0.0f;
 	}
+}
+/*
+*	@brief アニメーションシーケンスを進める
+*	@details 外部からアニメーションシーケンスを進める
+*	@param なし
+*	@return なし
+*/
+void Animation::AdvanceSequence()
+{
+	if (m_currentStep + 1 >= m_animSequence.size())return;
+	// 次のステップへ進む
+	m_currentStep++;
+	// アニメーションステップ時間をリセット
+	m_animStepTime = 0.0f;
 }

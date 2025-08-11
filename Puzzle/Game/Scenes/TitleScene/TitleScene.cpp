@@ -52,6 +52,14 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pTitleButton = std::make_unique<TitleButton>();
 	// ボタンを初期化する
 	m_pTitleButton->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// フェードを作成する
+	m_pFade = std::make_unique<Fade>();
+	// フェードを初期化する
+	m_pFade->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// フェードインに移行
+	m_pFade->SetState(Fade::FadeState::FadeIn);
+
+
 	// カメラを作成する
 	CreateCamera();
 }
@@ -73,21 +81,36 @@ void TitleScene::Update(float elapsedTime)
 	m_pTitleLogo->Update(elapsedTime);
 	// ボタンを更新
 	m_pTitleButton->Update(elapsedTime);
-	if (m_pTitleButton->GetHitButtonIndex() == 0 && m_pTitleButton->IsPressed())
+	// フェードの更新
+	m_pFade->Update(elapsedTime);
+	// ゲーム開始ボタンが押された場合
+	if (m_pTitleButton->GetPressedButtonIndex() == 0 && m_pTitleButton->IsPressed())
 	{
-		// ゲーム開始ボタンが押された場合
-		m_isChangeScene = true; // シーン変更フラグを立てる
+		// フェードアウトに切り替える
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// 押されたかをリセット
+		m_pTitleButton->SetPressed(false);
 	}
-	else if (m_pTitleButton->GetHitButtonIndex() == 1 && m_pTitleButton->IsPressed())
+	// 設定メニューボタンが押された場合
+	else if (m_pTitleButton->GetPressedButtonIndex() == 1 && m_pTitleButton->IsPressed())
 	{
-		// 設定メニューボタンが押された場合
-		m_isChangeScene = false; // シーン変更フラグを下げる
+		// フェードアウトに切り替える
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// 押されたかをリセット
+		m_pTitleButton->SetPressed(false);
 	}
-	else if (m_pTitleButton->GetHitButtonIndex() == 2 && m_pTitleButton->IsPressed())
+	// ゲーム終了ボタンが押された場合
+	else if (m_pTitleButton->GetPressedButtonIndex() == 2 && m_pTitleButton->IsPressed())
 	{
-		// ゲーム終了ボタンが押された場合
-		m_isChangeScene = false; // シーン変更フラグを下げる
+		// フェードアウトに切り替える
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// 押されたかをリセット
+		m_pTitleButton->SetPressed(false);
+
 	}
+	// フェードアウトが完了していたら、シーン遷移フラグを立てる
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)
+		m_isChangeScene = true;
 }
 /*
 *	@brief 描画処理
@@ -101,6 +124,8 @@ void TitleScene::Render()
 	m_pTitleLogo->Render();
 	// ボタンを描画する
 	m_pTitleButton->Render();
+	// フェードを描画する
+	m_pFade->Render();
 }
 /*
 *	@brief シーンIDを取得する
@@ -120,14 +145,26 @@ void TitleScene::Finalize()
 */
 IScene::SceneID TitleScene::GetNextSceneID() const
 {
-	// シーン変更がある場合
-	if (m_isChangeScene)
+	// シーン変更がないならすぐ戻る
+	if (!m_isChangeScene)return IScene::SceneID::NONE;
+	switch (m_pTitleButton->GetPressedButtonIndex())
 	{
-		// ゲームオーバーシーンへ
+	case 0: // ゲーム開始ボタンが押された場合
+		// ステージセレクトへ
 		return IScene::SceneID::STAGESELECT;
+		break;
+	case 1: // 設定メニューボタンが押された場合
+		// 設定メニューへ
+		//return IScene::SceneID::SETTINGMENU;
+		break;
+	case 2: // ゲーム終了ボタンが押された場合
+		// アプリケーションを終了する
+		PostQuitMessage(0);
+		break;
 	}
-	// シーン変更がない場合何もしない
+	// ステージセレクトへ
 	return IScene::SceneID::NONE;
+
 }
 
 /*

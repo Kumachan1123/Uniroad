@@ -38,6 +38,8 @@ public:
 	void SetPixelShaderFilePath(std::string filePath) { m_pImage->SetPixelShaderFilePath(filePath); }
 	// テクスチャの設定
 	void SetTexture(ID3D11ShaderResourceView* pTexture) { m_pImage->SetTexture(pTexture); }
+	// シェーダーバッファサイズを設定
+	void SetShaderBufferSize(int size) { m_pImage->SetShaderBufferSize(size); }
 public:
 	// public関数
 	// コンストラクタ
@@ -49,7 +51,8 @@ public:
 	// 更新
 	void Update(const float elapsedTime);
 	// 画像を表示
-	void Render(const  Rect& buttonRect, int frameIndex, int frameCols, int frameRows);
+	template<typename T>
+	void DrawQuadWithBuffer(const Rect& rect, const T& buffer);
 	// 当たり判定
 	bool Hit(const DirectX::SimpleMath::Vector2& mousePosition, const Rect& buttonRect);
 
@@ -64,3 +67,17 @@ private:
 	// 画像クラス
 	std::unique_ptr<Image> m_pImage;
 };
+
+/*
+*	@brief 描画
+*	@details ボタンの描画を行う
+*	@param rect ボタンの矩形
+*	@param buffer 描画に使用するバッファ
+*	@return なし
+*/
+template<typename T>
+inline void Button::DrawQuadWithBuffer(const Rect& rect, const T& buffer)
+{
+	// 画像を描画
+	m_pImage->DrawQuadWithBuffer(rect, buffer);
+}

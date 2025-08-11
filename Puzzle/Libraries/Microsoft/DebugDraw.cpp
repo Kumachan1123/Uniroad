@@ -47,7 +47,7 @@ namespace
         };
 
         VertexPositionColor verts[8];
-        for (size_t i = 0; i < 8; ++i)
+        for (size_t i = 0; i < 8; i++)
         {
             const XMVECTOR v = XMVector3Transform(s_verts[i], matWorld);
             XMStoreFloat3(&verts[i].position, v);
@@ -153,7 +153,7 @@ void XM_CALLCONV DX::DrawGrid(PrimitiveBatch<VertexPositionColor>* batch,
     xdivs = std::max<size_t>(1, xdivs);
     ydivs = std::max<size_t>(1, ydivs);
 
-    for (size_t i = 0; i <= xdivs; ++i)
+    for (size_t i = 0; i <= xdivs; i++)
     {
         float percent = float(i) / float(xdivs);
         percent = (percent * 2.f) - 1.f;

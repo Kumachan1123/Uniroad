@@ -5,6 +5,8 @@
 #pragma once
 // 標準ライブラリ
 #include <vector>
+// 外部ライブラリ
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/Button/Button.h"
@@ -22,9 +24,9 @@ class TitleButton : public IButton
 {
 public:
 	// アクセサ
-	// スピードアップボタンが押されたかどうかを取得
+	// ボタンが押されたかどうかを取得
 	bool IsPressed() const override { return m_isPressed; }
-	// スピードアップボタンが押されたかどうかを設定
+	// ボタンが押されたかどうかを設定
 	void SetPressed(bool isPressed) override { m_isPressed = isPressed; }
 	// 座標を取得
 	const DirectX::SimpleMath::Vector2& GetPosition() const override { return m_position; }
@@ -35,7 +37,9 @@ public:
 	// サイズを設定
 	void SetSize(const DirectX::SimpleMath::Vector2& size) override { m_size = size; }
 	// ヒットしたボタンのインデックスを取得
-	int GetHitButtonIndex() const;
+	int GetHitButtonIndex()const { return (int)(m_hitButtonIndex); }
+	// 押されたボタンの番号を取得
+	int GetPressedButtonIndex() const { return m_pressedButtonIndex; }
 
 public:
 	// public関数
@@ -53,6 +57,8 @@ private:
 	// private関数
 	// アニメーションシーケンスを作成
 	void CreateAnimationSequence();
+	// 定数バッファを更新
+	void UpdateConstantBuffer()override;
 private:
 	// private定数
 	// 表示位置（左上）
@@ -75,6 +81,8 @@ private:
 	std::unique_ptr<Animation> m_pAnimation;
 	// ボタンの矩形
 	std::vector<Rect> m_buttonRects;
+	// 定数バッファ
+	SpriteSheetBuffer m_spriteSheetBuffer;
 	// 座標
 	DirectX::SimpleMath::Vector2 m_position;
 	// サイズ
@@ -85,7 +93,12 @@ private:
 	int m_frameCols;
 	// 当たり判定
 	std::vector<bool> m_isHit;
+	// 当たったボタンの番号
+	int m_hitButtonIndex;
+	// 押されたボタンの番号
+	int m_pressedButtonIndex;
 	// ボタンが押されたフラグ
 	bool m_isPressed;
-
+	// 各ボタンのホバー時の拡大率
+	std::vector<float> m_hoverScales;
 };

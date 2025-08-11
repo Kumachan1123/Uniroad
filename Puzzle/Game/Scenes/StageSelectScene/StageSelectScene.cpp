@@ -56,7 +56,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 平面を作成する
 	m_pPlaneArea = std::make_unique<PlaneArea>(m_pCommonResources);
 	// 頂点設定
-	for (int i = 0; i < FileCounter::CountFilesInFolder("Resources/Map/", ".csv"); ++i)
+	for (int i = 0; i < FileCounter::CountFilesInFolder("Resources/Map/", ".csv"); i++)
 	{
 		// 中心座標を計算
 		Vector3 center(4.0f * (float)i, 0.5f, 2.0f);

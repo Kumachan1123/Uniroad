@@ -27,12 +27,25 @@
 #include "Game/Interface/IButton.h"
 #include "KumachiLib/Button/Button.h"
 
+
 // 前方宣言
 class CommonResources;
 
 // スピードアップボタンクラス
 class SpeedUpButton : public IButton
 {
+private:
+	//// private構造体
+	//// シェーダーに渡す定数バッファ
+	//struct ConstBuffer
+	//{
+	//	DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
+	//	DirectX::SimpleMath::Matrix matView;    // ビュー行列
+	//	DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
+	//	DirectX::SimpleMath::Vector4 count;     // カウント
+	//	DirectX::SimpleMath::Vector4 height;    // 高さ
+	//	DirectX::SimpleMath::Vector4 width;     // 幅
+	//};
 public:
 	// アクセサ
 	// スピードアップボタンが押されたかどうかを取得
@@ -60,6 +73,10 @@ public:
 	// 描画する
 	void Render()override;
 private:
+	// private関数
+	// 定数バッファを更新
+	void UpdateConstantBuffer()override;
+private:
 	// private定数
 	// 表示位置（左上）
 	static const DirectX::SimpleMath::Vector2 POSITION;
@@ -73,6 +90,8 @@ private:
 	std::unique_ptr<Button> m_pButton;
 	// ボタンの矩形
 	Rect m_buttonRect;
+	// 定数バッファ
+	SpriteSheetBuffer m_spriteSheetBuffer;
 	// 座標
 	DirectX::SimpleMath::Vector2 m_position;
 	// サイズ

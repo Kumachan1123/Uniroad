@@ -4406,7 +4406,7 @@ namespace detail
 				{
 				case value_t::array:
 				{
-					for (std::size_t i = 0; i < current->m_parent->m_data.m_value.array->size(); ++i)
+					for (std::size_t i = 0; i < current->m_parent->m_data.m_value.array->size(); i++)
 					{
 						if (&current->m_parent->m_data.m_value.array->operator[](i) == current)
 						{
@@ -4812,7 +4812,7 @@ namespace detail
 	auto from_json(const BasicJsonType& j, T(&arr)[N])  // NOLINT(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
 		-> decltype(j.template get<T>(), void())
 	{
-		for (std::size_t i = 0; i < N; ++i)
+		for (std::size_t i = 0; i < N; i++)
 		{
 			arr[i] = j.at(i).template get<T>();
 		}
@@ -4829,7 +4829,7 @@ namespace detail
 		priority_tag<2> /*unused*/)
 		-> decltype(j.template get<T>(), void())
 	{
-		for (std::size_t i = 0; i < N; ++i)
+		for (std::size_t i = 0; i < N; i++)
 		{
 			arr[i] = j.at(i).template get<T>();
 		}
@@ -7107,7 +7107,7 @@ namespace detail
 			if (!ref_stack.empty() && ref_stack.back() && ref_stack.back()->is_structured())
 			{
 				// remove discarded value
-				for (auto it = ref_stack.back()->begin(); it != ref_stack.back()->end(); ++it)
+				for (auto it = ref_stack.back()->begin(); it != ref_stack.back()->end(); i++t)
 				{
 					if (it->is_discarded())
 					{
@@ -8675,7 +8675,7 @@ namespace detail
 				token_type return_type)
 		{
 			JSON_ASSERT(char_traits<char_type>::to_char_type(current) == literal_text[0]);
-			for (std::size_t i = 1; i < length; ++i)
+			for (std::size_t i = 1; i < length; i++)
 			{
 				if (JSON_HEDLEY_UNLIKELY(char_traits<char_type>::to_char_type(get()) != literal_text[i]))
 				{
@@ -10254,7 +10254,7 @@ namespace detail
 
 			if (len != static_cast<std::size_t>(-1))
 			{
-				for (std::size_t i = 0; i < len; ++i)
+				for (std::size_t i = 0; i < len; i++)
 				{
 					if (JSON_HEDLEY_UNLIKELY(!parse_cbor_internal(true, tag_handler)))
 					{
@@ -10295,7 +10295,7 @@ namespace detail
 				string_t key;
 				if (len != static_cast<std::size_t>(-1))
 				{
-					for (std::size_t i = 0; i < len; ++i)
+					for (std::size_t i = 0; i < len; i++)
 					{
 						get();
 						if (JSON_HEDLEY_UNLIKELY(!get_cbor_string(key) || !sax->key(key)))
@@ -10920,7 +10920,7 @@ namespace detail
 				return false;
 			}
 
-			for (std::size_t i = 0; i < len; ++i)
+			for (std::size_t i = 0; i < len; i++)
 			{
 				if (JSON_HEDLEY_UNLIKELY(!parse_msgpack_internal()))
 				{
@@ -10943,7 +10943,7 @@ namespace detail
 			}
 
 			string_t key;
-			for (std::size_t i = 0; i < len; ++i)
+			for (std::size_t i = 0; i < len; i++)
 			{
 				get();
 				if (JSON_HEDLEY_UNLIKELY(!get_msgpack_string(key) || !sax->key(key)))
@@ -11103,7 +11103,7 @@ namespace detail
 				{
 					if (size_and_type.second != 'N')
 					{
-						for (std::size_t i = 0; i < size_and_type.first; ++i)
+						for (std::size_t i = 0; i < size_and_type.first; i++)
 						{
 							if (JSON_HEDLEY_UNLIKELY(!get_ubjson_size_value(dimlen, no_ndarray, size_and_type.second)))
 							{
@@ -11115,7 +11115,7 @@ namespace detail
 				}
 				else
 				{
-					for (std::size_t i = 0; i < size_and_type.first; ++i)
+					for (std::size_t i = 0; i < size_and_type.first; i++)
 					{
 						if (JSON_HEDLEY_UNLIKELY(!get_ubjson_size_value(dimlen, no_ndarray)))
 						{
@@ -11667,7 +11667,7 @@ namespace detail
 					return false;
 				}
 
-				for (std::size_t i = 0; i < size_and_type.first; ++i)
+				for (std::size_t i = 0; i < size_and_type.first; i++)
 				{
 					if (JSON_HEDLEY_UNLIKELY(!get_ubjson_value(size_and_type.second)))
 					{
@@ -11689,7 +11689,7 @@ namespace detail
 				{
 					if (size_and_type.second != 'N')
 					{
-						for (std::size_t i = 0; i < size_and_type.first; ++i)
+						for (std::size_t i = 0; i < size_and_type.first; i++)
 						{
 							if (JSON_HEDLEY_UNLIKELY(!get_ubjson_value(size_and_type.second)))
 							{
@@ -11700,7 +11700,7 @@ namespace detail
 				}
 				else
 				{
-					for (std::size_t i = 0; i < size_and_type.first; ++i)
+					for (std::size_t i = 0; i < size_and_type.first; i++)
 					{
 						if (JSON_HEDLEY_UNLIKELY(!parse_ubjson_internal()))
 						{
@@ -11758,7 +11758,7 @@ namespace detail
 
 				if (size_and_type.second != 0)
 				{
-					for (std::size_t i = 0; i < size_and_type.first; ++i)
+					for (std::size_t i = 0; i < size_and_type.first; i++)
 					{
 						if (JSON_HEDLEY_UNLIKELY(!get_ubjson_string(key) || !sax->key(key)))
 						{
@@ -11773,7 +11773,7 @@ namespace detail
 				}
 				else
 				{
-					for (std::size_t i = 0; i < size_and_type.first; ++i)
+					for (std::size_t i = 0; i < size_and_type.first; i++)
 					{
 						if (JSON_HEDLEY_UNLIKELY(!get_ubjson_string(key) || !sax->key(key)))
 						{
@@ -11828,7 +11828,7 @@ namespace detail
 
 			// get number string
 			std::vector<char> number_vector;
-			for (std::size_t i = 0; i < size; ++i)
+			for (std::size_t i = 0; i < size; i++)
 			{
 				get();
 				if (JSON_HEDLEY_UNLIKELY(!unexpect_eof(input_format, "number")))
@@ -11933,7 +11933,7 @@ namespace detail
 		{
 			// step 1: read input into array with system's byte order
 			std::array<std::uint8_t, sizeof(NumberType)> vec{};
-			for (std::size_t i = 0; i < sizeof(NumberType); ++i)
+			for (std::size_t i = 0; i < sizeof(NumberType); i++)
 			{
 				get();
 				if (JSON_HEDLEY_UNLIKELY(!unexpect_eof(format, "number")))
@@ -13239,7 +13239,7 @@ namespace detail
 		}
 
 		/*!
-		@brief pre-increment (++it)
+		@brief pre-increment (i++t)
 		@pre The iterator is initialized; i.e. `m_object != nullptr`.
 		*/
 		iter_impl& operator++()
@@ -13687,7 +13687,7 @@ namespace detail
 			return static_cast<json_reverse_iterator>(base_iterator::operator++(1));
 		}
 
-		/// pre-increment (++it)
+		/// pre-increment (i++t)
 		json_reverse_iterator& operator++()
 		{
 			return static_cast<json_reverse_iterator&>(base_iterator::operator++());
@@ -14553,7 +14553,7 @@ private:
 			else
 			{
 				// iterate array and use index as reference string
-				for (std::size_t i = 0; i < value.m_data.m_value.array->size(); ++i)
+				for (std::size_t i = 0; i < value.m_data.m_value.array->size(); i++)
 				{
 					flatten(detail::concat(reference_string, '/', std::to_string(i)),
 						value.m_data.m_value.array->operator[](i), result);
@@ -15907,7 +15907,7 @@ namespace detail
 				}
 				else
 				{
-					for (size_t i = 0; i < j.m_data.m_value.binary->size(); ++i)
+					for (size_t i = 0; i < j.m_data.m_value.binary->size(); i++)
 					{
 						oa->write_character(to_char_type('U'));
 						oa->write_character(j.m_data.m_value.binary->data()[i]);
@@ -16448,7 +16448,7 @@ namespace detail
 
 				const auto number = BasicJsonType(n).dump();
 				write_number_with_ubjson_prefix(number.size(), true, use_bjdata);
-				for (std::size_t i = 0; i < number.size(); ++i)
+				for (std::size_t i = 0; i < number.size(); i++)
 				{
 					oa->write_character(to_char_type(static_cast<std::uint8_t>(number[i])));
 				}
@@ -16529,7 +16529,7 @@ namespace detail
 
 				const auto number = BasicJsonType(n).dump();
 				write_number_with_ubjson_prefix(number.size(), true, use_bjdata);
-				for (std::size_t i = 0; i < number.size(); ++i)
+				for (std::size_t i = 0; i < number.size(); i++)
 				{
 					oa->write_character(to_char_type(static_cast<std::uint8_t>(number[i])));
 				}
@@ -18141,7 +18141,7 @@ namespace detail
 
 					// first n-1 elements
 					auto i = val.m_data.m_value.object->cbegin();
-					for (std::size_t cnt = 0; cnt < val.m_data.m_value.object->size() - 1; ++cnt, ++i)
+					for (std::size_t cnt = 0; cnt < val.m_data.m_value.object->size() - 1; ++cnt, i++)
 					{
 						o->write_characters(indent_string.c_str(), new_indent);
 						o->write_character('\"');
@@ -18170,7 +18170,7 @@ namespace detail
 
 					// first n-1 elements
 					auto i = val.m_data.m_value.object->cbegin();
-					for (std::size_t cnt = 0; cnt < val.m_data.m_value.object->size() - 1; ++cnt, ++i)
+					for (std::size_t cnt = 0; cnt < val.m_data.m_value.object->size() - 1; ++cnt, i++)
 					{
 						o->write_character('\"');
 						dump_escaped(i->first, ensure_ascii);
@@ -18214,7 +18214,7 @@ namespace detail
 
 					// first n-1 elements
 					for (auto i = val.m_data.m_value.array->cbegin();
-						i != val.m_data.m_value.array->cend() - 1; ++i)
+						i != val.m_data.m_value.array->cend() - 1; i++)
 					{
 						o->write_characters(indent_string.c_str(), new_indent);
 						dump(*i, true, ensure_ascii, indent_step, new_indent);
@@ -18236,7 +18236,7 @@ namespace detail
 
 					// first n-1 elements
 					for (auto i = val.m_data.m_value.array->cbegin();
-						i != val.m_data.m_value.array->cend() - 1; ++i)
+						i != val.m_data.m_value.array->cend() - 1; i++)
 					{
 						dump(*i, false, ensure_ascii, indent_step, current_indent);
 						o->write_character(',');
@@ -18280,7 +18280,7 @@ namespace detail
 					if (!val.m_data.m_value.binary->empty())
 					{
 						for (auto i = val.m_data.m_value.binary->cbegin();
-							i != val.m_data.m_value.binary->cend() - 1; ++i)
+							i != val.m_data.m_value.binary->cend() - 1; i++)
 						{
 							dump_integer(*i);
 							o->write_characters(", ", 2);
@@ -18311,7 +18311,7 @@ namespace detail
 					if (!val.m_data.m_value.binary->empty())
 					{
 						for (auto i = val.m_data.m_value.binary->cbegin();
-							i != val.m_data.m_value.binary->cend() - 1; ++i)
+							i != val.m_data.m_value.binary->cend() - 1; i++)
 						{
 							dump_integer(*i);
 							o->write_character(',');
@@ -18406,7 +18406,7 @@ namespace detail
 			std::size_t bytes_after_last_accept = 0;
 			std::size_t undumped_chars = 0;
 
-			for (std::size_t i = 0; i < s.size(); ++i)
+			for (std::size_t i = 0; i < s.size(); i++)
 			{
 				const auto byte = static_cast<std::uint8_t>(s[i]);
 
@@ -19057,7 +19057,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	std::pair<iterator, bool> emplace(const key_type& key, T&& t)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19072,7 +19072,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		detail::is_usable_as_key_type<key_compare, key_type, KeyType>::value, int> = 0>
 	std::pair<iterator, bool> emplace(KeyType&& key, T&& t)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19109,7 +19109,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	T& at(const key_type& key)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19124,7 +19124,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		detail::is_usable_as_key_type<key_compare, key_type, KeyType>::value, int> = 0>
 	T& at(KeyType&& key) // NOLINT(cppcoreguidelines-missing-std-forward)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19137,7 +19137,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	const T& at(const key_type& key) const
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19152,7 +19152,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		detail::is_usable_as_key_type<key_compare, key_type, KeyType>::value, int> = 0>
 	const T& at(KeyType&& key) const // NOLINT(cppcoreguidelines-missing-std-forward)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19165,12 +19165,12 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	size_type erase(const key_type& key)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
 				// Since we cannot move const Keys, re-construct them in place
-				for (auto next = it; ++next != this->end(); ++it)
+				for (auto next = it; ++next != this->end(); i++t)
 				{
 					it->~value_type(); // Destroy but keep allocation
 					new (&*it) value_type{ std::move(*next) };
@@ -19186,12 +19186,12 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		detail::is_usable_as_key_type<key_compare, key_type, KeyType>::value, int> = 0>
 	size_type erase(KeyType&& key) // NOLINT(cppcoreguidelines-missing-std-forward)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
 				// Since we cannot move const Keys, re-construct them in place
-				for (auto next = it; ++next != this->end(); ++it)
+				for (auto next = it; ++next != this->end(); i++t)
 				{
 					it->~value_type(); // Destroy but keep allocation
 					new (&*it) value_type{ std::move(*next) };
@@ -19238,7 +19238,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		//               ^        ^
 		//               it       it + elements_affected
 
-		for (auto it = first; std::next(it, elements_affected) != Container::end(); ++it)
+		for (auto it = first; std::next(it, elements_affected) != Container::end(); i++t)
 		{
 			it->~value_type(); // destroy but keep allocation
 			new (&*it) value_type{ std::move(*std::next(it, elements_affected)) }; // "move" next element to it
@@ -19263,7 +19263,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	size_type count(const key_type& key) const
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19277,7 +19277,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		detail::is_usable_as_key_type<key_compare, key_type, KeyType>::value, int> = 0>
 	size_type count(KeyType&& key) const // NOLINT(cppcoreguidelines-missing-std-forward)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19289,7 +19289,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	iterator find(const key_type& key)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19303,7 +19303,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 		detail::is_usable_as_key_type<key_compare, key_type, KeyType>::value, int> = 0>
 	iterator find(KeyType&& key) // NOLINT(cppcoreguidelines-missing-std-forward)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19315,7 +19315,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	const_iterator find(const key_type& key) const
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, key))
 			{
@@ -19332,7 +19332,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 
 	std::pair<iterator, bool> insert(const value_type& value)
 	{
-		for (auto it = this->begin(); it != this->end(); ++it)
+		for (auto it = this->begin(); it != this->end(); i++t)
 		{
 			if (m_compare(it->first, value.first))
 			{
@@ -19350,7 +19350,7 @@ struct ordered_map : std::vector<std::pair<const Key, T>, Allocator>
 	template<typename InputIt, typename = require_input_iter<InputIt>>
 	void insert(InputIt first, InputIt last)
 	{
-		for (auto it = first; it != last; ++it)
+		for (auto it = first; it != last; i++t)
 		{
 			insert(*it);
 		}
@@ -20042,7 +20042,7 @@ private:
 	iterator set_parents(iterator it, typename iterator::difference_type count_set_parents)
 	{
 #if JSON_DIAGNOSTICS
-		for (typename iterator::difference_type i = 0; i < count_set_parents; ++i)
+		for (typename iterator::difference_type i = 0; i < count_set_parents; i++)
 		{
 			(it + i)->m_parent = this;
 		}
@@ -22741,7 +22741,7 @@ public:
 			JSON_THROW(type_error::create(312, detail::concat("cannot use update() with ", first.m_object->type_name()), first.m_object));
 		}
 
-		for (auto it = first; it != last; ++it)
+		for (auto it = first; it != last; i++t)
 		{
 			if (merge_objects && it.value().is_object())
 			{
@@ -24312,7 +24312,7 @@ public:
 				// recursive call to compare array values at index i
 				auto temp_diff = diff(source[i], target[i], detail::concat(path, '/', std::to_string(i)));
 				result.insert(result.end(), temp_diff.begin(), temp_diff.end());
-				++i;
+				i++;
 			}
 
 			// We now reached the end of at least one array
@@ -24329,7 +24329,7 @@ public:
 						{"op", "remove"},
 						{"path", detail::concat(path, '/', std::to_string(i))}
 					}));
-				++i;
+				i++;
 			}
 
 			// add other remaining elements
@@ -24341,7 +24341,7 @@ public:
 						{"path", detail::concat(path, "/-")},
 						{"value", target[i]}
 					});
-				++i;
+				i++;
 			}
 
 			break;
@@ -24350,7 +24350,7 @@ public:
 		case value_t::object:
 		{
 			// first pass: traverse this object's elements
-			for (auto it = source.cbegin(); it != source.cend(); ++it)
+			for (auto it = source.cbegin(); it != source.cend(); i++t)
 			{
 				// escape the key name to be used in a JSON patch
 				const auto path_key = detail::concat(path, '/', detail::escape(it.key()));
@@ -24372,7 +24372,7 @@ public:
 			}
 
 			// second pass: traverse other object's elements
-			for (auto it = target.cbegin(); it != target.cend(); ++it)
+			for (auto it = target.cbegin(); it != target.cend(); i++t)
 			{
 				if (source.find(it.key()) == source.end())
 				{
@@ -24429,7 +24429,7 @@ public:
 			{
 				*this = object();
 			}
-			for (auto it = apply_patch.begin(); it != apply_patch.end(); ++it)
+			for (auto it = apply_patch.begin(); it != apply_patch.end(); i++t)
 			{
 				if (it.value().is_null())
 				{

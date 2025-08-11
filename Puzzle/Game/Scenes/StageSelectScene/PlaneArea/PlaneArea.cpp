@@ -103,7 +103,7 @@ void PlaneArea::Update(float elapsedTime)
 	// 当たった平面の番号を-1にする
 	SetHitPlaneIndex(-1);
 	// 平面の頂点配列をループして交差判定
-	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); ++i)
+	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)
 	{
 		// レイと平面の交差判定を行い、当たっていたらヒットフラグをtrueにする
 		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))m_isHitPlane = true;
@@ -119,7 +119,7 @@ void PlaneArea::Update(float elapsedTime)
 void PlaneArea::Render()
 {
 	// 平面を描画
-	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); ++i)
+	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)
 		DrawDebugLine(m_debugPlaneVerticesPosition[i], m_debugPlaneVerticesColor[i]);
 }
 /*

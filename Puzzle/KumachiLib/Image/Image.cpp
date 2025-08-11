@@ -80,7 +80,7 @@ void Image::CreateShaders()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, m_bufferSize);
 	// シェーダーの構造体に頂点シェーダーをセット
 	m_shaders.vs = m_pVertexShader.Get();
 	// シェーダーの構造体にピクセルシェーダーをセット
@@ -101,67 +101,3 @@ void Image::Update(const float elapsedTime)
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// 何もしない
 }
-/*
-*	@brief 画像を表示
-*	@details 画像を表示する
-*	@param buttonRect ボタンの矩形
-*	@param frameIndex フレームのインデックス
-*	@param frameCols フレームの列数
-*	@param frameRows フレームの行数
-*	@return なし
-*/
-void Image::DrawQuad(const Rect& buttonRect, int frameIndex, int frameCols, int frameRows)
-{
-	// 名前空間の使用
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	// アスペクト比を考慮してY方向サイズを補正
-	float aspect = static_cast<float>(m_viewportWidth) / static_cast<float>(m_viewportHeight);
-	float correctedHeight = buttonRect.size.y * aspect;
-	// ボタンの矩形を設定
-	float startX = buttonRect.position.x - buttonRect.size.x / 2.0f;
-	float startY = buttonRect.position.y - correctedHeight / 2.0f;
-	// NDC座標系に変換
-	Vector2 ndcLT = ToNDC(Vector2(startX, startY));
-	Vector2 ndcRB = ToNDC(Vector2(startX + buttonRect.size.x, startY + correctedHeight));
-	// 頂点座標の設定
-	VertexPositionTexture vertices[VERTEX_COUNT]{};
-	vertices[0] = { VertexPositionTexture(Vector3(ndcLT.x, ndcLT.y, 0), Vector2(0, 0)) };// 左上
-	vertices[1] = { VertexPositionTexture(Vector3(ndcRB.x, ndcLT.y, 0), Vector2(1, 0)) };// 右上
-	vertices[2] = { VertexPositionTexture(Vector3(ndcRB.x, ndcRB.y, 0), Vector2(1, 1)) };// 右下
-	vertices[3] = { VertexPositionTexture(Vector3(ndcLT.x, ndcRB.y, 0), Vector2(0, 1)) };// 左下
-	// コンスタントバッファに渡すデータを設定
-	// ワールド行列を単位行列に設定
-	m_constBuffer.matWorld = Matrix::Identity;
-	// ビュー行列を単位行列に設定
-	m_constBuffer.matView = Matrix::Identity;
-	// プロジェクション行列を単位行列に設定
-	m_constBuffer.matProj = Matrix::Identity;
-	// アニメーションのコマを設定
-	m_constBuffer.count = Vector4((float)(frameIndex));
-	// 高さを設定
-	m_constBuffer.height = Vector4((float)(frameRows));
-	// 幅を設定
-	m_constBuffer.width = Vector4((float)(frameCols));
-	// 受け渡し用バッファの内容更新
-	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
-	// ConstBufferからID3D11Bufferへの変換
-	ID3D11Buffer* cb[1] = { m_pCBuffer.Get() };
-	// シェーダーにバッファを渡す
-	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
-	// 描画前設定
-	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
-		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
-		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
-		DrawPolygon::DepthStencilStates::DEPTH_NONE);// デプスステンシルステート
-	// 描画準備
-	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTextures);
-	// シェーダをセットする
-	m_pDrawPolygon->SetShader(m_shaders, nullptr, 0);
-	// 板ポリゴンを描画
-	m_pDrawPolygon->DrawTexture(vertices);
-	//	シェーダの登録を解除しておく
-	m_pDrawPolygon->ReleaseShader();
-}
-

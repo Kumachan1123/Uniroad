@@ -52,21 +52,7 @@ void Button::Update(const float elapsedTime)
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(elapsedTime);
 }
-/*
-*	@brief 画像を表示
-*	@details ボタンの画像を表示する
-*	@param buttonRect ボタンの矩形
-*	@param frameIndex アニメーションのコマ番号
-*	@param frameCols 画像の列数
-*	@param frameRows 画像の行数
-*	@return なし
-*/
-void Button::Render(const Rect& buttonRect, int frameIndex, int frameCols, int frameRows)
-{
-	// 画像を描画
-	m_pImage->DrawQuad(buttonRect, frameIndex, frameCols, frameRows);
 
-}
 /*
 *	@brief 当たり判定
 *	@details マウスの座標とボタンの矩形を比較して当たり判定を行う

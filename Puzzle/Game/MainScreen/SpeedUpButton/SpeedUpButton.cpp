@@ -54,6 +54,8 @@ void SpeedUpButton::Initialize(CommonResources* resources, int width, int height
 	m_pButton->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 	// 画像を設定
 	m_pButton->SetTexture(resources->GetTextureManager()->GetTexture("SpeedUP"));
+	// シェーダーバッファサイズを設定
+	m_pButton->SetShaderBufferSize(sizeof(SpriteSheetBuffer));
 	// ボタンの初期化
 	m_pButton->Initialize(resources, width, height);
 	// ボタンの矩形を設定
@@ -80,6 +82,8 @@ void SpeedUpButton::Update(float elapsedTime)
 	m_isHit = m_pButton->Hit(mousePos, m_buttonRect);
 	// マウスが当たって左クリックされたら押された状態をトグル
 	if (m_isHit && MouseClick::IsLeftMouseButtonPressed(mouseState))m_isPressed = !m_isPressed;
+	// 定数バッファを更新
+	UpdateConstantBuffer();
 }
 /*
 *	@brief 描画
@@ -89,6 +93,32 @@ void SpeedUpButton::Update(float elapsedTime)
 */
 void SpeedUpButton::Render()
 {
+
 	// ボタンの描画
-	m_pButton->Render(m_buttonRect, m_isPressed, m_frameCols, m_frameRows);
+	//m_pButton->Render(m_buttonRect, m_isPressed, m_frameCols, m_frameRows);
+	m_pButton->DrawQuadWithBuffer(m_buttonRect, m_spriteSheetBuffer);
+}
+/*
+*	@brief 定数バッファを更新
+*	@details スピードアップUIの定数バッファを更新する
+*	@param なし
+*	@return なし
+*/
+void SpeedUpButton::UpdateConstantBuffer()
+{
+	// 名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// 定数バッファを更新
+	// ワールド行列を単位行列に設定
+	m_spriteSheetBuffer.matWorld = Matrix::Identity;
+	// ビュー行列を単位行列に設定
+	m_spriteSheetBuffer.matView = Matrix::Identity;
+	// プロジェクション行列を単位行列に設定
+	m_spriteSheetBuffer.matProj = Matrix::Identity;
+	// アニメーションのコマを設定
+	m_spriteSheetBuffer.count = Vector4((float)(m_isPressed));
+	// 高さを設定
+	m_spriteSheetBuffer.height = Vector4((float)(m_frameRows));
+	// 幅を設定
+	m_spriteSheetBuffer.width = Vector4((float)(m_frameCols));
 }

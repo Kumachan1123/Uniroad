@@ -74,7 +74,7 @@ void CSVItem::LoadItem(const std::string& filePath)
 	// 行数確保
 	m_mapItemData.resize(MAXCOL);
 	// 各行に列数確保
-	for (int i = 0; i < MAXCOL; ++i)m_mapItemData[i].resize(MAXRAW);
+	for (int i = 0; i < MAXCOL; i++)m_mapItemData[i].resize(MAXRAW);
 	// アイテムの初期化
 	std::string line;
 	// 行番号を初期化

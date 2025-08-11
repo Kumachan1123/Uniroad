@@ -284,7 +284,7 @@ void NextTiles::AddNextTiles()
 	// 初期位置を保存
 	m_initialPositions.push_back(position);
 	// 位置を詰め直す（必要なら全タイル再配置も検討）
-	for (size_t i = 0; i < m_pTile.size(); ++i) {
+	for (size_t i = 0; i < m_pTile.size(); i++) {
 		float newY = 480.0f - (float)i * 90.0f;
 		m_pTile[i].canvas->SetPosition(Vector2(positionX, newY));
 		m_initialPositions[i] = Vector2(positionX, newY);

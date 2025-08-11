@@ -1,6 +1,6 @@
 /*
-*	@file TitleLogo.h
-*	@brief タイトルロゴクラス
+*	@file Fade.h
+*	@brief フェードクラス
 */
 #pragma once
 // 自作ヘッダーファイル
@@ -15,11 +15,28 @@
 // 前方宣言
 class CommonResources;
 
-// タイトルロゴクラス
-class TitleLogo : public IImage
+// フェードクラス
+class Fade : public IImage
 {
 public:
+	// public列挙型
+	// フェード状態
+	enum class FadeState
+	{
+		None,// なし
+		// 以下、フェードイン・アウトの開始状態
+		FadeIn,// フェードイン
+		FadeOut,// フェードアウト
+		// 以下、フェードイン・アウトの途中状態
+		FadeInEnd,// フェードイン終了
+		FadeOutEnd,// フェードアウト終了
+	};
+public:
 	// アクセサ
+	// フェード状態の取得
+	void SetState(FadeState state) { m_fadeState = state; }
+	// フェード状態の設定
+	FadeState GetState() const { return m_fadeState; }
 	// ロゴの位置を取得
 	const DirectX::SimpleMath::Vector2& GetPosition() const override { return m_position; }
 	// ロゴの位置を設定
@@ -31,9 +48,9 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	TitleLogo();
+	Fade();
 	// デストラクタ
-	~TitleLogo();
+	~Fade();
 	// 初期化
 	void Initialize(CommonResources* resources, int width, int height)override;
 	// 更新
@@ -42,10 +59,24 @@ public:
 	void Render()override;
 private:
 	// private関数
-	// アニメーションシーケンスを作成
-	void CreateAnimationSequence();
 	// 定数バッファを更新
 	void UpdateConstantBuffer()override;
+	// フェードアウト
+	void FadeOut(float elapsedTime);
+	// フェードイン
+	void FadeIn(float elapsedTime);
+public:
+	// public定数
+	// フェード最小値
+	static const float FADE_MIN;
+	// フェード最大値
+	static const float FADE_MAX;
+	// フェード速度
+	static const float FADE_SPEED;
+	// フェード初期値
+	static const float FADE_INIT;
+	// フェードの滑らかさ
+	static const float FADE_SMOOTHNESS;
 private:
 	// private定数
 	// 表示位置（左上）
@@ -53,23 +84,21 @@ private:
 	// 表示サイズ
 	static const DirectX::SimpleMath::Vector2 SIZE;
 private:
-	// privateメンバ変数
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
+	// フェード状態
+	FadeState m_fadeState;
 	// 画像
 	std::unique_ptr<Image> m_pImage;
-	// アニメーション
-	std::unique_ptr<Animation> m_pAnimation;
-	// ロゴの位置
-	DirectX::SimpleMath::Vector2 m_position;
-	// ロゴのサイズ
-	DirectX::SimpleMath::Vector2 m_size;
-	// 画像の行数
-	int m_frameRows;
-	// 画像の列数
-	int m_frameCols;
 	// ロゴの矩形
-	Rect m_logoRect;
+	Rect m_rect;
+	// フェード時間
+	float m_fadeTime;
 	// 定数バッファ
-	SpriteSheetBuffer m_spriteSheetBuffer;
+	FadeBuffer m_fadeBuffer;
+	// 座標
+	DirectX::SimpleMath::Vector2 m_position;
+	// サイズ
+	DirectX::SimpleMath::Vector2 m_size;
 };

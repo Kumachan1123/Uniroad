@@ -22,10 +22,6 @@ TitleLogo::TitleLogo()
 	, m_size(DirectX::SimpleMath::Vector2(0.55f, 0.35f)) // ロゴのサイズ
 	, m_frameRows(1) // 画像の行数
 	, m_frameCols(1) // 画像の列数
-	, m_animationPhase(0) // アニメーションフェーズ
-	, m_animationTime(0.0f) // アニメーション時間
-	, m_currentStep(0) // 現在のアニメーションステップ
-	, m_animStepTime(0.0f) // アニメーションステップ時間
 {
 }
 /*
@@ -60,6 +56,8 @@ void TitleLogo::Initialize(CommonResources* resources, int width, int height)
 	m_pImage->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 	// 画像を設定
 	m_pImage->SetTexture(resources->GetTextureManager()->GetTexture("Title"));
+	// シェーダーバッファサイズを設定
+	m_pImage->SetShaderBufferSize(sizeof(SpriteSheetBuffer));
 	// 画像の初期化
 	m_pImage->Initialize(m_pCommonResources, width, height);
 	// 矩形を設定
@@ -80,6 +78,8 @@ void TitleLogo::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// アニメーションを更新
 	m_pAnimation->Update(elapsedTime);
+	// 定数バッファを更新
+	UpdateConstantBuffer();
 }
 /*
 *	@brief 画像を表示
@@ -90,7 +90,8 @@ void TitleLogo::Update(float elapsedTime)
 void TitleLogo::Render()
 {
 	// 画像を描画
-	m_pImage->DrawQuad(m_logoRect, 0, m_frameCols, m_frameRows);
+	//m_pImage->DrawQuad(m_logoRect, 0, m_frameCols, m_frameRows);
+	m_pImage->DrawQuadWithBuffer(m_logoRect, m_spriteSheetBuffer);
 }
 /*
 *	@brief アニメーションシーケンスを作成
@@ -142,4 +143,28 @@ void TitleLogo::CreateAnimationSequence()
 			m_logoRect.size = SIZE;
 	} });
 
+}
+/*
+*	@brief 定数バッファを更新
+*	@details タイトルロゴの定数バッファを更新する
+*	@param なし
+*	@return なし
+*/
+void TitleLogo::UpdateConstantBuffer()
+{
+	// 名前空間を使用
+	using namespace DirectX::SimpleMath;
+	// 定数バッファを更新
+	// ワールド行列を単位行列に設定
+	m_spriteSheetBuffer.matWorld = Matrix::Identity;
+	// ビュー行列を単位行列に設定
+	m_spriteSheetBuffer.matView = Matrix::Identity;
+	// プロジェクション行列を単位行列に設定
+	m_spriteSheetBuffer.matProj = Matrix::Identity;
+	// アニメーションのコマを設定
+	m_spriteSheetBuffer.count = Vector4(0.0f);
+	// 高さを設定
+	m_spriteSheetBuffer.height = Vector4((float)(m_frameRows));
+	// 幅を設定
+	m_spriteSheetBuffer.width = Vector4((float)(m_frameCols));
 }

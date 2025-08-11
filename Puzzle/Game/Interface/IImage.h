@@ -24,6 +24,9 @@ public:
 	virtual const DirectX::SimpleMath::Vector2& GetSize() const = 0;
 	// サイズを設定
 	virtual void SetSize(const DirectX::SimpleMath::Vector2& size) = 0;
+private:
+	// private関数
+	virtual void UpdateConstantBuffer() = 0;
 public:
 	// public関数
 	// デストラクタ

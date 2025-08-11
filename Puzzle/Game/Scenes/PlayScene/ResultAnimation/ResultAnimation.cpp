@@ -73,7 +73,7 @@ void ResultAnimation::Update(float elapsedTime)
 	// 時間を加算
 	m_time += elapsedTime;
 	// 各画像のY座標を更新
-	for (int i = 0; i < m_frameCols; ++i)m_positionsY[i] = m_gameclear ? POS_Y * Easing::EaseOutExpo(m_time) : POS_Y * Easing::RandomJitter(m_time);
+	for (int i = 0; i < m_frameCols; i++)m_positionsY[i] = m_gameclear ? POS_Y * Easing::EaseOutExpo(m_time) : POS_Y * Easing::RandomJitter(m_time);
 	// 5秒経ったらアニメーションを終了
 	if (m_time >= 3.0f)m_animationEnd = true;
 }
@@ -87,7 +87,7 @@ void ResultAnimation::Render()
 {
 
 	// 画像描画
-	for (int i = 0; i < m_frameCols; ++i)
+	for (int i = 0; i < m_frameCols; i++)
 	{
 		DrawQuad(m_pTextures, m_vertices, m_positionX + (SIZE_X * i), m_positionsY[i], SIZE_X, SIZE_Y, i, m_frameCols, m_frameRows);
 	}
@@ -113,7 +113,7 @@ void ResultAnimation::DecideTexture()
 	// 画像の位置Yの数を設定
 	m_positionsY.resize(m_frameCols);
 	// 画像の位置Yを設定
-	for (int i = 0; i < m_frameCols; ++i)m_positionsY[i] = POS_Y;
+	for (int i = 0; i < m_frameCols; i++)m_positionsY[i] = POS_Y;
 	// マネージャーからテクスチャを取得
 	m_pTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture(textureName));
 	// 決定済みにする

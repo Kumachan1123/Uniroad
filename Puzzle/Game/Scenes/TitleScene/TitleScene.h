@@ -20,6 +20,7 @@
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/Scenes/TitleScene/TitleLogo/TitleLogo.h"
 #include "Game/Scenes/TitleScene/TitleButton/TitleButton.h"
+#include "Game/Fade/Fade.h"
 
 // 前方宣言
 class CommonResources;
@@ -67,7 +68,8 @@ private:
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
 	// ボタン
 	std::unique_ptr<TitleButton> m_pTitleButton;
-
+	// フェード
+	std::unique_ptr<Fade> m_pFade;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列

@@ -446,7 +446,7 @@ void MiniCharacter::UpdateSpeedByStartTile()
 		{ 1, 0, 0}, // 右
 	};
 	// スタート位置が見つからなかった場合はデフォルトの速度を設定
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 4; i++)
 	{
 		// 隣接するタイルの行と列を計算
 		int nRow = startRow + dirs[i].dRow;

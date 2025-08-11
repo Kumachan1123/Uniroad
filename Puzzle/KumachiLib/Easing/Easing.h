@@ -319,7 +319,7 @@ namespace Easing {
 			};
 		float x = t;
 		float guessT = t;
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 5; i++)
 		{
 			float currentX = Bezier(guessT, p1x, p2x);
 			float dx = currentX - x;
