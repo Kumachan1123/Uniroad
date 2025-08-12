@@ -29,6 +29,7 @@
 #include "Game/Scenes/StageSelectScene/StageSelect/StageSelect.h"
 #include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
 #include "Game/Scenes/StageSelectScene/StageGate/StageGate.h"
+
 // 前方宣言
 class CommonResources;
 class MiniCharacterBase;
@@ -37,9 +38,16 @@ namespace mylib
 	class DebugCamera;
 	class GridFloor;
 }
+
 // ステージセレクトシーンクラス
 class StageSelectScene : public IScene
 {
+public:
+	// アクセサ
+	// ステージ番号を取得する
+	int GetStageNumber() const override { return m_stageNumber; }
+	// ステージ番号を設定する
+	void SetStageNumber(int stageNumber) override { m_stageNumber = stageNumber; }
 public:
 	// public関数
 	// コンストラクタ
@@ -56,10 +64,7 @@ public:
 	void Finalize() override;
 	// シーンIDを取得する
 	SceneID GetNextSceneID() const override;
-	// ステージ番号を取得する
-	int GetStageNumber() const override { return m_stageNumber; }
-	// ステージ番号を設定する
-	void SetStageNumber(int stageNumber) override { m_stageNumber = stageNumber; }
+
 private:
 	// private関数
 	// カメラに関する設定をする

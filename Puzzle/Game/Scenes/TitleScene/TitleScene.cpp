@@ -13,6 +13,7 @@
 TitleScene::TitleScene(IScene::SceneID sceneID)
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_pFixedCamera(nullptr) // カメラへのポインタ
+	, m_pMiniCharacterBase(nullptr) // ミニキャラベースへのポインタ
 	, m_view() // ビュー行列
 	, m_projection() // 射影行列
 	, m_isChangeScene(false) // シーン変更フラグ
@@ -58,8 +59,14 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pFade->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
-
-
+	// ミニキャラを作成する
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	// ミニキャラを初期化する
+	m_pMiniCharacterBase->Initialize(m_pCommonResources);
+	// ミニキャラベースにミニキャラをアタッチ
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.5f, 0.0f), 0.0f));
+	// ミニキャラのアニメーションステートを設定
+	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 	// カメラを作成する
 	CreateCamera();
 }
@@ -77,20 +84,50 @@ void TitleScene::Update(float elapsedTime)
 	m_pFixedCamera->Update();
 	// ビュー行列を取得
 	m_view = m_pFixedCamera->GetViewMatrix();
+	// カメラの位置を調整
+	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.75f, 7.0f));
+	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
+	// カメラのターゲット位置をミニキャラのカメラ位置に設定
+	m_pFixedCamera->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
+	// カメラの座標を更新
+	m_pFixedCamera->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCamera->GetCameraDistance());
 	// ロゴを更新
 	m_pTitleLogo->Update(elapsedTime);
 	// ボタンを更新
 	m_pTitleButton->Update(elapsedTime);
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
+	// 座標を初期化
+	Vector3 position(Vector3(0, 0, 0));
+	// Y軸に90°回転
+	Quaternion angle(Quaternion::CreateFromAxisAngle(Vector3::UnitY, XMConvertToRadians(90.0f)));
+	// ミニキャラの更新
+	m_pMiniCharacterBase->Update(elapsedTime, position, angle);
+	// フェードインが終わったら
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
+	{
+		// タイトルアニメーションを開始
+		m_pMiniCharacterBase->SetTitleAnimationState(START);
+		// フェード状態をなくす
+		m_pFade->SetState(Fade::FadeState::None);
+	}
 	// ボタンが押された場合
 	if (m_pTitleButton->IsPressed())
 	{
-		// フェードアウトに切り替える
-		m_pFade->SetState(Fade::FadeState::FadeOut);
+		//// フェードアウトに切り替える
+		//m_pFade->SetState(Fade::FadeState::FadeOut);
+		// ミニキャラのタイトルアニメーションを終了状態にする
+		m_pMiniCharacterBase->SetTitleAnimationState(CONTINUE);
 		// 押されたかをリセット
 		m_pTitleButton->SetPressed(false);
-
+	}
+	// ミニキャラのタイトルアニメーションが終了状態なら
+	if (m_pMiniCharacterBase->GetTitleAnimationState() == END)
+	{
+		// フェードアウトに移行
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// ミニキャラのタイトルアニメーションをリセット
+		m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)
@@ -104,12 +141,16 @@ void TitleScene::Update(float elapsedTime)
 */
 void TitleScene::Render()
 {
+	// ミニキャラの描画
+	m_pMiniCharacterBase->Render(m_view, m_projection);
+	// 以下、2D描画のものを描画する
 	// ロゴを描画する
 	m_pTitleLogo->Render();
 	// ボタンを描画する
 	m_pTitleButton->Render();
 	// フェードを描画する
 	m_pFade->Render();
+
 }
 /*
 *	@brief シーンIDを取得する
@@ -119,6 +160,8 @@ void TitleScene::Render()
 */
 void TitleScene::Finalize()
 {
+	// ミニキャラの終了
+	if (m_pMiniCharacterBase) m_pMiniCharacterBase->Finalize();
 }
 
 /*
@@ -168,8 +211,9 @@ void TitleScene::CreateCamera()
 	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),
+		XMConvertToRadians(60.0f),
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
 		0.1f, 100.0f
 	);
+
 }

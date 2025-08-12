@@ -159,7 +159,7 @@ void PlayScene::Update(float elapsedTime)
 		// ゲームクリアなら以下の処理も行う
 		if (m_pMiniCharacterBase->IsGameClear())
 		{
-			// カメラの位置を滑らかに変える
+			// カメラの位置を調整
 			m_pFixedCameraResult->SetCameraDistance(Vector3(0.0f, 1.75f, 10.0f));
 			Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 			// カメラのターゲット位置をミニキャラのカメラ位置に設定

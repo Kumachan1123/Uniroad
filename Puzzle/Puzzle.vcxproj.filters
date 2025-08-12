@@ -106,6 +106,12 @@
     <ClInclude Include="KumachiLib\Image\Image.h" />
     <ClInclude Include="KumachiLib\Rect\Rect.h" />
     <ClInclude Include="KumachiLib\AnimationStep\AnimationStep.h" />
+    <ClInclude Include="Game\Fade\Fade.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleButton\TitleButton.h" />
+    <ClInclude Include="KumachiLib\Animaiton\Animation.h" />
+    <ClInclude Include="KumachiLib\ShaderBuffer\ShaderBuffer.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\TitleAnimationState\TitleAnimationState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -173,6 +179,10 @@
     <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="KumachiLib\Image\Image.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />
+    <ClCompile Include="Game\Fade\Fade.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
+    <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -210,5 +220,7 @@
     <FxCompile Include="HLSL\Tile\VS_Tile.hlsl" />
     <FxCompile Include="HLSL\Counter\PS_Counter.hlsl" />
     <FxCompile Include="HLSL\Counter\VS_Counter.hlsl" />
+    <FxCompile Include="HLSL\Fade\PS_Fade.hlsl" />
+    <FxCompile Include="HLSL\Fade\VS_Fade.hlsl" />
   </ItemGroup>
 </Project>

@@ -30,6 +30,7 @@ MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMa
 	, m_isMoving(false)// ミニキャラの移動フラグを初期化する
 	, m_isGameOver(false) // ゲームオーバーフラグを初期化する
 	, m_isGameClear(false)	// ゲームクリアフラグを初期化する
+	, m_titleAnimationState(NONE)// タイトルシーンにおけるアニメーションステートを初期化する
 {
 }
 /*

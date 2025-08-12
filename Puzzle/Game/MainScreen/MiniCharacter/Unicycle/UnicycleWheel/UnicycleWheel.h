@@ -1,3 +1,7 @@
+/*
+*	@file UnicycleWheel.h
+*	@brief 一輪車のタイヤクラスのヘッダーファイル
+*/
 #pragma once
 // 標準ライブラリ
 #include <cassert>
@@ -14,11 +18,16 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Scenes/PlayScene/PlayScene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/ILeaf.h"
+#include "KumachiLib/Easing/Easing.h"
+
+// 前方宣言
 class CommonResources;
 
+// 一輪車のタイヤクラス
 class UnicycleWheel : public ILeaf
 {
 public:
+	// アクセサ
 	// ノード番号を取得する
 	int GetNodeNumber() const { return m_nodeNumber; }
 	// 部品IDを取得する
@@ -54,6 +63,7 @@ public:
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:
+	// public関数
 	// コンストラクタ
 	UnicycleWheel(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -67,6 +77,7 @@ public:
 	// 後処理を行う
 	void Finalize();
 private:
+	// private関数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 親
@@ -99,5 +110,7 @@ private:
 	std::vector<std::unique_ptr<IComponent>> m_pNodes;
 	//	ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
+	// 一輪車のタイヤの角度
+	float m_wheelAngle;
 };
 

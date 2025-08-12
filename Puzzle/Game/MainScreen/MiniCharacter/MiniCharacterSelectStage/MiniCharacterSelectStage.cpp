@@ -5,7 +5,7 @@
 */
 #include <pch.h>
 #include "MiniCharacterSelectStage.h"
-// 砲塔カウンター
+// ノードカウンター
 int MiniCharacterSelectStage::s_nodeCount = 0;
 // 部品カウンター
 int MiniCharacterSelectStage::s_partsNumber = 0;
@@ -166,7 +166,7 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 */
 void MiniCharacterSelectStage::Finalize()
 {
-
+	// 何もしない
 }
 
 /*

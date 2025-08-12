@@ -37,8 +37,8 @@ void TrackingCamera::Initialize(int screenWidth, int screenHeight)
 {
 	// 相対スケールを計算
 	CalculateRerativeScale(screenWidth, screenHeight);
-	// 終始展の初期値は（0,0,0）に設定
-	SetTargetPosition(DirectX::SimpleMath::Vector3(0, 0, 0));
+	// 注視点の初期値は（0,0,0）に設定
+	SetTargetPosition(DirectX::SimpleMath::Vector3::Zero);
 	// ビュー行列を計算
 	CalculateViewMatrix();
 }

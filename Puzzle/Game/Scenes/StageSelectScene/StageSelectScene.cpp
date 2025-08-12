@@ -94,8 +94,9 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(-2.0f, -0.5f, 2.0f), 0.0f));
-
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(-4.0f, -0.5f, 2.0f), 0.0f));
+	// 最初に追従する座標を設定
+	m_pTrackingCamera->SetTargetPosition(Vector3(5.0f, -0.5f, 2.0f));
 }
 /*
 *	@brief 更新

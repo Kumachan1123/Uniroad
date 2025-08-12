@@ -18,13 +18,14 @@
 #include "Game/MainScreen/CSVItem/CSVItem.h"
 #include "Game/ControllScreen/NextTiles/NextTiles.h"
 #include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
-
+#include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 // 前方宣言
 class CommonResources;
 
 // ミニキャラクターのベースクラス
 class MiniCharacterBase : public IComposite
 {
+
 public:
 	// アクセサ
 	// ノード番号を取得する
@@ -83,6 +84,10 @@ public:
 	bool IsGameClear() const { return m_isGameClear; }
 	// ゲームクリアフラグを設定する
 	void SetGameClear(bool isGameClear) { m_isGameClear = isGameClear; }
+	// タイトルシーンにおけるアニメーションステートを取得する
+	TitleAnimation GetTitleAnimationState() const { return m_titleAnimationState; }
+	// タイトルシーンにおけるアニメーションステートを設定する
+	void SetTitleAnimationState(TitleAnimation state) { m_titleAnimationState = state; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -100,6 +105,8 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 後処理を行う
 	void Finalize();
+
+
 private:
 	// 親
 	IComponent* m_pParent;
@@ -141,4 +148,6 @@ private:
 	bool m_isGameClear;
 	// スピードアップボタンが押されたか
 	bool m_isSpeedUpButtonPressed;
+	// タイトルシーンにおけるアニメーションステート
+	TitleAnimation m_titleAnimationState;
 };
