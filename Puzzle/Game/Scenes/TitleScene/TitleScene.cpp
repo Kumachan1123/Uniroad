@@ -83,24 +83,8 @@ void TitleScene::Update(float elapsedTime)
 	m_pTitleButton->Update(elapsedTime);
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
-	// ゲーム開始ボタンが押された場合
-	if (m_pTitleButton->GetPressedButtonIndex() == 0 && m_pTitleButton->IsPressed())
-	{
-		// フェードアウトに切り替える
-		m_pFade->SetState(Fade::FadeState::FadeOut);
-		// 押されたかをリセット
-		m_pTitleButton->SetPressed(false);
-	}
-	// 設定メニューボタンが押された場合
-	else if (m_pTitleButton->GetPressedButtonIndex() == 1 && m_pTitleButton->IsPressed())
-	{
-		// フェードアウトに切り替える
-		m_pFade->SetState(Fade::FadeState::FadeOut);
-		// 押されたかをリセット
-		m_pTitleButton->SetPressed(false);
-	}
-	// ゲーム終了ボタンが押された場合
-	else if (m_pTitleButton->GetPressedButtonIndex() == 2 && m_pTitleButton->IsPressed())
+	// ボタンが押された場合
+	if (m_pTitleButton->IsPressed())
 	{
 		// フェードアウトに切り替える
 		m_pFade->SetState(Fade::FadeState::FadeOut);
