@@ -51,23 +51,23 @@ void CSVMap::InitializeTileDictionary()
 	// 通常の床
 	m_tileDictionary["b"] = TileInfo{ "Block", true };
 	// スタート地点
-	m_tileDictionary["s"] = TileInfo{ "Start", true };
+	m_tileDictionary["s"] = TileInfo{ "StartBlock", true };
 	// ゴール地点
-	m_tileDictionary["g"] = TileInfo{ "Goal", true };
+	m_tileDictionary["g"] = TileInfo{ "GoalBlock", true };
 	// 直進（縦）
-	m_tileDictionary["v"] = TileInfo{ "DefaultStraightVertical", true };
+	m_tileDictionary["v"] = TileInfo{ "DefaultStraightVerticalBlock", true };
 	// 直進（横）
-	m_tileDictionary["h"] = TileInfo{ "DefaultStraightHorizontal", true };
+	m_tileDictionary["h"] = TileInfo{ "DefaultStraightHorizontalBlock", true };
 	// 十字
-	m_tileDictionary["x"] = TileInfo{ "Cross", true };
+	m_tileDictionary["x"] = TileInfo{ "CrossBlock", true };
 	// 右下カーブ
-	m_tileDictionary["rd"] = TileInfo{ "RightDown", true };
+	m_tileDictionary["rd"] = TileInfo{ "RightDownBlock", true };
 	// 左下カーブ
-	m_tileDictionary["ld"] = TileInfo{ "LeftDown", true };
+	m_tileDictionary["ld"] = TileInfo{ "LeftDownBlock", true };
 	// 右上カーブ
-	m_tileDictionary["ru"] = TileInfo{ "RightUp", true };
+	m_tileDictionary["ru"] = TileInfo{ "RightUpBlock", true };
 	// 左上カーブ
-	m_tileDictionary["lu"] = TileInfo{ "LeftUp", true };
+	m_tileDictionary["lu"] = TileInfo{ "LeftUpBlock", true };
 	// 空白
 	m_tileDictionary["0"] = TileInfo{ "", false };
 
@@ -382,7 +382,7 @@ const MapTileData& CSVMap::GetStart() const
 		for (const auto& tile : row)
 		{
 			// タイルのモデル名が"Start"の場合
-			if (tile.tileInfo.modelName == "Start")
+			if (tile.tileInfo.modelName == "StartBlock")
 			{
 				// スタート地点の位置を返す
 				return tile;

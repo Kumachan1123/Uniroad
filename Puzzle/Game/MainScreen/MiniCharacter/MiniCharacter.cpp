@@ -39,7 +39,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_currentPosition{}// 現在の位置
 	, m_currentVelocity{}// 現在の速度
 	, m_currentAngle{}// 現在の回転角
-	, m_prevTileName("Start")// 前フレームで一番近かったタイルの名前
+	, m_prevTileName("StartBlock")// 前フレームで一番近かったタイルの名前
 	, m_rotationMiniCharacterAngle{}// プレイヤー回転角
 	, m_mass{}// 質量
 	, m_miniCharacterVelocity{}// プレイヤー速度
@@ -414,7 +414,7 @@ void MiniCharacter::UpdateSpeedByStartTile()
 			// タイルデータを取得
 			const auto& tile = GetParent()->GetCSVMap()->GetTileData(row, col);
 			// タイルのモデル名が"Start"であるか確認
-			if (tile.tileInfo.modelName == "Start")
+			if (tile.tileInfo.modelName == "StartBlock")
 			{
 				// スタート位置を設定
 				startRow = row;
@@ -460,8 +460,8 @@ void MiniCharacter::UpdateSpeedByStartTile()
 			// タイルのモデル名を取得
 			const std::string& model = neighbor.tileInfo.modelName;
 			// モデル名が"DefaultStraightVertical"または"DefaultStraightHorizontal"であるか確認
-			if ((i <= 1 && model == "DefaultStraightVertical") || // 上下
-				(i >= 2 && model == "DefaultStraightHorizontal")) // 左右
+			if ((i <= 1 && model == "DefaultStraightVerticalBlock") || // 上下
+				(i >= 2 && model == "DefaultStraightHorizontalBlock")) // 左右
 			{
 				// 対応する速度ベクトルを設定
 				m_currentVelocity = velocities[i];
@@ -511,7 +511,7 @@ void MiniCharacter::HandleGameOverAndClear(float elapsedTime)
 	// 現在の位置がタイルの中心にいるかどうかを判定
 	bool isCenter = IsAtTileCenter(m_currentPosition, tile.pos);
 	// アンロックされたゴールの真上にいるならクリア
-	if (goalTileName == "Goal" && goalUnlocked == true && isCenter)	dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameClear(true);
+	if (goalTileName == "GoalBlock" && goalUnlocked == true && isCenter)	dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameClear(true);
 	// 途中で止まるか落ちている場合、ゲームオーバー
 	else if (m_currentVelocity.y < Vector3::Zero.y || m_currentVelocity == Vector3::Zero)dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameOver(true);
 }

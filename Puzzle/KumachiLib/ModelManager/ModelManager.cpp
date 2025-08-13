@@ -6,7 +6,6 @@
 #include "ModelManager.h"
 // 外部ライブラリ
 #include "Libraries/nlohmann/json.hpp"
-
 /*
 *	@brief コンストラクタ
 *	@details モデルマネージャークラスのコンストラクタ
@@ -51,12 +50,6 @@ void ModelManager::Initialize(ID3D11Device1* pDevice)
 	m_pEffectFactory->SetSharing(false);
 	// JSONファイルの読み込み
 	LoadJsonFile();
-	//// 天球モデルのパスをJSONファイルから読み込む
-	//LoadSkyModelsJson();
-	//// 弾モデルの作成
-	//SetupBulletModelEffects();
-	//// ステージモデルの作成
-	//SetupStageModelEffects();
 }
 /*
 *	@brief JSONファイルの読み込み
@@ -87,12 +80,17 @@ void ModelManager::LoadJsonFile()
 	{
 		// キー
 		std::string key = item.key();
+		// キーをワイド文字列に変換
+		std::wstring wkey(key.begin(), key.end());
 		// 値（ファイルパス）
 		std::string path = item.value();
 		// 文字列変換
 		std::wstring wpath(path.begin(), path.end());
+		// モデルのディレクトリ
+		std::wstring modelDirectory = L"Resources/Models/" + wkey;
+
 		// モデルのディレクトリを指定
-		m_pEffectFactory->SetDirectory(L"Resources/Models");
+		m_pEffectFactory->SetDirectory(modelDirectory.c_str());
 		// モデルを読み込む
 		m_pModelMap[key] = DirectX::Model::CreateFromCMO(m_pDevice, wpath.c_str(), *m_pEffectFactory);
 		// 敵弾モデルのエフェクトを設定する

@@ -244,6 +244,7 @@
     <ClInclude Include="Game\Scenes\TitleScene\TitleButton\TitleButton.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleScene.h" />
+    <ClInclude Include="Game\Sky\Sky.h" />
     <ClInclude Include="KumachiLib\Animaiton\Animation.h" />
     <ClInclude Include="KumachiLib\AnimationStep\AnimationStep.h" />
     <ClInclude Include="KumachiLib\Button\Button.h" />
@@ -332,6 +333,7 @@
     <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
+    <ClCompile Include="Game\Sky\Sky.cpp" />
     <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
@@ -377,6 +379,7 @@
     <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Particle\Particle.hlsli" />
+    <None Include="HLSL\Sky\Header.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -465,6 +468,26 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\Sky\PS_Sky.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Sky\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Sky\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\Sky\VS_Sky.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Sky\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Sky\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="HLSL\Tile\GS_Tile.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>

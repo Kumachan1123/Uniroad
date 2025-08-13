@@ -24,6 +24,7 @@
 #include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacterTitle/MiniCharacterTitle.h"
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
+#include "Game/Sky/Sky.h"
 // 前方宣言
 class CommonResources;
 class MiniCharacterBase;
@@ -75,6 +76,8 @@ private:
 	std::unique_ptr<Fade> m_pFade;
 	// ミニキャラベース
 	std::unique_ptr<MiniCharacterBase> m_pMiniCharacterBase;
+	// 空
+	std::unique_ptr<Sky> m_pSky;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列

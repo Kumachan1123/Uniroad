@@ -5,53 +5,53 @@ static const std::unordered_map<std::string, std::unordered_map<Direction, std::
 {
 	{"DefaultStraightVertical",
 	{
-		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
+		{Direction::UP,{  "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
+		{Direction::DOWN,{ "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}}
 	}},
 	{"DefaultStraightHorizontal",
 	{
-		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-		{Direction::RIGHT,{  "StraightHorizontal","LeftDown", "LeftUp"}}
+		{Direction::LEFT,{ "StraightHorizontalBlock","RightDownBlock", "RightUpBlock"}},
+		{Direction::RIGHT,{  "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}}
 	}},
-	{"StraightVertical",
+	{"StraightVerticalBlock",
 	{
-		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}}
+		{Direction::UP,{  "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
+		{Direction::DOWN,{ "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}}
 	}},
-	{"StraightHorizontal",
+	{"StraightHorizontalBlock",
 	{
-		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}
+		{Direction::LEFT,{ "StraightHorizontalBlock","RightDownBlock", "RightUpBlock"}},
+		{Direction::RIGHT,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}}
 	}},
-	{"RightDown",{
-	{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-	{Direction::LEFT,{  "StraightVertical","RightUp", "LeftUp"}},
-	{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}},
-	{Direction::UP,{ "StraightHorizontal","LeftDown", "LeftUp"}},
+	{"RightDownBlock",{
+	{Direction::DOWN,{ "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}},
+	{Direction::LEFT,{  "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}},
+	{Direction::RIGHT,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}},
+	{Direction::UP,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}},
 	}},
-	{"LeftDown",{
-	{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-	{Direction::RIGHT,{"StraightVertical","RightUp", "LeftUp"}},
-	{Direction::UP,{ "StraightHorizontal","LeftDown", "LeftUp"}},
-	{Direction::LEFT,{"StraightHorizontal","RightDown", "RightUp"}}}},
-	{"RightUp",{
-	{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-	{Direction::LEFT,{  "StraightVertical","RightDown", "LeftDown"}},
-	{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}},
-	{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}}},
-	{"LeftUp",{
-		{Direction::UP,{ "StraightVertical","RightDown", "LeftDown"}},
-		{Direction::DOWN,{   "StraightVertical","RightDown", "RightUp"}},
-		{Direction::RIGHT,{ "StraightHorizontal","RightDown", "LeftDown"}},
-		{Direction::LEFT,{   "StraightHorizontal","RightDown", "RightUp"}}}},
-	{"Cross",{
-		{Direction::UP,{  "StraightVertical","RightDown", "LeftDown"}},
-		{Direction::DOWN,{ "StraightVertical","RightUp", "LeftUp"}},
-		{Direction::LEFT,{ "StraightHorizontal","RightDown", "RightUp"}},
-		{Direction::RIGHT,{ "StraightHorizontal","LeftDown", "LeftUp"}}}}
+	{"LeftDownBlock",{
+	{Direction::DOWN,{ "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}},
+	{Direction::RIGHT,{"StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}},
+	{Direction::UP,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}},
+	{Direction::LEFT,{"StraightHorizontalBlock","RightDownBlock", "RightUpBlock"}}}},
+	{"RightUpBlock",{
+	{Direction::UP,{  "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
+	{Direction::LEFT,{  "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
+	{Direction::RIGHT,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}},
+	{Direction::RIGHT,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}}}},
+	{"LeftUpBlock",{
+		{Direction::UP,{ "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
+		{Direction::DOWN,{   "StraightVerticalBlock","RightDownBlock", "RightUpBlock"}},
+		{Direction::RIGHT,{ "StraightHorizontalBlock","RightDownBlock", "LeftDownBlock"}},
+		{Direction::LEFT,{   "StraightHorizontalBlock","RightDownBlock", "RightUpBlock"}}}},
+	{"CrossBlock",{
+		{Direction::UP,{  "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
+		{Direction::DOWN,{ "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}},
+		{Direction::LEFT,{ "StraightHorizontalBlock","RightDownBlock", "RightUpBlock"}},
+		{Direction::RIGHT,{ "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}}}}
 };
 
-static const std::vector<std::string> s_dammyArray = { "StraightVertical", "StraightHorizontal", "RightDown", "LeftDown", "RightUp", "LeftUp" };
+static const std::vector<std::string> s_dammyArray = { "StraightVerticalBlock", "StraightHorizontalBlock", "RightDownBlock", "LeftDownBlock", "RightUpBlock", "LeftUpBlock" };
 
 const std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>>& TileConnectionTable::GetTable()
 {

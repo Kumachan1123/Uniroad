@@ -66,19 +66,19 @@ void NextTiles::Initialize(CommonResources* resources, int width, int height)
 		, UIType::ITEM);
 	// 使うタイルを宣言
 	// 直進(横)
-	m_tilesDictionary.push_back("StraightHorizontal");
+	m_tilesDictionary.push_back("StraightHorizontalBlock");
 	// 直進(縦)
-	m_tilesDictionary.push_back("StraightVertical");
+	m_tilesDictionary.push_back("StraightVerticalBlock");
 	// 十字
-	m_tilesDictionary.push_back("Cross");
+	m_tilesDictionary.push_back("CrossBlock");
 	// 右下カーブ
-	m_tilesDictionary.push_back("RightDown");
+	m_tilesDictionary.push_back("RightDownBlock");
 	// 左下カーブ
-	m_tilesDictionary.push_back("LeftDown");
+	m_tilesDictionary.push_back("LeftDownBlock");
 	// 右上カーブ
-	m_tilesDictionary.push_back("RightUp");
+	m_tilesDictionary.push_back("RightUpBlock");
 	// 左上カーブ
-	m_tilesDictionary.push_back("LeftUp");
+	m_tilesDictionary.push_back("LeftUpBlock");
 }
 /*
 *	@brief 更新

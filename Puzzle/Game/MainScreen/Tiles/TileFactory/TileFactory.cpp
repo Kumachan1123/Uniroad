@@ -14,31 +14,31 @@ std::unique_ptr<TileBase> TileFactory::CreateTileByName(const std::string& name)
 {
 	// タイル名に応じてタイルを生成
 	// 直進（縦）タイル
-	if (name == "DefaultStraightVertical" || name == "StraightVertical")
+	if (name == "DefaultStraightVerticalBlock" || name == "StraightVerticalBlock")
 		return std::make_unique<StraightVerticalTile>();
 	// 直進（横）タイル
-	if (name == "DefaultStraightHorizontal" || name == "StraightHorizontal")
+	if (name == "DefaultStraightHorizontalBlock" || name == "StraightHorizontalBlock")
 		return std::make_unique<StraightHorizontalTile>();
 	// 左上タイル
-	if (name == "LeftUp")
+	if (name == "LeftUpBlock")
 		return std::make_unique<LeftUpTile>();
 	// 左下タイル
-	if (name == "LeftDown")
+	if (name == "LeftDownBlock")
 		return std::make_unique<LeftDownTile>();
 	// 右上タイル
-	if (name == "RightUp")
+	if (name == "RightUpBlock")
 		return std::make_unique<RightUpTile>();
 	// 右下タイル
-	if (name == "RightDown")
+	if (name == "RightDownBlock")
 		return std::make_unique<RightDownTile>();
 	// 十字タイル
-	if (name == "Cross")
+	if (name == "CrossBlock")
 		return std::make_unique<CrossTile>();
 	// スタートタイル
-	if (name == "Start")
+	if (name == "StartBlock")
 		return std::make_unique<StartTile>();
 	// ゴールタイル
-	if (name == "Goal")
+	if (name == "GoalBlock")
 		return std::make_unique<GoalTile>();
 	// 侵入不可タイル
 	if (name == "Block")

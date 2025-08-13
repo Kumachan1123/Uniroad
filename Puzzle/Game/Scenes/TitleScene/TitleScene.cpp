@@ -45,6 +45,10 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// デバイスリソースを取得
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
+	// 空を作成する
+	m_pSky = std::make_unique<Sky>(m_pCommonResources);
+	// 空を初期化する
+	m_pSky->Initialize();
 	// ロゴを作成する
 	m_pTitleLogo = std::make_unique<TitleLogo>();
 	// ロゴを初期化する
@@ -85,7 +89,7 @@ void TitleScene::Update(float elapsedTime)
 	// ビュー行列を取得
 	m_view = m_pFixedCamera->GetViewMatrix();
 	// カメラの位置を調整
-	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.75f, 7.0f));
+	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.75f, 6.0f));
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 	// カメラのターゲット位置をミニキャラのカメラ位置に設定
 	m_pFixedCamera->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
@@ -97,6 +101,8 @@ void TitleScene::Update(float elapsedTime)
 	m_pTitleButton->Update(elapsedTime);
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
+	// 空の更新
+	m_pSky->Update(elapsedTime);
 	// 座標を初期化
 	Vector3 position(Vector3(0, 0, 0));
 	// Y軸に90°回転
@@ -114,8 +120,6 @@ void TitleScene::Update(float elapsedTime)
 	// ボタンが押された場合
 	if (m_pTitleButton->IsPressed())
 	{
-		//// フェードアウトに切り替える
-		//m_pFade->SetState(Fade::FadeState::FadeOut);
 		// ミニキャラのタイトルアニメーションを終了状態にする
 		m_pMiniCharacterBase->SetTitleAnimationState(CONTINUE);
 		// 押されたかをリセット
@@ -141,6 +145,8 @@ void TitleScene::Update(float elapsedTime)
 */
 void TitleScene::Render()
 {
+	// 空を描画する
+	m_pSky->Render(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 	// 以下、2D描画のものを描画する
