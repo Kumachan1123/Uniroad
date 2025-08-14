@@ -69,6 +69,8 @@ private:
 	IScene::SceneID m_nextSceneID;
 	// カメラ
 	std::unique_ptr<FixedCamera> m_pFixedCamera;
+	// デバッグカメラ
+	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// ロゴ
 	std::unique_ptr<TitleLogo> m_pTitleLogo;
 	// ボタン

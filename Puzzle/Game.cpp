@@ -34,8 +34,8 @@ Game::Game() noexcept(false)
 	, m_textureManager{}// テクスチャマネージャ
 	, m_fullscreen{ FALSE }// フルスクリーン状態
 {
-	// デバイスリソースを作成する
-	m_deviceResources = std::make_unique<DX::DeviceResources>();
+	// デバイスリソースを作成する(ステンシルバッファを使用するため、DXGI_FORMAT_D24_UNORM_S8_UINTを指定)
+	m_deviceResources = std::make_unique<DX::DeviceResources>(DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_FORMAT_D24_UNORM_S8_UINT);
 	// デバイス通知を登録する
 	m_deviceResources->RegisterDeviceNotify(this);
 }
@@ -210,7 +210,7 @@ void Game::Clear()
 	// 深度ステンシルビューを取得する
 	auto depthStencil = m_deviceResources->GetDepthStencilView();
 	// レンダリングターゲットビューをクリアする
-	context->ClearRenderTargetView(renderTarget, Colors::Gray);
+	context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
 	// 深度ステンシルビューをクリアする
 	context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	// レンダーターゲットと深度ステンシルビューを設定する

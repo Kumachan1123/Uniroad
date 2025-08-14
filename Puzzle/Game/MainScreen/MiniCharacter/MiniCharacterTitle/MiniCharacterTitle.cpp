@@ -66,10 +66,15 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	assert(commonResources);
 	// 共通リソースを設定する
 	m_pCommonResources = commonResources;
+
 	// 現在位置に反映
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
 	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	// 影を作成
+	m_pShadow = std::make_unique<Shadow>();
+	// 影の初期化
+	m_pShadow->Initialize(m_pCommonResources);
 }
 /*
 *	@brief タイトルシーン用のミニキャラの更新処理を行う
@@ -130,8 +135,12 @@ void MiniCharacterTitle::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 */
 void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+
 	// 砲塔部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
+	// 影を描画する
+	m_pShadow->Render(view, proj, m_currentPosition, 1.0f);
+
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();

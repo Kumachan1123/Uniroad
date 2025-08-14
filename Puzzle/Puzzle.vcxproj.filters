@@ -112,6 +112,9 @@
     <ClInclude Include="KumachiLib\ShaderBuffer\ShaderBuffer.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleAnimationState\TitleAnimationState.h" />
+    <ClInclude Include="Game\Scenes\TitleScene\Road\Road.h" />
+    <ClInclude Include="Game\Sky\Sky.h" />
+    <ClInclude Include="Game\MainScreen\Shadow\Shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -183,6 +186,9 @@
     <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
     <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.cpp" />
+    <ClCompile Include="Game\Scenes\TitleScene\Road\Road.cpp" />
+    <ClCompile Include="Game\Sky\Sky.cpp" />
+    <ClCompile Include="Game\MainScreen\Shadow\Shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -204,6 +210,7 @@
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="ClassDiagram.cd" />
     <None Include="HLSL\Counter\Counter.hlsli" />
+    <None Include="HLSL\Sky\Header.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -222,5 +229,7 @@
     <FxCompile Include="HLSL\Counter\VS_Counter.hlsl" />
     <FxCompile Include="HLSL\Fade\PS_Fade.hlsl" />
     <FxCompile Include="HLSL\Fade\VS_Fade.hlsl" />
+    <FxCompile Include="HLSL\Sky\PS_Sky.hlsl" />
+    <FxCompile Include="HLSL\Sky\VS_Sky.hlsl" />
   </ItemGroup>
 </Project>

@@ -93,6 +93,7 @@ void Sky::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleM
 	// モデルを描画
 	m_pModel->Draw(context, *states, m_world, view, proj, false, [&]
 		{
+
 			// 頂点シェーダを設定する
 			context->VSSetShader(m_vs.Get(), nullptr, 0);
 			// ピクセルシェーダを設定する

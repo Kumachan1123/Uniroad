@@ -96,6 +96,8 @@ void TitleScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
+	// デバッグカメラを更新する
+	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
 	m_view = m_pFixedCamera->GetViewMatrix();
 	// カメラの位置を調整
@@ -169,7 +171,6 @@ void TitleScene::Render()
 	m_pTitleButton->Render();
 	// フェードを描画する
 	m_pFade->Render();
-
 }
 /*
 *	@brief シーンIDを取得する
@@ -201,7 +202,7 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 		break;
 	case 1: // 設定メニューボタンが押された場合
 		// 設定メニューへ
-		//return IScene::SceneID::SETTINGMENU;
+		return IScene::SceneID::TITLE;
 		break;
 	case 2: // ゲーム終了ボタンが押された場合
 		// アプリケーションを終了する
@@ -228,6 +229,8 @@ void TitleScene::CreateCamera()
 	// 固定カメラを作成する
 	m_pFixedCamera = std::make_unique<FixedCamera>();
 	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
+	m_debugCamera = std::make_unique<mylib::DebugCamera>();
+	m_debugCamera->Initialize(rect.right, rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(60.0f),

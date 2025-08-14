@@ -90,7 +90,6 @@ void TitleLogo::Update(float elapsedTime)
 void TitleLogo::Render()
 {
 	// ‰æ‘œ‚ð•`‰æ
-	//m_pImage->DrawQuad(m_logoRect, 0, m_frameCols, m_frameRows);
 	m_pImage->DrawQuadWithBuffer(m_logoRect, m_spriteSheetBuffer);
 }
 /*
