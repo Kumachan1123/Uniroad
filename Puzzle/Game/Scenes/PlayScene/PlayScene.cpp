@@ -50,6 +50,14 @@ void PlayScene::Initialize(CommonResources* resources)
 	CreateViewports();
 	// デバイスリソースを取得
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
+	// 空を作成する
+	m_pSky = std::make_unique<Sky>(m_pCommonResources);
+	// 空を初期化する
+	m_pSky->Initialize();
+	// 空の位置を設定
+	m_pSky->SetPosition(Vector3(0.0f, 10.0f, 0.0f));
+	// 天球のスケールを設定
+	m_pSky->SetScale(Vector3(0.1f));
 	// マウスを作成する
 	m_pMouse = std::make_unique<MyMouse>();
 	// マウスを初期化する
@@ -118,6 +126,12 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pSpeedUpButton = std::make_unique<SpeedUpButton>();
 	// スピードアップボタンを初期化する
 	m_pSpeedUpButton->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// フェードを作成する
+	m_pFade = std::make_unique<Fade>();
+	// フェードを初期化する
+	m_pFade->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// フェードインに移行
+	m_pFade->SetState(Fade::FadeState::FadeIn);
 }
 /*
 *   @brief 更新処理
@@ -131,6 +145,8 @@ void PlayScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 経過時間を加算
 	m_time += elapsedTime;
+	// 空の更新
+	m_pSky->Update(elapsedTime);
 	// スピードアップボタンの更新
 	m_pSpeedUpButton->Update(elapsedTime);
 	// スピードアップボタンが押された場合、ゲーム内経過時間を倍にする
@@ -196,8 +212,17 @@ void PlayScene::Update(float elapsedTime)
 	m_pMiniCharacterBase->Update(inGameTime, Vector3::Zero, Quaternion::Identity);
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
-	// アニメーションが終わったらシーン変更
-	if (m_pResultAnimation->IsAnimationEnd() && m_pResultUI->GetSceneNum() > -1)m_isChangeScene = true;
+	// フェードの更新
+	m_pFade->Update(elapsedTime);
+	// フェードインが終わったらフェード状態をなくす
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
+	// アニメーションが終わったらフェードアウトに移行
+	if (m_pResultAnimation->IsAnimationEnd() && //	アニメーションが終わって
+		m_pResultUI->GetSceneNum() != ResultUI::SceneID::NONE &&// 	// リザルトUIのシーン番号が無効でなくて
+		m_pResultUI->IsMouseClicked()) //	マウスがクリックされていたら
+		m_pFade->SetState(Fade::FadeState::FadeOut);
+	// フェードアウトが完了していたら、シーン遷移フラグを立てる
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 }
 /*
 *	@brief 描画処理
@@ -217,6 +242,8 @@ void PlayScene::Render()
 		// --- 左側: ゲーム画面用ビューポート ---
 		context->RSSetViewports(1, &m_viewPortGame);
 		// ここでゲーム画面を描画
+		// 	// 空を描画する
+		m_pSky->Render(m_view, m_projectionGame);
 		// CSVマップの描画
 		m_pCSVMap->Render(m_view, m_projectionGame);
 		// CSVアイテムの描画
@@ -246,6 +273,8 @@ void PlayScene::Render()
 	// 結果アニメーションが有効な場合は一つのビューポートでの描画
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
+		// 空を描画する
+		m_pSky->Render(m_view, m_projectionResult);
 		// リザルト用固定カメラのビュー行列を取得
 		m_pCSVMap->Render(m_view, m_projectionResult);
 		// CSVアイテムの描画
@@ -257,7 +286,8 @@ void PlayScene::Render()
 		// 結果UIの描画
 		if (m_pResultAnimation->IsAnimationEnd())m_pResultUI->Render();
 	}
-
+	// フェードを描画する
+	m_pFade->Render();
 }
 /*
 *	@brief 終了
@@ -277,8 +307,8 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-		auto sceneID = m_pResultUI->GetSceneNum();
-		switch (sceneID)
+		// 遷移先のシーン番号によって分岐
+		switch (m_pResultUI->GetSceneNum())
 		{
 		case ResultUI::REPLAY: // リプレイ選択
 			// リプレイ画面へ
@@ -314,19 +344,19 @@ void PlayScene::CreateCamera()
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
 		static_cast<float>(rect.right * 0.7f) / static_cast<float>(rect.bottom),
-		0.1f, 100.0f
+		0.1f, 1000.0f
 	);
 	// 射影行列(操作画面用)を作成する
 	m_projectionControll = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
 		static_cast<float>(rect.right * 0.3f) / static_cast<float>(rect.bottom),
-		0.1f, 100.0f
+		0.1f, 1000.0f
 	);
 	// 射影行列(リザルト用)を作成する
 	m_projectionResult = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 100.0f
+		0.1f, 1000.0f
 	);
 }
 /*

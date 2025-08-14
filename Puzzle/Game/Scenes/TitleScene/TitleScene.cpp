@@ -49,6 +49,16 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
 	m_pSky->Initialize();
+	// 空の位置を設定
+	m_pSky->SetPosition(Vector3(0.0f, 40.0f, 0.0f));
+	// 空のスケールを設定
+	m_pSky->SetScale(Vector3(0.2f));
+	// 空の回転速度を設定
+	m_pSky->SetRotationSpeed(1.0f);
+	// 道路を作成する
+	m_pRoad = std::make_unique<Road>(m_pCommonResources);
+	// 道路を初期化する
+	m_pRoad->Initialize();
 	// ロゴを作成する
 	m_pTitleLogo = std::make_unique<TitleLogo>();
 	// ロゴを初期化する
@@ -68,7 +78,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.5f, 0.0f), 0.0f));
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.45f, 0.0f), 0.0f));
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 	// カメラを作成する
@@ -89,10 +99,10 @@ void TitleScene::Update(float elapsedTime)
 	// ビュー行列を取得
 	m_view = m_pFixedCamera->GetViewMatrix();
 	// カメラの位置を調整
-	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.75f, 6.0f));
+	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.8f, 5.0f));
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 	// カメラのターゲット位置をミニキャラのカメラ位置に設定
-	m_pFixedCamera->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
+	m_pFixedCamera->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 2.5f, targetPos.z));
 	// カメラの座標を更新
 	m_pFixedCamera->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCamera->GetCameraDistance());
 	// ロゴを更新
@@ -103,6 +113,8 @@ void TitleScene::Update(float elapsedTime)
 	m_pFade->Update(elapsedTime);
 	// 空の更新
 	m_pSky->Update(elapsedTime);
+	// 道路の更新
+	m_pRoad->Update(elapsedTime);
 	// 座標を初期化
 	Vector3 position(Vector3(0, 0, 0));
 	// Y軸に90°回転
@@ -134,8 +146,7 @@ void TitleScene::Update(float elapsedTime)
 		m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
-	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)
-		m_isChangeScene = true;
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 }
 /*
 *	@brief 描画処理
@@ -147,6 +158,8 @@ void TitleScene::Render()
 {
 	// 空を描画する
 	m_pSky->Render(m_view, m_projection);
+	// 道路を描画する
+	m_pRoad->Render(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 	// 以下、2D描画のものを描画する

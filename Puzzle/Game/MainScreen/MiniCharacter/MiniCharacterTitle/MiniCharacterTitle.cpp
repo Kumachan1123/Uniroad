@@ -214,9 +214,9 @@ void MiniCharacterTitle::ExecuteAnimation(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 目標座標を初期化
 	// STARTでつかう目標座標
-	Vector3 targetPosition(0.0f, -0.5f, 0.0f);
+	Vector3 targetPosition(0.0f, -0.45f, 0.0f);
 	// CONTINUEでつかう目標座標
-	Vector3 goalPosition(10.0f, -0.5f, 0.0f);
+	Vector3 goalPosition(10.0f, -0.45f, 0.0f);
 	// アニメーションの実行
 	switch (GetTitleAnimationState())
 	{

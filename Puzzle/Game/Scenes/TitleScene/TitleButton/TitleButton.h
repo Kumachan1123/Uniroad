@@ -59,12 +59,17 @@ private:
 	void CreateAnimationSequence();
 	// 定数バッファを更新
 	void UpdateConstantBuffer()override;
+public:
+	// public定数
+	// ボタンが押されていない状態のインデックス
+	static const int NONE_BUTTON_INDEX;
 private:
 	// private定数
 	// 表示位置（左上）
 	static const std::vector<DirectX::SimpleMath::Vector2> POSITIONS;
 	// 表示サイズ
 	static const std::vector<DirectX::SimpleMath::Vector2> SIZES;
+
 private:
 	// private変数
 	// 共通リソース 

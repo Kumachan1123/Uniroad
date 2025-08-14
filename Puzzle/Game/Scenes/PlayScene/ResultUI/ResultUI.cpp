@@ -32,6 +32,7 @@ ResultUI::ResultUI()
 	, m_hit(false) // ヒットフラグ
 	, m_enable(false) // このクラスが有効かどうか
 	, m_canPress(false) // ボタンが押せるかどうか
+	, m_isMouseClicked(false) // マウスクリックフラグ
 {
 	// なし
 }
@@ -203,8 +204,10 @@ void ResultUI::Update(const float elapsedTime)
 	}
 	// ヒット無しなら選択インデックスを無効値に設定
 	if (!m_hit) m_menuIndex = INVALID_MENU_INDEX;
+	// マウスクリック状態を更新
+	m_isMouseClicked = MouseClick::IsLeftMouseButtonPressed(mouseState);
 	// 左クリックされたら選択メニューのシーンIDを更新
-	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_canPress)
+	if (m_isMouseClicked && m_canPress)
 		m_num = static_cast<SceneID>(m_menuIndex);
 }
 /*

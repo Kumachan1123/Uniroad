@@ -18,6 +18,8 @@ const std::vector<DirectX::SimpleMath::Vector2> TitleButton::SIZES =
 	DirectX::SimpleMath::Vector2(0.2f, 0.07f), // 設定メニューボタンのサイズ
 	DirectX::SimpleMath::Vector2(0.2f, 0.07f)  // ゲーム終了ボタンのサイズ
 };
+// 何も押されていない状態のインデックス
+const int TitleButton::NONE_BUTTON_INDEX = -1;
 
 
 
@@ -143,7 +145,7 @@ void TitleButton::Update(float elapsedTime)
 	for (int i = 0; i < m_buttons.size(); i++)
 		if (m_isHit[i])m_hitButtonIndex = i;
 	// マウスが当たって左クリックされたら
-	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pAnimation->IsPaused())
+	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pAnimation->IsPaused() && m_hitButtonIndex > NONE_BUTTON_INDEX)
 	{
 		// クリックで再開
 		m_pAnimation->Resume();
@@ -151,6 +153,7 @@ void TitleButton::Update(float elapsedTime)
 		m_pAnimation->AdvanceSequence();
 		// 押されたボタンの番号を設定
 		m_pressedButtonIndex = m_hitButtonIndex;
+		// ボタンが押されたフラグを立てる
 		m_isPressed = true;
 	}
 	// アニメーションフェーズが3（移動中）で、アニメーションが一時停止していない場合は一時停止する

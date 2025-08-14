@@ -3,12 +3,12 @@
 // タイル種ごとの進行可能タイル
 static const std::unordered_map<std::string, std::unordered_map<Direction, std::vector<std::string>>> s_tileConnectionTable =
 {
-	{"DefaultStraightVertical",
+	{"DefaultStraightVerticalBlock",
 	{
 		{Direction::UP,{  "StraightVerticalBlock","RightDownBlock", "LeftDownBlock"}},
 		{Direction::DOWN,{ "StraightVerticalBlock","RightUpBlock", "LeftUpBlock"}}
 	}},
-	{"DefaultStraightHorizontal",
+	{"DefaultStraightHorizontalBlock",
 	{
 		{Direction::LEFT,{ "StraightHorizontalBlock","RightDownBlock", "RightUpBlock"}},
 		{Direction::RIGHT,{  "StraightHorizontalBlock","LeftDownBlock", "LeftUpBlock"}}

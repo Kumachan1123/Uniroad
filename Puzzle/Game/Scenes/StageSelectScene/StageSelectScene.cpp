@@ -49,6 +49,14 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// カメラを作成する
 	CreateCamera();
+	// 空を作成する
+	m_pSky = std::make_unique<Sky>(m_pCommonResources);
+	// 空を初期化する
+	m_pSky->Initialize();
+	// 空の位置を設定
+	m_pSky->SetPosition(Vector3(0.0f, 0.0f, 0.0f));
+	// 天球のスケールを設定
+	m_pSky->SetScale(Vector3(2.0f));
 	// ステージセレクトを作成する
 	m_pStageSelect = std::make_unique<StageSelect>(m_pCommonResources);
 	// ステージセレクトを初期化する
@@ -78,6 +86,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 		m_pStageGates.back()->Initialize();
 		// ステージの入り口の位置を設定
 		m_pStageGates.back()->SetPosition(center);
+
 	}
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
@@ -97,6 +106,12 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(-4.0f, -0.5f, 2.0f), 0.0f));
 	// 最初に追従する座標を設定
 	m_pTrackingCamera->SetTargetPosition(Vector3(5.0f, -0.5f, 2.0f));
+	// フェードを作成する
+	m_pFade = std::make_unique<Fade>();
+	// フェードを初期化する
+	m_pFade->Initialize(m_pCommonResources, m_pCommonResources->GetDeviceResources()->GetOutputSize().right, m_pCommonResources->GetDeviceResources()->GetOutputSize().bottom);
+	// フェードインに移行
+	m_pFade->SetState(Fade::FadeState::FadeIn);
 }
 /*
 *	@brief 更新
@@ -106,8 +121,13 @@ void StageSelectScene::Initialize(CommonResources* resources)
 */
 void StageSelectScene::Update(float elapsedTime)
 {
+	// 名前空間のエイリアス
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// 空の更新
+	m_pSky->Update(elapsedTime);
+	// フェードの更新
+	m_pFade->Update(elapsedTime);
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// トラッキングカメラに追従対象の座標を設定
@@ -124,30 +144,34 @@ void StageSelectScene::Update(float elapsedTime)
 	Quaternion angle(Quaternion::Identity);
 	// ミニキャラの更新
 	m_pMiniCharacterBase->Update(elapsedTime, position, angle);
-	// 平面にビュー行列を渡す
-	m_pPlaneArea->SetView(m_view);
-	// 平面に射影行列を渡す
-	m_pPlaneArea->SetProjection(m_projection);
-	// 平面を更新
-	m_pPlaneArea->Update(elapsedTime);
-	// ステートの入り口を更新
-	for (auto& gate : m_pStageGates)gate->Update(elapsedTime);
-	// マウスステートを取得
-	const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	// 左クリックを検知
-	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
+	// フェード状態が「なし」の場合のみ更新を行う
+	if (m_pFade->GetState() == Fade::FadeState::None)
 	{
-		// ステージ番号を取得
-		m_stageNumber = m_pPlaneArea->GetHitPlaneIndex();
-		// シーン遷移
-		m_isChangeScene = true;
+		// 平面にビュー行列を渡す
+		m_pPlaneArea->SetView(m_view);
+		// 平面に射影行列を渡す
+		m_pPlaneArea->SetProjection(m_projection);
+		// 平面を更新
+		m_pPlaneArea->Update(elapsedTime);
+		// ステートの入り口を更新
+		for (auto& gate : m_pStageGates)gate->Update(elapsedTime);
+		// マウスステートを取得
+		const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+		// 左クリックを検知
+		if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
+		{
+			// ステージ番号を取得
+			m_stageNumber = m_pPlaneArea->GetHitPlaneIndex();
+			// フェードアウトに移行
+			m_pFade->SetState(Fade::FadeState::FadeOut);
+		}
 	}
 	// 何か選ばれているなら移動フラグを立てる
-	if (m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
-	{
-		m_pMiniCharacterBase->SetMoving(true);
-	}
-
+	if (m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)	m_pMiniCharacterBase->SetMoving(true);
+	// フェードインが終わったらフェード状態をなくす
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
+	// フェードアウトが完了していたら、シーン遷移フラグを立てる
+	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 }
 
 /*
@@ -158,7 +182,9 @@ void StageSelectScene::Update(float elapsedTime)
 */
 void StageSelectScene::Render()
 {
+	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
+
 	// ステージセレクトの描画
 	m_pStageSelect->Render(m_view, m_projection);
 	// ステージの入り口の描画
@@ -167,6 +193,10 @@ void StageSelectScene::Render()
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 	// 平面の描画
 	m_pPlaneArea->Render();
+	// 空を描画する
+	m_pSky->Render(m_view, m_projection);
+	// フェードを描画する
+	m_pFade->Render();
 #ifdef _DEBUG
 	// --- デバッグ情報---
 	const auto debugString = m_pCommonResources->GetDebugString();
@@ -243,7 +273,7 @@ void StageSelectScene::CreateCamera()
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 100.0f
+		0.1f, 10000.0f
 	);
 }
 /*

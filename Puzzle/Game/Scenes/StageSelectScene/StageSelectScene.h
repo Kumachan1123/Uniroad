@@ -29,6 +29,8 @@
 #include "Game/Scenes/StageSelectScene/StageSelect/StageSelect.h"
 #include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
 #include "Game/Scenes/StageSelectScene/StageGate/StageGate.h"
+#include "Game/Sky/Sky.h"
+#include "Game/Fade/Fade.h"
 
 // 前方宣言
 class CommonResources;
@@ -89,6 +91,10 @@ private:
 	std::vector<std::unique_ptr<StageGate>> m_pStageGates;
 	// 平面
 	std::unique_ptr<PlaneArea> m_pPlaneArea;
+	// 空
+	std::unique_ptr<Sky> m_pSky;
+	// フェード
+	std::unique_ptr<Fade> m_pFade;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列

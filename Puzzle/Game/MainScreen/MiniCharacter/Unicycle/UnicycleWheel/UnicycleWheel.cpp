@@ -5,6 +5,12 @@
 #include "pch.h"
 #include "UnicycleWheel.h"
 #include "Game/MainScreen/MiniCharacter/Unicycle/UnicycleBody/UnicycleBody.h"
+
+// 一輪車のタイヤの半径
+const float UnicycleWheel::WHEEL_RADIUS = 1.0f;
+// プレイシーン以外でのタイヤの回転速度
+const float UnicycleWheel::WHEEL_SPEED = 3.0f;
+
 /*
 *	@brief コンストラクタ
 *	@details 一輪車のタイヤクラスのコンストラクタ
@@ -81,20 +87,24 @@ void UnicycleWheel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	if (!pMiniCharacter || !pMiniCharacter->IsMoving())return;
 	// キャラクターそのものから速度ベクトルを取得する
 	m_MiniCharacterVelocity = pMiniCharacter->GetVelocity();
-	// 車輪半径
-	const float wheelRadius = 1.0f;
 	// 進行速度
 	float wheelSpeed = m_MiniCharacterVelocity.Length();
+	// 親がMiniCharacterの時じゃない（プレイシーンじゃない）場合
+	if (!dynamic_cast<MiniCharacter*>(pMiniCharacter))
+	{
+		// 速度ベクトルを設定
+		m_MiniCharacterVelocity = Vector3::Forward;
+		// 進行速度を3倍にする
+		wheelSpeed = m_MiniCharacterVelocity.Length() * WHEEL_SPEED;
+	}
 	// 進んだ距離 = 速度 × 時間、回転角度 = 距離 ÷ 半径
-	float deltaAngle = wheelSpeed * elapsedTime / wheelRadius;
+	float deltaAngle = wheelSpeed * elapsedTime / WHEEL_RADIUS;
 	// 累積回転角度に加算
 	m_wheelAngle += deltaAngle;
 	// 回転クォータニオン生成（右回転）
 	Quaternion wheelRotation = Quaternion::CreateFromAxisAngle(Vector3::Right, m_wheelAngle);
 	// 合成して最終回転に
 	m_currentAngle = wheelRotation * m_currentAngle;
-	// 親がMiniCharacterの時じゃない（プレイシーンじゃない）場合ホイールの回転速度を調整する
-	if (!dynamic_cast<MiniCharacter*>(pMiniCharacter))wheelSpeed = 1.0f * elapsedTime * 30;
 	// 時間経過でホイールを回転させる
 	m_currentAngle = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, m_time * wheelSpeed) * m_currentAngle;
 }
@@ -113,7 +123,7 @@ void UnicycleWheel::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
 	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(1) * // スケール
+	m_worldMatrix = Matrix::CreateScale(Vector3::One) * // スケール
 		Matrix::CreateFromQuaternion(m_currentAngle) * // 回転
 		Matrix::CreateTranslation(m_currentPosition); // 位置
 	// モデルを描画する

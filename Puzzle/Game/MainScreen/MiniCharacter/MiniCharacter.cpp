@@ -230,6 +230,7 @@ void MiniCharacter::UpdateTileEvents()
 		int col = GetParent()->GetCSVMap()->GetColFromPosition(m_currentPosition);
 		// CSVアイテムが存在する場合、アイテムを取得する
 		const auto& csvItem = GetParent()->GetCSVItem();
+		// CSVアイテムが存在しない場合は何もしない
 		if (!csvItem)return;
 		// そのタイルにアイテムがあるなら獲得する
 		const auto& item = GetParent()->GetCSVItem()->GetItemData(row, col);
@@ -238,8 +239,6 @@ void MiniCharacter::UpdateTileEvents()
 		{
 			// アイテムを獲得する
 			item.itemBasePtr->OnGet(this);
-			// アイテムを消す
-			//GetParent()->GetCSVItem()->RemoveItem(row, col);
 		}
 	}
 	// 現在のタイル名が空白である場合

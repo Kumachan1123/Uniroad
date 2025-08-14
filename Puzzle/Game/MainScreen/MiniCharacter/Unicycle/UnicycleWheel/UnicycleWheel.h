@@ -76,6 +76,13 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 後処理を行う
 	void Finalize();
+
+private:
+	// private定数
+	// 車輪半径
+	static const float WHEEL_RADIUS;
+	// プレイシーン以外の場合の回転速度
+	static const float WHEEL_SPEED;
 private:
 	// private関数
 	// 共通リソース

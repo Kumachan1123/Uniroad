@@ -6,9 +6,9 @@
 #include "Fade.h"
 
 // フェード最小値
-const float Fade::FADE_MIN = -1.01f;
+const float Fade::FADE_MIN = -1.0f;
 // フェード最大値
-const float Fade::FADE_MAX = 1.01f;
+const float Fade::FADE_MAX = 1.0f;
 // フェード速度
 const float Fade::FADE_SPEED = 1.5f;
 // フェード初期値

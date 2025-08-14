@@ -54,6 +54,10 @@ public:
 	void SetStageNum(int stageNum) { m_stageNum = stageNum; }
 	// ステージ番号を取得
 	int GetStageNum() const { return m_stageNum; }
+	// マウスクリックを取得
+	bool IsMouseClicked() const { return m_isMouseClicked; }
+	// マウスクリックを設定
+	void SetMouseClicked(bool isClicked) { m_isMouseClicked = isClicked; }
 public:
 	// public関数
 	// コンストラクタ
@@ -77,10 +81,12 @@ private:
 	// private関数
 	// 画面リサイズ時の処理
 	void OnResize();
-private:
-	// private定数
+public:
+	// public定数
 	// 無効なメニューインデックス
 	static const int INVALID_MENU_INDEX;
+private:
+	// private定数
 	// 通常の表示位置補正値(全画面基準）
 	static const float DISPLAY_OFFSET;
 	// ボタンの移動にかかる時間
@@ -119,4 +125,6 @@ private:
 	std::vector<DirectX::SimpleMath::Vector2> m_targetPositions;
 	// 進行度
 	std::vector<float> m_easeTimers;
+	// マウスクリック
+	bool m_isMouseClicked;
 };

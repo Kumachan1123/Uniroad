@@ -31,6 +31,8 @@
 #include "KumachiLib/Easing/Easing.h"
 #include "Game/Scenes/PlayScene/ResultUI/ResultUI.h"
 #include "Game/MainScreen/SpeedUpButton/SpeedUpButton.h"
+#include "Game/Fade/Fade.h"
+#include "Game/Sky/Sky.h"
 
 // 前方宣言
 class CommonResources;
@@ -70,8 +72,8 @@ public:
 	void Render()override;
 	// 終了
 	void Finalize()override;
-
 private:
+	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
 	// 各種ビューポートを設定する
@@ -79,6 +81,7 @@ private:
 	// デバッグ文字を表示
 	void DrawDebugString();
 private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// デバッグカメラ
@@ -109,7 +112,10 @@ private:
 	std::unique_ptr<ResultUI> m_pResultUI;
 	// スピードアップボタン
 	std::unique_ptr<SpeedUpButton> m_pSpeedUpButton;
-
+	// フェード
+	std::unique_ptr<Fade> m_pFade;
+	// 空
+	std::unique_ptr<Sky> m_pSky;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列(ゲーム画面用)
