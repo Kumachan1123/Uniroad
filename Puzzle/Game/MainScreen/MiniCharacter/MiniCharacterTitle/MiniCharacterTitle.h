@@ -135,11 +135,13 @@ public:
 	// 部品番号増やす
 	static void IncrementPartsNumber() { s_partsNumber++; }
 private:
-	// 砲塔カウント
+	// private定数
+	// ノードカウント
 	static int s_nodeCount;
-	// 砲塔部品カウント
+	// 部品カウント
 	static int s_partsNumber;
 private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 親

@@ -184,7 +184,6 @@ void StageSelectScene::Render()
 {
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
-
 	// ステージセレクトの描画
 	m_pStageSelect->Render(m_view, m_projection);
 	// ステージの入り口の描画

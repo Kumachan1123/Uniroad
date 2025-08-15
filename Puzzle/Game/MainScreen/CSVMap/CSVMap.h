@@ -21,6 +21,7 @@
 #include "KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
 #include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
+
 // 前方宣言
 class CommonResources;
 
@@ -52,8 +53,6 @@ public:
 	CSVMap(CommonResources* resources);
 	// デストラクタ
 	~CSVMap();
-	// 初期化
-	void LoadModel();
 	// CSV形式のマップを読み込む
 	void LoadMap(const std::string& filePath);
 	// 当たり判定描画
@@ -64,19 +63,25 @@ private:
 	// private関数
 	// 辞書を初期化する
 	void InitializeTileDictionary();
+	// 深度ステンシルの設定
+	void CreateDepthStencilBuffer(ID3D11Device* pDevice);
 private:
+	// private定数
 	// 場外のタイルデータ
 	const MapTileData m_outOfMapData = { {""},DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f) };
-private:
-	CommonResources* m_pCommonResources;
 	//マップ
 	const int MAXCOL = 5;
 	const int MAXRAW = 5;
+private:
+	// privateメンバ変数
+	// 共通リソースへのポインタ
+	CommonResources* m_pCommonResources;
 	// タイルの辞書
 	std::unordered_map<std::string, TileInfo> m_tileDictionary;
 	// タイルのレンダリングデータ
 	std::vector<TileRenderData> m_tiles;
 	// マップデータ
 	std::vector<std::vector<MapTileData>> m_mapData;
-
+	// 深度ステンシル
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_pDepthStencilState;
 };

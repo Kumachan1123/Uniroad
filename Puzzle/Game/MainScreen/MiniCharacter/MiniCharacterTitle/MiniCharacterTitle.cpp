@@ -66,7 +66,6 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	assert(commonResources);
 	// 共通リソースを設定する
 	m_pCommonResources = commonResources;
-
 	// 現在位置に反映
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
@@ -99,7 +98,7 @@ void MiniCharacterTitle::Update(float elapsedTime, const DirectX::SimpleMath::Ve
 	assert(parent);
 	// タイトルシーン用アニメーション
 	ExecuteAnimation(elapsedTime);
-	// 砲塔部品を更新する　
+	// 部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
@@ -136,7 +135,7 @@ void MiniCharacterTitle::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
 
-	// 砲塔部品を描画する
+	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
 	// 影を描画する
 	m_pShadow->Render(view, proj, m_currentPosition, 1.0f);

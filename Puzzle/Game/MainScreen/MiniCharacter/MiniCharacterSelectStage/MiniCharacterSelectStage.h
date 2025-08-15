@@ -1,3 +1,7 @@
+/*
+*	@file MiniCharacterSelectStage.h
+*	@brief ミニキャラクターの処理を定義するクラス(ステージセレクト用)
+*/
 #pragma once
 // 標準ライブラリ
 #include <cassert>
@@ -17,12 +21,16 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
+#include "Game/MainScreen/Shadow/Shadow.h"
+
 // 前方宣言
 class CommonResources;
 
+// タイルベース
 class MiniCharacterSelectStage : public IComposite
 {
 public:
+	// public列挙型
 	// 部品ID
 	enum PartID : int
 	{
@@ -127,15 +135,19 @@ public:
 	// 部品番号増やす
 	static void IncrementPartsNumber() { s_partsNumber++; }
 private:
-	// 砲塔カウント
+	// private定数
+	// ノードカウント
 	static int s_nodeCount;
-	// 砲塔部品カウント
+	// 部品カウント
 	static int s_partsNumber;
 private:
+	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 親
 	IComponent* m_parent;
+	// 影
+	std::unique_ptr<Shadow> m_pShadow;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

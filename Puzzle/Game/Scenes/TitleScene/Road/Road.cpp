@@ -159,7 +159,5 @@ void Road::CreateDepthStencilBuffer(ID3D11Device* pDevice)
 	// 裏面も同じ設定
 	desc.BackFace = desc.FrontFace;
 	// 深度ステンシルステートを作成する
-	DX::ThrowIfFailed(
-		pDevice->CreateDepthStencilState(&desc, m_pDepthStencilState.ReleaseAndGetAddressOf())
-	);
+	DX::ThrowIfFailed(pDevice->CreateDepthStencilState(&desc, m_pDepthStencilState.ReleaseAndGetAddressOf()));
 }

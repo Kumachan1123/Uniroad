@@ -17,6 +17,8 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
+#include "Game/MainScreen/Shadow/Shadow.h"
+
 // 前方宣言
 class CommonResources;
 
@@ -24,6 +26,7 @@ class CommonResources;
 class MiniCharacter : public IComposite
 {
 public:
+	// public列挙型
 	// 部品ID
 	enum PartID : int
 	{
@@ -62,9 +65,6 @@ public:
 	DirectX::SimpleMath::Quaternion GetShakeQuaternion() const { return m_shakeQuaternion; }
 	// 揺れを設定する
 	void SetShakeQuaternion(const DirectX::SimpleMath::Quaternion& shakeQuaternion) { m_shakeQuaternion = shakeQuaternion; }
-
-
-
 	// 質量を取得する
 	float GetMass() const { return m_mass; }
 	// 質量を設定する
@@ -77,7 +77,6 @@ public:
 	CSVItem* GetCSVItem() { return nullptr; }
 	// 次に現れるタイルのクラスを取得する
 	NextTiles* GetNextTiles() { return nullptr; }
-
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 	// タイルに入ったかどうかを確認する
@@ -101,6 +100,7 @@ public:
 	// ゲームクリアフラグを切り替える時間を設定する
 	void SetGameClearSwitchTime(float time) { m_gameClearSwitchTime = time; }
 public:
+	// public関数
 	// コンストラクタ
 	MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -159,6 +159,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// 親
 	IComponent* m_parent;
+	// 影
+	std::unique_ptr<Shadow> m_pShadow;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

@@ -78,6 +78,10 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	UpdateSpeedByStartTile();
 	// ヒツジパーツをアタッチ
 	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	// 影を作成
+	m_pShadow = std::make_unique<Shadow>();
+	// 影の初期化
+	m_pShadow->Initialize(m_pCommonResources);
 }
 /*
 *	@brief プレイヤーの位置と角度を更新する
@@ -104,13 +108,11 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	// 次に生成されるタイルを決めるために速度ベクトルを設定する
 	if (m_parent->GetNextTiles() != nullptr && m_currentVelocity != Vector3::Zero)
 		m_parent->GetNextTiles()->SetMiniCharacterVelocity(m_currentVelocity);
-	// 砲塔部品を更新する　
+	// 部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 	// ゲームオーバー、ゲームクリア分岐処理
 	HandleGameOverAndClear(elapsedTime);
-
-
 }
 /*
 *	@brief プレイヤーの部品を追加する
@@ -145,8 +147,17 @@ void MiniCharacter::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 */
 void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// 砲塔部品を描画する
+	// SimpleMathの名前空間を使うためにusing宣言を追加
+	using namespace DirectX::SimpleMath;
+	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
+	// 影用に座標を定義
+	Vector3 shadowPosition = m_currentPosition;
+	// 影を少し浮かせる
+	shadowPosition.y += 0.01f;
+	// 影を描画する
+	m_pShadow->Render(view, proj, shadowPosition, 1.0f);
+
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();

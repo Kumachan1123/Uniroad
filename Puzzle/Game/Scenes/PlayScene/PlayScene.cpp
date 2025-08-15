@@ -176,7 +176,7 @@ void PlayScene::Update(float elapsedTime)
 		if (m_pMiniCharacterBase->IsGameClear())
 		{
 			// カメラの位置を調整
-			m_pFixedCameraResult->SetCameraDistance(Vector3(0.0f, 1.75f, 10.0f));
+			m_pFixedCameraResult->SetCameraDistance(Vector3(0.0f, 5.75f, 10.0f));
 			Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 			// カメラのターゲット位置をミニキャラのカメラ位置に設定
 			m_pFixedCameraResult->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
@@ -275,7 +275,7 @@ void PlayScene::Render()
 	{
 		// 空を描画する
 		m_pSky->Render(m_view, m_projectionResult);
-		// リザルト用固定カメラのビュー行列を取得
+		// CSVマップの描画
 		m_pCSVMap->Render(m_view, m_projectionResult);
 		// CSVアイテムの描画
 		m_pCSVItem->Render(m_view, m_projectionResult);

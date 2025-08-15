@@ -79,7 +79,6 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			// 位置計算
 			float posX = startX + col * tileSize - 350.0f;
 			float posY = startY + row * tileSize + 420.0f;
-
 			// タイルの種類に応じてテクスチャキーを変更して並べる
 			Add(textureKey
 				, Vector2(posX, posY)
@@ -103,7 +102,6 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 				, Vector2(0.6f, 0.6f)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
 				, UIType::ITEM);
-
 		}
 	}
 }
@@ -115,6 +113,7 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 */
 void Panel::Update(const float elapsedTime)
 {
+	// 必要な名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// マウスのヒットフラグをリセット
 	m_pMouse->SetHit(false);
@@ -143,16 +142,15 @@ void Panel::Update(const float elapsedTime)
 	}
 	// 経過時間を加算
 	m_time += elapsedTime;
-
 	// 全UI要素の経過時間を更新
-	for (int i = 0; i < m_pTiles.size(); i++)
-	{
-		m_pTiles[i]->SetTime(m_pTiles[i]->GetTime() + elapsedTime);
-
-	}
+	// タイルの経過時間を更新
+	for (int i = 0; i < m_pTiles.size(); i++)m_pTiles[i]->SetTime(m_pTiles[i]->GetTime() + elapsedTime);
+	// アイテムの経過時間を更新
 	for (int i = 0; i < m_pItems.size(); i++)
 	{
+		// アイテムのデータが存在する場合のみ更新
 		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
+			// アイテムの経過時間を更新
 			m_pItems[i].first->SetTime(m_pItems[i].first->GetTime() + elapsedTime);
 	}
 }
@@ -176,6 +174,7 @@ void Panel::Render()
 */
 void Panel::DrawTiles()
 {
+	// タイルの描画
 	for (unsigned int i = 0; i < m_pTiles.size(); i++)m_pTiles[i]->Render();
 }
 /*
@@ -186,17 +185,28 @@ void Panel::DrawTiles()
 */
 void Panel::DrawItems()
 {
+	// アイテムの描画
 	for (int i = 0; i < m_pItems.size(); i++)
 	{
+		// アイテムのデータが存在する場合のみ描画
 		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
-		{
 			m_pItems[i].first->Render();
-		}
 	}
 }
-
-
-void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor, UIType type)
+/*
+*	@brief パネルの追加
+*	@details パネルにUI要素を追加する
+*	@param key 画像のキー
+*	@param position 位置
+*	@param scale スケール
+*	@param anchor アンカー
+*	@param type UIの種類
+*	@return なし
+*/
+void Panel::Add(const std::string& key,
+	const DirectX::SimpleMath::Vector2& position,
+	const DirectX::SimpleMath::Vector2& scale,
+	KumachiLib::ANCHOR anchor, UIType type)
 {
 	// UIオブジェクトの生成
 	std::unique_ptr<Canvas> userInterface = std::make_unique<Canvas>(m_pCommonResources);
@@ -212,12 +222,19 @@ void Panel::Add(const std::string& key, const DirectX::SimpleMath::Vector2& posi
 	{
 		// アイテム情報を設定
 		ItemInfo itemInfo{};
-		itemInfo.isCollected = false; // 収集済みフラグを初期化
-		itemInfo.row = m_row; // 行番号を設定
-		itemInfo.col = m_col; // 列番号を設定
+		// 収集済みフラグを初期化
+		itemInfo.isCollected = false;
+		// 行番号を設定
+		itemInfo.row = m_row;
+		// 列番号を設定
+		itemInfo.col = m_col;
+		// アイテムのペアを定義
 		std::pair<std::unique_ptr<Canvas>, ItemInfo> item;
-		item.first = std::move(userInterface); // UIオブジェクトをセット
-		item.second = itemInfo; // アイテム情報をセット
+		// UIオブジェクトをセット
+		item.first = std::move(userInterface);
+		// アイテム情報をセット
+		item.second = itemInfo;
+		// アイテムをパネルに追加
 		m_pItems.push_back(std::move(item));
 	}
 	// 未知のUIタイプ

@@ -49,6 +49,7 @@ MiniCharacterSelectStage::MiniCharacterSelectStage(IComponent* parent, const Dir
 */
 MiniCharacterSelectStage::~MiniCharacterSelectStage()
 {
+	// ミニキャラクターの後処理を行う
 	Finalize();
 }
 /*
@@ -69,6 +70,10 @@ void MiniCharacterSelectStage::Initialize(CommonResources* resources)
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
 	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	// 影を作成
+	m_pShadow = std::make_unique<Shadow>();
+	// 影の初期化
+	m_pShadow->Initialize(m_pCommonResources);
 }
 /*
 *	@brief プレイヤーの位置と角度を更新する
@@ -105,7 +110,7 @@ void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMa
 	m_currentPosition.y = m_initialPosition.y;
 	// 親にカメラに渡すための座標を渡す
 	parent->SetCameraPosition(m_currentPosition);
-	// 砲塔部品を更新する　
+	// 部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
@@ -142,8 +147,10 @@ void MiniCharacterSelectStage::Detach(std::unique_ptr<IComponent> MiniCharacterP
 */
 void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// 砲塔部品を描画する
+	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
+	// 影を描画する
+	m_pShadow->Render(view, proj, m_currentPosition, 1.0f);
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();

@@ -212,8 +212,6 @@ void NextTiles::DrawPlacedTiles() const
 	}
 
 }
-
-
 /*
 *	@brief UI追加
 *	@details 次のタイルクラスにUIを追加する

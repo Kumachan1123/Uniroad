@@ -35,8 +35,6 @@ void Shadow::Initialize(CommonResources* resources)
 	ID3D11Device* pDevice = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 	// デバイスコンテキストを取得
 	ID3D11DeviceContext* context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	//// 共通ステートを取得
-	//CommonStates* states = m_pCommonResources->GetCommonStates();
 	// ベーシックエフェクトを設定(頂点カラーなし、テクスチャ有効、ライティング無効)
 	m_pBasicEffect = std::make_unique<BasicEffect>(pDevice);
 	m_pBasicEffect->SetVertexColorEnabled(false);
@@ -68,31 +66,27 @@ void Shadow::Render(
 	// DirectX・DirectX::SimpleMath名前空間を使用
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = m_pCommonResources->GetCommonStates();
+	// デバイスコンテキストを取得
+	const auto& context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
+	const auto& states = m_pCommonResources->GetCommonStates();
 	// アルファブレンドを適用する
-	context->OMSetBlendState(states->AlphaBlend(), nullptr, 0xffffffff);
-
+	context->OMSetBlendState(states->NonPremultiplied(), nullptr, 0xffffffff);
 	// 深度ステンシルステートを適用する
-	context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 1);	// 参照値：1
-
+	context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 1);
 	// カリングを設定する
-	context->RSSetState(states->CullCounterClockwise());
-
+	context->RSSetState(states->CullNone());
 	// テクスチャサンプラを適用する
 	ID3D11SamplerState* sampler = { states->LinearClamp() };
 	context->PSSetSamplers(0, 1, &sampler);
-
 	// 入力レイアウトを適用する
 	context->IASetInputLayout(m_pInputLayout.Get());
-
 	// エフェクトを設定し適用する
 	m_pBasicEffect->SetWorld(Matrix::Identity);
 	m_pBasicEffect->SetView(view);
 	m_pBasicEffect->SetProjection(projection);
 	m_pBasicEffect->SetTexture(m_pTexture.Get());
 	m_pBasicEffect->Apply(context);
-
 	// 影ポリゴンの頂点情報を定義する
 	VertexPositionTexture vertices[] = {
 		VertexPositionTexture(Vector3::Zero,Vector2(0.0f, 0.0f)),
