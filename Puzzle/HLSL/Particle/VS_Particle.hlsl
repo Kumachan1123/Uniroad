@@ -1,16 +1,12 @@
 #include "Particle.hlsli"
 
-PS_INPUT main(VS_INPUT input)
+PS_INPUT main(VS_INPUT input, uint vertexID : SV_VertexID)
 {
-	PS_INPUT output = (PS_INPUT)0;
-
-	//	ピクセルシェーダに渡す座標は、入力そのまま
-	output.Pos = float4(input.Pos,1);
-
-	//	色も指定値を使う
-	output.Color = input.Color;
-	//	UV座標もそのまま使う
-	output.Tex = input.Tex;
-	//	次のシェーダへ情報を渡す
-	return output;
+    PS_INPUT output = (PS_INPUT) 0;
+    output.Pos = float4(input.Pos, 1);
+    output.Color = input.Color;
+    output.Tex = input.Tex;
+    // インデックスをUVのz成分に詰めて渡す例（構造体にフィールドを追加しても良い）
+    output.ParticleIndex = vertexID; // ここで詰める
+    return output;
 }

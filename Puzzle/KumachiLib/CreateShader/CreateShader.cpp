@@ -151,6 +151,26 @@ void CreateShader::CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL:
 	}
 }
 /*
+*	@brief コンピュートシェーダーを作成
+*	@details コンピュートシェーダーを作成する
+*	@param fileName シェーダーのファイル名
+*	@param cs コンピュートシェーダーの格納先
+*	@return なし
+*/
+void CreateShader::CreateComputeShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11ComputeShader>& cs)
+{
+	// バイナリファイルを読み込む
+	BinaryFile CS = BinaryFile::LoadFile(fileName);
+	// コンピュートシェーダ作成
+	if (FAILED(m_pDevice->CreateComputeShader(CS.GetData(), CS.GetSize(), NULL, cs.ReleaseAndGetAddressOf())))
+	{
+		// エラー処理
+		MessageBox(0, L"CreateComputeShader Failed.", NULL, MB_OK);
+		// 終了
+		return;
+	}
+}
+/*
 *	@brief コンスタントバッファを作成
 *	@details コンスタントバッファを作成する
 *	@param cBuffer コンスタントバッファの格納先

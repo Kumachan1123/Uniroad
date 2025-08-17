@@ -231,5 +231,6 @@
     <FxCompile Include="HLSL\Fade\VS_Fade.hlsl" />
     <FxCompile Include="HLSL\Sky\PS_Sky.hlsl" />
     <FxCompile Include="HLSL\Sky\VS_Sky.hlsl" />
+    <FxCompile Include="HLSL\Particle\CS_Particle.hlsl" />
   </ItemGroup>
 </Project>

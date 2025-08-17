@@ -81,6 +81,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.45f, 0.0f), 0.0f));
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
+
 	// カメラを作成する
 	CreateCamera();
 }
@@ -99,7 +100,7 @@ void TitleScene::Update(float elapsedTime)
 	// デバッグカメラを更新する
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_pFixedCamera->GetViewMatrix();
+	m_view = m_debugCamera->GetViewMatrix();
 	// カメラの位置を調整
 	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.8f, 5.0f));
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
@@ -117,6 +118,7 @@ void TitleScene::Update(float elapsedTime)
 	m_pSky->Update(elapsedTime);
 	// 道路の更新
 	m_pRoad->Update(elapsedTime);
+
 	// 座標を初期化
 	Vector3 position(Vector3(0, 0, 0));
 	// Y軸に90°回転
@@ -164,6 +166,7 @@ void TitleScene::Render()
 	m_pRoad->Render(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
+
 	// 以下、2D描画のものを描画する
 	// ロゴを描画する
 	m_pTitleLogo->Render();

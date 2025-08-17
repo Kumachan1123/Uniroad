@@ -21,7 +21,8 @@ struct PS_INPUT
 {
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
-    float2 Tex : TEXCOORD;
+    float2 Tex : TEXCOORD0;
+    uint ParticleIndex : TEXCOORD1; // 追加
 };
 
 float3 HSVtoRGB(float3 hsv)
@@ -36,3 +37,14 @@ float3 GetRainbow(float time)
     return HSVtoRGB(float3(hue, 1.0, 1.0)); // HSVからRGBに変換
 }
 
+// 構造体はC++と揃えて下さい
+struct GPU_Particle
+{
+    float3 position;
+    float life;
+    float3 velocity;
+    float type;
+    float4 color;
+    float3 rotation;
+    float3 scale;
+};

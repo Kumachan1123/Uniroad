@@ -31,6 +31,8 @@ public:
 	void CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps);
 	// ジオメトリシェーダーを作成
 	void CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs);
+	// コンピュートシェーダーを作成
+	void CreateComputeShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11ComputeShader>& cs);
 	// 作ったインプットレイアウトを返す
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> GetInputLayout() { return m_pInputLayout; }
 	// コンスタントバッファを作成

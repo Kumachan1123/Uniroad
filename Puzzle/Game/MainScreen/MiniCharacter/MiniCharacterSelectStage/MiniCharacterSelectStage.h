@@ -14,7 +14,7 @@
 // 外部ライブラリ
 #include "Libraries/MyLib/MemoryLeakDetector.h"
 #include "Libraries/MyLib/InputManager.h"
-#include <Libraries\MyLib\DebugString.h>
+#include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Scenes/PlayScene/PlayScene.h"
