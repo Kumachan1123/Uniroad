@@ -19,6 +19,8 @@
 #include "Game/ControllScreen/NextTiles/NextTiles.h"
 #include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
+#include "Game/Camera/FixedCamera/FixedCamera.h"
+
 // 前方宣言
 class CommonResources;
 
@@ -88,6 +90,10 @@ public:
 	TitleAnimation GetTitleAnimationState() const { return m_titleAnimationState; }
 	// タイトルシーンにおけるアニメーションステートを設定する
 	void SetTitleAnimationState(TitleAnimation state) { m_titleAnimationState = state; }
+	// カメラのポインターを取得する
+	ICamera* GetCamera() const { return m_pCamera; }
+	// カメラのポインターを設定する
+	void SetCamera(ICamera* camera) { m_pCamera = camera; }
 public:
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
@@ -105,8 +111,6 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 後処理を行う
 	void Finalize();
-
-
 private:
 	// 親
 	IComponent* m_pParent;
@@ -120,6 +124,8 @@ private:
 	NextTiles* m_pNextTiles;
 	// 平面エリア
 	PlaneArea* m_pPlaneArea;
+	// カメラ
+	ICamera* m_pCamera;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

@@ -74,6 +74,10 @@ void MiniCharacterSelectStage::Initialize(CommonResources* resources)
 	m_pShadow = std::make_unique<Shadow>();
 	// 影の初期化
 	m_pShadow->Initialize(m_pCommonResources);
+	// パーティクルを作成する
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f);
+	// パーティクルを初期化する
+	m_pParticle->Initialize(m_pCommonResources);
 }
 /*
 *	@brief プレイヤーの位置と角度を更新する
@@ -113,6 +117,9 @@ void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMa
 	// 部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	// パーティクルの更新
+	m_pParticle->SetParams(SetParticleParams());
+	m_pParticle->Update(elapsedTime);
 }
 /*
 *	@brief プレイヤーの部品を追加する
@@ -151,6 +158,13 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
 	// 影を描画する
 	m_pShadow->Render(view, proj, m_currentPosition, 1.0f);
+	// 親コンポーネントのポインターに変換
+	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
+	// 軌跡のビルボード行列を作成
+	m_pParticle->CreateBillboard(parent->GetCamera()->GetTargetPosition(), parent->GetCamera()->GetEyePosition(), parent->GetCamera()->GetUpPosition());
+	// 軌跡描画
+	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
+
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
@@ -225,5 +239,50 @@ bool MiniCharacterSelectStage::IsAtTileCenter(const DirectX::SimpleMath::Vector3
 	float distance = (charPos - tileCenter).Length();
 	//// 距離が許容誤差以下であれば、タイルの中心にいると判断
 	return distance < epsilon;
+}
+/*
+*	@brief パーティクルのパラメーターを設定する
+*	@details パーティクルのパラメーターを設定する
+*	@param なし
+*	@return パーティクルのパラメーター
+*/
+Utility::ParticleParams MiniCharacterSelectStage::SetParticleParams() const
+{
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// 乱数の設定
+	std::random_device seed;
+	// メルセンヌ・ツイスタ法
+	std::default_random_engine engine(seed());
+	// ランダムな角度
+	std::uniform_real_distribution<> angleDist(0, XM_2PI);
+	// ランダムな速度の範囲を設定
+	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	// XY平面上のランダムな角度
+	float randAngleXY = static_cast<float>(angleDist(engine));
+	// XZ平面上のランダムな角度
+	float randAngleXZ = static_cast<float>(angleDist(engine));
+	// ランダムな速度
+	float speed = static_cast<float>(speedDist(engine));
+	// ランダムな方向の速度ベクトル
+	Vector3 randomVelocity = speed * Vector3(
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
+		1.0f,									 // Y成分
+		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
+	);
+	// パーティクルのパラメーターを設定
+	Utility::ParticleParams params{};
+	params.life = 1.0f;
+	params.pos = m_currentPosition + Vector3(0.0f, 1.5f, 0.0f);
+	params.velocity = randomVelocity;
+	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
+	params.rotateAccele = Vector3::One; // 回転加速度
+	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
+	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
+	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
+	params.startColor = Vector4(1, 1, 1, 1); // 初期カラー（白）
+	params.endColor = Vector4(1, 1, 0, 0); // 最終カラー（白→透明）
+	params.type = Utility::Type::STEAM; // パーティクルのタイプ
+	return params;
 }
 

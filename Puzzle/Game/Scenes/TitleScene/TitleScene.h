@@ -27,6 +27,7 @@
 #include "Game/Sky/Sky.h"
 #include "Game/Scenes/TitleScene/Road/Road.h"
 
+
 // 前方宣言
 class CommonResources;
 class MiniCharacterBase;
@@ -84,6 +85,7 @@ private:
 	std::unique_ptr<Sky> m_pSky;
 	// 道
 	std::unique_ptr<Road> m_pRoad;
+
 
 	// シーンチェンジフラグ
 	bool m_isChangeScene;

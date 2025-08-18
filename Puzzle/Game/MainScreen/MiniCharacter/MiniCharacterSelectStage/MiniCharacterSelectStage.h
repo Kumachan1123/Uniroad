@@ -22,6 +22,8 @@
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
 #include "Game/MainScreen/Shadow/Shadow.h"
+#include "Game/Particle/Particle.h"
+#include "Game/Particle/Utility.h"
 
 // 前方宣言
 class CommonResources;
@@ -122,7 +124,8 @@ private:
 	void InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle);
 	// タイルの中心にいるかどうかを確認する
 	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.01f) const;
-
+	// パーティクルのパラメーターを設定する
+	Utility::ParticleParams SetParticleParams() const;
 public:
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
@@ -174,7 +177,6 @@ private:
 	DirectX::SimpleMath::Quaternion m_shakeQuaternion;
 	// 目的地
 	DirectX::SimpleMath::Vector3 m_destinationPosition;
-
 	// 質量
 	float m_mass;
 	// 部品配列
@@ -197,4 +199,6 @@ private:
 	float m_fallTimer;
 	// 一度だけ落下処理を実行させるためのフラグ
 	bool m_hasFallen;
+	// パーティクル
+	std::unique_ptr<Particle> m_pParticle;
 };

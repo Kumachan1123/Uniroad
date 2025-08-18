@@ -115,6 +115,9 @@
     <ClInclude Include="Game\Scenes\TitleScene\Road\Road.h" />
     <ClInclude Include="Game\Sky\Sky.h" />
     <ClInclude Include="Game\MainScreen\Shadow\Shadow.h" />
+    <ClInclude Include="Game\Particle\Particle.h" />
+    <ClInclude Include="Game\Particle\Utility.h" />
+    <ClInclude Include="Game\Interface\ICamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -189,6 +192,8 @@
     <ClCompile Include="Game\Scenes\TitleScene\Road\Road.cpp" />
     <ClCompile Include="Game\Sky\Sky.cpp" />
     <ClCompile Include="Game\MainScreen\Shadow\Shadow.cpp" />
+    <ClCompile Include="Game\Particle\Particle.cpp" />
+    <ClCompile Include="Game\Particle\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

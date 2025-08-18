@@ -100,6 +100,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetNextTiles(nullptr);
 	// ミニキャラに平面を設定
 	m_pMiniCharacterBase->SetPlaneArea(m_pPlaneArea.get());
+	// ミニキャラにカメラを設定
+	m_pMiniCharacterBase->SetCamera(m_pTrackingCamera.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -274,6 +276,8 @@ void StageSelectScene::CreateCamera()
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
 		0.1f, 10000.0f
 	);
+	// 固定カメラに射影行列を設定
+	m_pTrackingCamera->SetProjectionMatrix(m_projection);
 }
 /*
 *	@brief 平面の中心座標を基に４つの頂点を設定する

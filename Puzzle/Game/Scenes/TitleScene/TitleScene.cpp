@@ -45,6 +45,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// デバイスリソースを取得
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
+	// カメラを作成する
+	CreateCamera();
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -81,9 +83,10 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.45f, 0.0f), 0.0f));
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
+	// ミニキャラにカメラを設定する
+	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
 
-	// カメラを作成する
-	CreateCamera();
+
 }
 /*
 *	@brief 更新処理
@@ -100,7 +103,7 @@ void TitleScene::Update(float elapsedTime)
 	// デバッグカメラを更新する
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_debugCamera->GetViewMatrix();
+	m_view = m_pFixedCamera->GetViewMatrix();
 	// カメラの位置を調整
 	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.8f, 5.0f));
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
@@ -238,7 +241,7 @@ void TitleScene::CreateCamera()
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(60.0f),
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 100.0f
-	);
-
+		0.1f, 100.0f);
+	// カメラに射影行列をセット
+	m_pFixedCamera->SetProjectionMatrix(m_projection);
 }

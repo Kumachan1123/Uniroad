@@ -195,6 +195,7 @@
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
+    <ClInclude Include="Game\Interface\ICamera.h" />
     <ClInclude Include="Game\Interface\IGameUI.h" />
     <ClInclude Include="Game\Interface\IImage.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
@@ -236,6 +237,8 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.h" />
     <ClInclude Include="Game\MainScreen\Tiles\TileBase\TileBase.h" />
     <ClInclude Include="Game\Mouse\Mouse.h" />
+    <ClInclude Include="Game\Particle\Particle.h" />
+    <ClInclude Include="Game\Particle\Utility.h" />
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
@@ -329,6 +332,8 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacter.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.cpp" />
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
+    <ClCompile Include="Game\Particle\Particle.cpp" />
+    <ClCompile Include="Game\Particle\Utility.cpp" />
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />

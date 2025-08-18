@@ -18,6 +18,9 @@
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 #include "Game/MainScreen/Shadow/Shadow.h"
+#include "Game/Particle/Particle.h"
+#include "Game/Particle/Utility.h"
+
 // 前方宣言
 class CommonResources;
 
@@ -122,7 +125,8 @@ private:
 	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.01f) const;
 	// アニメーションを実行する（タイトルシーン用）
 	void ExecuteAnimation(float elapsedTime);
-
+	// パーティクルのパラメーターを設定する
+	Utility::ParticleParams SetParticleParams() const;
 public:
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
@@ -198,4 +202,6 @@ private:
 	bool m_hasFallen;
 	// タイトルシーンにおけるアニメーションステート
 	TitleAnimation m_titleAnimationState;
+	// パーティクル
+	std::unique_ptr<Particle> m_pParticle;
 };

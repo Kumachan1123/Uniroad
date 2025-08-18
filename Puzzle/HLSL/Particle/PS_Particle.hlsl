@@ -1,9 +1,9 @@
 #include "Particle.hlsli"
 
 Texture2D tex : register(t0);
+Texture2D tex2 : register(t1);
 SamplerState samLinear : register(s0);
-// パーティクルバッファ
-RWStructuredBuffer<GPU_Particle> particles : register(u0);
+
 float4 main(PS_INPUT input) : SV_TARGET
 {
     float2 uv = input.Tex;
@@ -18,8 +18,8 @@ float4 main(PS_INPUT input) : SV_TARGET
     
     float4 color = tex.Sample(samLinear, uv);
     
-    //color *= input.Color;
-   
+    color.rgb *= input.Color.rgb;
+    color.a *= input.Color.a * colors.a;
    // // アルファ値が0の場合はピクセルを非表示にする
    // float alphaMask = step(0.0f, color.a); // アルファ値が0なら0、それ以外は1になる
    // color *= alphaMask; // アルファが0のピクセルを完全に無効化

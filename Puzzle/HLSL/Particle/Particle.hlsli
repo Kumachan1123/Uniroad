@@ -21,8 +21,8 @@ struct PS_INPUT
 {
     float4 Pos : SV_POSITION;
     float4 Color : COLOR;
-    float2 Tex : TEXCOORD0;
-    uint ParticleIndex : TEXCOORD1; // 追加
+    float2 Tex : TEXCOORD;
+ 
 };
 
 float3 HSVtoRGB(float3 hsv)
