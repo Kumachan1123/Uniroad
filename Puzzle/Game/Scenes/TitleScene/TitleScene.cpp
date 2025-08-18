@@ -77,14 +77,15 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pFade->SetState(Fade::FadeState::FadeIn);
 	// ミニキャラを作成する
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	// ミニキャラにカメラを設定する
+	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.45f, 0.0f), 0.0f));
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
-	// ミニキャラにカメラを設定する
-	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
+
 
 
 }

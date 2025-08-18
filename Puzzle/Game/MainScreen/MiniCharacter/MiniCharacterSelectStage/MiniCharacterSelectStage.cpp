@@ -106,9 +106,8 @@ void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMa
 	// 目的地にむかって速度を更新する
 	m_currentVelocity = (m_destinationPosition - m_currentPosition) * elapsedTime * 3.0f;
 	m_currentVelocity.y = 0.0f;
-	// 目的地に到着したら速度をゼロにする
-	if ((m_destinationPosition - m_currentPosition).Length() <= 0.0001f)
-		m_currentVelocity = Vector3::Zero;
+	// 移動中ならパーティクルの生成を再開する
+	if (m_isMoving && m_currentVelocity.LengthSquared() > 0.0001f)m_pParticle->Start();
 	// プレイヤーの位置を更新する
 	m_currentPosition += m_currentVelocity;
 	m_currentPosition.y = m_initialPosition.y;
@@ -174,6 +173,8 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 	// 速度表示
 	debugString->AddString("MiniCharacter Velocity: (%f, %f, %f)",
 		m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
+	// 移動中かを見る
+	debugString->AddString("Is Moving: %s", m_isMoving ? "true" : "false");
 #endif // DEBUG
 
 
@@ -212,10 +213,13 @@ void MiniCharacterSelectStage::InterpolateRotation(const DirectX::SimpleMath::Qu
 		// ヨー角からクォータニオンを作成
 		targetQuat = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f);
 	}
+	// 速度がゼロの場合
 	else
 	{
-		// 速度がゼロの場合は、回転なし
+		// 回転を初期化する
 		targetQuat = Quaternion::Identity;
+		// パーティクルの生成を止める
+		m_pParticle->Stop();
 	}
 	// 現在の回転角を更新する
 	float rotateSpeed = 0.05f;

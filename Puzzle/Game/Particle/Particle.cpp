@@ -41,6 +41,7 @@ Particle::Particle(Utility::Type type, float size)
 	, m_animSpeed{ 30.0f }// アニメーションの速度
 	, m_frameRows{ 1 }// フレームの行数
 	, m_frameCols{ 1 }// フレームの列数
+	, m_isCreate{ true }// パーティクルの生成フラグ
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
@@ -109,16 +110,16 @@ void Particle::Update(float elapsedTime)
 		// タイマーをリセット
 		m_animTime = 0.0f;
 	}
-	// タイマーが一定時間を超えたら新しいパーティクルを生成
-	if (m_timer >= m_elapsedTime)
+	// 生成可能ならパーティクルを生成する
+	if (m_isCreate)
 	{
 		// パーティクルの生成
 		Utility pU(m_params);
 		// 生成したパーティクルをリストに追加
 		m_particleUtility.push_back(pU);
-		// タイマーをリセット
-		m_timer = 0.0f;
 	}
+	//// タイマーをリセット
+	//m_timer = 0.0f;
 	//	timerを渡して更新処理を行う
 	for (std::list<Utility>::iterator ite = m_particleUtility.begin(); ite != m_particleUtility.end(); ite++)
 	{
@@ -144,7 +145,7 @@ void Particle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Si
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 一定期間が過ぎたら描画しない
-	if (m_timer >= 1.9f)return;
+
 	// カメラの方向を取得
 	Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
 	// カメラの方向を正規化
@@ -202,7 +203,7 @@ void Particle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Si
 		DrawPolygon::SamplerStates::LINEAR_WRAP,// サンプラーステート
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート
-		DrawPolygon::DepthStencilStates::DEPTH_READ); // 深度ステンシルステート
+		DrawPolygon::DepthStencilStates::DEPTH_NONE); // 深度ステンシルステート
 	// 描画準備
 	m_pDrawPolygon->DrawStart(m_pInputLayout.Get(), m_pTexture);
 	// シェーダをセットする
@@ -264,24 +265,4 @@ void Particle::CreateShaders()
 	// シェーダーの構造体にジオメトリシェーダーをセットする
 	m_shaders.gs = m_pGeometryShader.Get();
 }
-/*
-*	@brief 水蒸気の処理
-*	@detail 水蒸気の処理を行う
-*	@param なし
-*	@return なし
-*/
-void Particle::Steam()
-{
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	// タイマーが一定時間を超えたら新しいパーティクルを生成
-	if (m_timer >= m_elapsedTime)
-	{
-		// パーティクルの生成
-		Utility pU(m_params);
-		// 生成したパーティクルをリストに追加
-		m_particleUtility.push_back(pU);
-		// タイマーをリセット
-		m_timer = 0.0f;
-	}
-}
+

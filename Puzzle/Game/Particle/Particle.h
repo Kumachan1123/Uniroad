@@ -40,6 +40,10 @@ public:
 	void SetCameraUp(const DirectX::SimpleMath::Vector3& cameraUp) { m_cameraUp = cameraUp; }
 	// パーティクルのパラメーターを設定
 	void SetParams(const Utility::ParticleParams& params) { m_params = params; }
+	// パーティクルを生成不可能にする
+	void Stop() { m_isCreate = false; }
+	// パーティクルを生成可能にする
+	void Start() { m_isCreate = true; }
 public:
 	// public関数
 	// コンストラクタ
@@ -61,9 +65,6 @@ private:
 	// private関数
 	// シェーダー作成
 	void CreateShaders();
-	// パーティクルごとの処理
-	// 水蒸気の処理
-	void Steam();
 private:
 	// 定数
 	// インプットレイアウト
@@ -133,6 +134,7 @@ public:
 	float m_size;
 	// パーティクルのパラメーター
 	Utility::ParticleParams m_params;
-
+	// 生成フラグ
+	bool m_isCreate;
 
 };

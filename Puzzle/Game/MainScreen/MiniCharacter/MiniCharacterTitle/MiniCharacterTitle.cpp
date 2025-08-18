@@ -106,6 +106,7 @@ void MiniCharacterTitle::Update(float elapsedTime, const DirectX::SimpleMath::Ve
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 	// パーティクルの更新
+
 	m_pParticle->SetParams(SetParticleParams());
 	m_pParticle->Update(elapsedTime);
 
@@ -149,9 +150,9 @@ void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const D
 	m_pShadow->Render(view, proj, m_currentPosition, 1.0f);
 	// 親コンポーネントのポインターに変換
 	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
-	// 軌跡のビルボード行列を作成
+	// パーティクルのビルボード行列を作成
 	m_pParticle->CreateBillboard(parent->GetCamera()->GetTargetPosition(), parent->GetCamera()->GetEyePosition(), parent->GetCamera()->GetUpPosition());
-	// 軌跡描画
+	// パーティクル描画
 	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
 
 #ifdef _DEBUG
@@ -301,7 +302,7 @@ Utility::ParticleParams MiniCharacterTitle::SetParticleParams() const
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
 	params.life = 1.0f;
-	params.pos = m_currentPosition + Vector3(0.0f, 0.5f, 0.0f);
+	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
 	params.velocity = randomVelocity;
 	params.accele = Vector3(-5.0f, 0.0f, 0.0f);// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
