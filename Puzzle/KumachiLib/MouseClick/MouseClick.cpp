@@ -23,7 +23,7 @@ bool MouseClick::IsLeftMouseButtonPressed(const DirectX::Mouse::State& currentSt
 	// 左クリックが押されていて、前回の状態では押されていなかった場合
 	if (currentState.leftButton && !m_prevLeftMouseButtonState)
 	{
-		// 左クリックが押された瞬間と判定
+		// 左クリックが押された瞬間判定
 		isPressed = true;
 	}
 	// 前回のマウスボタンの状態を更新

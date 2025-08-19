@@ -21,6 +21,7 @@ PlaneArea::PlaneArea(CommonResources* resources)
 	, m_projection(DirectX::SimpleMath::Matrix::Identity) // 射影行列
 	, m_hitPlaneIndex(PlaneArea::NO_HIT_PLANE_INDEX) // 当たった平面の番号
 	, m_isHitPlane(false) // 何らかの平面と当たっているか
+	, m_isMouseClick(false) // マウスクリックフラグ
 {
 
 }
@@ -66,8 +67,6 @@ void PlaneArea::Initialize()
 		VertexPositionColor::InputElementCount,
 		shaderByteCode, byteCodeLength,
 		&m_pInputLayout);
-
-
 }
 /*
 *	@brief 更新
@@ -82,8 +81,9 @@ void PlaneArea::Update(float elapsedTime)
 	// DirectX::SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// マウス座標取得
-	int mouseX = m_pCommonResources->GetInputManager()->GetMouseState().x;
-	int mouseY = m_pCommonResources->GetInputManager()->GetMouseState().y;
+	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
+	int mouseX = mouseState.x;
+	int mouseY = mouseState.y;
 	// ウィンドウハンドルを取得
 	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
 	// ウィンドウサイズ取得
@@ -106,7 +106,15 @@ void PlaneArea::Update(float elapsedTime)
 	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)
 	{
 		// レイと平面の交差判定を行い、当たっていたらヒットフラグをtrueにする
-		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))m_isHitPlane = true;
+		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))
+			m_isHitPlane = true;
+	}
+	bool click = MouseClick::IsLeftMouseButtonPressed(mouseState);
+	// 平面と当たっていてクリックされたら
+	if (click && m_isHitPlane)
+	{
+		// マウスクリックフラグを立てる
+		m_isMouseClick = true;
 	}
 
 }

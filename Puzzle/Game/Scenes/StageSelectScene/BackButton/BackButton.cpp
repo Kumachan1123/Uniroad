@@ -1,36 +1,31 @@
 /*
-*	@file TitleButton.cpp
-*	@brief タイトルシーンのボタンを管理するクラスの実装ファイル
+*	@file BackButton.cpp
+*	@brief 戻るボタンの処理を定義するクラス
 */
 #include "pch.h"
-#include "TitleButton.h"
+#include "BackButton.h"
 // 最終的な座標の定義
-const std::vector<DirectX::SimpleMath::Vector2> TitleButton::POSITIONS =
+const std::vector<DirectX::SimpleMath::Vector2> BackButton::POSITIONS =
 {
-	DirectX::SimpleMath::Vector2(0.88f, 0.657f), // ゲーム開始ボタンの位置
-	DirectX::SimpleMath::Vector2(0.88f, 0.8f), // 設定メニューボタンの位置
-	DirectX::SimpleMath::Vector2(0.88f, 0.925f)  // ゲーム終了ボタンの位置
+	DirectX::SimpleMath::Vector2(0.0f, 0.99f), // ゲーム開始ボタンの位置
 };
 // 最終的なサイズの定義
-const std::vector<DirectX::SimpleMath::Vector2> TitleButton::SIZES =
+const std::vector<DirectX::SimpleMath::Vector2> BackButton::SIZES =
 {
-	DirectX::SimpleMath::Vector2(0.2f, 0.09f), // ゲーム開始ボタンのサイズ
-	DirectX::SimpleMath::Vector2(0.2f, 0.07f), // 設定メニューボタンのサイズ
-	DirectX::SimpleMath::Vector2(0.2f, 0.07f)  // ゲーム終了ボタンのサイズ
+	DirectX::SimpleMath::Vector2(0.4f, 0.18f), // ゲーム開始ボタンのサイズ
 };
 // 何も押されていない状態のインデックス
-const int TitleButton::NONE_BUTTON_INDEX = -1;
+const int BackButton::NONE_BUTTON_INDEX = -1;
+
 /*
 *	@brief コンストラクタ
-*	@details タイトルシーンのボタンを管理するクラスのコンストラクタ
+*	@details 戻るボタンの初期化を行う
 *	@param なし
 *	@return なし
 */
-TitleButton::TitleButton()
+BackButton::BackButton()
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_pStartButton(std::make_unique<Button>()) // ゲーム開始ボタンへのポインタ
-	, m_pSettingButton(std::make_unique<Button>()) // 設定メニューボタンへのポインタ
-	, m_pExitButton(std::make_unique<Button>()) // ゲーム終了ボタンへのポインタ
+	, m_pBackButton(std::make_unique<Button>()) // タイトルに戻るボタンへのポインタ
 	, m_pAnimation(std::make_unique<Animation>()) // アニメーションへのポインタ
 	, m_isPressed(false) // ボタンが押されたかどうか
 	, m_isHit(false) // 当たり判定フラグ
@@ -44,39 +39,41 @@ TitleButton::TitleButton()
 }
 /*
 *	@brief デストラクタ
-*	@details タイトルシーンのボタンを管理するクラスのデストラクタ
+*	@details 戻るボタンのデストラクタ
 *	@param なし
 *	@return なし
 */
-TitleButton::~TitleButton()
+BackButton::~BackButton()
 {
 	// 共通リソースへのポインタをnullptrに設定
 	m_pCommonResources = nullptr;
+	// 戻るボタンのポインタをリセット
+	m_pBackButton.reset();
+	// アニメーションのポインタをリセット
+	m_pAnimation.reset();
+	// ボタン配列をクリア
+	m_buttons.clear();
+	// ボタンの矩形をクリア
+	m_buttonRects.clear();
+	// 当たり判定フラグをクリア
+	m_isHit.clear();
 }
 /*
 *	@brief 初期化
-*	@details タイトルシーンのボタンを管理するクラスの初期化を行う
+*	@details 戻るボタンの初期化を行う
 *	@param resources 共通リソースへのポインタ
 *	@param width ウィンドウの幅
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void TitleButton::Initialize(CommonResources* resources, int width, int height)
+void BackButton::Initialize(CommonResources* resources, int width, int height)
 {
 	// 共通リソースへのポインタを設定
 	m_pCommonResources = resources;
 	// 画像を設定
-	m_pStartButton->SetTexture(resources->GetTextureManager()->GetTexture("StartButton"));
-	// ゲーム開始ボタンを追加
-	m_buttons.push_back(std::move(m_pStartButton));
-	// 画像を設定
-	m_pSettingButton->SetTexture(resources->GetTextureManager()->GetTexture("SettingButton"));
-	// 設定メニューボタンを追加
-	m_buttons.push_back(std::move(m_pSettingButton));
-	// 画像を設定
-	m_pExitButton->SetTexture(resources->GetTextureManager()->GetTexture("GameEndButton"));
+	m_pBackButton->SetTexture(resources->GetTextureManager()->GetTexture("ToTitle"));
 	// ゲーム終了ボタンを追加
-	m_buttons.push_back(std::move(m_pExitButton));
+	m_buttons.push_back(std::move(m_pBackButton));
 	// ボタンの数ループ
 	for (auto& button : m_buttons)
 	{
@@ -106,12 +103,12 @@ void TitleButton::Initialize(CommonResources* resources, int width, int height)
 	CreateAnimationSequence();
 }
 /*
-*	@brief 更新
-*	@details タイトルシーンのボタンを管理するクラスの更新を行う
+*	@brief 更新する
+*	@details 戻るボタンの更新処理を行う
 *	@param elapsedTime 経過時間
 *	@return なし
 */
-void TitleButton::Update(float elapsedTime)
+void BackButton::Update(float elapsedTime)
 {
 	// 名前空間の使用
 	using namespace DirectX::SimpleMath;
@@ -138,19 +135,22 @@ void TitleButton::Update(float elapsedTime)
 		m_hoverScales[i] += (target - m_hoverScales[i]) * (1.0f - expf(-SCALE_SPEED * elapsedTime));
 	}
 	// マウスが当たったボタンの番号を設定
-	for (int i = 0; i < m_buttons.size(); i++)
-		if (m_isHit[i])m_hitButtonIndex = i;
+	for (int i = 0; i < m_buttons.size(); i++)	if (m_isHit[i])m_hitButtonIndex = i;
 	// マウスが当たって左クリックされたら
-	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pAnimation->IsPaused() && m_hitButtonIndex > NONE_BUTTON_INDEX)
+	if (m_pAnimation->IsPaused() && m_hitButtonIndex > NONE_BUTTON_INDEX)
 	{
-		// クリックで再開
-		m_pAnimation->Resume();
-		// アニメーションシーケンスを進める
-		m_pAnimation->AdvanceSequence();
-		// 押されたボタンの番号を設定
-		m_pressedButtonIndex = m_hitButtonIndex;
-		// ボタンが押されたフラグを立てる
-		m_isPressed = true;
+		// 左クリックされたら
+		if (MouseClick::IsLeftMouseButtonPressed(mouseState))
+		{
+			// クリックで再開
+			m_pAnimation->Resume();
+			// アニメーションシーケンスを進める
+			m_pAnimation->AdvanceSequence();
+			// 押されたボタンの番号を設定
+			m_pressedButtonIndex = m_hitButtonIndex;
+			// ボタンが押されたフラグを立てる
+			m_isPressed = true;
+		}
 	}
 	// アニメーションフェーズが3（移動中）で、アニメーションが一時停止していない場合は一時停止する
 	if (m_pAnimation->GetAnimationPhase() == 2 && !m_pAnimation->IsPaused()) m_pAnimation->Pause();
@@ -162,12 +162,12 @@ void TitleButton::Update(float elapsedTime)
 	UpdateConstantBuffer();
 }
 /*
-*	@brief 描画
-*	@details タイトルシーンのボタンを管理するクラスの描画を行う
+*	@brief 描画する
+*	@details 戻るボタンの描画処理を行う
 *	@param なし
 *	@return なし
 */
-void TitleButton::Render()
+void BackButton::Render()
 {
 	// ボタンを描画
 	for (size_t i = 0; i < m_buttons.size(); i++)
@@ -191,11 +191,11 @@ void TitleButton::Render()
 }
 /*
 *	@brief アニメーションシーケンスを作成
-*	@details タイトルシーンのボタンのアニメーションシーケンスを作成する
+*	@details 戻るボタンのアニメーションシーケンスを作成する
 *	@param なし
 *	@return なし
 */
-void TitleButton::CreateAnimationSequence()
+void BackButton::CreateAnimationSequence()
 {
 	// 名前空間の使用
 	using namespace DirectX::SimpleMath;
@@ -203,29 +203,30 @@ void TitleButton::CreateAnimationSequence()
 	const std::vector<float> DELAYS = { 0.0f, 0.15f, 0.3f };
 	// フェーズ1: 待機
 	m_pAnimation->CreateAnimationSequence({
-			2.5f,// 待機時間
+			0.001f,// 待機時間
 			[this](float) {
 			// 0で動かした場所とサイズで固定
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
-				m_buttonRects[i].position = Vector2(2.5f + i * 0.5f, POSITIONS[i].y);
+				m_buttonRects[i].position = Vector2(-1.5f + i * 0.5f, POSITIONS[i].y + 1.0f);
 			}
 	} });
 	// フェーズ2: 移動 
-	const float DURATION = 1.0f; // 各ボタンの移動にかける時間
+	// 各ボタンの移動にかける時間
+	const float START_DURATION = 0.25f;
 	m_pAnimation->CreateAnimationSequence({
-		DELAYS.back() + DURATION, // 全体の演出時間
-		[this, DELAYS, DURATION](float globalT) {
+		DELAYS.back() + START_DURATION, // 全体の演出時間
+		[this, DELAYS, START_DURATION](float globalT) {
 			// globalTは0～1でシーケンス全体に対応する進行度
-			float totalTime = globalT * (DELAYS.back() + DURATION); // 実際の経過秒数
+			float totalTime = globalT * (DELAYS.back() + START_DURATION); // 実際の経過秒数
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
 				// 各ボタンの進行度
-				float t = (totalTime - DELAYS[i]) / DURATION;
+				float t = (totalTime - DELAYS[i]) / START_DURATION;
 				t = Clamp(t, 0.0f, 1.0f);
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
-				m_buttonRects[i].position = Vector2::Lerp(Vector2(2.5f + i * 0.1f, POSITIONS[i].y), POSITIONS[i], easing);
+				m_buttonRects[i].position = Vector2::Lerp(Vector2(-1.5f + i * 0.1f, POSITIONS[i].y + 1.0f), POSITIONS[i], easing);
 			}
 		}
 		});
@@ -244,19 +245,21 @@ void TitleButton::CreateAnimationSequence()
 			}
 	} });
 	// フェーズ4: 移動（元の場所へ）
+	// 各ボタンの移動にかける時間
+	const float END_DURATION = 1.0f;
 	m_pAnimation->CreateAnimationSequence({
-		DELAYS.back() + DURATION, // 全体の演出時間
-		[this, DELAYS, DURATION](float globalT) {
+		DELAYS.back() + END_DURATION, // 全体の演出時間
+		[this, DELAYS, END_DURATION](float globalT) {
 			// globalTは0～1でシーケンス全体に対応する進行度
-			float totalTime = globalT * (DELAYS.back() + DURATION);
+			float totalTime = globalT * (DELAYS.back() + END_DURATION);
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
 				// 各ボタンの進行度
-				float t = (totalTime - DELAYS[i]) / DURATION;
+				float t = (totalTime - DELAYS[i]) / END_DURATION;
 				t = Clamp(t, 0.0f, 1.0f);
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
-				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(1.5f + i  , POSITIONS[i].y), easing);
+				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(-1.5f + i  , POSITIONS[i].y + 1.0f), easing);
 			}
 		}
 		});
@@ -267,18 +270,18 @@ void TitleButton::CreateAnimationSequence()
 			// 0で動かした場所とサイズで固定
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
-				m_buttonRects[i].position = Vector2(1.5f + i, POSITIONS[i].y);
+				m_buttonRects[i].position = Vector2(-1.5f + i, POSITIONS[i].y + 1.0f);
 				m_buttonRects[i].size = SIZES[i];
 			}
 	} });
 }
 /*
 *	@brief 定数バッファを更新
-*	@details タイトルシーンのボタンの定数バッファを更新する
+*	@details 戻るボタンの定数バッファを更新する
 *	@param なし
 *	@return なし
 */
-void TitleButton::UpdateConstantBuffer()
+void BackButton::UpdateConstantBuffer()
 {
 	// 名前空間を使用
 	using namespace DirectX::SimpleMath;

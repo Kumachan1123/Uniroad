@@ -75,7 +75,7 @@ void MiniCharacterSelectStage::Initialize(CommonResources* resources)
 	// 影の初期化
 	m_pShadow->Initialize(m_pCommonResources);
 	// パーティクルを作成する
-	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f);
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f, 50);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
 }
@@ -153,8 +153,6 @@ void MiniCharacterSelectStage::Detach(std::unique_ptr<IComponent> MiniCharacterP
 */
 void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// 部品を描画する
-	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
 	// 影を描画する
 	m_pShadow->Render(view, proj, m_currentPosition, 1.0f);
 	// 親コンポーネントのポインターに変換
@@ -163,6 +161,8 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 	m_pParticle->CreateBillboard(parent->GetCamera()->GetTargetPosition(), parent->GetCamera()->GetEyePosition(), parent->GetCamera()->GetUpPosition());
 	// 軌跡描画
 	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
+	// 部品を描画する
+	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
 
 #ifdef _DEBUG
 	// ---デバッグ表示---
@@ -196,15 +196,12 @@ void MiniCharacterSelectStage::Finalize()
 *	@details プレイヤーの回転を補間して、滑らかな回転を実現する。
 *	@param currentAngle 現在の回転角
 *	@return なし
-*
 */
 void MiniCharacterSelectStage::InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle)
 {
 	using namespace DirectX::SimpleMath;
-	// 目標回転を計算（速度ベクトルから）
+	// 速度ベクトルから目標回転を計算
 	Quaternion targetQuat;
-
-
 	// 現在の速度がゼロでない場合、回転を計算
 	if (m_currentVelocity.LengthSquared() > 0.0001f)
 	{
@@ -271,21 +268,21 @@ Utility::ParticleParams MiniCharacterSelectStage::SetParticleParams() const
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = speed * Vector3(
 		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
-		1.0f,									 // Y成分
+		0.5f,									 // Y成分
 		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 1.0f;
-	params.pos = m_currentPosition + Vector3(0.0f, 1.5f, 0.0f);
+	params.life = 0.75f;
+	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
 	params.velocity = randomVelocity;
 	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
 	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
 	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
 	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(1, 1, 1, 1); // 初期カラー（白）
-	params.endColor = Vector4(1, 1, 0, 0); // 最終カラー（白→透明）
+	params.startColor = Vector4(1, 1, 0.75, 0.5); // 初期カラー（白）
+	params.endColor = Vector4(0.75, 0.75, 0.5, 0); // 最終カラー（白→透明）
 	params.type = Utility::Type::STEAM; // パーティクルのタイプ
 	return params;
 }

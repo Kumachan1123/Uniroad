@@ -75,7 +75,7 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	// 影の初期化
 	m_pShadow->Initialize(m_pCommonResources);
 	// パーティクルを作成する
-	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f);
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f, 50);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
 }
@@ -143,7 +143,6 @@ void MiniCharacterTitle::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 */
 void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-
 	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
 	// 影を描画する
@@ -154,7 +153,6 @@ void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const D
 	m_pParticle->CreateBillboard(parent->GetCamera()->GetTargetPosition(), parent->GetCamera()->GetEyePosition(), parent->GetCamera()->GetUpPosition());
 	// パーティクル描画
 	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
-
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
@@ -301,16 +299,16 @@ Utility::ParticleParams MiniCharacterTitle::SetParticleParams() const
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 1.0f;
+	params.life = 0.25f;
 	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
 	params.velocity = randomVelocity;
-	params.accele = Vector3(-5.0f, 0.0f, 0.0f);// 加速度
+	params.accele = Vector3(-150.0f, 0.0f, 0.0f);// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
 	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
 	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
 	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(1, 1, 1, 1); // 初期カラー（白）
-	params.endColor = Vector4(1, 1, 0, 0); // 最終カラー（白→透明）
+	params.startColor = Vector4(1, 1, 0.75, 0.5); // 初期カラー（白）
+	params.endColor = Vector4(0.75, 0.75, 0.5, 0); // 最終カラー（白→透明）
 	params.type = Utility::Type::STEAM; // パーティクルのタイプ
 	return params;
 }

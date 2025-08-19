@@ -47,7 +47,7 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	Particle(Utility::Type type, float size);
+	Particle(Utility::Type type, float size, size_t limit = 100);
 	// デストラクタ
 	~Particle();
 	// 初期化
@@ -136,5 +136,6 @@ public:
 	Utility::ParticleParams m_params;
 	// 生成フラグ
 	bool m_isCreate;
-
+	// 生成上限
+	size_t m_limit;
 };

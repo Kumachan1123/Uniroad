@@ -244,6 +244,7 @@
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
+    <ClInclude Include="Game\Scenes\StageSelectScene\BackButton\BackButton.h" />
     <ClInclude Include="Game\Scenes\TitleScene\Road\Road.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleAnimationState\TitleAnimationState.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleButton\TitleButton.h" />
@@ -338,6 +339,7 @@
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
+    <ClCompile Include="Game\Scenes\StageSelectScene\BackButton\BackButton.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\Road\Road.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />

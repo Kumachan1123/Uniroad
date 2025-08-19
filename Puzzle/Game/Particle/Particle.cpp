@@ -16,9 +16,10 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Particle::INPUT_LAYOUT =
 *	@detail クラスの生成処理を行う
 *	@param type パーティクルのタイプ
 *	@param size パーティクルのサイズ
+*	@param limit パーティクルの生成数の制限(デフォルトは100)
 *	@return なし
 */
-Particle::Particle(Utility::Type type, float size)
+Particle::Particle(Utility::Type type, float size, size_t limit)
 	: m_pCommonResources{}// 共通リソース
 	, m_timer(0.0f)// 経過時間
 	, m_elapsedTime(0.0f)// フレーム時間
@@ -42,6 +43,7 @@ Particle::Particle(Utility::Type type, float size)
 	, m_frameRows{ 1 }// フレームの行数
 	, m_frameCols{ 1 }// フレームの列数
 	, m_isCreate{ true }// パーティクルの生成フラグ
+	, m_limit{ limit }// パーティクルの生成数の制限
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
@@ -111,7 +113,7 @@ void Particle::Update(float elapsedTime)
 		m_animTime = 0.0f;
 	}
 	// 生成可能ならパーティクルを生成する
-	if (m_isCreate)
+	if (m_isCreate && m_particleUtility.size() <= m_limit)
 	{
 		// パーティクルの生成
 		Utility pU(m_params);

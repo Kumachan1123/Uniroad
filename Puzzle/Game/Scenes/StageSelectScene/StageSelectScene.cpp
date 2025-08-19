@@ -108,12 +108,18 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(-4.0f, -0.5f, 2.0f), 0.0f));
 	// 最初に追従する座標を設定
 	m_pTrackingCamera->SetTargetPosition(Vector3(5.0f, -0.5f, 2.0f));
+	// 出力サイズを取得
+	auto outputSize = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// フェードを作成する
 	m_pFade = std::make_unique<Fade>();
 	// フェードを初期化する
-	m_pFade->Initialize(m_pCommonResources, m_pCommonResources->GetDeviceResources()->GetOutputSize().right, m_pCommonResources->GetDeviceResources()->GetOutputSize().bottom);
+	m_pFade->Initialize(m_pCommonResources, outputSize.right, outputSize.bottom);
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
+	// ボタンを作成する
+	m_pBackButton = std::make_unique<BackButton>();
+	// ボタンを初期化する
+	m_pBackButton->Initialize(m_pCommonResources, outputSize.right, outputSize.bottom);
 }
 /*
 *	@brief 更新
@@ -138,6 +144,8 @@ void StageSelectScene::Update(float elapsedTime)
 	m_pTrackingCamera->Update();
 	// デバッグカメラの更新
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
+	// ボタンを更新
+	m_pBackButton->Update(elapsedTime);
 	// ビュー行列を取得
 	m_view = m_pTrackingCamera->GetViewMatrix();
 	// 座標を初期化
@@ -160,12 +168,23 @@ void StageSelectScene::Update(float elapsedTime)
 		// マウスステートを取得
 		const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 		// 左クリックを検知
-		if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
+		if (m_pPlaneArea->IsMouseClick() && m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
 		{
 			// ステージ番号を取得
 			m_stageNumber = m_pPlaneArea->GetHitPlaneIndex();
+			// クリックフラグを折る
+			m_pPlaneArea->SetMouseClick(false);
 			// フェードアウトに移行
 			m_pFade->SetState(Fade::FadeState::FadeOut);
+		}
+		// ボタンが押された場合
+		if (m_pBackButton->IsPressed())
+		{
+			// フェードアウトに移行
+			m_pFade->SetState(Fade::FadeState::FadeOut);
+			// ボタンの番号を取得
+			m_pBackButton->GetPressedButtonIndex();
+
 		}
 	}
 	// 何か選ばれているなら移動フラグを立てる
@@ -196,6 +215,8 @@ void StageSelectScene::Render()
 	m_pPlaneArea->Render();
 	// 空を描画する
 	m_pSky->Render(m_view, m_projection);
+	// ボタンを描画する
+	m_pBackButton->Render();
 	// フェードを描画する
 	m_pFade->Render();
 #ifdef _DEBUG
@@ -239,14 +260,21 @@ void StageSelectScene::Finalize()
 */
 IScene::SceneID StageSelectScene::GetNextSceneID() const
 {
+	// シーン変更がない場合何もしない
+	if (!m_isChangeScene)return IScene::SceneID::NONE;
 	// シーン変更がある場合
-	if (m_isChangeScene)
+	if (m_pBackButton->GetPressedButtonIndex() == 0)
 	{
-		// ゲームオーバーシーンへ
+		// タイトルシーンへ
+		return IScene::SceneID::TITLE;
+	}
+	// シーン変更があってボタンが押されてないとき
+	else
+	{
+		// プレイシーンへ
 		return IScene::SceneID::PLAY;
 	}
-	// シーン変更がない場合何もしない
-	return IScene::SceneID::NONE;
+
 }
 
 /*

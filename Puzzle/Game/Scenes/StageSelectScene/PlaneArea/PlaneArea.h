@@ -20,6 +20,7 @@
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
 #include "Game/CommonResources/CommonResources.h"
+#include "KumachiLib/MouseClick/MouseClick.h"
 
 // 前方宣言
 class CommonResources;
@@ -49,6 +50,10 @@ public:
 	bool IsHitPlane() const { return m_isHitPlane; }
 	// 何らかの平面と当たっているかを設定する
 	void SetIsHitPlane(bool isHit) { m_isHitPlane = isHit; }
+	// マウスクリックを取得する
+	bool IsMouseClick() const { return m_isMouseClick; }
+	// マウスクリックを設定する
+	void SetMouseClick(bool isClick) { m_isMouseClick = isClick; }
 
 public:
 	// public関数
@@ -104,5 +109,6 @@ private:
 	int m_hitPlaneIndex;
 	// 何らかの平面と当たっているかのフラグ
 	bool m_isHitPlane;
-
+	// マウスクリック
+	bool m_isMouseClick;
 };
