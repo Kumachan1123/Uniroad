@@ -83,13 +83,7 @@ public:
 	~Utility();
 	// 更新
 	bool Update(float elapsedTime);
-private:
-	// private関数
-	// タイプの切り替え
-	void SwitchType(float elapsedTime);
-	// タイプごとの処理
-	// 水蒸気
-	void Steam(float elapsedTime);
+
 private:
 	// private変数
 	// 座標

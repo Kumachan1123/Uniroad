@@ -95,7 +95,7 @@ void PlaneArea::Update(float elapsedTime)
 	// レイ生成
 	Ray ray = ScreenPointToRay(mouseX, mouseY, screenWidth, screenHeight);
 	// 平面の定義
-	Plane plane(Vector3(0.0f, 1.0f, 0.0f), 0.0f); // Y=0の平面
+	Plane plane(Vector3(0.0f, 1.0f, 0.0f), 0.0f);
 	// レイと平面の交差判定
 	Vector3 intersection;
 	// 当たり判定を初期化
@@ -106,17 +106,10 @@ void PlaneArea::Update(float elapsedTime)
 	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)
 	{
 		// レイと平面の交差判定を行い、当たっていたらヒットフラグをtrueにする
-		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))
-			m_isHitPlane = true;
+		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))m_isHitPlane = true;
 	}
-	bool click = MouseClick::IsLeftMouseButtonPressed(mouseState);
-	// 平面と当たっていてクリックされたら
-	if (click && m_isHitPlane)
-	{
-		// マウスクリックフラグを立てる
-		m_isMouseClick = true;
-	}
-
+	// 平面と当たっていてクリックされたらマウスクリックフラグを立てる
+	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_isHitPlane)m_isMouseClick = true;
 }
 /*
 *	@brief 描画

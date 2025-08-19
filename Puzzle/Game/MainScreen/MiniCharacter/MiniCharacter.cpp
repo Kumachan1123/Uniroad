@@ -82,6 +82,10 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	m_pShadow = std::make_unique<Shadow>();
 	// 影の初期化
 	m_pShadow->Initialize(m_pCommonResources);
+	// パーティクルを作成する
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f, 50);
+	// パーティクルを初期化する
+	m_pParticle->Initialize(m_pCommonResources);
 }
 /*
 *	@brief プレイヤーの位置と角度を更新する
@@ -113,6 +117,9 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 	// ゲームオーバー、ゲームクリア分岐処理
 	HandleGameOverAndClear(elapsedTime);
+	// パーティクルの更新
+	m_pParticle->SetParams(SetParticleParams());
+	m_pParticle->Update(elapsedTime);
 }
 /*
 *	@brief プレイヤーの部品を追加する
@@ -149,14 +156,21 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 {
 	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
-	// 部品を描画する
-	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
+
 	// 影用に座標を定義
 	Vector3 shadowPosition = m_currentPosition;
 	// 影を少し浮かせる
 	shadowPosition.y += 0.01f;
 	// 影を描画する
 	m_pShadow->Render(view, proj, shadowPosition, 1.0f);
+	// 親コンポーネントのポインターに変換
+	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
+	// 軌跡のビルボード行列を作成
+	m_pParticle->CreateBillboard(parent->GetCamera()->GetTargetPosition(), parent->GetCamera()->GetEyePosition(), parent->GetCamera()->GetUpPosition());
+	// 軌跡描画
+	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
+	// 部品を描画する
+	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
 
 #ifdef _DEBUG
 	// ---デバッグ表示---
@@ -334,6 +348,8 @@ void MiniCharacter::Moving(float elapsedTime, const DirectX::SimpleMath::Vector3
 		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3 * m_speed;
 
 	}
+	// 移動中ならパーティクルの生成を再開する
+	if (m_isMoving && m_currentVelocity.LengthSquared() > 0.0001f)m_pParticle->Start();
 	// 座標に速度を適用する
 	m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
 }
@@ -366,6 +382,8 @@ void MiniCharacter::Shake()
 		float zSwing = cosf(time * shakeSpeed * 0.7f) * amp * (0.7f + 0.6f * cosf(time * 3.1f));
 		// 揺れクォータニオンを作成
 		m_shakeQuaternion = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
+		// パーティクルの生成を止める
+		m_pParticle->Stop();
 	}
 }
 /*
@@ -393,6 +411,8 @@ void MiniCharacter::InterpolateRotation(float elapsedTime, const DirectX::Simple
 	{
 		// 速度がゼロの場合は、回転なし
 		targetQuat = Quaternion::Identity;
+		// パーティクルの生成を止める
+		m_pParticle->Stop();
 	}
 	// 現在の回転角を更新する
 	float rotateSpeed = 2.0f;
@@ -524,5 +544,50 @@ void MiniCharacter::HandleGameOverAndClear(float elapsedTime)
 	if (goalTileName == "GoalBlock" && goalUnlocked == true && isCenter)	dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameClear(true);
 	// 途中で止まるか落ちている場合、ゲームオーバー
 	else if (m_currentVelocity.y < Vector3::Zero.y || m_currentVelocity == Vector3::Zero)dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameOver(true);
+}
+/*
+*	@brief パーティクルのパラメーターを設定する
+*	@details パーティクルのパラメーターを設定する
+*	@param なし
+*	@return パーティクルのパラメーター
+*/
+Utility::ParticleParams MiniCharacter::SetParticleParams() const
+{
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// 乱数の設定
+	std::random_device seed;
+	// メルセンヌ・ツイスタ法
+	std::default_random_engine engine(seed());
+	// ランダムな角度
+	std::uniform_real_distribution<> angleDist(0, XM_2PI);
+	// ランダムな速度の範囲を設定
+	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	// XY平面上のランダムな角度
+	float randAngleXY = static_cast<float>(angleDist(engine));
+	// XZ平面上のランダムな角度
+	float randAngleXZ = static_cast<float>(angleDist(engine));
+	// ランダムな速度
+	float speed = static_cast<float>(speedDist(engine));
+	// ランダムな方向の速度ベクトル
+	Vector3 randomVelocity = speed * Vector3(
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
+		0.5f,									 // Y成分
+		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
+	);
+	// パーティクルのパラメーターを設定
+	Utility::ParticleParams params{};
+	params.life = 1.0f;
+	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
+	params.velocity = randomVelocity;
+	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
+	params.rotateAccele = Vector3::One; // 回転加速度
+	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
+	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
+	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
+	params.startColor = Vector4(1, 1, 0.75, 0.75); // 初期カラー（白）
+	params.endColor = Vector4(0.75, 0.75, 0.5, 0); // 最終カラー（白→透明）
+	params.type = Utility::Type::STEAM; // パーティクルのタイプ
+	return params;
 }
 

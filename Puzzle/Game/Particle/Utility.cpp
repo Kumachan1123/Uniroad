@@ -57,21 +57,3 @@ bool Utility::Update(float elapsedTime)
 	if (m_life < 0.0f)return false;
 	else return true;
 }
-/*
-*	@brief タイプの切り替え
-*	@details パーティクルのタイプに応じた処理を行う
-*	@param elapsedTime フレーム時間
-*	@return なし
-*/
-void Utility::SwitchType(float elapsedTime)
-{
-}
-/*
-*	@brief 水蒸気の処理
-*	@details 水蒸気のパーティクルの固有の処理を行う
-*	@param elapsedTime フレーム時間
-*	@return なし
-*/
-void Utility::Steam(float elapsedTime)
-{
-}

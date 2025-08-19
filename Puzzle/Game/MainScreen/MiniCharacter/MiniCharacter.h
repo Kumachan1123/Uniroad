@@ -18,6 +18,8 @@
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
 #include "Game/MainScreen/Shadow/Shadow.h"
+#include "Game/Particle/Particle.h"
+#include "Game/Particle/Utility.h"
 
 // 前方宣言
 class CommonResources;
@@ -135,6 +137,8 @@ private:
 	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.1f) const;
 	// ゲームオーバー、ゲームクリア分岐処理
 	void HandleGameOverAndClear(float elapsedTime);
+	// パーティクルのパラメーターを設定する
+	Utility::ParticleParams SetParticleParams() const;
 public:
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
@@ -161,6 +165,8 @@ private:
 	IComponent* m_parent;
 	// 影
 	std::unique_ptr<Shadow> m_pShadow;
+	// パーティクル
+	std::unique_ptr<Particle> m_pParticle;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

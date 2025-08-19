@@ -80,6 +80,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetCSVMap(m_pCSVMap.get());
 	// ミニキャラベースにCSVアイテムを設定
 	m_pMiniCharacterBase->SetCSVItem(m_pCSVItem.get());
+	// ミニキャラにカメラを設定する
+	m_pMiniCharacterBase->SetCamera(m_pFixedCameraPlay.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -161,6 +163,8 @@ void PlayScene::Update(float elapsedTime)
 		{
 			// 有効にする
 			m_pResultUI->SetEnable(true);
+			// ミニキャラにリザルト用カメラを設定する
+			m_pMiniCharacterBase->SetCamera(m_pFixedCameraResult.get());
 			// 結果の設定
 			m_pResultUI->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
 		}
@@ -358,6 +362,9 @@ void PlayScene::CreateCamera()
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
 		0.1f, 1000.0f
 	);
+	// カメラに射影行列をセット
+	m_pFixedCameraPlay->SetProjectionMatrix(m_projectionGame);
+	m_pFixedCameraResult->SetProjectionMatrix(m_projectionResult);
 }
 /*
 *	@brief ビューポートを作成する
