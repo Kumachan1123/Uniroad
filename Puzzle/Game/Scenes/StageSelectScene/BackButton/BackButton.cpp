@@ -208,7 +208,7 @@ void BackButton::CreateAnimationSequence()
 			// 0で動かした場所とサイズで固定
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
-				m_buttonRects[i].position = Vector2(-1.5f + i * 0.5f, POSITIONS[i].y + 1.0f);
+				m_buttonRects[i].position = Vector2(-1.5f + i * 0.5f, POSITIONS[i].y + 0.0f);
 			}
 	} });
 	// フェーズ2: 移動 
@@ -226,7 +226,7 @@ void BackButton::CreateAnimationSequence()
 				t = Clamp(t, 0.0f, 1.0f);
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
-				m_buttonRects[i].position = Vector2::Lerp(Vector2(-1.5f + i * 0.1f, POSITIONS[i].y + 1.0f), POSITIONS[i], easing);
+				m_buttonRects[i].position = Vector2::Lerp(Vector2(-1.5f + i * 0.1f, POSITIONS[i].y + 0.0f), POSITIONS[i], easing);
 			}
 		}
 		});
@@ -259,7 +259,7 @@ void BackButton::CreateAnimationSequence()
 				t = Clamp(t, 0.0f, 1.0f);
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
-				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(-1.5f + i  , POSITIONS[i].y + 1.0f), easing);
+				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(-1.5f + i  , POSITIONS[i].y + 0.0f), easing);
 			}
 		}
 		});
@@ -270,7 +270,7 @@ void BackButton::CreateAnimationSequence()
 			// 0で動かした場所とサイズで固定
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
-				m_buttonRects[i].position = Vector2(-1.5f + i, POSITIONS[i].y + 1.0f);
+				m_buttonRects[i].position = Vector2(-1.5f + i, POSITIONS[i].y + 0.0f);
 				m_buttonRects[i].size = SIZES[i];
 			}
 	} });
