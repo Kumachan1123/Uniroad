@@ -253,6 +253,7 @@
     <ClInclude Include="Game\Sky\Sky.h" />
     <ClInclude Include="KumachiLib\Animaiton\Animation.h" />
     <ClInclude Include="KumachiLib\AnimationStep\AnimationStep.h" />
+    <ClInclude Include="KumachiLib\Bloom\Bloom.h" />
     <ClInclude Include="KumachiLib\Button\Button.h" />
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.h" />
@@ -286,6 +287,7 @@
     <ClInclude Include="KumachiLib\Math\KumachiLib.h" />
     <ClInclude Include="Libraries\Microsoft\DebugDraw.h" />
     <ClInclude Include="Libraries\Microsoft\ReadData.h" />
+    <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
     <ClInclude Include="Libraries\MyLib\DebugCamera.h" />
     <ClInclude Include="Libraries\MyLib\DebugString.h" />
     <ClInclude Include="Libraries\MyLib\GridFloor.h" />
@@ -346,6 +348,7 @@
     <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Game\Sky\Sky.cpp" />
     <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
+    <ClCompile Include="KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\PlaneArea\PlaneArea.cpp" />
@@ -362,6 +365,7 @@
     <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
+    <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugString.cpp" />
     <ClCompile Include="Libraries\MyLib\GridFloor.cpp" />
@@ -427,6 +431,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="HLSL\Particle\PS_Dust.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="HLSL\Fade\PS_Fade.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -443,20 +455,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\Particle\CS_Particle.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
-      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
@@ -464,7 +462,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
     </FxCompile>
-    <FxCompile Include="HLSL\Particle\PS_Particle.hlsl">
+    <FxCompile Include="HLSL\Particle\PS_Shine.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>

@@ -21,6 +21,8 @@
 #include "KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/MainScreen/Items/ItemDatas/ItemDatas.h"
 #include "Game/MainScreen/Items/ItemFactory/ItemFactory.h"
+#include "Game/Interface/ICamera.h"
+
 // 前方宣言
 class CommonResources;
 
@@ -46,6 +48,10 @@ public:
 	bool IsGoalUnlocked() const { return m_goalUnlocked; }
 	// ゴールをアンロックする
 	void UnlockGoal() { m_goalUnlocked = true; }
+	// カメラを取得する
+	ICamera* GetCamera() const { return m_pCamera; }
+	// カメラを設定する
+	void SetCamera(ICamera* camera) { m_pCamera = camera; }
 public:
 	// public関数
 	// コンストラクタ
@@ -64,14 +70,18 @@ private:
 	// private関数
 	// 辞書を初期化する
 	void InitializeTileDictionary();
-
 private:
-	CommonResources* m_pCommonResources;
-	//マップ
+	// 定数
 	// 最大行
 	const int MAXRAW = 5;
 	// 最大列
 	const int MAXCOL = 5;
+private:
+	// メンバ変数
+	// 共通リソース
+	CommonResources* m_pCommonResources;
+	// カメラのポインタ―
+	ICamera* m_pCamera;
 	// タイルの辞書
 	std::unordered_map<std::string, ItemInfo> m_tileDictionary;
 	// タイルのレンダリングデータ

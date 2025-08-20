@@ -11,7 +11,9 @@
 *	@return なし
 */
 Medal::Medal()
-	:m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	, m_pCamera(nullptr) // カメラへのポインタ
+	, m_pParticle(nullptr) // パーティクルシステムへのポインタ
 	, m_pMiniCharacter(nullptr) // ミニキャラクターへのポインタ
 	, m_itemInfo() // アイテム情報
 	, m_row(-1) // 行番号（保存用）
@@ -49,6 +51,16 @@ void Medal::Initialize(CommonResources* resources, const ItemInfo& info)
 	m_itemInfo = info;
 	// 初期の回転速度を設定
 	m_rotationSpeed = DEFAULT_ROTATION_SPEED;
+	// パーティクルを作成する
+	m_pParticle = std::make_unique<Particle>(Utility::Type::SHINE, 1.0f, 50);
+	// パーティクルを初期化する
+	m_pParticle->Initialize(m_pCommonResources);
+	// 影を作成する
+	m_pShadow = std::make_unique<Shadow>();
+	// 影にモデルを渡す
+	m_pShadow->SetModel(m_pModel);
+	// 影を初期化
+	m_pShadow->Initialize(m_pCommonResources);
 }
 /*
 *	@brief 更新
@@ -69,7 +81,6 @@ void Medal::Update(float elapsedTime)
 		m_deleteTime += elapsedTime;
 		// Y座標を滑らかに変える
 		m_position.y += Easing::EaseInCirc(m_deleteTime / 3.0f);
-
 		// 獲得されたら消えるまでの時間が2秒を超えたら
 		if (m_deleteTime > 2.0f)
 		{
@@ -79,9 +90,11 @@ void Medal::Update(float elapsedTime)
 			return;
 		}
 	}
-
 	// 時間経過で回転させる
 	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f * m_rotationSpeed, 0.0f, 0.0f);
+	// パーティクルの更新
+	m_pParticle->SetParams(SetParticleParams());
+	m_pParticle->Update(elapsedTime);
 }
 /*
 *	@brief 当たり判定描画
@@ -101,11 +114,18 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	// 共通のステートを取得
 	auto states = m_pCommonResources->GetCommonStates();
 	// ワールド行列を設定
-	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) *
-		Matrix::CreateFromQuaternion(m_rotation) *
-		Matrix::CreateTranslation(m_position);
-	// レンダリング
+	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) * Matrix::CreateFromQuaternion(m_rotation) * Matrix::CreateTranslation(m_position);
+	// パーティクルのビルボード行列を作成
+	m_pParticle->CreateBillboard(GetCamera()->GetTargetPosition(), GetCamera()->GetEyePosition(), GetCamera()->GetUpPosition());
+	// パーティクルの描画
+	m_pParticle->Render(view, proj);
+	// 影用に座標を定義
+	Vector3 shadowPosition = m_position + Vector3(0.0f, -2.99f, 0.0f);
+	// 影の描画
+	m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
+	// モデルの描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
+
 }
 /*
 *	@brief アイテムの取得時処理
@@ -149,4 +169,49 @@ void Medal::OnDiscard(MiniCharacter* miniCharacter)
 	UNREFERENCED_PARAMETER(miniCharacter);
 	// アイテムを削除
 	m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);
+}
+/*
+*	@brief パーティクルのパラメーターを設定する
+*	@details メダルのパーティクルのパラメーターを設定する
+*	@param なし
+*	@return パーティクルのパラメーター
+*/
+Utility::ParticleParams Medal::SetParticleParams() const
+{
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// 乱数の設定
+	std::random_device seed;
+	// メルセンヌ・ツイスタ法
+	std::default_random_engine engine(seed());
+	// ランダムな角度
+	std::uniform_real_distribution<> angleDist(0, XM_2PI);
+	// ランダムな速度の範囲を設定
+	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	// XY平面上のランダムな角度
+	float randAngleXY = static_cast<float>(angleDist(engine));
+	// XZ平面上のランダムな角度
+	float randAngleXZ = static_cast<float>(angleDist(engine));
+	// ランダムな速度
+	float speed = static_cast<float>(speedDist(engine));
+	// ランダムな方向の速度ベクトル
+	Vector3 randomVelocity = speed * Vector3(
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
+		0.5f,									 // Y成分
+		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
+	);
+	// パーティクルのパラメーターを設定
+	Utility::ParticleParams params{};
+	params.life = 1.0f;
+	params.pos = m_position;
+	params.velocity = randomVelocity;
+	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
+	params.rotateAccele = Vector3::One; // 回転加速度
+	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
+	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
+	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
+	params.startColor = Vector4(0, 1, 1, 0.75); // 初期カラー（白）
+	params.endColor = Vector4(0, 0.25, 0.75, 0); // 最終カラー（白→透明）
+	params.type = Utility::Type::SHINE; // パーティクルのタイプ
+	return params;
 }

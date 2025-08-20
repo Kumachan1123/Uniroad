@@ -23,6 +23,7 @@ public:
 	enum class Type
 	{
 		STEAM,	// 水蒸気
+		SHINE,	// 光
 	};
 public:
 	// パーティクルのパラメーター構造体

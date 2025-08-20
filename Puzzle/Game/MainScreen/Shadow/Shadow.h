@@ -13,6 +13,11 @@ class CommonResources;
 class Shadow
 {
 public:
+	// アクセサ
+	// 描画したいモデルを設定する
+	void SetModel(DirectX::Model* model) { m_pModel = model; }
+
+public:
 	// public関数
 	// コンストラクタ
 	Shadow();
@@ -20,15 +25,21 @@ public:
 	~Shadow() = default;
 	// 初期化する
 	void Initialize(CommonResources* resources);
-	// 描画する
-	void Render(const DirectX::SimpleMath::Matrix& view,
+	// 描画する(丸影）
+	void RenderCircleShadow(const DirectX::SimpleMath::Matrix& view,
 		const DirectX::SimpleMath::Matrix& projection,
 		const DirectX::SimpleMath::Vector3& position,
 		float radius = 0.7f);
+	// 描画する(つぶしたモデル）
+	void RenderModelShadow(const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& projection,
+		const DirectX::SimpleMath::Matrix& world);
 private:
 	// private関数
 	// 深度ステンシルバッファを設定する
 	void CreateDepthStenciBuffer(ID3D11Device* pDevice);
+	// モデル用の深度ステンシルバッファを作成する
+	void CreateDepthStenciBufferForModel(ID3D11Device* pDevice);
 private:
 	// private変数
 	// テクスチャ
@@ -43,5 +54,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_pDepthStencilState;
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
-
+	// 影用モデル
+	DirectX::Model* m_pModel;
 };

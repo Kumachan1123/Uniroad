@@ -67,10 +67,7 @@ void Particle::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// デバイスリソースを取得
 	m_pDR = m_pCommonResources->GetDeviceResources();
-	// シェーダー作成クラスの初期化
-	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-	// シェーダーの作成
-	CreateShaders();
+
 	// 画像の読み込み
 	switch (m_type)
 	{
@@ -82,11 +79,30 @@ void Particle::Initialize(CommonResources* resources)
 		//	フレームの行数
 		m_frameRows = 1;
 		// テクスチャの取得
-		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Particle"));
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Dust"));
+		// ピクセルシェーダーの作成
+		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Dust.cso", m_pPixelShader);
+		break;
+	case Utility::Type::SHINE:// 光
+		//	アニメーションの速度
+		m_animSpeed = 1;
+		//	フレームの列数
+		m_frameCols = 1;
+		//	フレームの行数
+		m_frameRows = 1;
+		// テクスチャの取得
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine"));// メインテクスチャ
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine_Gradation"));// サブテクスチャ
+		// ピクセルシェーダーの作成
+		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Shine.cso", m_pPixelShader);
 		break;
 	default:// それ以外のパーティクル
 		break;
 	}
+	// シェーダー作成クラスの初期化
+	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	// シェーダーの作成
+	CreateShaders();
 	// 板ポリゴン描画用
 	m_pDrawPolygon->InitializePositionColorTexture(m_pDR);
 }
@@ -244,7 +260,7 @@ void Particle::CreateBillboard(const DirectX::SimpleMath::Vector3& target, const
 }
 /*
 *	@brief	シェーダーの作成
-*	@detail シェーダーの作成処理を行う
+*	@detail シェーダーの作成処理を行う(ピクセルシェーダーは事前にタイプごとに分岐して作成する）
 *	@param なし
 *	@return なし
 */
@@ -252,10 +268,9 @@ void Particle::CreateShaders()
 {
 	// 頂点シェーダーの作成
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);
-	// ピクセルシェーダーの作成
-	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Particle.cso", m_pPixelShader);
 	// ジオメトリシェーダーの作成
 	m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_pGeometryShader);
+
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// 定数バッファ作成

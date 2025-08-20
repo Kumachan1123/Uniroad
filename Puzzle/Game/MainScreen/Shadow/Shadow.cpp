@@ -17,6 +17,7 @@ Shadow::Shadow()
 	, m_pInputLayout{} // インプットレイアウト
 	, m_pDepthStencilState{} // 深度ステンシルステート
 	, m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	, m_pModel(nullptr)// 影用モデル
 {
 }
 /*
@@ -57,7 +58,7 @@ void Shadow::Initialize(CommonResources* resources)
 *	@param position 影ポリゴンの位置
 *	@param radius 影ポリゴンの半径(デフォルトは0.7f)
 */
-void Shadow::Render(
+void Shadow::RenderCircleShadow(
 	const DirectX::SimpleMath::Matrix& view,
 	const DirectX::SimpleMath::Matrix& projection,
 	const DirectX::SimpleMath::Vector3& position,
@@ -116,6 +117,45 @@ void Shadow::Render(
 	m_pPrimitiveBatch->End();
 }
 /*
+*	@brief モデルの影ポリゴンを描画する
+*	@details モデルの影ポリゴンを描画する
+*	@param view ビューマトリックス
+*	@param projection プロジェクションマトリックス
+*	@param world ワールドマトリックス
+*	@return なし
+*/
+void Shadow::RenderModelShadow(const DirectX::SimpleMath::Matrix& view,
+	const DirectX::SimpleMath::Matrix& projection,
+	const DirectX::SimpleMath::Matrix& world)
+{
+	// DirectX::名前空間を使用
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// デバイスコンテキストを取得
+	const auto& context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
+	const auto& states = m_pCommonResources->GetCommonStates();
+	// ライトの方向を設定
+	Vector3 lightDir = Vector3::UnitY;
+	// ライトの方向を正規化
+	lightDir.Normalize();
+	// 影行列の元を作る
+	Matrix shadowMat = Matrix::CreateShadow(lightDir, Plane(0.0f, 1.0f, 0.0f, 0.0f));
+	// 影の行列をワールド行列にかける
+	Matrix shadowMatrix = world * shadowMat;
+	// ブレンドステートを不透明にする
+	context->OMSetBlendState(states->Opaque(), nullptr, 0xffffffff);
+	// 深度ステンシルステートを無効にする
+	context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 1);
+	// カリングを無効にする
+	context->RSSetState(states->CullNone());
+	// 影の描画
+	m_pModel->Draw(context, *states, shadowMatrix, view, projection, false, [&]()
+		{
+
+		});
+}
+/*
 *	@brief 深度ステンシルバッファを設定する
 *	@details 影ポリゴンを描画するための深度ステンシルバッファを設定する
 *	@param pDevice Direct3Dデバイスへのポインタ
@@ -142,4 +182,32 @@ void Shadow::CreateDepthStenciBuffer(ID3D11Device* pDevice)
 	// 深度ステンシルステートを作成する
 	pDevice->CreateDepthStencilState(&desc, m_pDepthStencilState.ReleaseAndGetAddressOf());
 
+}
+/*
+*	@brief モデル用の深度ステンシルバッファを作成する
+*	@details モデルの影ポリゴンを描画するための深度ステンシルバッファを作成する
+*	@param pDevice Direct3Dデバイスへのポインタ
+*	@return なし
+*/
+void Shadow::CreateDepthStenciBufferForModel(ID3D11Device* pDevice)
+{
+
+	// 深度ステンシルステートの設定を行う
+	D3D11_DEPTH_STENCIL_DESC desc{};
+	// 影：描画先のステンシルバッファと参照値が同じとき影を描画する
+	desc.DepthEnable = true;									// 深度テストを行う
+	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// 深度バッファを更新する
+	desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// 深度値以下なら更新する
+	desc.StencilEnable = true;									// ステンシルテストを行う
+	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff
+	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff
+	// 表面
+	desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;		// 参照値とステンシル値が同値なら
+	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;		// OK　何もしない
+	desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;		// NG　何もしない
+	desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;	// NG　何もしない
+	// 裏面も同じ設定
+	desc.BackFace = desc.FrontFace;
+	// 深度ステンシルステートを作成する
+	pDevice->CreateDepthStencilState(&desc, m_pDepthStencilState.ReleaseAndGetAddressOf());
 }

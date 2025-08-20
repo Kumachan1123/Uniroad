@@ -1,7 +1,8 @@
 #include "Particle.hlsli"
 
-Texture2D tex : register(t0);
-Texture2D tex2 : register(t1);
+Texture2D tex : register(t0); // メインのテクスチャ
+Texture2D colorTex : register(t1); // グラデーションやその他の色関連のテクスチャ
+
 SamplerState samLinear : register(s0);
 
 float4 main(PS_INPUT input) : SV_TARGET
@@ -17,8 +18,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     uv.y += (1.0f / h) * (int) (count2 / w);
     
     float4 color = tex.Sample(samLinear, uv);
-    
-    color.rgb *= input.Color.rgb;
+    color.rgb = colorTex.Sample(samLinear, input.Tex).rgb;
     color.a *= input.Color.a * colors.a;
    // // アルファ値が0の場合はピクセルを非表示にする
    // float alphaMask = step(0.0f, color.a); // アルファ値が0なら0、それ以外は1になる

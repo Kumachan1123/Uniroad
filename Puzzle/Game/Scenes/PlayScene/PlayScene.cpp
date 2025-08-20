@@ -23,6 +23,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	, m_viewPortControll() // 操作画面用のビューポート
 	, m_nowSceneID(sceneID)// 現在のシーンID
 	, m_stageNumber(-1) // ステージ番号
+
 {}
 /*
 *	@brief デストラクタ
@@ -72,6 +73,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pCSVMap->LoadMap("Resources/Map/" + stagePath + "_map.csv");
 	// CSVアイテムを作成する
 	m_pCSVItem = std::make_unique<CSVItem>(m_pCommonResources);
+	// CSVアイテムにカメラを設定する
+	m_pCSVItem->SetCamera(m_pFixedCameraPlay.get());
 	// CSVアイテムを読み込む
 	m_pCSVItem->LoadItem("Resources/Item/" + stagePath + "_item.csv");
 	// ミニキャラを作成する
@@ -424,6 +427,4 @@ void PlayScene::DrawDebugString()
 	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
 	debugString->AddString("StageNum:%i", m_stageNumber);
 #endif  
-
-
 }

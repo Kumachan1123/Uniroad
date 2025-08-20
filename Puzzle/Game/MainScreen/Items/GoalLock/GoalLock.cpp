@@ -11,7 +11,8 @@
 *	@return なし
 */
 GoalLock::GoalLock()
-	:m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
+	, m_pCamera(nullptr) // カメラへのポインタ
 	, m_pMiniCharacter(nullptr) // ミニキャラクターへのポインタ
 	, m_itemInfo() // アイテム情報
 	, m_row(-1) // 行番号（保存用）

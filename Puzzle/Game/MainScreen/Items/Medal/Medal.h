@@ -8,6 +8,10 @@
 #include "Game/MainScreen/Items/ItemBase/ItemBase.h"
 #include "Game/MainScreen/MiniCharacter/MiniCharacter.h"
 #include "KumachiLib/Easing/Easing.h"
+#include "Game/Particle/Particle.h"
+#include "Game/Particle/Utility.h"
+#include "Game/MainScreen/Shadow/Shadow.h"
+
 
 // 前方宣言
 class CommonResources;
@@ -37,6 +41,10 @@ public:
 	int GetCol() const override { return m_col; }
 	// アイテムのある列番号を設定する
 	void SetCol(int col) override { m_col = col; }
+	// カメラを取得する
+	ICamera* GetCamera() const override { return m_pCamera; }
+	// カメラを設定する
+	void SetCamera(ICamera* camera) override { m_pCamera = camera; }
 
 public:
 	// public関数
@@ -57,6 +65,10 @@ public:
 	// アイテムを破棄したときの処理
 	void OnDiscard(MiniCharacter* miniCharacter) override;
 private:
+	// private関数
+	// パーティクルのパラメーターを設定する
+	Utility::ParticleParams SetParticleParams() const;
+private:
 	// 定数
 	// デフォルトの回転速度
 	static constexpr float DEFAULT_ROTATION_SPEED = 1.0f;
@@ -68,6 +80,12 @@ private:
 	CommonResources* m_pCommonResources;
 	// メダルのモデル
 	DirectX::Model* m_pModel;
+	// カメラのポインター
+	ICamera* m_pCamera;
+	// パーティクル
+	std::unique_ptr<Particle> m_pParticle;
+	// 影
+	std::unique_ptr<Shadow> m_pShadow;
 	// メダルの情報
 	ItemInfo m_itemInfo;
 	// メダルの位置

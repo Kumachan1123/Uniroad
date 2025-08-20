@@ -156,13 +156,12 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 {
 	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
-
 	// 影用に座標を定義
 	Vector3 shadowPosition = m_currentPosition;
 	// 影を少し浮かせる
 	shadowPosition.y += 0.01f;
 	// 影を描画する
-	m_pShadow->Render(view, proj, shadowPosition, 1.0f);
+	m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
 	// 親コンポーネントのポインターに変換
 	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
 	// 軌跡のビルボード行列を作成
@@ -171,7 +170,6 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
 	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
-
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();

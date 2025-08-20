@@ -16,6 +16,7 @@ CSVItem::CSVItem(CommonResources* resources)
 	, m_collectedMedals(0) // 収集したメダルの数
 	, m_createdMedals(0) // 生成したメダルの数
 	, m_goalUnlocked(true)// ゴールロックが解除されているかどうか
+	, m_pCamera(nullptr) // カメラへのポインタ
 {
 	// アイテムのタイルの辞書を初期化
 	InitializeTileDictionary();
@@ -111,17 +112,19 @@ void CSVItem::LoadItem(const std::string& filePath)
 				Vector3 pos(x, 3.0f, z);
 				// タイルを生成
 				std::unique_ptr<ItemBase> itemBase = ItemFactory::CreateItemByName(tileInfo.modelName);
-				// アイテムを初期化
-				itemBase->Initialize(m_pCommonResources, tileInfo);
 				// アイテムの位置を設定
 				itemBase->SetPosition(pos);
 				// アイテムのワールド行列を設定
 				itemBase->SetWorldMatrix(Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos));
 				// アイテムのモデルを設定
 				itemBase->SetModel(m_pCommonResources->GetModelManager()->GetModel(tileInfo.modelName));
+				// アイテムを初期化
+				itemBase->Initialize(m_pCommonResources, tileInfo);
 				// アイテムに行と列の情報を設定
 				itemBase->SetRow(row);// 行番号を設定
 				itemBase->SetCol(col);// 列番号を設定
+				// アイテムにカメラのポインターを設定
+				itemBase->SetCamera(m_pCamera);
 				// アイテムデータにタイル情報を保存
 				m_mapItemData[row][col] = MapItemData{ tileInfo, pos, std::move(itemBase) };
 				// 生成したアイテムがメダルならカウント

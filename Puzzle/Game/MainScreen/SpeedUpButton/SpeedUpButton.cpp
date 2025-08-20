@@ -95,7 +95,7 @@ void SpeedUpButton::Render()
 {
 
 	// ƒ{ƒ^ƒ“‚Ì•`‰æ
-	//m_pButton->Render(m_buttonRect, m_isPressed, m_frameCols, m_frameRows);
+	//m_pButton->RenderCircleShadow(m_buttonRect, m_isPressed, m_frameCols, m_frameRows);
 	m_pButton->DrawQuadWithBuffer(m_buttonRect, m_spriteSheetBuffer);
 }
 /*

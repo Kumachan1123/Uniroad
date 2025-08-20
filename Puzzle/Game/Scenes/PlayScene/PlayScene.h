@@ -47,7 +47,7 @@ namespace mylib
 	class GridFloor;
 }
 
-// 一般的なシーンクラス
+// プレイシーンクラス
 class PlayScene : public IScene
 {
 public:

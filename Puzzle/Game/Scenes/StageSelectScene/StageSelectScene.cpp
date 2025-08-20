@@ -165,8 +165,6 @@ void StageSelectScene::Update(float elapsedTime)
 		m_pPlaneArea->Update(elapsedTime);
 		// ステートの入り口を更新
 		for (auto& gate : m_pStageGates)gate->Update(elapsedTime);
-		// マウスステートを取得
-		const auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 		// 左クリックを検知
 		if (m_pPlaneArea->IsMouseClick() && m_pPlaneArea->GetHitPlaneIndex() > PlaneArea::NO_HIT_PLANE_INDEX)
 		{

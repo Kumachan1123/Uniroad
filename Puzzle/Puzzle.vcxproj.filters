@@ -119,6 +119,8 @@
     <ClInclude Include="Game\Particle\Utility.h" />
     <ClInclude Include="Game\Interface\ICamera.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\BackButton\BackButton.h" />
+    <ClInclude Include="KumachiLib\Bloom\Bloom.h" />
+    <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -196,6 +198,8 @@
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Particle\Utility.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\BackButton\BackButton.cpp" />
+    <ClCompile Include="KumachiLib\Bloom\Bloom.cpp" />
+    <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -221,7 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
-    <FxCompile Include="HLSL\Particle\PS_Particle.hlsl" />
+    <FxCompile Include="HLSL\Particle\PS_Shine.hlsl" />
     <FxCompile Include="HLSL\Particle\VS_Particle.hlsl" />
     <FxCompile Include="HLSL\CRT\PS_CRT.hlsl" />
     <FxCompile Include="HLSL\CRT\VS_CRT.hlsl" />
@@ -238,6 +242,6 @@
     <FxCompile Include="HLSL\Fade\VS_Fade.hlsl" />
     <FxCompile Include="HLSL\Sky\PS_Sky.hlsl" />
     <FxCompile Include="HLSL\Sky\VS_Sky.hlsl" />
-    <FxCompile Include="HLSL\Particle\CS_Particle.hlsl" />
+    <FxCompile Include="HLSL\Particle\PS_Dust.hlsl" />
   </ItemGroup>
 </Project>

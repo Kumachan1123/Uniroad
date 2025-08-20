@@ -5,9 +5,12 @@
 #pragma once
 // 自作ヘッダーファイル
 #include "Game/MainScreen/Items/ItemDatas/ItemDatas.h"
+
 // 前方宣言
 class MiniCharacter;
 class CommonResources;
+class ICamera;
+
 // アイテムベースクラス
 class ItemBase
 {
@@ -33,9 +36,13 @@ public:
 	virtual int GetCol() const = 0;
 	// アイテムのある列番号を設定する
 	virtual void SetCol(int col) = 0;
+	// カメラを取得する
+	virtual ICamera* GetCamera() const = 0;
+	// カメラを設定する
+	virtual void SetCamera(ICamera* camera) = 0;
 
-	// public関数
 public:
+	// public関数
 	// デストラクタ
 	virtual ~ItemBase() = default;
 	// 初期化

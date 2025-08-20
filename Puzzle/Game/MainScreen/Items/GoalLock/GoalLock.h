@@ -36,7 +36,10 @@ public:
 	int GetCol() const override { return m_col; }
 	// アイテムのある列番号を設定する
 	void SetCol(int col) override { m_col = col; }
-
+	// カメラを取得する
+	ICamera* GetCamera() const override { return m_pCamera; }
+	// カメラを設定する
+	void SetCamera(ICamera* camera) override { m_pCamera = camera; }
 public:
 	// public関数
 	// コンストラクタ
@@ -61,6 +64,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// ゴールロックのモデル
 	DirectX::Model* m_pModel;
+	// カメラのポインター
+	ICamera* m_pCamera;
 	// ゴールロックの情報
 	ItemInfo m_itemInfo;
 	// ゴールロックの位置
