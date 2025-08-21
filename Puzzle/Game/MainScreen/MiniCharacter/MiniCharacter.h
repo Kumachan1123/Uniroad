@@ -134,7 +134,7 @@ private:
 	//　速度を更新する
 	void UpdateSpeedByStartTile();
 	// タイルの中心にいるかどうかを確認する
-	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.1f) const;
+	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.15f) const;
 	// ゲームオーバー、ゲームクリア分岐処理
 	void HandleGameOverAndClear(float elapsedTime);
 	// 土煙パーティクルのパラメーターを設定する
