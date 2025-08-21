@@ -47,7 +47,7 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	Particle(Utility::Type type, float size, size_t limit = 100);
+	Particle(Utility::Type type, size_t limit = 100);
 	// デストラクタ
 	~Particle();
 	// 初期化
@@ -130,8 +130,6 @@ public:
 	std::list<Utility> m_particleUtility;
 	// パーティクルタイプ
 	Utility::Type m_type;
-	// パーティクルのサイズ
-	float m_size;
 	// パーティクルのパラメーター
 	Utility::ParticleParams m_params;
 	// 生成フラグ

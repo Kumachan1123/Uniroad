@@ -52,7 +52,7 @@ void Medal::Initialize(CommonResources* resources, const ItemInfo& info)
 	// 初期の回転速度を設定
 	m_rotationSpeed = DEFAULT_ROTATION_SPEED;
 	// パーティクルを作成する
-	m_pParticle = std::make_unique<Particle>(Utility::Type::SHINE, 1.0f, 50);
+	m_pParticle = std::make_unique<Particle>(Utility::Type::SHINE, 50);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
 	// 影を作成する
@@ -122,7 +122,7 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	// 影用に座標を定義
 	Vector3 shadowPosition = m_position + Vector3(0.0f, -2.99f, 0.0f);
 	// 影の描画
-	m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
+	if (!m_isCollected)m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
 	// モデルの描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 

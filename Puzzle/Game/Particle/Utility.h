@@ -24,6 +24,7 @@ public:
 	{
 		STEAM,	// 水蒸気
 		SHINE,	// 光
+		SWEAT,	// 汗
 	};
 public:
 	// パーティクルのパラメーター構造体

@@ -19,7 +19,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Particle::INPUT_LAYOUT =
 *	@param limit パーティクルの生成数の制限(デフォルトは100)
 *	@return なし
 */
-Particle::Particle(Utility::Type type, float size, size_t limit)
+Particle::Particle(Utility::Type type, size_t limit)
 	: m_pCommonResources{}// 共通リソース
 	, m_timer(0.0f)// 経過時間
 	, m_elapsedTime(0.0f)// フレーム時間
@@ -35,7 +35,6 @@ Particle::Particle(Utility::Type type, float size, size_t limit)
 	, m_proj{}// プロジェクション行列
 	, m_billboard{}// ビルボード行列
 	, m_type{ type }// パーティクルのタイプ
-	, m_size{ size }// パーティクルのサイズ(渡した値の十倍）
 	, m_params{}// パーティクルのパラメーター
 	, m_anim{ 0 }// フレーム数
 	, m_animTime{ 0.0f }// アニメーション時間
@@ -95,6 +94,18 @@ void Particle::Initialize(CommonResources* resources)
 		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine_Gradation"));// サブテクスチャ
 		// ピクセルシェーダーの作成
 		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Shine.cso", m_pPixelShader);
+		break;
+	case Utility::Type::SWEAT:// 汗
+		//	アニメーションの速度
+		m_animSpeed = 1;
+		//	フレームの列数
+		m_frameCols = 1;
+		//	フレームの行数
+		m_frameRows = 1;
+		// テクスチャの取得
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Sweat"));// メインテクスチャ
+		// ピクセルシェーダーの作成
+		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Sweat.cso", m_pPixelShader);
 		break;
 	default:// それ以外のパーティクル
 		break;

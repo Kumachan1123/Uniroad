@@ -75,7 +75,7 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	// 影の初期化
 	m_pShadow->Initialize(m_pCommonResources);
 	// パーティクルを作成する
-	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 1.0f, 50);
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 50);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
 }

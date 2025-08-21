@@ -243,5 +243,6 @@
     <FxCompile Include="HLSL\Sky\PS_Sky.hlsl" />
     <FxCompile Include="HLSL\Sky\VS_Sky.hlsl" />
     <FxCompile Include="HLSL\Particle\PS_Dust.hlsl" />
+    <FxCompile Include="HLSL\Particle\PS_Sweat.hlsl" />
   </ItemGroup>
 </Project>

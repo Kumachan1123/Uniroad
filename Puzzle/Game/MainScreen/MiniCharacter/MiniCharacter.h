@@ -137,8 +137,10 @@ private:
 	bool IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon = 0.1f) const;
 	// ゲームオーバー、ゲームクリア分岐処理
 	void HandleGameOverAndClear(float elapsedTime);
-	// パーティクルのパラメーターを設定する
-	Utility::ParticleParams SetParticleParams() const;
+	// 土煙パーティクルのパラメーターを設定する
+	Utility::ParticleParams SetDustParams() const;
+	// 汗パーティクルのパラメーターを設定する
+	Utility::ParticleParams SetSweatParams() const;
 public:
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
@@ -165,8 +167,10 @@ private:
 	IComponent* m_parent;
 	// 影
 	std::unique_ptr<Shadow> m_pShadow;
-	// パーティクル
-	std::unique_ptr<Particle> m_pParticle;
+	// 土煙パーティクル
+	std::unique_ptr<Particle> m_pDust;
+	// 汗パーティクル
+	std::unique_ptr<Particle> m_pSweat;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号
