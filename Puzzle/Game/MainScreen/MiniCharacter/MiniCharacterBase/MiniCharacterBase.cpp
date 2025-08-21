@@ -90,6 +90,8 @@ void MiniCharacterBase::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 		{
 			// 座標をカメラに渡す座標とする
 			m_cameraPosition = node->GetPosition();
+			// 座標をアイコンに渡す座標とする
+			m_iconPosition = node->GetPosition();
 		}
 	}
 }

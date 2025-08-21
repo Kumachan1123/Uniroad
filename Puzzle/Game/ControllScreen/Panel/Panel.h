@@ -56,6 +56,9 @@ public:
 	void SetMouse(MyMouse* pMouse) { m_pMouse = pMouse; }
 	// ビューポートを設定
 	void SetViewport(const D3D11_VIEWPORT& viewport) { m_viewPortControll = viewport; }
+	// プレイヤーの座標を設定
+	void SetPlayerPosition(const DirectX::SimpleMath::Vector3& position) { m_playerPosition = position; }
+
 public:
 	// public関数
 	// コンストラクタ
@@ -66,6 +69,8 @@ public:
 	void Initialize(CommonResources* resources, int width, int height) override;
 	// 更新
 	void Update(const float elapsedTime) override;
+	// プレイヤーのアイコンの更新
+	void UpdatePlayerIcons(const float elapsedTime);
 	// 描画
 	void Render() override;
 	// UI追加
@@ -80,8 +85,34 @@ public:
 	void DrawTiles();
 	// アイテム情報の描画
 	void DrawItems();
+
 private:
 	// private関数
+	// アイテムの配置
+	void PlaceItems(const MapItemData& itemData, int row, int col, const DirectX::SimpleMath::Vector2& pos);
+	// プレイヤーの配置
+	void PlacePlayer(const MapTileData& tileData, int row, int col, const DirectX::SimpleMath::Vector2& pos);
+private:
+	// private定数
+	// 1タイルの幅
+	static const float TILE_SIZE;
+	// タイルの数（0～5）
+	static const int TILE_COUNT;
+	// タイルの座標の補正値
+	static const float TILE_POSITION_CORRECTION;
+	// タイルの数（補正値考慮）
+	static const float TILE_COUNT_CORRECTED;
+	// 3D空間上のプレイヤーの座標の補正値
+	static const float PLAYER_POSITION_CORRECTION;
+	// 3D空間上のタイルの幅（補正値考慮）
+	static const float TILE_SIZE_3D;
+	// 描画オフセットX
+	static const float DRAW_OFFSET_X;
+	// 描画オフセットY
+	static const float DRAW_OFFSET_Y;
+
+private:
+	// メンバ変数
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;
 	// 共通リソース
@@ -90,8 +121,12 @@ private:
 	std::vector<std::unique_ptr<Canvas>> m_pTiles;
 	// アイテム
 	std::vector<std::pair<std::unique_ptr<Canvas>, ItemInfo>> m_pItems;
+	// プレイヤーのアイコン
+	std::vector<std::unique_ptr<Canvas>> m_pPlayerIcons;
 	// マウスのポインター
 	MyMouse* m_pMouse;
+	// プレイヤーの座標
+	DirectX::SimpleMath::Vector3 m_playerPosition;
 	// ウィンドウの幅と高さ
 	int m_windowWidth, m_windowHeight;
 	// 時間

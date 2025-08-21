@@ -25,6 +25,7 @@ public:
 	{
 		TILE,	// タイル
 		ITEM,	// アイテム
+		PLAYERICON,	// プレイヤーアイコン
 		BUTTON,	// ボタン
 	};
 public:

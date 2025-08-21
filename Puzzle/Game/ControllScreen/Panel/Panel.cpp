@@ -4,6 +4,23 @@
 */
 #include <pch.h>
 #include "Panel.h"
+// 1タイルの幅
+const float Panel::TILE_SIZE = 90.0f;
+// タイルの枚数(補正値も考慮）
+const int Panel::TILE_COUNT = 5;
+// タイルの座標の補正値
+const float Panel::TILE_POSITION_CORRECTION = 0.6f;
+// タイルの枚数（補正値考慮）
+const float Panel::TILE_COUNT_CORRECTED = TILE_COUNT - TILE_POSITION_CORRECTION;
+// 3D空間上のプレイヤーの座標の補正値
+const float Panel::PLAYER_POSITION_CORRECTION = 4.0f;
+// 3D空間上のタイルの幅（補正値考慮）
+const float Panel::TILE_SIZE_3D = 8.75f;
+// 描画オフセットX
+const float Panel::DRAW_OFFSET_X = -350.0f;
+// 描画オフセットY
+const float Panel::DRAW_OFFSET_Y = 420.0f;
+
 /*
 *	@brief コンストラクタ
 *	@details パネルクラスのコンストラクタ
@@ -59,16 +76,14 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 	m_windowWidth = (int)(width * .3f);
 	// ウィンドウ高さ
 	m_windowHeight = height;
-	// 一枚当たりの幅
-	const float tileSize = 90.0f;
 	// 左端の位置
-	const float startX = Screen::CENTER_X - (tileSize * 2);
+	const float startX = Screen::CENTER_X - (TILE_SIZE * 2);
 	// 上端の位置
-	const float startY = Screen::CENTER_Y - (tileSize * 2);
+	const float startY = Screen::CENTER_Y - (TILE_SIZE * 2);
 	// グリッドのキーを決定するためのループ
-	for (int row = 0; row < 5; ++row)
+	for (int row = 0; row < m_mapSizeX; ++row)
 	{
-		for (int col = 0; col < 5; ++col)
+		for (int col = 0; col < m_mapSizeY; ++col)
 		{
 			// CSVマップのタイル情報を取得
 			const MapTileData& tileData = m_pCSVMap->GetTileData(row, col);
@@ -77,31 +92,20 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			// タイルの種類に応じてテクスチャキーを変更
 			textureKey = tileData.tileInfo.modelName.empty() ? textureKey : tileData.tileInfo.modelName;
 			// 位置計算
-			float posX = startX + col * tileSize - 350.0f;
-			float posY = startY + row * tileSize + 420.0f;
+			float posX = startX + col * TILE_SIZE + DRAW_OFFSET_X;
+			float posY = startY + row * TILE_SIZE + DRAW_OFFSET_Y;
+			Vector2 pos(posX, posY);
 			// タイルの種類に応じてテクスチャキーを変更して並べる
 			Add(textureKey
-				, Vector2(posX, posY)
-				, Vector2(0.6f, 0.6f)
+				, pos
+				, Vector2(TILE_POSITION_CORRECTION)
 				, KumachiLib::ANCHOR::MIDDLE_CENTER
 				, UIType::TILE);
 			// アイテムを配置する
-			const MapItemData& itemData = m_pCSVItem->GetItemData(row, col);
-			// アイテムがない場合はスキップ
-			if (itemData.itemInfo.modelName.empty())continue;
-			// アイテムの位置を計算
-			Vector2 itemPos = Vector2(posX, posY);
-			// アイテムのテクスチャキーを取得
-			std::string itemTextureKey = itemData.itemInfo.modelName;
-			// 行と列を保存
-			m_row = row;
-			m_col = col;
-			// アイテムを追加
-			Add(itemTextureKey
-				, itemPos
-				, Vector2(0.6f, 0.6f)
-				, KumachiLib::ANCHOR::MIDDLE_CENTER
-				, UIType::ITEM);
+			PlaceItems(m_pCSVItem->GetItemData(row, col), row, col, pos);
+			// プレイヤーを配置する
+			PlacePlayer(tileData, row, col, pos);
+
 		}
 	}
 }
@@ -152,18 +156,51 @@ void Panel::Update(const float elapsedTime)
 		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
 			// アイテムの経過時間を更新
 			m_pItems[i].first->SetTime(m_pItems[i].first->GetTime() + elapsedTime);
+
+	}
+	// プレイヤーアイコンの更新
+	UpdatePlayerIcons(elapsedTime);
+}
+/*
+*	@brief プレイヤーアイコンの更新
+*	@details プレイヤーアイコンの更新を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void Panel::UpdatePlayerIcons(const float elapsedTime)
+{
+	// 名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	// 左端の位置
+	const float startX = Screen::CENTER_X - (TILE_SIZE * 2);
+	// 上端の位置
+	const float startY = Screen::CENTER_Y - (TILE_SIZE * 2);
+	// 3D空間上の座標（-4～4）をタイル座標（0～5）に線形変換
+	float tileCoordX = ((m_playerPosition.x) + PLAYER_POSITION_CORRECTION) * TILE_COUNT_CORRECTED / TILE_SIZE_3D;
+	float tileCoordZ = ((m_playerPosition.z) + PLAYER_POSITION_CORRECTION) * TILE_COUNT_CORRECTED / TILE_SIZE_3D;
+	// 位置計算
+	float posX = startX + (tileCoordX)*TILE_SIZE + DRAW_OFFSET_X;
+	float posY = startY + (tileCoordZ)*TILE_SIZE + DRAW_OFFSET_Y;
+	Vector2 position(posX, posY);
+	// プレイヤーの位置を更新
+	for (unsigned int i = 0; i < m_pPlayerIcons.size(); i++)
+	{
+		// プレイヤーアイコンの経過時間を更新
+		m_pPlayerIcons[i]->SetTime(m_pPlayerIcons[i]->GetTime() + elapsedTime);
+		// プレイヤーアイコンの位置を更新
+		m_pPlayerIcons[i]->SetPosition(position);
 	}
 }
 /*
 *	@brief 描画
-*	@details 継承したことで生まれた空の関数
+*	@details ここではプレイヤーのアイコンを描画する
 *	@param なし
 *	@return なし
 */
 void Panel::Render()
 {
-	// ここでは何もしない
-	return;
+	// プレイヤーアイコンの描画
+	for (unsigned int i = 0; i < m_pPlayerIcons.size(); i++)m_pPlayerIcons[i]->Render();
 }
 
 /*
@@ -192,6 +229,53 @@ void Panel::DrawItems()
 		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
 			m_pItems[i].first->Render();
 	}
+}
+/*
+*	@brief アイテムの配置
+*	@details パネルにアイテムを配置する（Initializeから独立)
+*	@param itemData アイテムのデータ
+*	@param row アイテムの行番号
+*	@param col アイテムの列番号
+*/
+void Panel::PlaceItems(const MapItemData& itemData, int row, int col, const DirectX::SimpleMath::Vector2& pos)
+{
+	// 名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	// アイテムがない場合はスキップ
+	if (itemData.itemInfo.modelName.empty())return;
+	// アイテムの位置を計算
+	Vector2 itemPos = pos;
+	// アイテムのテクスチャキーを取得
+	std::string itemTextureKey = itemData.itemInfo.modelName;
+	// 行と列を保存
+	m_row = row;
+	m_col = col;
+	// アイテムを追加
+	Add(itemTextureKey
+		, itemPos
+		, Vector2(TILE_POSITION_CORRECTION, TILE_POSITION_CORRECTION)
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::ITEM);
+}
+/*
+*	@brief プレイヤーの配置
+*	@details 配置したタイルがスタート地点の時、パネルにプレイヤーを配置する（Initializeから独立)
+*/
+void Panel::PlacePlayer(const MapTileData& tileData, int row, int col, const DirectX::SimpleMath::Vector2& pos)
+{
+	// 名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	// スタート地点のタイルかどうかを確認
+	if (tileData.tileInfo.modelName != "StartBlock")return;
+	// 行と列を保存
+	m_row = row;
+	m_col = col;
+	// プレイヤーを追加
+	Add("PlayerIcon"
+		, pos
+		, Vector2(0.6f, 0.6f)
+		, KumachiLib::ANCHOR::MIDDLE_CENTER
+		, UIType::PLAYERICON);
 }
 /*
 *	@brief パネルの追加
@@ -236,6 +320,12 @@ void Panel::Add(const std::string& key,
 		item.second = itemInfo;
 		// アイテムをパネルに追加
 		m_pItems.push_back(std::move(item));
+	}
+	// プレイヤーアイコンなら
+	else if (type == UIType::PLAYERICON)
+	{
+		// プレイヤーアイコンをパネルに追加
+		m_pPlayerIcons.push_back(std::move(userInterface));
 	}
 	// 未知のUIタイプ
 	else throw std::runtime_error("Unknown UIType in Panel::Add");

@@ -78,6 +78,10 @@ public:
 	DirectX::SimpleMath::Vector3 GetCameraPosition() const { return m_cameraPosition; }
 	// カメラに渡す座標を設定する
 	void SetCameraPosition(const DirectX::SimpleMath::Vector3& cameraPosition) { m_cameraPosition = cameraPosition; }
+	// アイコンに渡す座標を取得する
+	DirectX::SimpleMath::Vector3 GetIconPosition() const { return m_iconPosition; }
+	// アイコンに渡す座標を設定する
+	void SetIconPosition(const DirectX::SimpleMath::Vector3& iconPosition) { m_iconPosition = iconPosition; }
 	// ゲームオーバーフラグを取得する
 	bool IsGameOver() const { return m_isGameOver; }
 	// ゲームオーバーフラグを設定する
@@ -142,6 +146,8 @@ private:
 	DirectX::SimpleMath::Quaternion m_currentAngle;
 	// カメラに渡す座標
 	DirectX::SimpleMath::Vector3 m_cameraPosition;
+	// アイコンに渡す座標
+	DirectX::SimpleMath::Vector3 m_iconPosition;
 	// 質量
 	float m_mass;
 	// ノード配列

@@ -255,6 +255,8 @@ void MiniCharacter::UpdateTileEvents()
 	{
 		// タイルの中心にいる場合、移動フラグを更新
 		const auto& currentTile = GetParent()->GetCSVMap()->GetTileData(m_currentPosition);
+		// タイルの中心に座標を補正
+		m_currentPosition = currentTile.pos;
 		// 現在のタイルが存在する場合、CenterReachedイベントを呼び出す
 		if (currentTile.tileBasePtr)
 			currentTile.tileBasePtr->OnCenterReached(this);
@@ -529,11 +531,15 @@ void MiniCharacter::UpdateSpeedByStartTile()
 */
 bool MiniCharacter::IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon) const
 {
+
+	// SimpleMathの名前空間を使うためにusing宣言を追加
+	using namespace DirectX::SimpleMath;
 	// タイルの中心とプレイヤーの位置の距離を計算
 	float distance = (charPos - tileCenter).Length();
 	// 距離が許容誤差以下であれば、タイルの中心にいると判断
 	return distance < epsilon;
 }
+
 /*
 *	@brief ゲームオーバーとクリアの処理を行う
 *	@details ゲームオーバーやクリアの処理を行う。

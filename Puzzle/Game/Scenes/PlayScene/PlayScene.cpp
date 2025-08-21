@@ -204,6 +204,8 @@ void PlayScene::Update(float elapsedTime)
 		m_pMouse->Update(inGameTime);
 		// 操作画面の背景の更新
 		m_pUIBack->Update(inGameTime);
+		// パネルにプレイヤーの座標を設定
+		m_pPanel->SetPlayerPosition(m_pMiniCharacterBase->GetCameraPosition());
 		// パネルの更新
 		m_pPanel->Update(inGameTime);
 		// 次のタイルの更新
@@ -269,6 +271,8 @@ void PlayScene::Render()
 		m_pPanel->DrawItems();
 		// 設置候補のタイルを描画
 		m_pNextTiles->Render();
+		// プレイヤーのアイコンを描画
+		m_pPanel->Render();
 		// ビューポートを元の設定に戻す
 		const auto& screenViewport = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
 		context->RSSetViewports(1, &screenViewport);
