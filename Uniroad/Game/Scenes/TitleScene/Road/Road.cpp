@@ -12,6 +12,7 @@
 */
 Road::Road(CommonResources* resources)
 	: m_pCommonResources(resources) // 共通リソースへのポインタ
+	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタ
 	, m_pModels() // モデルへのポインタ
 	, m_positions() // 道路の位置
 	, m_rotation(DirectX::SimpleMath::Quaternion::Identity) // 道路の回転
@@ -114,6 +115,7 @@ void Road::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 				// テクスチャサンプラを適用する
 				ID3D11SamplerState* sampler = states->PointWrap();
 				context->PSSetSamplers(0, 1, &sampler);
+				m_pShadowMapLight->ApplyShader(context, states);
 			});
 	}
 }

@@ -31,17 +31,23 @@ void Sheep::Initialize(CommonResources* commonResources)
 	// モデルを読み込む
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Sheep");
 	Attach(std::make_unique<UnicycleBody>(this, DirectX::SimpleMath::Vector3(0.0f, -1.0f, 0.0f), 0.0f));// 頭部を追加
-
 }
 
 void Sheep::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	using namespace DirectX::SimpleMath;
 	m_time += elapsedTime;
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
-	//m_currentPosition.y += Easing::Reflect(Easing::EaseInSine, m_time); // イージングを使ってY座標を変化させる
-	// 現在の回転角を更新する
+	// ワールド行列を生成する
+	m_worldMatrix = Matrix::CreateScale(1) *
+		Matrix::CreateFromQuaternion(m_currentAngle) *
+		Matrix::CreateTranslation(m_currentPosition);	// 現在の回転角を更新する
 	m_currentAngle = m_rotationBodyAngle * currentAngle;
+	// ベースを取得する
+	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent());
+	// シャドウマップにモデルを登録する
+	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
 	// 「胴体」部品を更新する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 	{
@@ -65,10 +71,7 @@ void Sheep::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
-	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(1) *
-		Matrix::CreateFromQuaternion(m_currentAngle) *
-		Matrix::CreateTranslation(m_currentPosition);
+
 
 
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);

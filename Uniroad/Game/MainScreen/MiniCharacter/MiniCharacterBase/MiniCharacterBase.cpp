@@ -27,6 +27,7 @@ MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMa
 	, m_pCSVItem(nullptr) // CSVアイテムへのポインタを初期化する
 	, m_pNextTiles(nullptr) // 次に現れるタイルのクラスへのポインタを初期化する
 	, m_pPlaneArea(nullptr) // 平面エリアへのポインタを初期化する
+	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタを初期化する
 	, m_pCamera(nullptr) // カメラへのポインタを初期化する
 	, m_isMoving(false)// ミニキャラの移動フラグを初期化する
 	, m_isGameOver(false) // ゲームオーバーフラグを初期化する

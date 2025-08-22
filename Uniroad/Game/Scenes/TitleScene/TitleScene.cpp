@@ -47,6 +47,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	// カメラを作成する
 	CreateCamera();
+	// シャドウマップライトを作成する
+	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -79,6 +81,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
 	// ミニキャラにカメラを設定する
 	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
+	// ミニキャラのベースにシャドウマップライトを設定する
+	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -168,6 +172,8 @@ void TitleScene::Render()
 	m_pSky->Render(m_view, m_projection);
 	// 道路を描画する
 	m_pRoad->Render(m_view, m_projection);
+	// シャドウマップライトをレンダリングする
+	m_pShadowMapLight->RenderShadow(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 

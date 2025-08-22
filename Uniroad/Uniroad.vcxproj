@@ -124,7 +124,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;DirectXTK.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -179,7 +179,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;DirectXTK.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;uuid.lib;kernel32.lib;user32.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;fmod_vc.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -274,6 +274,7 @@
     <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
     <ClInclude Include="KumachiLib\Rect\Rect.h" />
     <ClInclude Include="KumachiLib\ShaderBuffer\ShaderBuffer.h" />
+    <ClInclude Include="KumachiLib\ShadowMapLight\ShadowMapLight.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
     <ClInclude Include="Libraries\MyLib\DebugCamera.h" />
     <ClInclude Include="Libraries\MyLib\DebugString.h" />
+    <ClInclude Include="Libraries\MyLib\DepthStencil.h" />
     <ClInclude Include="Libraries\MyLib\GridFloor.h" />
     <ClInclude Include="Libraries\MyLib\InputManager.h" />
     <ClInclude Include="Libraries\MyLib\MemoryLeakDetector.h" />
@@ -363,11 +365,13 @@
     <ClCompile Include="KumachiLib\Image\Image.cpp" />
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
+    <ClCompile Include="KumachiLib\ShadowMapLight\ShadowMapLight.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
     <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugString.cpp" />
+    <ClCompile Include="Libraries\MyLib\DepthStencil.cpp" />
     <ClCompile Include="Libraries\MyLib\GridFloor.cpp" />
     <ClCompile Include="Libraries\MyLib\InputManager.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -394,6 +398,8 @@
     <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Particle\Particle.hlsli" />
+    <None Include="HLSL\ShadowMapLight\Common.hlsli" />
+    <None Include="HLSL\ShadowMapLight\Params.hlsli" />
     <None Include="HLSL\Sky\Header.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="packages.config" />
@@ -499,6 +505,38 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Radar\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\ShadowMapLight\PS_Light.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="HLSL\ShadowMapLight\PS_ShadowMap.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="HLSL\ShadowMapLight\VS_Light.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\ShadowMapLight\VS_ShadowMap.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\ShadowMapLight\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="HLSL\Sky\PS_Sky.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
