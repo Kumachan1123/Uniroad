@@ -49,6 +49,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pCommonResources = resources;
 	// カメラを作成する
 	CreateCamera();
+	// シャドウマップライトを作成する
+	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -59,6 +61,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pSky->SetScale(Vector3(2.0f));
 	// ステージセレクトを作成する
 	m_pStageSelect = std::make_unique<StageSelect>(m_pCommonResources);
+	// ステージセレクトにシャドウマップライトを設定する
+	m_pStageSelect->SetShadowMapLight(m_pShadowMapLight.get());
 	// ステージセレクトを初期化する
 	m_pStageSelect->Initialize();
 	// 平面を作成する
@@ -82,6 +86,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 		m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
 		// ステージの入り口を作成する
 		m_pStageGates.push_back(std::make_unique<StageGate>(m_pCommonResources));
+		// ステージの入り口にシャドウマップライトを設定する
+		m_pStageGates.back()->SetShadowMapLight(m_pShadowMapLight.get());
 		// ステージの入り口を初期化する
 		m_pStageGates.back()->Initialize();
 		// ステージの入り口の位置を設定
@@ -100,6 +106,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetNextTiles(nullptr);
 	// ミニキャラに平面を設定
 	m_pMiniCharacterBase->SetPlaneArea(m_pPlaneArea.get());
+	// ミニキャラのベースにシャドウマップライトを設定する
+	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
 	// ミニキャラにカメラを設定
 	m_pMiniCharacterBase->SetCamera(m_pTrackingCamera.get());
 	// ミニキャラを初期化する
@@ -132,6 +140,11 @@ void StageSelectScene::Update(float elapsedTime)
 	// 名前空間のエイリアス
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// カメラの位置となる場所を取得
+	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
+	// シャドウマップライトを更新		
+	m_pShadowMapLight->SetLightPosition(targetPos + Vector3(0.0f, 30.0f, 0.0f));
+	m_pShadowMapLight->Update(elapsedTime);
 	// 空の更新
 	m_pSky->Update(elapsedTime);
 	// フェードの更新
@@ -139,7 +152,7 @@ void StageSelectScene::Update(float elapsedTime)
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// トラッキングカメラに追従対象の座標を設定
-	m_pTrackingCamera->SetTargetPosition(m_pMiniCharacterBase->GetCameraPosition());
+	m_pTrackingCamera->SetTargetPosition(targetPos);
 	// トラッキングカメラの更新
 	m_pTrackingCamera->Update();
 	// デバッグカメラの更新
@@ -205,6 +218,8 @@ void StageSelectScene::Render()
 	using namespace DirectX::SimpleMath;
 	// ステージセレクトの描画
 	m_pStageSelect->Render(m_view, m_projection);
+	// シャドウマップライトをレンダリングする
+	m_pShadowMapLight->RenderShadow(m_view, m_projection);
 	// ステージの入り口の描画
 	for (auto& gate : m_pStageGates)gate->Render(m_view, m_projection);
 	// ミニキャラの描画

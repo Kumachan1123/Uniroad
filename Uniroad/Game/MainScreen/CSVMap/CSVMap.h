@@ -21,6 +21,7 @@
 #include "KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
 #include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -47,6 +48,10 @@ public:
 	const MapTileData& GetStart() const;
 	// マップデータを渡す
 	const std::vector<std::vector<MapTileData>>& GetMapData() const { return m_mapData; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() const { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
 public:
 	// public関数
 	// コンストラクタ
@@ -76,6 +81,8 @@ private:
 	// privateメンバ変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// タイルの辞書
 	std::unordered_map<std::string, TileInfo> m_tileDictionary;
 	// タイルのレンダリングデータ

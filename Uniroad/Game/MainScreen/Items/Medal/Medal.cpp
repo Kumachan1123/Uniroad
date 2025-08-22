@@ -95,6 +95,10 @@ void Medal::Update(float elapsedTime)
 	// パーティクルの更新
 	m_pParticle->SetParams(SetParticleParams());
 	m_pParticle->Update(elapsedTime);
+	// ワールド行列を設定
+	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) * Matrix::CreateFromQuaternion(m_rotation) * Matrix::CreateTranslation(m_position);
+	// シャドウマップライトにモデルとワールド行列を設定
+	m_pShadowMapLight->SetShadowModel(m_pModel, m_worldMatrix);
 }
 /*
 *	@brief 当たり判定描画
@@ -113,8 +117,6 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// 共通のステートを取得
 	auto states = m_pCommonResources->GetCommonStates();
-	// ワールド行列を設定
-	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) * Matrix::CreateFromQuaternion(m_rotation) * Matrix::CreateTranslation(m_position);
 	// パーティクルのビルボード行列を作成
 	m_pParticle->CreateBillboard(GetCamera()->GetTargetPosition(), GetCamera()->GetEyePosition(), GetCamera()->GetUpPosition());
 	// パーティクルの描画
@@ -123,6 +125,7 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	Vector3 shadowPosition = m_position + Vector3(0.0f, -2.99f, 0.0f);
 	// 影の描画
 	if (!m_isCollected)m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
+
 	// モデルの描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 

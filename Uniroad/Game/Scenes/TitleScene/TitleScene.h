@@ -26,7 +26,7 @@
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 #include "Game/Sky/Sky.h"
 #include "Game/Scenes/TitleScene/Road/Road.h"
-
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -85,6 +85,8 @@ private:
 	std::unique_ptr<Sky> m_pSky;
 	// 道
 	std::unique_ptr<Road> m_pRoad;
+	// シャドウマップライト
+	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列

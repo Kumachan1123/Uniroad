@@ -121,6 +121,8 @@
     <ClInclude Include="Game\Scenes\StageSelectScene\BackButton\BackButton.h" />
     <ClInclude Include="KumachiLib\Bloom\Bloom.h" />
     <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
+    <ClInclude Include="KumachiLib\ShadowMapLight\ShadowMapLight.h" />
+    <ClInclude Include="Libraries\MyLib\DepthStencil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -200,6 +202,8 @@
     <ClCompile Include="Game\Scenes\StageSelectScene\BackButton\BackButton.cpp" />
     <ClCompile Include="KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
+    <ClCompile Include="KumachiLib\ShadowMapLight\ShadowMapLight.cpp" />
+    <ClCompile Include="Libraries\MyLib\DepthStencil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -222,6 +226,10 @@
     <None Include="ClassDiagram.cd" />
     <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\Sky\Header.hlsli" />
+    <None Include="HLSL\ShadowMapLight\Common.hlsli" />
+    <None Include="HLSL\ShadowMapLight\Params.hlsli" />
+    <None Include="Resources\Jsons\Models.json" />
+    <None Include="Resources\Jsons\Textures.json" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -244,5 +252,9 @@
     <FxCompile Include="HLSL\Sky\VS_Sky.hlsl" />
     <FxCompile Include="HLSL\Particle\PS_Dust.hlsl" />
     <FxCompile Include="HLSL\Particle\PS_Sweat.hlsl" />
+    <FxCompile Include="HLSL\ShadowMapLight\PS_Light.hlsl" />
+    <FxCompile Include="HLSL\ShadowMapLight\PS_ShadowMap.hlsl" />
+    <FxCompile Include="HLSL\ShadowMapLight\VS_Light.hlsl" />
+    <FxCompile Include="HLSL\ShadowMapLight\VS_ShadowMap.hlsl" />
   </ItemGroup>
 </Project>

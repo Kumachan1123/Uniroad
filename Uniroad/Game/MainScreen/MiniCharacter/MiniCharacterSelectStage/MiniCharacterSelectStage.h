@@ -83,6 +83,8 @@ public:
 	CSVItem* GetCSVItem() { return nullptr; }
 	// 次に現れるタイルのクラスを取得する
 	NextTiles* GetNextTiles() { return nullptr; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 	// タイルに入ったかどうかを確認する

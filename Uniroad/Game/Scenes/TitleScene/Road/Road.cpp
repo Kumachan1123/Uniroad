@@ -12,6 +12,7 @@
 */
 Road::Road(CommonResources* resources)
 	: m_pCommonResources(resources) // 共通リソースへのポインタ
+	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタ
 	, m_pModels() // モデルへのポインタ
 	, m_positions() // 道路の位置
 	, m_rotation(DirectX::SimpleMath::Quaternion::Identity) // 道路の回転
@@ -105,15 +106,16 @@ void Road::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 		// モデルを描画
 		m_pModels[i]->Draw(context, *states, world, view, proj, false, [&]
 			{
-				// ブレンドステートを設定する
-				context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-				// 深度ステンシルステートを設定する
-				context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 0);	// 参照値：0
-				// カリングを設定する
-				context->RSSetState(states->CullCounterClockwise());
-				// テクスチャサンプラを適用する
-				ID3D11SamplerState* sampler = states->PointWrap();
-				context->PSSetSamplers(0, 1, &sampler);
+				//// ブレンドステートを設定する
+				//context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
+				//// 深度ステンシルステートを設定する
+				//context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 0);	// 参照値：0
+				//// カリングを設定する
+				//context->RSSetState(states->CullCounterClockwise());
+				//// テクスチャサンプラを適用する
+				//ID3D11SamplerState* sampler = states->PointWrap();
+				//context->PSSetSamplers(0, 1, &sampler);
+				m_pShadowMapLight->ApplyShader(context, states);
 			});
 	}
 }

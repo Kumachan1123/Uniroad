@@ -51,6 +51,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	CreateViewports();
 	// デバイスリソースを取得
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
+	// シャドウマップライトを作成する
+	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -69,12 +71,16 @@ void PlayScene::Initialize(CommonResources* resources)
 	std::string stagePath = std::to_string(m_stageNumber);
 	// マップ生成
 	m_pCSVMap = std::make_unique<CSVMap>(m_pCommonResources);
+	// マップにシャドウマップライトを設定する
+	m_pCSVMap->SetShadowMapLight(m_pShadowMapLight.get());
 	// CSVマップを読み込む
 	m_pCSVMap->LoadMap("Resources/Map/" + stagePath + "_map.csv");
 	// CSVアイテムを作成する
 	m_pCSVItem = std::make_unique<CSVItem>(m_pCommonResources);
 	// CSVアイテムにカメラを設定する
 	m_pCSVItem->SetCamera(m_pFixedCameraPlay.get());
+	// CSVアイテムにシャドウマップライトを設定する
+	m_pCSVItem->SetShadowMapLight(m_pShadowMapLight.get());
 	// CSVアイテムを読み込む
 	m_pCSVItem->LoadItem("Resources/Item/" + stagePath + "_item.csv");
 	// ミニキャラを作成する
@@ -85,6 +91,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetCSVItem(m_pCSVItem.get());
 	// ミニキャラにカメラを設定する
 	m_pMiniCharacterBase->SetCamera(m_pFixedCameraPlay.get());
+	// ミニキャラのベースにシャドウマップライトを設定する
+	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -150,6 +158,11 @@ void PlayScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 経過時間を加算
 	m_time += elapsedTime;
+	// カメラ用の座標をシャドウマップライトに設定
+	Vector3 playerPosition = m_pMiniCharacterBase->GetCameraPosition();
+	// シャドウマップライト更新
+	m_pShadowMapLight->SetLightPosition(Vector3(playerPosition.x, 30.0f, playerPosition.z));
+
 	// 空の更新
 	m_pSky->Update(elapsedTime);
 	// スピードアップボタンの更新
@@ -255,6 +268,10 @@ void PlayScene::Render()
 		m_pSky->Render(m_view, m_projectionGame);
 		// CSVマップの描画
 		m_pCSVMap->Render(m_view, m_projectionGame);
+		// シャドウマップライトにビューポートを設定する
+		m_pShadowMapLight->SetViewport(m_viewPortGame);
+		// シャドウマップライトをレンダリングする
+		m_pShadowMapLight->RenderShadow(m_view, m_projectionGame);
 		// CSVアイテムの描画
 		m_pCSVItem->Render(m_view, m_projectionGame);
 		// ミニキャラの描画
@@ -288,6 +305,10 @@ void PlayScene::Render()
 		m_pSky->Render(m_view, m_projectionResult);
 		// CSVマップの描画
 		m_pCSVMap->Render(m_view, m_projectionResult);
+		// シャドウマップライトにビューポートを設定する
+		m_pShadowMapLight->SetViewport(m_pCommonResources->GetDeviceResources()->GetScreenViewport());
+		// シャドウマップライトをレンダリングする
+		m_pShadowMapLight->RenderShadow(m_view, m_projectionResult);
 		// CSVアイテムの描画
 		m_pCSVItem->Render(m_view, m_projectionResult);
 		// ミニキャラの描画

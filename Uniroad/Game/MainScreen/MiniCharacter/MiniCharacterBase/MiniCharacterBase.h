@@ -20,6 +20,7 @@
 #include "Game/Scenes/StageSelectScene/PlaneArea/PlaneArea.h"
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -70,6 +71,10 @@ public:
 	NextTiles* GetNextTiles() { return m_pNextTiles; }
 	// 次に現れるタイルのクラスを設定する
 	void SetNextTiles(NextTiles* nextTiles) { m_pNextTiles = nextTiles; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
 	// 移動フラグを取得する
 	bool IsMoving() const { return m_isMoving; }
 	// 移動フラグを設定する
@@ -128,6 +133,8 @@ private:
 	NextTiles* m_pNextTiles;
 	// 平面エリア
 	PlaneArea* m_pPlaneArea;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// カメラ
 	ICamera* m_pCamera;
 	// ノード番号

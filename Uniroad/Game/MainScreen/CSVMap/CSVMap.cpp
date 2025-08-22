@@ -227,12 +227,8 @@ void CSVMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 			// モデルの描画
 			tile.model->Draw(context, *states, tile.world, view, proj, false, [&]
 				{
-					// ブレンドステートを設定する
-					context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-					// 深度ステンシルステートを設定する
-					context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 1);
-					// カリングを設定する
-					context->RSSetState(states->CullCounterClockwise());
+					// 影を加味したライティング
+					m_pShadowMapLight->ApplyShader(context, states);
 				});
 		}
 	}

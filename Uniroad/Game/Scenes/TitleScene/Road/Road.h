@@ -18,6 +18,7 @@
 #include <Libraries/Microsoft/ReadData.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -27,7 +28,10 @@ class Road
 {
 public:
 	// アクセサ
-
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() const { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
 public:
 	// public関数
 	// コンストラクタ
@@ -50,6 +54,8 @@ private:
 	// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// 深度ステンシルステート
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_pDepthStencilState;
 	// 道路のモデルへのポインタ

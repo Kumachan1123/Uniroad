@@ -57,10 +57,18 @@ void StageGate::Update(float elapsedTime)
 */
 void StageGate::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	// 必要な名前空間を使用
 	using namespace DirectX::SimpleMath;
+	// Direct3Dデバイスコンテキストを取得
 	const auto& context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
 	const auto& states = m_pCommonResources->GetCommonStates();
-	m_pModel->Draw(context, *states, Matrix::Identity * Matrix::CreateTranslation(m_position), view, proj, false);
+	// 描画
+	m_pModel->Draw(context, *states, Matrix::Identity * Matrix::CreateTranslation(m_position), view, proj, false, [&]
+		{
+			// 影を加味したライティング
+			m_pShadowMapLight->ApplyShader(context, states);
+		});
 }
 /*
 *	@brief 終了

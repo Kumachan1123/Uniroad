@@ -47,6 +47,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	// カメラを作成する
 	CreateCamera();
+	// シャドウマップライトを作成する
+	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -59,6 +61,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pSky->SetRotationSpeed(1.0f);
 	// 道路を作成する
 	m_pRoad = std::make_unique<Road>(m_pCommonResources);
+	// 道路にシャドウマップライトを設定する
+	m_pRoad->SetShadowMapLight(m_pShadowMapLight.get());
 	// 道路を初期化する
 	m_pRoad->Initialize();
 	// ロゴを作成する
@@ -79,6 +83,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
 	// ミニキャラにカメラを設定する
 	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
+	// ミニキャラのベースにシャドウマップライトを設定する
+	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -122,7 +128,9 @@ void TitleScene::Update(float elapsedTime)
 	m_pSky->Update(elapsedTime);
 	// 道路の更新
 	m_pRoad->Update(elapsedTime);
-
+	// シャドウマップライトを更新
+	m_pShadowMapLight->Update(elapsedTime);
+	m_pShadowMapLight->SetLightPosition(targetPos + Vector3(0.0f, 30.0f, 0.0f));
 	// 座標を初期化
 	Vector3 position(Vector3(0, 0, 0));
 	// Y軸に90°回転
@@ -168,6 +176,8 @@ void TitleScene::Render()
 	m_pSky->Render(m_view, m_projection);
 	// 道路を描画する
 	m_pRoad->Render(m_view, m_projection);
+	// シャドウマップライトをレンダリングする
+	m_pShadowMapLight->RenderShadow(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 

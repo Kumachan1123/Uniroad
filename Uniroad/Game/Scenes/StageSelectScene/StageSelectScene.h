@@ -32,6 +32,7 @@
 #include "Game/Scenes/StageSelectScene/BackButton/BackButton.h"
 #include "Game/Sky/Sky.h"
 #include "Game/Fade/Fade.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -98,6 +99,8 @@ private:
 	std::unique_ptr<Fade> m_pFade;
 	// ボタン
 	std::unique_ptr<BackButton> m_pBackButton;
+	// シャドウマップライト
+	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列

@@ -1,0 +1,7 @@
+{
+    "Stage1": "Resources/Models/sky.cmo",
+    "Stage2": "Resources/Models/CloudySky.cmo",
+    "Stage3": "Resources/Models/EveningSky.cmo",
+    "Stage4": "Resources/Models/NightSky.cmo",
+    "Stage5": "Resources/Models/MidNightSky.cmo"
+}

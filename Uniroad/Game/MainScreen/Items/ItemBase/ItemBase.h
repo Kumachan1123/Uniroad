@@ -10,6 +10,7 @@
 class MiniCharacter;
 class CommonResources;
 class ICamera;
+class ShadowMapLight;
 
 // アイテムベースクラス
 class ItemBase
@@ -40,6 +41,10 @@ public:
 	virtual ICamera* GetCamera() const = 0;
 	// カメラを設定する
 	virtual void SetCamera(ICamera* camera) = 0;
+	// シャドウマップライトを取得する
+	virtual ShadowMapLight* GetShadowMapLight() const = 0;
+	// シャドウマップライトを設定する
+	virtual void SetShadowMapLight(ShadowMapLight* shadowMapLight) = 0;
 
 public:
 	// public関数

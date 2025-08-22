@@ -1,8 +1,13 @@
+/*
+*	@file IComponent.h
+*	@brief ミニキャラクターの部品インターフェース
+*/
 #pragma once
 class CommonResources;
 class CSVMap;
 class CSVItem;
 class NextTiles;
+class ShadowMapLight;
 // IComponentインターフェースを定義する
 class IComponent
 {
@@ -37,6 +42,8 @@ public:
 	virtual CSVItem* GetCSVItem() = 0;
 	// 次に現れるタイルのクラスを取得する
 	virtual NextTiles* GetNextTiles() = 0;
+	// シャドウマップライトを取得する
+	virtual ShadowMapLight* GetShadowMapLight() = 0;
 	// 移動フラグを取得
 	virtual bool IsMoving() const = 0;
 

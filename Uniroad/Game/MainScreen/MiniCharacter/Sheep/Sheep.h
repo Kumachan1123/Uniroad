@@ -18,8 +18,6 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Scenes/PlayScene/PlayScene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
-#include "Game/MainScreen/MiniCharacter/MiniCharacterHead/MiniCharacterHead.h"
-#include "Game/MainScreen/MiniCharacter/MiniCharacterHand/MiniCharacterHand.h"
 #include "Game/MainScreen/MiniCharacter/Unicycle/UnicycleBody/UnicycleBody.h"
 
 
@@ -61,6 +59,8 @@ public:
 	CSVItem* GetCSVItem() { return nullptr; }
 	// 次に現れるタイルのクラスを取得する
 	NextTiles* GetNextTiles() { return nullptr; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() { return nullptr; }
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:

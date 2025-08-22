@@ -5,7 +5,9 @@
 #pragma once
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
+// ステージゲートクラス
 class StageGate
 {
 public:
@@ -14,6 +16,11 @@ public:
 	DirectX::SimpleMath::Vector3 GetPosition() const { return m_position; }
 	// 座標を設定する
 	void SetPosition(const DirectX::SimpleMath::Vector3& position) { m_position = position; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() const { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
+
 public:
 	// public関数
 	// コンストラクタ
@@ -32,6 +39,8 @@ private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// モデルポインター
 	DirectX::Model* m_pModel;
 	// 座標
