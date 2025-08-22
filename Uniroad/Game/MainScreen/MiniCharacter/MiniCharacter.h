@@ -17,7 +17,6 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
-#include "Game/MainScreen/Shadow/Shadow.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
 
@@ -167,8 +166,6 @@ private:
 	CommonResources* m_pCommonResources;
 	// 親
 	IComponent* m_parent;
-	// 影
-	std::unique_ptr<Shadow> m_pShadow;
 	// 土煙パーティクル
 	std::unique_ptr<Particle> m_pDust;
 	// 汗パーティクル

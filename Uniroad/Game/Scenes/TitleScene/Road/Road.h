@@ -46,18 +46,13 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 終了
 	void Finalize();
-private:
-	// private関数
-	// 深度ステンシルバッファを設定する
-	void CreateDepthStencilBuffer(ID3D11Device* pDevice);
+
 private:
 	// private変数
 	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// シャドウマップライト
 	ShadowMapLight* m_pShadowMapLight;
-	// 深度ステンシルステート
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_pDepthStencilState;
 	// 道路のモデルへのポインタ
 	std::vector<DirectX::Model*> m_pModels;
 	// 道路の位置

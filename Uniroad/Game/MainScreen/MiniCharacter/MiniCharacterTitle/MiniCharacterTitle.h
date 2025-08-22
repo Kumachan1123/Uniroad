@@ -17,7 +17,6 @@
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
-#include "Game/MainScreen/Shadow/Shadow.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
 
@@ -153,8 +152,6 @@ private:
 	CommonResources* m_pCommonResources;
 	// 親
 	IComponent* m_parent;
-	// 影
-	std::unique_ptr<Shadow> m_pShadow;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号

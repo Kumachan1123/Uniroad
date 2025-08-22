@@ -107,10 +107,7 @@ void UnicycleWheel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	m_currentAngle = wheelRotation * m_currentAngle;
 	// 時間経過でホイールを回転させる
 	m_currentAngle = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, m_time * wheelSpeed) * m_currentAngle;
-	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(Vector3::One) * // スケール
-		Matrix::CreateFromQuaternion(m_currentAngle) * // 回転
-		Matrix::CreateTranslation(m_currentPosition); // 位置
+
 	// ベースを取得
 	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent()->GetParent()->GetParent());
 	// シャドウマップにモデルを登録する
@@ -130,7 +127,10 @@ void UnicycleWheel::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	// デバイスコンテキストとステートを取得する
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
-
+	// ワールド行列を生成する
+	m_worldMatrix = Matrix::CreateScale(Vector3::One) * // スケール
+		Matrix::CreateFromQuaternion(m_currentAngle) * // 回転
+		Matrix::CreateTranslation(m_currentPosition); // 位置
 	// モデルを描画する
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 }

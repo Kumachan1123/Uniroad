@@ -32,10 +32,6 @@ public:
 	// 終了
 	void Finalize();
 private:
-	// private関数
-	// 深度ステンシルバッファを設定する
-	void CreateDepthStencilBuffer(ID3D11Device* pDevice);
-private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -43,6 +39,4 @@ private:
 	DirectX::Model* m_pModel;
 	// シャドウマップライト
 	ShadowMapLight* m_pShadowMapLight;
-	// 深度ステンシルステート
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_pDepthStencilState;
 };

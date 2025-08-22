@@ -20,8 +20,6 @@ CSVMap::CSVMap(CommonResources* resources)
 	InitializeTileDictionary();
 	// 当たり判定描画の初期化
 	DrawCollision::Initialize(m_pCommonResources);
-	// 深度ステンシルバッファの作成
-	CreateDepthStencilBuffer(m_pCommonResources->GetDeviceResources()->GetD3DDevice());
 }
 /*
 *	@brief デストラクタ
@@ -39,8 +37,6 @@ CSVMap::~CSVMap()
 	m_tiles.clear();
 	// マップデータをクリア
 	m_mapData.clear();
-	// 深度ステンシルバッファの解放
-	m_pDepthStencilState.Reset();
 }
 /*
 *	@brief タイルの辞書を初期化する
@@ -387,33 +383,4 @@ const MapTileData& CSVMap::GetStart() const
 	}
 	// スタート地点が見つからない場合は(0,0)の位置を返す
 	return   m_mapData[0][0];
-}
-/*
-*	@brief 深度ステンシルバッファを作成する
-*	@details Direct3Dデバイスを使用して深度ステンシルバッファを作成する
-*	@param pDevice Direct3Dデバイスへのポインタ
-*	@return なし
-*/
-void CSVMap::CreateDepthStencilBuffer(ID3D11Device* pDevice)
-{
-	// 深度ステンシル情報を定義する
-	D3D11_DEPTH_STENCIL_DESC desc = {};
-	// 床：床描画時にステンシルバッファの値をインクリメントする
-	desc.DepthEnable = true;									// 深度テストを行う
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// 深度バッファを更新する
-	desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// 深度値以下なら更新する
-
-	desc.StencilEnable = true;									// ステンシルテストを行う
-	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff（マスク値）
-	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff（マスク値）
-
-	// ポリゴンの表面の設定
-	desc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
-	desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-	// 裏面も同じ設定
-	desc.BackFace = desc.FrontFace;
-	// 深度ステンシルステートを作成する
-	DX::ThrowIfFailed(pDevice->CreateDepthStencilState(&desc, m_pDepthStencilState.ReleaseAndGetAddressOf()));
 }

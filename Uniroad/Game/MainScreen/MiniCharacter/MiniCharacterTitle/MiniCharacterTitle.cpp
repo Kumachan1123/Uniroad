@@ -70,10 +70,6 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
 	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
-	// 影を作成
-	m_pShadow = std::make_unique<Shadow>();
-	// 影の初期化
-	m_pShadow->Initialize(m_pCommonResources);
 	// パーティクルを作成する
 	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 50);
 	// パーティクルを初期化する
@@ -141,8 +137,6 @@ void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const D
 {
 	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
-	// 影を描画する
-	m_pShadow->RenderCircleShadow(view, proj, m_currentPosition, 1.0f);
 	// 親コンポーネントのポインターに変換
 	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
 	// パーティクルのビルボード行列を作成
