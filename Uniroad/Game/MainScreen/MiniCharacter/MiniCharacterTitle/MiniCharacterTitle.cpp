@@ -96,10 +96,6 @@ void MiniCharacterTitle::Update(float elapsedTime, const DirectX::SimpleMath::Ve
 	UNREFERENCED_PARAMETER(currentPosition);
 	// 回転の補間
 	InterpolateRotation(currentAngle);
-	// 親コンポーネントのポインターに変換
-	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
-	// 親コンポーネントが存在することを確認
-	assert(parent);
 	// タイトルシーン用アニメーション
 	ExecuteAnimation(elapsedTime);
 	// 部品を更新する　
