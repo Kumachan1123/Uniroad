@@ -33,6 +33,7 @@
 #include "Game/MainScreen/SpeedUpButton/SpeedUpButton.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Sky/Sky.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -116,6 +117,8 @@ private:
 	std::unique_ptr<Fade> m_pFade;
 	// 空
 	std::unique_ptr<Sky> m_pSky;
+	// シャドウマップライト
+	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列(ゲーム画面用)

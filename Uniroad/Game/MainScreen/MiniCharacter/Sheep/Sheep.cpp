@@ -39,11 +39,12 @@ void Sheep::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& curren
 	m_time += elapsedTime;
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
+	// 現在の角度を更新する
+	m_currentAngle = m_rotationBodyAngle * currentAngle;
 	// ワールド行列を生成する
 	m_worldMatrix = Matrix::CreateScale(1) *
 		Matrix::CreateFromQuaternion(m_currentAngle) *
-		Matrix::CreateTranslation(m_currentPosition);	// 現在の回転角を更新する
-	m_currentAngle = m_rotationBodyAngle * currentAngle;
+		Matrix::CreateTranslation(m_currentPosition);
 	// ベースを取得する
 	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent());
 	// シャドウマップにモデルを登録する
@@ -71,9 +72,6 @@ void Sheep::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	using namespace DirectX::SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
-
-
-
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 	for (auto& part : m_pMiniCharacterParts)
 	{

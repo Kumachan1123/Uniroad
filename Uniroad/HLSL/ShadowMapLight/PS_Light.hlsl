@@ -11,7 +11,6 @@ Texture2D ShadowMapTexture : register(t1);
 SamplerComparisonState ShadowMapSampler : register(s1);
 
 // マッハバンド対策
-//#define SHADOW_EPSILON 0.0005f
 static const float SHADOW_EPSILON = 0.0001f;
 
 
@@ -19,20 +18,12 @@ float4 main(PS_Input input) : SV_TARGET0
 {
     // 法線を正規化する
     float3 normal = normalize(input.NormalWS);
-    /*
-        ・負荷を下げるなら、頂点シェーダで計算する
-        ・精度をあげるなら、ピクセルシェーダで計算する
-    */
-
 
     // ----------------------------------------------------------- //
     // ディフューズ
     // ----------------------------------------------------------- //
  
-	/* 手順９ */
-
     // ライトを照らす方向を計算する
-    //float3 lightDir = normalize(input.PositionWS.xyz - lightPosition.xyz);
     float3 lightDir = normalize(lightDirirection);
     
     // ライトへ向かうベクトル
@@ -50,12 +41,10 @@ float4 main(PS_Input input) : SV_TARGET0
     // 通常描画の深度値とライト空間の深度値を比較して影になるか調べる
     // ShadowMapTextureの該当する場所の深度値と現在のピクセルの深度値を比較して、影になるか調べる
     // shadow　0.0f：影がある、1.0f：影がない
-    float shadow = ShadowMapTexture.SampleCmpLevelZero(
-        ShadowMapSampler, uv, input.LightPosPS.z - SHADOW_EPSILON).x;
+    float shadow = ShadowMapTexture.SampleCmpLevelZero(ShadowMapSampler, uv, input.LightPosPS.z - SHADOW_EPSILON).x;
 
     // ライトと影による明るさを計算する
-    //float3 lightAmount = shadow * (1.0f - lightAmbient) + lightAmbient;
-    float3 lightAmount = lerp(lightAmbient, float3(1.0f, 1.0f, 1.0f), shadow);
+    float3 lightAmount = lerp(lightAmbient, float3(1.5f, 1.5f, 1.5f), shadow);
     lightAmount *= intensity1;
 
     // 拡散反射色を求める 
@@ -66,7 +55,7 @@ float4 main(PS_Input input) : SV_TARGET0
     // スペキュラ
     // ----------------------------------------------------------- //
     
-	/* 手順１０ */
+
     
     // 視線ベクトル
     float3 toEye = normalize(EyePosition - input.PositionWS.xyz);

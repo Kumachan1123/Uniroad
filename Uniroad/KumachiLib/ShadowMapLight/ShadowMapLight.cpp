@@ -22,12 +22,13 @@ ShadowMapLight::ShadowMapLight(CommonResources* commonResources)
 	, m_pShadowMapDS(nullptr)// 深度ステンシル
 	, m_pShadowMapSampler(nullptr)// シャドウマップのサンプラー
 	, m_lightTheta(100.0f)// ライトの画角 (100度を初期値として設定
+	, m_viewport(commonResources->GetDeviceResources()->GetScreenViewport()) // ビューポート
 {
 	// 名前空間
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// ライトの座標
-	m_lightPosition = Vector3(0.0f, 5.0f, 0.0f);
+	m_lightPosition = Vector3(0.0f, 10.0f, 0.0f);
 	// ライトの回転
 	m_lightQuaternion = Quaternion::CreateFromYawPitchRoll(
 		XMConvertToRadians(-90.0f),	// Y軸時計回り90度
@@ -48,6 +49,17 @@ ShadowMapLight::~ShadowMapLight()
 {
 }
 /*
+*	@brief 更新
+*	@details シャドウマップ用ライトクラスの更新を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
+void ShadowMapLight::Update(float elapsedTime)
+{
+	UNREFERENCED_PARAMETER(elapsedTime);
+
+}
+/*
 *	@brief 影になるモデルを描画
 *	@details シャドウマップをレンダリングする
 *	@param view ビュー行列
@@ -61,7 +73,7 @@ void ShadowMapLight::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Sim
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
 	// ライトの向いている方向を調整する
-	const Vector3 lightDir = Vector3::Transform(Vector3(0.0f, 0.0f, 1.0f), m_lightQuaternion);
+	const Vector3 lightDir = Vector3::Transform(Vector3(-1.0f, 0.0f, 1.0f), m_lightQuaternion);
 	// ライト空間のビュー行列を計算する
 	const Matrix lightView = Matrix::CreateLookAt(
 		m_lightPosition,			// eye
@@ -85,16 +97,18 @@ void ShadowMapLight::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Sim
 	cb->lightViewProjection = XMMatrixTranspose(viewProj);	// ビュー行列と射影行列を合算したもの
 	cb->lightPosition = m_lightPosition;					// ライトの座標
 	cb->lightDirection = lightDir;							// ライトが照らす方向
-	cb->lightAmbient = Color(0.2f, 0.2f, 0.2f);				// 環境光
+	cb->lightAmbient = Color(0.125f, 0.125f, 0.125f, 0.001f);				// 環境光
 	// マップを解除する
 	context->Unmap(m_pConstantBuffer.Get(), 0);
 	// シャドウマップ用のRTVとDSVを設定する
 	auto rtv = m_pShadowMapRT->GetRenderTargetView();
-	m_pSRV = m_pShadowMapRT->GetShaderResourceView();
 	auto dsv = m_pShadowMapDS->GetDepthStencilView();
 	// シャドウマップ用のRTVとDSVをクリアする
 	context->ClearRenderTargetView(rtv, Colors::White);
 	context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, 1.0f, 0);
+	// シャドウマップSRVがバインドされていたら解除する
+	ID3D11ShaderResourceView* nullsrv[] = { nullptr };
+	context->PSSetShaderResources(1, 1, nullsrv); // SRVスロット1をNULLでクリア
 	// RTVとDSVをシャドウマップ用に変更する
 	context->OMSetRenderTargets(1, &rtv, dsv);
 	// ビューポートをシャドウマップ用に変更する
@@ -121,10 +135,9 @@ void ShadowMapLight::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::Sim
 	// 描画先に通常描画用のRTVとDSVを設定する
 	context->OMSetRenderTargets(1, &defaultRTV, defaultDSV);
 	// ビューポートを通常描画用に切り替える
-	auto const& defaultVP = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
+	auto const& defaultVP = m_viewport;
 	context->RSSetViewports(1, &defaultVP);
 	// リソースの割り当てを解除する
-	ID3D11ShaderResourceView* nullsrv[] = { nullptr };
 	context->PSSetShaderResources(1, 1, nullsrv);
 	// モデルとワールド行列のペアをクリアする
 	m_pShadowInfos.clear();
@@ -221,6 +234,7 @@ void ShadowMapLight::CreateShadowMapObject(ID3D11Device* device)
 */
 void ShadowMapLight::ApplyShader(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states)
 {
+	m_pSRV = m_pShadowMapRT->GetShaderResourceView();
 	// 定数バッファを指定する
 	ID3D11Buffer* cbuf[] = { m_pConstantBuffer.Get() };
 	context->VSSetConstantBuffers(1, 1, cbuf);

@@ -61,6 +61,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pSky->SetRotationSpeed(1.0f);
 	// 道路を作成する
 	m_pRoad = std::make_unique<Road>(m_pCommonResources);
+	// 道路にシャドウマップライトを設定する
+	m_pRoad->SetShadowMapLight(m_pShadowMapLight.get());
 	// 道路を初期化する
 	m_pRoad->Initialize();
 	// ロゴを作成する
@@ -126,7 +128,9 @@ void TitleScene::Update(float elapsedTime)
 	m_pSky->Update(elapsedTime);
 	// 道路の更新
 	m_pRoad->Update(elapsedTime);
-
+	// シャドウマップライトを更新
+	m_pShadowMapLight->Update(elapsedTime);
+	m_pShadowMapLight->SetLightPosition(targetPos + Vector3(0.0f, 30.0f, 0.0f));
 	// 座標を初期化
 	Vector3 position(Vector3(0, 0, 0));
 	// Y軸に90°回転

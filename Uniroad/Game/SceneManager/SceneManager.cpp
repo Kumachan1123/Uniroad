@@ -53,6 +53,7 @@ void SceneManager::Update(float elapsedTime)
 	if (m_pCurrentScene->GetNextSceneID() == IScene::SceneID::NONE) return;
 	// ƒV[ƒ“‚ð•ÏX‚·‚é‚Æ‚«
 	ChangeScene(m_pCurrentScene->GetNextSceneID());
+
 }
 /*
 *	@brief •`‰æ‚·‚é

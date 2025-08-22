@@ -40,6 +40,10 @@ public:
 	ICamera* GetCamera() const override { return m_pCamera; }
 	// カメラを設定する
 	void SetCamera(ICamera* camera) override { m_pCamera = camera; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() const override { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) override { m_pShadowMapLight = shadowMapLight; }
 public:
 	// public関数
 	// コンストラクタ
@@ -64,6 +68,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// ゴールロックのモデル
 	DirectX::Model* m_pModel;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// カメラのポインター
 	ICamera* m_pCamera;
 	// ゴールロックの情報

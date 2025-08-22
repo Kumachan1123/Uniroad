@@ -1,0 +1,84 @@
+{
+    "sounds": [
+        {
+            "file": "Resources/Sounds/playerBullet.mp3",
+            "key": "Shoot",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/Hit.mp3",
+            "key": "Hit",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/enemybullet.mp3",
+            "key": "EnemyBullet",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/Explosion.mp3",
+            "key": "EnemyDead",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/damage.mp3",
+            "key": "Damage",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/Barrier.mp3",
+            "key": "Barrier",
+            "loop": false
+        },
+        {
+            "file": "Resources/Sounds/BarrierBreak.mp3",
+            "key": "BarrierBreak",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/playbgm.mp3",
+            "key": "PlayBGM",
+            "loop": false
+        },
+        {
+            "file": "Resources/Sounds/select.mp3",
+            "key": "SE",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/result.mp3",
+            "key": "ResultBGM",
+            "loop": false
+        },
+        {
+            "file": "Resources/Sounds/click.mp3",
+            "key": "Select",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/title.mp3",
+            "key": "TitleBGM",
+            "loop": false
+        },
+        {
+            "file": "Resources/Sounds/BulletCollision.mp3",
+            "key": "BulletCollision",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/BossAppear.mp3",
+            "key": "BossAppear",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/SpecialAttack.mp3",
+            "key": "SpecialAttack",
+            "loop": true
+        },
+        {
+            "file": "Resources/Sounds/ChargeSpecial.mp3",
+            "key": "ChargeSpecial",
+            "loop": true
+        }
+    ]
+}

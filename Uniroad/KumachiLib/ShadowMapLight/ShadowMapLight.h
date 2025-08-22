@@ -32,6 +32,11 @@ public:
 	// アクセサ
 	// モデルとワールド行列のペアを設定
 	void SetShadowModel(DirectX::Model* model, const  DirectX::SimpleMath::Matrix& world) { m_pShadowInfos.push_back(std::make_pair(model, world)); }
+	// ライトの座標を設定
+	void SetLightPosition(const DirectX::SimpleMath::Vector3& position) { m_lightPosition = position; }
+	// ビューポートを設定する
+	void SetViewport(const D3D11_VIEWPORT& viewport) { m_viewport = viewport; }
+
 
 public:
 	// public関数
@@ -39,6 +44,8 @@ public:
 	ShadowMapLight(CommonResources* commonResources);
 	// デストラクタ
 	~ShadowMapLight();
+	// 更新
+	void Update(float elapsedTime);
 	// 影になるモデルを描画
 	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	// モデル描画時のラムダ式内で呼ぶ処理をまとめた関数
@@ -86,4 +93,6 @@ private:
 	std::vector<std::pair<DirectX::Model*, DirectX::SimpleMath::Matrix>> m_pShadowInfos;
 	// シェーダーリソースビュー
 	ID3D11ShaderResourceView* m_pSRV;
+	// 通常描画用ビューポート
+	D3D11_VIEWPORT m_viewport;
 };

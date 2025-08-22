@@ -22,6 +22,7 @@
 #include "Game/MainScreen/Items/ItemDatas/ItemDatas.h"
 #include "Game/MainScreen/Items/ItemFactory/ItemFactory.h"
 #include "Game/Interface/ICamera.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 // 前方宣言
 class CommonResources;
@@ -52,6 +53,10 @@ public:
 	ICamera* GetCamera() const { return m_pCamera; }
 	// カメラを設定する
 	void SetCamera(ICamera* camera) { m_pCamera = camera; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() const { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
 public:
 	// public関数
 	// コンストラクタ
@@ -82,6 +87,8 @@ private:
 	CommonResources* m_pCommonResources;
 	// カメラのポインタ―
 	ICamera* m_pCamera;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// タイルの辞書
 	std::unordered_map<std::string, ItemInfo> m_tileDictionary;
 	// タイルのレンダリングデータ

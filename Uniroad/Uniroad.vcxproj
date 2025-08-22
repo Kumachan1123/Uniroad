@@ -403,6 +403,8 @@
     <None Include="HLSL\Sky\Header.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="packages.config" />
+    <None Include="Resources\Jsons\Models.json" />
+    <None Include="Resources\Jsons\Textures.json" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Counter\PS_Counter.hlsl">

@@ -50,6 +50,8 @@ void StageSelect::Update(float elapsedTime)
 	// 更新処理は特にない
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(elapsedTime);
+	// シャドウマップライトの更新
+	m_pShadowMapLight->Update(elapsedTime);
 }
 /*
 *	@brief 描画
@@ -68,15 +70,8 @@ void StageSelect::Render(const DirectX::SimpleMath::Matrix& view, const DirectX:
 	// モデルの描画
 	m_pModel->Draw(context, *states, Matrix::Identity, view, proj, false, [&]
 		{
-			// ブレンドステートを設定する
-			context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-			// 深度ステンシルステートを設定する
-			context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 0);
-			// カリングを設定する
-			context->RSSetState(states->CullNone());
-			// テクスチャサンプラを適用する
-			ID3D11SamplerState* sampler = states->PointWrap();
-			context->PSSetSamplers(0, 1, &sampler);
+			// 影を加味したライティング
+			m_pShadowMapLight->ApplyShader(context, states);
 		});
 }
 /*

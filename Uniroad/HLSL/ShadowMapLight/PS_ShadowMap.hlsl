@@ -4,13 +4,11 @@
 #include "Common.hlsli"
 #include "Params.hlsli"
 
-
 // ƒƒCƒ“ŠÖ”
 float4 main(PS_SM_Input input) : SV_Target0
 {
-    /* è‡‚Q */
 
     // Z’l‚ğo—Í‚·‚é
     return input.Position.z;
-    //return float4(input.Position.z, input.Position.z, input.Position.z, 1.0f);
+    //return float4(input.Position.z, input.Position.z, input.Position.z, 0.15f);
 }

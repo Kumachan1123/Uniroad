@@ -228,6 +228,8 @@
     <None Include="HLSL\Sky\Header.hlsli" />
     <None Include="HLSL\ShadowMapLight\Common.hlsli" />
     <None Include="HLSL\ShadowMapLight\Params.hlsli" />
+    <None Include="Resources\Jsons\Models.json" />
+    <None Include="Resources\Jsons\Textures.json" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />

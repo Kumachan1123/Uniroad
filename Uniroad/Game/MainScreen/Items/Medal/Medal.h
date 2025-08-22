@@ -11,6 +11,7 @@
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
 #include "Game/MainScreen/Shadow/Shadow.h"
+#include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 
 // 前方宣言
@@ -45,6 +46,10 @@ public:
 	ICamera* GetCamera() const override { return m_pCamera; }
 	// カメラを設定する
 	void SetCamera(ICamera* camera) override { m_pCamera = camera; }
+	// シャドウマップライトを取得する
+	ShadowMapLight* GetShadowMapLight() const override { return m_pShadowMapLight; }
+	// シャドウマップライトを設定する
+	void SetShadowMapLight(ShadowMapLight* shadowMapLight) override { m_pShadowMapLight = shadowMapLight; }
 
 public:
 	// public関数
@@ -82,6 +87,8 @@ private:
 	DirectX::Model* m_pModel;
 	// カメラのポインター
 	ICamera* m_pCamera;
+	// シャドウマップライト
+	ShadowMapLight* m_pShadowMapLight;
 	// パーティクル
 	std::unique_ptr<Particle> m_pParticle;
 	// 影

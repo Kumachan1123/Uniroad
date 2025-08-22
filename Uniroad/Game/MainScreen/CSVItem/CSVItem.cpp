@@ -17,6 +17,7 @@ CSVItem::CSVItem(CommonResources* resources)
 	, m_createdMedals(0) // 生成したメダルの数
 	, m_goalUnlocked(true)// ゴールロックが解除されているかどうか
 	, m_pCamera(nullptr) // カメラへのポインタ
+	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタ
 {
 	// アイテムのタイルの辞書を初期化
 	InitializeTileDictionary();
@@ -114,6 +115,8 @@ void CSVItem::LoadItem(const std::string& filePath)
 				std::unique_ptr<ItemBase> itemBase = ItemFactory::CreateItemByName(tileInfo.modelName);
 				// アイテムの位置を設定
 				itemBase->SetPosition(pos);
+				// アイテムにシャドウマップライトを設定
+				itemBase->SetShadowMapLight(m_pShadowMapLight);
 				// アイテムのワールド行列を設定
 				itemBase->SetWorldMatrix(Matrix::CreateScale(tileInfo.scale) * Matrix::CreateTranslation(pos));
 				// アイテムのモデルを設定
