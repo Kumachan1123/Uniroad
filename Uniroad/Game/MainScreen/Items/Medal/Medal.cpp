@@ -15,6 +15,7 @@ Medal::Medal()
 	, m_pCamera(nullptr) // カメラへのポインタ
 	, m_pParticle(nullptr) // パーティクルシステムへのポインタ
 	, m_pMiniCharacter(nullptr) // ミニキャラクターへのポインタ
+	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタ
 	, m_itemInfo() // アイテム情報
 	, m_row(-1) // 行番号（保存用）
 	, m_col(-1) // 列番号（保存用）
@@ -55,12 +56,6 @@ void Medal::Initialize(CommonResources* resources, const ItemInfo& info)
 	m_pParticle = std::make_unique<Particle>(Utility::Type::SHINE, 50);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
-	// 影を作成する
-	m_pShadow = std::make_unique<Shadow>();
-	// 影にモデルを渡す
-	m_pShadow->SetModel(m_pModel);
-	// 影を初期化
-	m_pShadow->Initialize(m_pCommonResources);
 }
 /*
 *	@brief 更新
@@ -123,9 +118,6 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	m_pParticle->Render(view, proj);
 	// 影用に座標を定義
 	Vector3 shadowPosition = m_position + Vector3(0.0f, -2.99f, 0.0f);
-	// 影の描画
-	if (!m_isCollected)m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
-
 	// モデルの描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 

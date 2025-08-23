@@ -10,7 +10,6 @@
 #include "KumachiLib/Easing/Easing.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
-#include "Game/MainScreen/Shadow/Shadow.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
 
@@ -91,8 +90,6 @@ private:
 	ShadowMapLight* m_pShadowMapLight;
 	// パーティクル
 	std::unique_ptr<Particle> m_pParticle;
-	// 影
-	std::unique_ptr<Shadow> m_pShadow;
 	// メダルの情報
 	ItemInfo m_itemInfo;
 	// メダルの位置

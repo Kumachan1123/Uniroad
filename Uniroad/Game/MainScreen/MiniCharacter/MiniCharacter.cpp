@@ -77,11 +77,7 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	// スタート地点の前後左右のタイルを調べてプレイヤーの速度を更新する
 	UpdateSpeedByStartTile();
 	// ヒツジパーツをアタッチ
-	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
-	// 影を作成
-	m_pShadow = std::make_unique<Shadow>();
-	// 影の初期化
-	m_pShadow->Initialize(m_pCommonResources);
+	Attach(std::make_unique<SheepBody>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
 	// 土煙パーティクルを作成する
 	m_pDust = std::make_unique<Particle>(Utility::Type::STEAM, 50);
 	// 土煙パーティクルを初期化する
@@ -162,12 +158,6 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 {
 	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
-	// 影用に座標を定義
-	Vector3 shadowPosition = m_currentPosition;
-	// 影を少し浮かせる
-	shadowPosition.y += 0.01f;
-	// 影を描画する
-	m_pShadow->RenderCircleShadow(view, proj, shadowPosition, 1.0f);
 	// 親コンポーネントのポインターに変換
 	auto parent = dynamic_cast<MiniCharacterBase*>(m_parent);
 	// 土煙のビルボード行列を作成

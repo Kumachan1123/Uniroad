@@ -51,8 +51,6 @@ void Road::Initialize()
 		// 初期位置をリセット
 		m_positions.push_back(Vector3(i * 10.0f, -0.52f, 0.0f));
 	}
-	// 深度ステンシルバッファを作成
-	CreateDepthStencilBuffer(m_pCommonResources->GetDeviceResources()->GetD3DDevice());
 }
 /*
 *	@brief 更新
@@ -132,34 +130,4 @@ void Road::Finalize()
 	// モデルを解放
 	for (auto& model : m_pModels) if (model)model = nullptr;
 
-}
-/*
-*	@brief 深度ステンシルバッファを作成する
-*	@details 深度ステンシルバッファを作成する。
-*	@param pDevice Direct3Dデバイスへのポインタ
-*	@return なし
-*/
-void Road::CreateDepthStencilBuffer(ID3D11Device* pDevice)
-{
-	// 深度ステンシル情報を定義する
-	D3D11_DEPTH_STENCIL_DESC desc = {};
-
-	// 床：床描画時にステンシルバッファの値をインクリメントする（0を1にする）
-	desc.DepthEnable = true;									// 深度テストを行う
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;			// 深度バッファを更新する
-	desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;				// 深度値以下なら更新する
-
-	desc.StencilEnable = true;									// ステンシルテストを行う
-	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;		// 0xff（マスク値）
-	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;	// 0xff（マスク値）
-
-	// ポリゴンの表面の設定
-	desc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_INCR_SAT;
-	desc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	desc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
-	// 裏面も同じ設定
-	desc.BackFace = desc.FrontFace;
-	// 深度ステンシルステートを作成する
-	DX::ThrowIfFailed(pDevice->CreateDepthStencilState(&desc, m_pDepthStencilState.ReleaseAndGetAddressOf()));
 }

@@ -68,8 +68,7 @@ private:
 	// private関数
 	// 辞書を初期化する
 	void InitializeTileDictionary();
-	// 深度ステンシルの設定
-	void CreateDepthStencilBuffer(ID3D11Device* pDevice);
+
 private:
 	// private定数
 	// 場外のタイルデータ
@@ -89,6 +88,5 @@ private:
 	std::vector<TileRenderData> m_tiles;
 	// マップデータ
 	std::vector<std::vector<MapTileData>> m_mapData;
-	// 深度ステンシル
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_pDepthStencilState;
+
 };

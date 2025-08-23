@@ -20,8 +20,7 @@
 #include "Game/Scenes/PlayScene/PlayScene.h"
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
-#include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
-#include "Game/MainScreen/Shadow/Shadow.h"
+#include "Game/MainScreen/MiniCharacter/Sheep/Sheep_Body/Sheep_Body.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
 
@@ -104,6 +103,7 @@ public:
 	// 落下タイマーが有効かどうかを設定
 	void SetFallTimerActive(bool active) { m_fallTimerActive = active; }
 public:
+	// public関数
 	// コンストラクタ
 	MiniCharacterSelectStage(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -151,8 +151,6 @@ private:
 	CommonResources* m_pCommonResources;
 	// 親
 	IComponent* m_parent;
-	// 影
-	std::unique_ptr<Shadow> m_pShadow;
 	// ノード番号
 	int m_nodeNumber;
 	// 部品番号
