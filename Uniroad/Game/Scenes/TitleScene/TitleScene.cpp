@@ -185,7 +185,7 @@ void TitleScene::Render()
 	// 道路を描画する
 	m_pRoad->Render(m_view, m_projection);
 	// シャドウマップライトをレンダリングする
-	m_pShadowMapLight->RenderShadow(m_view, m_projection);
+	m_pShadowMapLight->RenderShadow();
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 

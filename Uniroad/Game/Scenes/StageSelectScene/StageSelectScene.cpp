@@ -219,7 +219,7 @@ void StageSelectScene::Render()
 	// ステージセレクトの描画
 	m_pStageSelect->Render(m_view, m_projection);
 	// シャドウマップライトをレンダリングする
-	m_pShadowMapLight->RenderShadow(m_view, m_projection);
+	m_pShadowMapLight->RenderShadow();
 	// ステージの入り口の描画
 	for (auto& gate : m_pStageGates)gate->Render(m_view, m_projection);
 	// ミニキャラの描画

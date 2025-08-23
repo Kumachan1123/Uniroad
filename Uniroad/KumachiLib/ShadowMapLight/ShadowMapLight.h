@@ -47,7 +47,7 @@ public:
 	// 更新
 	void Update(float elapsedTime);
 	// 影になるモデルを描画
-	void RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
+	void RenderShadow();
 	// モデル描画時のラムダ式内で呼ぶ処理をまとめた関数
 	void ApplyShader(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states);
 private:

@@ -62,11 +62,10 @@ void ShadowMapLight::Update(float elapsedTime)
 /*
 *	@brief 影になるモデルを描画
 *	@details シャドウマップをレンダリングする
-*	@param view ビュー行列
-*	@param proj 射影行列
+*	@param なし
 *	@return なし
 */
-void ShadowMapLight::RenderShadow(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
+void ShadowMapLight::RenderShadow()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
