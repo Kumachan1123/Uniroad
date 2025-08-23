@@ -4,6 +4,8 @@
 */
 #include "pch.h"
 #include "TitleScene.h"
+// フェード開始時間
+const float TitleScene::FADE_START_TIME = 0.5f;
 /*
 *	@brief コンストラクタ
 *	@details タイトルシーンクラスのコンストラクタ
@@ -18,6 +20,7 @@ TitleScene::TitleScene(IScene::SceneID sceneID)
 	, m_projection() // 射影行列
 	, m_isChangeScene(false) // シーン変更フラグ
 	, m_nextSceneID(sceneID) // 次のシーンID
+	, m_time(0.0f) // 時間
 {
 }
 /*
@@ -103,8 +106,11 @@ void TitleScene::Initialize(CommonResources* resources)
 */
 void TitleScene::Update(float elapsedTime)
 {
+	// 名前空間のエイリアス
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// 時間を更新
+	m_time += elapsedTime;
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// デバッグカメラを更新する
@@ -123,7 +129,7 @@ void TitleScene::Update(float elapsedTime)
 	// ボタンを更新
 	m_pTitleButton->Update(elapsedTime);
 	// フェードの更新
-	m_pFade->Update(elapsedTime);
+	if (m_time >= FADE_START_TIME) m_pFade->Update(elapsedTime);
 	// 空の更新
 	m_pSky->Update(elapsedTime);
 	// 道路の更新
@@ -132,7 +138,7 @@ void TitleScene::Update(float elapsedTime)
 	m_pShadowMapLight->Update(elapsedTime);
 	m_pShadowMapLight->SetLightPosition(targetPos + Vector3(0.0f, 30.0f, 0.0f));
 	// 座標を初期化
-	Vector3 position(Vector3(0, 0, 0));
+	Vector3 position(Vector3::Zero);
 	// Y軸に90°回転
 	Quaternion angle(Quaternion::CreateFromAxisAngle(Vector3::UnitY, XMConvertToRadians(90.0f)));
 	// ミニキャラの更新
@@ -152,6 +158,8 @@ void TitleScene::Update(float elapsedTime)
 		m_pMiniCharacterBase->SetTitleAnimationState(CONTINUE);
 		// 押されたかをリセット
 		m_pTitleButton->SetPressed(false);
+		// ロゴを再稼働する
+		m_pTitleLogo->AdvanceAnimation();
 	}
 	// ミニキャラのタイトルアニメーションが終了状態なら
 	if (m_pMiniCharacterBase->GetTitleAnimationState() == END)
@@ -182,12 +190,13 @@ void TitleScene::Render()
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 
 	// 以下、2D描画のものを描画する
-	// ロゴを描画する
-	m_pTitleLogo->Render();
+
 	// ボタンを描画する
 	m_pTitleButton->Render();
 	// フェードを描画する
 	m_pFade->Render();
+	// ロゴを描画する
+	m_pTitleLogo->Render();
 }
 /*
 *	@brief シーンIDを取得する

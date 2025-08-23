@@ -62,7 +62,10 @@ private:
 	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
-
+private:
+	// private定数
+	// フェード開始時間
+	static const float FADE_START_TIME;
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -93,4 +96,6 @@ private:
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
+	// 時間
+	float m_time;
 };

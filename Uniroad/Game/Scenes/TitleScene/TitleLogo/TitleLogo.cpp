@@ -133,12 +133,29 @@ void TitleLogo::CreateAnimationSequence()
 			// サイズをイージング補間
 			m_logoRect.size = Vector2::Lerp(Vector2(0.55f, 0.35f), SIZE, easing);
 	} });
-	// 最終静止フェーズ用の番兵
+	// フェーズ3:静止
 	m_pAnimation->CreateAnimationSequence({
 			0.0f, // 無限
 			[this](float) {
 			// 最終静止位置とサイズに設定
 			m_logoRect.position = POSITION;
+			m_logoRect.size = SIZE;
+	} });
+	// フェーズ4: 移動
+	m_pAnimation->CreateAnimationSequence({
+			0.5f, // 移動・縮小にかける秒数
+			[this](float t) {
+			// 進行度を計算
+			float easing = Easing::EaseInOutCubic(t);
+			// 左上に移動しつつ縮小
+			m_logoRect.position = Vector2::Lerp(POSITION, Vector2(-1.5f, 0.0f) + POSITION, easing);
+	} });
+	// 最終静止フェーズ
+	m_pAnimation->CreateAnimationSequence({
+			0.0f, // 無限
+			[this](float) {
+			// 最終静止位置とサイズに設定
+			m_logoRect.position = Vector2(-1.5f, 0.0f) + POSITION;
 			m_logoRect.size = SIZE;
 	} });
 

@@ -28,6 +28,8 @@ public:
 	const DirectX::SimpleMath::Vector2& GetSize() const override { return m_size; }
 	// ロゴのサイズを設定
 	void SetSize(const DirectX::SimpleMath::Vector2& size) override { m_size = size; }
+	// アニメーションを進める
+	void AdvanceAnimation() { m_pAnimation->AdvanceSequence(); }
 public:
 	// public関数
 	// コンストラクタ
