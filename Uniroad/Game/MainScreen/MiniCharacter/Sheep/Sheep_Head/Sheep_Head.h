@@ -78,7 +78,10 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// Œãˆ—‚ğs‚¤
 	void Finalize();
-
+private:
+	// privateŠÖ”
+	// •\î‚ğØ‚è‘Ö‚¦‚é
+	void ChangeExpression(const std::string& key);
 
 private:
 	// privateŠÖ”

@@ -54,7 +54,7 @@ void SheepHead::Initialize(CommonResources* commonResources)
 	// 共通リソースをセット
 	m_pCommonResources = commonResources;
 	// モデルを読み込む
-	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Sheep_Head");
+	ChangeExpression("Sheep_Head");
 }
 /*
 *	@brief ひつじの頭クラスの更新
@@ -78,6 +78,18 @@ void SheepHead::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent()->GetParent());
 	// シャドウマップにモデルを登録する
 	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
+	// ミニキャラクラスを取得する
+	auto pMiniCharacter = dynamic_cast<MiniCharacter*>(m_pParent->GetParent());
+	// ミニキャラクターが存在しない場合は何もしない
+	if (pMiniCharacter == nullptr) return;
+	// 表情に応じてモデルを切り替える
+	if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::NORMAL)
+		ChangeExpression("Sheep_Head");	// 通常の顔
+	else if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::HAPPY)
+		ChangeExpression("Sheep_HappyHead");	// ゴールの時の顔
+	else if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::BAD)
+		ChangeExpression("Sheep_BadHead");	// 落ちそうになった時や落ちている時の顔
+
 }
 /*
 *	@brief ひつじの頭クラスの描画
@@ -110,4 +122,15 @@ void SheepHead::Finalize()
 {
 	// モデルが存在する場合は解放する
 	if (m_pModel)m_pModel = nullptr;
+}
+/*
+*	@brief 表情を切り替える
+*	@details モデルキーを渡して表情を切り替える
+*	@param key 表情のキー
+*	@return なし
+*/
+void SheepHead::ChangeExpression(const std::string& key)
+{
+	// モデルマネージャーからモデルを取得する
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel(key);
 }

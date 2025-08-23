@@ -40,6 +40,13 @@ public:
 		UNICYCLE_BODY = 5,
 		UNICYCLE_WHEEL = 6,
 	};
+	// 表情
+	enum Expression : int
+	{
+		NORMAL = 0,// 普通の表情
+		HAPPY = 1,// ゴールした時の表情
+		BAD = 2,// 落ちそうになった時や落ちている時の表情
+	};
 public:
 	// アクセサ
 	// ノード番号を取得する
@@ -102,6 +109,10 @@ public:
 	float GetGameClearSwitchTime() const { return m_gameClearSwitchTime; }
 	// ゲームクリアフラグを切り替える時間を設定する
 	void SetGameClearSwitchTime(float time) { m_gameClearSwitchTime = time; }
+	// 表情を取得する
+	Expression GetExpression() const { return m_expression; }
+	// 表情を設定する
+	void SetExpression(Expression expression) { m_expression = expression; }
 public:
 	// public関数
 	// コンストラクタ
@@ -226,4 +237,6 @@ private:
 	float m_gameClearSwitchTime;
 	// 移動速度
 	float m_speed;
+	// 表情
+	Expression m_expression;
 };

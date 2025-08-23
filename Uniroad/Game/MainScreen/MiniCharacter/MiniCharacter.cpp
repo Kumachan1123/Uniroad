@@ -43,6 +43,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_rotationMiniCharacterAngle{}// プレイヤー回転角
 	, m_mass{}// 質量
 	, m_miniCharacterVelocity{}// プレイヤー速度
+	, m_expression(Expression::NORMAL)// 表情
 {
 }
 /*
@@ -99,6 +100,7 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 {
 	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
+
 	// タイルイベントを更新する
 	UpdateTileEvents();
 	// 落下タイマー処理
@@ -341,6 +343,8 @@ void MiniCharacter::Moving(float elapsedTime, const DirectX::SimpleMath::Vector3
 		m_miniCharacterVelocity += m_currentVelocity * elapsedTime;
 		// ゲームオーバーのスイッチ時間を更新
 		m_gameOverSwitchTime += elapsedTime;
+		// 表情を変える
+		m_expression = Expression::BAD;
 	}
 	// 落下していない場合
 	else if (m_isMoving)
@@ -389,8 +393,9 @@ void MiniCharacter::Shake()
 		m_pDust->Stop();
 		// 汗パーティクルの生成を開始する
 		m_pSweat->Start();
+		// 表情を変える
+		m_expression = Expression::BAD;
 	}
-
 }
 /*
 *	@brief プレイヤーの回転を補間する
@@ -550,10 +555,30 @@ void MiniCharacter::HandleGameOverAndClear(float elapsedTime)
 	std::string goalTileName = tile.tileInfo.modelName;
 	// 現在の位置がタイルの中心にいるかどうかを判定
 	bool isCenter = IsAtTileCenter(m_currentPosition, tile.pos);
-	// アンロックされたゴールの真上にいるならクリア
-	if (goalTileName == "GoalBlock" && goalUnlocked == true && isCenter)	dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameClear(true);
-	// 途中で止まるか落ちている場合、ゲームオーバー
-	else if (m_currentVelocity.y < Vector3::Zero.y || m_currentVelocity == Vector3::Zero)dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameOver(true);
+	// アンロックされたゴールの真上にいるなら
+	if (goalTileName == "GoalBlock" && goalUnlocked == true && isCenter)
+	{
+		// クリアフラグを立てる
+		dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameClear(true);
+		// 表情を変える
+		m_expression = Expression::HAPPY;
+		// 処理を終える
+		return;
+	}
+	// 途中で止まるか落ちている場合
+	else if (m_currentVelocity.y < Vector3::Zero.y || m_currentVelocity == Vector3::Zero)
+	{
+		// ゲームオーバーフラグを立てる
+		dynamic_cast<MiniCharacterBase*>(m_parent)->SetGameOver(true);
+		// 表情を変える
+		m_expression = Expression::BAD;
+		// 汗パーティクルの生成を開始する
+		m_pSweat->Start();
+		// 処理を終える
+		return;
+	}
+	// それ以外の場合は通常の表情に戻す
+	m_expression = Expression::NORMAL;
 }
 /*
 *	@brief 土煙パーティクルのパラメーターを設定する

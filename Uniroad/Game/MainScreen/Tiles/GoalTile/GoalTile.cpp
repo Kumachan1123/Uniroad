@@ -17,9 +17,6 @@ void GoalTile::OnEnter(MiniCharacter* character)
 	UNREFERENCED_PARAMETER(character);
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this)) return;
-
-	// ゴールに到達したことを通知
-
 	// 通過記録
 	character->SetEnteredTile(this);
 }
@@ -47,13 +44,20 @@ void GoalTile::OnCenterReached(MiniCharacter* character)
 	character->SetVelocity(Vector3::Zero);
 	// キャラクターを動かすフラグを止める
 	character->SetMoving(false);
+	// 表情をハッピーにする
+	character->SetExpression(MiniCharacter::Expression::HAPPY);
 	// 5秒後にゲームクリアのフラグを立てる
 	if (character->GetGameClearSwitchTime() > 5.0f)
 	{
 		// ベースクラスのポインターを取得
 		const auto& pMinicharacterBase = dynamic_cast<MiniCharacterBase*>(character->GetParent());
-		// ベースクラスのポインターが取れたらゲームクリアフラグを立てる
-		if (pMinicharacterBase)pMinicharacterBase->SetGameClear(true);
+		// ベースクラスのポインターが取れたら
+		if (pMinicharacterBase)
+		{
+			// ゲームクリアフラグを立てる
+			pMinicharacterBase->SetGameClear(true);
+
+		}
 		// 取れなかったらエラー
 		else assert(false && "MiniCharacterBase is not set correctly.");
 	}
