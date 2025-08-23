@@ -107,7 +107,6 @@ void UnicycleWheel::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 	m_currentAngle = wheelRotation * m_currentAngle;
 	// 時間経過でホイールを回転させる
 	m_currentAngle = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, m_time * wheelSpeed) * m_currentAngle;
-
 	// ベースを取得
 	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent()->GetParent()->GetParent());
 	// シャドウマップにモデルを登録する

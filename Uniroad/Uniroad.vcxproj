@@ -207,6 +207,8 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
     <ClInclude Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.h" />
@@ -311,6 +313,8 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
     <ClCompile Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.cpp" />

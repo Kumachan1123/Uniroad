@@ -69,7 +69,7 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	// 現在位置に反映
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
-	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	Attach(std::make_unique<SheepBody>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
 	// パーティクルを作成する
 	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 50);
 	// パーティクルを初期化する

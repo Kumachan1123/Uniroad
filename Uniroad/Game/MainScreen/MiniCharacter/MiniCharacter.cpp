@@ -77,7 +77,7 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	// スタート地点の前後左右のタイルを調べてプレイヤーの速度を更新する
 	UpdateSpeedByStartTile();
 	// ヒツジパーツをアタッチ
-	Attach(std::make_unique<Sheep>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	Attach(std::make_unique<SheepBody>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
 	// 土煙パーティクルを作成する
 	m_pDust = std::make_unique<Particle>(Utility::Type::STEAM, 50);
 	// 土煙パーティクルを初期化する

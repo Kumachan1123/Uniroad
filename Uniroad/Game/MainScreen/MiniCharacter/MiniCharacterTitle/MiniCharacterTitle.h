@@ -15,7 +15,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
-#include "Game/MainScreen/MiniCharacter/Sheep/Sheep.h"
+#include "Game/MainScreen/MiniCharacter/Sheep/Sheep_Body/Sheep_Body.h"
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"

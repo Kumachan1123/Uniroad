@@ -114,7 +114,6 @@
     <ClInclude Include="Game\Scenes\TitleScene\TitleAnimationState\TitleAnimationState.h" />
     <ClInclude Include="Game\Scenes\TitleScene\Road\Road.h" />
     <ClInclude Include="Game\Sky\Sky.h" />
-    <ClInclude Include="Game\MainScreen\Shadow\Shadow.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Particle\Utility.h" />
     <ClInclude Include="Game\Interface\ICamera.h" />
@@ -123,6 +122,8 @@
     <ClInclude Include="Libraries\Microsoft\RenderTexture\RenderTexture.h" />
     <ClInclude Include="KumachiLib\ShadowMapLight\ShadowMapLight.h" />
     <ClInclude Include="Libraries\MyLib\DepthStencil.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -196,7 +197,6 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\Road\Road.cpp" />
     <ClCompile Include="Game\Sky\Sky.cpp" />
-    <ClCompile Include="Game\MainScreen\Shadow\Shadow.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Particle\Utility.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\BackButton\BackButton.cpp" />
@@ -204,6 +204,8 @@
     <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="KumachiLib\ShadowMapLight\ShadowMapLight.cpp" />
     <ClCompile Include="Libraries\MyLib\DepthStencil.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
