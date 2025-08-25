@@ -95,7 +95,6 @@
     <ClInclude Include="KumachiLib\FileCounter\FileCounter.h" />
     <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
-    <ClInclude Include="Game\Scenes\PlayScene\ResultUI\ResultUI.h" />
     <ClInclude Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.h" />
     <ClInclude Include="Game\Interface\IGameUI.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
@@ -186,7 +185,6 @@
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
     <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
-    <ClCompile Include="Game\Scenes\PlayScene\ResultUI\ResultUI.cpp" />
     <ClCompile Include="Game\MainScreen\SpeedUpButton\SpeedUpButton.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleScene.cpp" />
