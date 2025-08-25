@@ -29,7 +29,7 @@
 #include "Game/ControllScreen/MedalCounter/MedalCounter.h"
 #include "Game/Scenes/PlayScene/ResultAnimation/ResultAnimation.h"
 #include "KumachiLib/Easing/Easing.h"
-#include "Game/Scenes/PlayScene/ResultUI/ResultUI.h"
+#include "Game/Scenes/PlayScene/ResultButton/ResultButton.h"
 #include "Game/MainScreen/SpeedUpButton/SpeedUpButton.h"
 #include "Game/Fade/Fade.h"
 #include "Game/Sky/Sky.h"
@@ -114,7 +114,7 @@ private:
 	// 結果アニメーション
 	std::unique_ptr<ResultAnimation> m_pResultAnimation;
 	// 結果UI
-	std::unique_ptr<ResultUI> m_pResultUI;
+	std::unique_ptr<ResultButton> m_pResultButton;
 	// スピードアップボタン
 	std::unique_ptr<SpeedUpButton> m_pSpeedUpButton;
 	// フェード

@@ -130,11 +130,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 結果アニメーションを初期化する
 	m_pResultAnimation->Initialize(m_pCommonResources);
 	// 結果UIを作成する
-	m_pResultUI = std::make_unique<ResultUI>();
-	// 結果UIを初期化する
-	m_pResultUI->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	m_pResultButton = std::make_unique<ResultButton>();
 	// 結果UIにステージ番号を渡す
-	m_pResultUI->SetStageNum(m_stageNumber);
+	m_pResultButton->SetStageNum(m_stageNumber);
 	// スピードアップボタンを作成する
 	m_pSpeedUpButton = std::make_unique<SpeedUpButton>();
 	// スピードアップボタンを初期化する
@@ -166,7 +164,6 @@ void PlayScene::Update(float elapsedTime)
 	Vector3 playerPosition = m_pMiniCharacterBase->GetCameraPosition();
 	// シャドウマップライト更新
 	m_pShadowMapLight->SetLightPosition(Vector3(playerPosition.x, 30.0f, playerPosition.z));
-
 	// 空の更新
 	m_pSky->Update(elapsedTime);
 	// スピードアップボタンの更新
@@ -179,14 +176,15 @@ void PlayScene::Update(float elapsedTime)
 		// スピードアップボタンを強制的にオフにする
 		m_pSpeedUpButton->SetPressed(false);
 		// リザルトUIが無効な場合
-		if (!m_pResultUI->IsEnable() && m_pResultAnimation->IsAnimationEnd())
+		if (m_pResultAnimation->IsAnimationEnd() && !m_pResultButton->IsEnable())
 		{
-			// 有効にする
-			m_pResultUI->SetEnable(true);
+			//// 有効にする
+			m_pResultButton->SetEnable(true);
 			// ミニキャラにリザルト用カメラを設定する
 			m_pMiniCharacterBase->SetCamera(m_pFixedCameraResult.get());
 			// 結果の設定
-			m_pResultUI->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
+			m_pResultButton->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
+			m_pResultButton->Initialize(m_pCommonResources, m_pCommonResources->GetDeviceResources()->GetOutputSize().right, m_pCommonResources->GetDeviceResources()->GetOutputSize().bottom);
 		}
 		// リザルト用固定カメラの更新
 		m_pFixedCameraResult->Update();
@@ -195,7 +193,7 @@ void PlayScene::Update(float elapsedTime)
 		// 結果アニメーションの更新
 		m_pResultAnimation->Update(elapsedTime);
 		// 結果UIの更新
-		m_pResultUI->Update(elapsedTime);
+		m_pResultButton->Update(elapsedTime);
 		// ゲームクリアなら以下の処理も行う
 		if (m_pMiniCharacterBase->IsGameClear())
 		{
@@ -210,7 +208,7 @@ void PlayScene::Update(float elapsedTime)
 			// カメラの座標を更新
 			m_pFixedCameraResult->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCameraResult->GetCameraDistance());
 			// 次のステージ番号を取得
-			m_stageNumber = m_pResultUI->GetStageNum();
+			m_stageNumber = m_pResultButton->GetStageNum();
 		}
 	}
 	// リザルトでない場合は通常の更新を行う
@@ -247,9 +245,14 @@ void PlayScene::Update(float elapsedTime)
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
 	// アニメーションが終わったらフェードアウトに移行
 	if (m_pResultAnimation->IsAnimationEnd() && //	アニメーションが終わって
-		m_pResultUI->GetSceneNum() != ResultUI::SceneID::NONE &&// 	// リザルトUIのシーン番号が無効でなくて
-		m_pResultUI->IsMouseClicked()) //	マウスがクリックされていたら
+		m_pResultButton->GetSceneNum() != ResultButton::SceneID::NONE && // リザルトボタンのシーン番号が無効でなくて
+		m_pResultButton->IsPressed()) // ボタンが押されていたら
+	{
+		// フェードアウトに移行
 		m_pFade->SetState(Fade::FadeState::FadeOut);
+		// 押された状態を解除
+		m_pResultButton->SetPressed(false);
+	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 }
@@ -327,7 +330,7 @@ void PlayScene::Render()
 		// 結果アニメーションの描画
 		m_pResultAnimation->Render();
 		// 結果UIの描画
-		if (m_pResultAnimation->IsAnimationEnd())m_pResultUI->Render();
+		if (m_pResultAnimation->IsAnimationEnd())m_pResultButton->Render();
 	}
 	// フェードを描画する
 	m_pFade->Render();
@@ -351,12 +354,12 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	if (m_isChangeScene)
 	{
 		// 遷移先のシーン番号によって分岐
-		switch (m_pResultUI->GetSceneNum())
+		switch (m_pResultButton->GetSceneNum())
 		{
-		case ResultUI::REPLAY: // リプレイ選択
+		case ResultButton::SceneID::REPLAY: // リプレイ選択
 			// リプレイ画面へ
 			return IScene::SceneID::PLAY;
-		case ResultUI::SELECT_STAGE:// ステージセレクト選択
+		case ResultButton::SceneID::SELECT_STAGE:// ステージセレクト選択
 			// ステージセレクト画面へ
 			return IScene::SceneID::STAGESELECT;
 		}
@@ -459,9 +462,6 @@ void PlayScene::DrawDebugString()
 	// カメラの位置と被写体座標をデバッグ文字列に追加
 	debugString->AddString("CameraEye:%f,%f,%f", m_pFixedCameraPlay->GetEyePosition().x, m_pFixedCameraPlay->GetEyePosition().y, m_pFixedCameraPlay->GetEyePosition().z);
 	debugString->AddString("CameraTarget:%f,%f,%f", m_pFixedCameraPlay->GetTargetPosition().x, m_pFixedCameraPlay->GetTargetPosition().y, m_pFixedCameraPlay->GetTargetPosition().z);
-	// 当たったボタン
-	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
-	debugString->AddString("StageNum:%i", m_stageNumber);
 #endif  
 }
 /*

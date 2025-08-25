@@ -124,6 +124,7 @@
     <ClInclude Include="Libraries\MyLib\DepthStencil.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\ResultButton\ResultButton.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="Libraries\MyLib\DepthStencil.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\ResultButton\ResultButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
