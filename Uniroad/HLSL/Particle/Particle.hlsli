@@ -37,7 +37,13 @@ float3 GetRainbow(float time)
     return HSVtoRGB(float3(hue, 1.0, 1.0)); // HSVからRGBに変換
 }
 
-// 構造体はC++と揃えて下さい
+// floatを返す乱数
+float Random(float seed)
+{
+    return frac(sin(seed * 12.9898) * 43758.5453);
+}
+
+// 構造体
 struct GPU_Particle
 {
     float3 position;

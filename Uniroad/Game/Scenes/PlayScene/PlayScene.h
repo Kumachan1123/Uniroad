@@ -34,6 +34,8 @@
 #include "Game/Fade/Fade.h"
 #include "Game/Sky/Sky.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
+#include "Game/Particle/Particle.h"
+#include "Game/Particle/Utility.h"
 
 // 前方宣言
 class CommonResources;
@@ -81,6 +83,8 @@ private:
 	void CreateViewports();
 	// デバッグ文字を表示
 	void DrawDebugString();
+	// 紙吹雪パーティクルのパラメーターを設定
+	Utility::ParticleParams SetConfettiParams();
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -119,6 +123,8 @@ private:
 	std::unique_ptr<Sky> m_pSky;
 	// シャドウマップライト
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
+	// 紙吹雪パーティクル
+	std::unique_ptr<Particle> m_pConfetti;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列(ゲーム画面用)

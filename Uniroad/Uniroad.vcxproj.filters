@@ -258,5 +258,7 @@
     <FxCompile Include="HLSL\ShadowMapLight\PS_ShadowMap.hlsl" />
     <FxCompile Include="HLSL\ShadowMapLight\VS_Light.hlsl" />
     <FxCompile Include="HLSL\ShadowMapLight\VS_ShadowMap.hlsl" />
+    <FxCompile Include="HLSL\Particle\GS_Confetti.hlsl" />
+    <FxCompile Include="HLSL\Particle\PS_Confetti.hlsl" />
   </ItemGroup>
 </Project>

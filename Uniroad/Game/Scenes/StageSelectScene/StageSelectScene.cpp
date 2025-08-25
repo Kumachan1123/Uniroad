@@ -224,8 +224,7 @@ void StageSelectScene::Render()
 	for (auto& gate : m_pStageGates)gate->Render(m_view, m_projection);
 	// ƒ~ƒjƒLƒƒƒ‰‚Ì•`‰æ
 	m_pMiniCharacterBase->Render(m_view, m_projection);
-	// •½–Ê‚Ì•`‰æ
-	m_pPlaneArea->Render();
+
 	// ‹ó‚ğ•`‰æ‚·‚é
 	m_pSky->Render(m_view, m_projection);
 	// ƒ{ƒ^ƒ“‚ğ•`‰æ‚·‚é
@@ -239,6 +238,8 @@ void StageSelectScene::Render()
 	debugString->AddString("Ray Hit:%s", m_pPlaneArea->IsHitPlane() ? "true" : "false");
 	// ƒŒƒC‚Æ“–‚½‚Á‚½‚©‚ğ•\¦
 	debugString->AddString("HitRayIndex:%i", m_pPlaneArea->GetHitPlaneIndex());
+	// •½–Ê‚Ì•`‰æ
+	m_pPlaneArea->Render();
 #endif
 }
 

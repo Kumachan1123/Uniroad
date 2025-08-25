@@ -145,6 +145,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pFade->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
+	// パーティクルを作成する
+	m_pConfetti = std::make_unique<Particle>(Utility::Type::CONFETTI, 200);
+	// パーティクルを初期化する
+	m_pConfetti->Initialize(m_pCommonResources);
 }
 /*
 *   @brief 更新処理
@@ -195,10 +199,13 @@ void PlayScene::Update(float elapsedTime)
 		// ゲームクリアなら以下の処理も行う
 		if (m_pMiniCharacterBase->IsGameClear())
 		{
+			// パーティクルを更新
+			m_pConfetti->SetParams(SetConfettiParams());
+			m_pConfetti->Update(elapsedTime);
 			// カメラの位置を調整
 			m_pFixedCameraResult->SetCameraDistance(Vector3(0.0f, 5.75f, 10.0f));
-			Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 			// カメラのターゲット位置をミニキャラのカメラ位置に設定
+			Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 			m_pFixedCameraResult->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
 			// カメラの座標を更新
 			m_pFixedCameraResult->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCameraResult->GetCameraDistance());
@@ -313,6 +320,10 @@ void PlayScene::Render()
 		m_pCSVItem->Render(m_view, m_projectionResult);
 		// ミニキャラの描画
 		m_pMiniCharacterBase->Render(m_view, m_projectionResult);
+		// 紙吹雪パーティクルのビルボード行列の作成
+		m_pConfetti->CreateBillboard(m_pFixedCameraResult->GetTargetPosition(), m_pFixedCameraResult->GetEyePosition(), m_pFixedCameraResult->GetUpPosition());
+		// ゲームクリアなら紙吹雪パーティクルの描画
+		if (m_pMiniCharacterBase->IsGameClear())m_pConfetti->Render(m_view, m_projectionResult);
 		// 結果アニメーションの描画
 		m_pResultAnimation->Render();
 		// 結果UIの描画
@@ -452,4 +463,71 @@ void PlayScene::DrawDebugString()
 	debugString->AddString("HitButtonIndex:%i", m_pResultUI->GetSceneNum());
 	debugString->AddString("StageNum:%i", m_stageNumber);
 #endif  
+}
+/*
+*	@brief 紙吹雪パーティクルのパラメーターを設定
+*	@details 紙吹雪パーティクルのパラメーターを設定する
+*	@param なし
+*	@return 紙吹雪パーティクルのパラメーター
+*/
+Utility::ParticleParams PlayScene::SetConfettiParams()
+{
+	// 名前空間のエイリアス
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+	// 乱数の設定
+	std::random_device seed;
+	std::default_random_engine engine(seed());
+	// ランダムな角度
+	std::uniform_real_distribution<> angleDist(0, XM_2PI);
+	// ランダムなXY平面の速度の大きさ
+	std::uniform_real_distribution<> horizSpeedDist(0.8f, 1.5f);
+	// ランダムなX座標
+	std::uniform_real_distribution<> xDist(-15.0f, 15.0f);
+	// ランダムなZ座標
+	std::uniform_real_distribution<> zDist(-1.8f, 1.8f);
+	// ランダムな回転スピード
+	std::uniform_real_distribution<> rotSpeedDist(-2.5f, 2.5f);
+	// ランダムなスケール
+	std::uniform_real_distribution<> scaleDist(0.35f, 0.7f);
+	// ランダムな色
+	std::uniform_real_distribution<> colorDist(0.7f, 1.0f);
+	float randAngleXY = static_cast<float>(angleDist(engine));
+	float horizSpeed = static_cast<float>(horizSpeedDist(engine));
+	float randX = static_cast<float>(xDist(engine));
+	float randZ = static_cast<float>(zDist(engine));
+	float scale = static_cast<float>(scaleDist(engine));
+	// ゲーミングカラー
+	Vector4 gamingColor(
+		static_cast<float>(colorDist(engine)),
+		static_cast<float>(colorDist(engine)),
+		static_cast<float>(colorDist(engine)),
+		static_cast<float>(0.75f + colorDist(engine) * 0.15f)
+	);
+	// ランダムな回転速度
+	Vector3 rotateSpeed(
+		static_cast<float>(rotSpeedDist(engine)),
+		static_cast<float>(rotSpeedDist(engine)),
+		static_cast<float>(rotSpeedDist(engine))
+	);
+	// ランダムな方向の速度ベクトル
+	Vector3 randomVelocity = Vector3(
+		cosf(randAngleXY) * horizSpeed,  // X成分
+		0.0f,                         // Y成分（上方向に初速）
+		sinf(randAngleXY) * horizSpeed   // Z成分
+	);
+	// パーティクルのパラメーターを設定して返す
+	Utility::ParticleParams params{};
+	params.life = 3.5f;
+	params.pos = Vector3(randX, 7.0f, randZ);  // 高さ7から広がって生える
+	params.velocity = randomVelocity;
+	params.accele = Vector3(0.0f, -9.8f * 0.4f, 0.0f); // 重力はやや弱め（ひらひら感）
+	params.rotateAccele = rotateSpeed; // 回転加速度なし（一定速度でひらひら）
+	params.rotate = rotateSpeed; // 初期回転
+	params.startScale = Vector3(scale, scale, 0.0f);
+	params.endScale = Vector3(scale * 0.7f, scale * 0.7f, 0.0f); // 少しだけ縮む
+	params.startColor = gamingColor; // 虹色ゲーミングカラー
+	params.endColor = Vector4(gamingColor.x, gamingColor.y, gamingColor.z, 0.0f); // 色はそのまま透明へ
+	params.type = Utility::Type::CONFETTI; // パーティクルのタイプ
+	return params;
 }

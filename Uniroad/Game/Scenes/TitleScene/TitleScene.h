@@ -62,6 +62,7 @@ private:
 	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
+
 private:
 	// private定数
 	// フェード開始時間
@@ -88,6 +89,7 @@ private:
 	std::unique_ptr<Sky> m_pSky;
 	// 道
 	std::unique_ptr<Road> m_pRoad;
+
 	// シャドウマップライト
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
 	// シーンチェンジフラグ

@@ -96,7 +96,6 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 
 
-
 }
 /*
 *	@brief 更新処理
@@ -128,6 +127,8 @@ void TitleScene::Update(float elapsedTime)
 	m_pTitleLogo->Update(elapsedTime);
 	// ボタンを更新
 	m_pTitleButton->Update(elapsedTime);
+
+
 	// フェードの更新
 	if (m_time >= FADE_START_TIME) m_pFade->Update(elapsedTime);
 	// 空の更新
@@ -190,7 +191,6 @@ void TitleScene::Render()
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 
 	// 以下、2D描画のものを描画する
-
 	// ボタンを描画する
 	m_pTitleButton->Render();
 	// フェードを描画する
@@ -265,3 +265,4 @@ void TitleScene::CreateCamera()
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
 }
+
