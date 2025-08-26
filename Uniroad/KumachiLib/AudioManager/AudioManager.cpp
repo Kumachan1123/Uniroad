@@ -72,18 +72,18 @@ void AudioManager::Initialize()
 	ifs >> j;
 	//ファイルを閉じる
 	ifs.close();
-	//// "sounds"配列内の各サウンドを処理する
-	//for (const auto& sound : j["sounds"])
-	//{
-	//	// ファイルパス
-	//	std::string filePath = sound["file"];
-	//	// キー
-	//	std::string key = sound["key"];
-	//	// ループフラグ
-	//	bool isLoop = sound["loop"];
-	//	// 各種効果音・BGMの読み込み
-	//	LoadSound(filePath, key, isLoop);
-	//}
+	// "sounds"配列内の各サウンドを処理する
+	for (const auto& sound : j["sounds"])
+	{
+		// ファイルパス
+		std::string filePath = sound["file"];
+		// キー
+		std::string key = sound["key"];
+		// 二重再生の可否
+		bool allowMultiplePlay = sound["allowMultiplePlay"];
+		// 各種効果音・BGMの読み込み
+		LoadSound(filePath, key, allowMultiplePlay);
+	}
 }
 /*
 *	@brief 音を再生する

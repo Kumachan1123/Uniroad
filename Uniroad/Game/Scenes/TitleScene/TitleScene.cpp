@@ -21,6 +21,7 @@ TitleScene::TitleScene(IScene::SceneID sceneID)
 	, m_isChangeScene(false) // シーン変更フラグ
 	, m_nextSceneID(sceneID) // 次のシーンID
 	, m_time(0.0f) // 時間
+	, m_BGMvolume(0.2f) // BGM音量
 {
 }
 /*
@@ -110,6 +111,8 @@ void TitleScene::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// 時間を更新
 	m_time += elapsedTime;
+	// オーディオマネージャーの更新処理
+	m_pCommonResources->GetAudioManager()->Update();
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// デバッグカメラを更新する
@@ -127,8 +130,8 @@ void TitleScene::Update(float elapsedTime)
 	m_pTitleLogo->Update(elapsedTime);
 	// ボタンを更新
 	m_pTitleButton->Update(elapsedTime);
-
-
+	// BGMの再生
+	m_pCommonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
 	// フェードの更新
 	if (m_time >= FADE_START_TIME) m_pFade->Update(elapsedTime);
 	// 空の更新

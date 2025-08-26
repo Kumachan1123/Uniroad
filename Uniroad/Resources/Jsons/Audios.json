@@ -1,84 +1,59 @@
 {
   "sounds": [
     {
-      "file": "Resources/Sounds/240_BPM126.mp3",
+      "file": "Resources/Sounds/PlayBGM.mp3",
       "key": "PlayBGM",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
-      "file": "Resources/Sounds/354_BPM180.mp3",
+      "file": "Resources/Sounds/TitleBGM.mp3",
       "key": "TitleBGM",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
-      "file": "Resources/Sounds/188_BPM130.mp3",
+      "file": "Resources/Sounds/StageSelectBGM.mp3",
       "key": "StageSelectBGM",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/PutTile.mp3",
       "key": "PutTile",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/ButtonClick.mp3",
       "key": "ButtonClick",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/GetMedal.mp3",
       "key": "GetMedal",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/Panic.mp3",
       "key": "Panic",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/Falling.mp3",
       "key": "Falling",
-      "loop": false
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/Unlock.mp3",
       "key": "Unlock",
-      "loop": true
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/GameOver.mp3",
       "key": "GameOver",
-      "loop": false
+      "allowMultiplePlay": false
     },
     {
       "file": "Resources/Sounds/GameClear.mp3",
       "key": "GameClear",
-      "loop": true
-    },
-    {
-      "file": "Resources/Sounds/title.mp3",
-      "key": "TitleBGM",
-      "loop": false
-    },
-    {
-      "file": "Resources/Sounds/BulletCollision.mp3",
-      "key": "BulletCollision",
-      "loop": true
-    },
-    {
-      "file": "Resources/Sounds/BossAppear.mp3",
-      "key": "BossAppear",
-      "loop": true
-    },
-    {
-      "file": "Resources/Sounds/SpecialAttack.mp3",
-      "key": "SpecialAttack",
-      "loop": true
-    },
-    {
-      "file": "Resources/Sounds/ChargeSpecial.mp3",
-      "key": "ChargeSpecial",
-      "loop": true
+      "allowMultiplePlay": false
     }
   ]
 }

@@ -89,7 +89,6 @@ private:
 	std::unique_ptr<Sky> m_pSky;
 	// 道
 	std::unique_ptr<Road> m_pRoad;
-
 	// シャドウマップライト
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
 	// シーンチェンジフラグ
@@ -100,4 +99,6 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// 時間
 	float m_time;
+	// BGM音量
+	float m_BGMvolume;
 };
