@@ -1,84 +1,84 @@
 {
-    "sounds": [
-        {
-            "file": "Resources/Sounds/playerBullet.mp3",
-            "key": "Shoot",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/Hit.mp3",
-            "key": "Hit",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/enemybullet.mp3",
-            "key": "EnemyBullet",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/Explosion.mp3",
-            "key": "EnemyDead",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/damage.mp3",
-            "key": "Damage",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/Barrier.mp3",
-            "key": "Barrier",
-            "loop": false
-        },
-        {
-            "file": "Resources/Sounds/BarrierBreak.mp3",
-            "key": "BarrierBreak",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/playbgm.mp3",
-            "key": "PlayBGM",
-            "loop": false
-        },
-        {
-            "file": "Resources/Sounds/select.mp3",
-            "key": "SE",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/result.mp3",
-            "key": "ResultBGM",
-            "loop": false
-        },
-        {
-            "file": "Resources/Sounds/click.mp3",
-            "key": "Select",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/title.mp3",
-            "key": "TitleBGM",
-            "loop": false
-        },
-        {
-            "file": "Resources/Sounds/BulletCollision.mp3",
-            "key": "BulletCollision",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/BossAppear.mp3",
-            "key": "BossAppear",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/SpecialAttack.mp3",
-            "key": "SpecialAttack",
-            "loop": true
-        },
-        {
-            "file": "Resources/Sounds/ChargeSpecial.mp3",
-            "key": "ChargeSpecial",
-            "loop": true
-        }
-    ]
+  "sounds": [
+    {
+      "file": "Resources/Sounds/240_BPM126.mp3",
+      "key": "PlayBGM",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/354_BPM180.mp3",
+      "key": "TitleBGM",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/188_BPM130.mp3",
+      "key": "StageSelectBGM",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/PutTile.mp3",
+      "key": "PutTile",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/ButtonClick.mp3",
+      "key": "ButtonClick",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/GetMedal.mp3",
+      "key": "GetMedal",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/Panic.mp3",
+      "key": "Panic",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/Falling.mp3",
+      "key": "Falling",
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/Unlock.mp3",
+      "key": "Unlock",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/GameOver.mp3",
+      "key": "GameOver",
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/GameClear.mp3",
+      "key": "GameClear",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/title.mp3",
+      "key": "TitleBGM",
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/BulletCollision.mp3",
+      "key": "BulletCollision",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/BossAppear.mp3",
+      "key": "BossAppear",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/SpecialAttack.mp3",
+      "key": "SpecialAttack",
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/ChargeSpecial.mp3",
+      "key": "ChargeSpecial",
+      "loop": true
+    }
+  ]
 }
