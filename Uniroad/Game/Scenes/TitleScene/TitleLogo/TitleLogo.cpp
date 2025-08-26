@@ -102,11 +102,12 @@ void TitleLogo::CreateAnimationSequence()
 {
 	// 名前空間の使用
 	using namespace DirectX::SimpleMath;
-
 	// フェーズ0: 拡大
 	m_pAnimation->CreateAnimationSequence({
 			0.5f,// 拡大にかける秒数
 			[this](float t) {
+			// 効果音を再生
+			m_pCommonResources->GetAudioManager()->PlaySound("TitleLogo",0.2f);
 			// 進行度を計算
 			float easing = Easing::EaseOutBack(t);
 			// 中央固定、サイズだけイージング補間

@@ -40,6 +40,7 @@ TitleButton::TitleButton()
 	, m_frameCols(1) // 画像の列数
 	, m_pressedButtonIndex(-1) // 押されたボタンの番号
 	, m_hitButtonIndex(-1) // 当たったボタンの番号
+	, m_isPlaySound(false)// 効果音再生中か
 {
 }
 /*
@@ -99,6 +100,8 @@ void TitleButton::Initialize(CommonResources* resources, int width, int height)
 		m_buttonRects.push_back(buttonRect);
 		// 当たり判定フラグを初期化
 		m_isHit.push_back(false);
+		// 前フレームの当たり判定フラグを初期化（追加）
+		m_prevIsHit.push_back(false);
 		// ホバー時の拡大率を初期化
 		m_hoverScales.push_back(1.0f);
 	}
@@ -126,20 +129,24 @@ void TitleButton::Update(float elapsedTime)
 	// 補間係数
 	const float SCALE_SPEED = 8.0f;
 	// 当たったボタンの番号を初期化
-	m_hitButtonIndex = -1;
+	m_hitButtonIndex = NONE_BUTTON_INDEX;
 	// ボタンの数ループ
 	for (int i = 0; i < m_buttons.size(); i++)
 	{
 		// 当たり判定を行う
 		m_isHit[i] = m_buttons[i]->Hit(mousePos, m_buttonRects[i]);
+		// ホバーした瞬間だけ音を鳴らす
+		if (!m_prevIsHit[i] && m_isHit[i])
+			m_pCommonResources->GetAudioManager()->PlaySound("UISelect", 0.2f);
 		// スケールのターゲット値
 		float target = m_isHit[i] ? SCALE_ON : SCALE_OFF;
 		// スムーズに補間
 		m_hoverScales[i] += (target - m_hoverScales[i]) * (1.0f - expf(-SCALE_SPEED * elapsedTime));
 	}
+	// ループの後で前フレーム記録を更新）
+	m_prevIsHit = m_isHit;
 	// マウスが当たったボタンの番号を設定
-	for (int i = 0; i < m_buttons.size(); i++)
-		if (m_isHit[i])m_hitButtonIndex = i;
+	for (int i = 0; i < m_buttons.size(); i++)if (m_isHit[i])m_hitButtonIndex = i;
 	// マウスが当たって左クリックされたら
 	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pAnimation->IsPaused() && m_hitButtonIndex > NONE_BUTTON_INDEX)
 	{

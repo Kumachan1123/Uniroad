@@ -106,4 +106,8 @@ private:
 	bool m_isPressed;
 	// 各ボタンのホバー時の拡大率
 	std::vector<float> m_hoverScales;
+	// 各ボタンのホバー判定
+	std::vector<bool> m_prevIsHit;
+	// 効果音再生中か
+	bool m_isPlaySound;
 };

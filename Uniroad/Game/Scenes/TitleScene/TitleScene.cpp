@@ -95,7 +95,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.45f, 0.0f), 0.0f));
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
-
+	// BGMの再生
+	m_pCommonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
 
 }
 /*
@@ -112,7 +113,8 @@ void TitleScene::Update(float elapsedTime)
 	// 時間を更新
 	m_time += elapsedTime;
 	// オーディオマネージャーの更新処理
-	m_pCommonResources->GetAudioManager()->Update();
+	m_pCommonResources->GetAudioManager()->Update(elapsedTime);
+
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// デバッグカメラを更新する
@@ -130,8 +132,6 @@ void TitleScene::Update(float elapsedTime)
 	m_pTitleLogo->Update(elapsedTime);
 	// ボタンを更新
 	m_pTitleButton->Update(elapsedTime);
-	// BGMの再生
-	m_pCommonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
 	// フェードの更新
 	if (m_time >= FADE_START_TIME) m_pFade->Update(elapsedTime);
 	// 空の更新
@@ -164,6 +164,10 @@ void TitleScene::Update(float elapsedTime)
 		m_pTitleButton->SetPressed(false);
 		// ロゴを再稼働する
 		m_pTitleLogo->AdvanceAnimation();
+		// BGMの停止
+		m_pCommonResources->GetAudioManager()->StopSound("TitleBGM", 1.0f);
+		// ボタンクリック音再生
+		m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", 0.2f);
 	}
 	// ミニキャラのタイトルアニメーションが終了状態なら
 	if (m_pMiniCharacterBase->GetTitleAnimationState() == END)
@@ -211,6 +215,7 @@ void TitleScene::Finalize()
 {
 	// ミニキャラの終了
 	if (m_pMiniCharacterBase) m_pMiniCharacterBase->Finalize();
+
 }
 
 /*
@@ -223,6 +228,7 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 {
 	// シーン変更がないならすぐ戻る
 	if (!m_isChangeScene)return IScene::SceneID::NONE;
+
 	switch (m_pTitleButton->GetPressedButtonIndex())
 	{
 	case 0: // ゲーム開始ボタンが押された場合

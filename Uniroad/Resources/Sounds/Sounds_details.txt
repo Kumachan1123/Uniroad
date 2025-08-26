@@ -13,3 +13,4 @@
 ゴールアンロック＿Unlock：きらーん2＿https://soundeffect-lab.info/sound/anime/
 ゲームオーバー＿GameOver：呪いの旋律＿https://soundeffect-lab.info/sound/anime/
 ゲームクリア＿GameClear：レベルアップ＿https://soundeffect-lab.info/sound/anime/
+ロゴ出現音＿TitleLogo：決定ボタンを押す12＿https://soundeffect-lab.info/sound/button/

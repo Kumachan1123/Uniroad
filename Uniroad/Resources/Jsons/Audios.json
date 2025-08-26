@@ -3,57 +3,80 @@
     {
       "file": "Resources/Sounds/PlayBGM.mp3",
       "key": "PlayBGM",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": true
     },
     {
       "file": "Resources/Sounds/TitleBGM.mp3",
       "key": "TitleBGM",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": true
     },
     {
       "file": "Resources/Sounds/StageSelectBGM.mp3",
       "key": "StageSelectBGM",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": true
     },
     {
       "file": "Resources/Sounds/PutTile.mp3",
       "key": "PutTile",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/ButtonClick.mp3",
       "key": "ButtonClick",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/GetMedal.mp3",
       "key": "GetMedal",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/Panic.mp3",
       "key": "Panic",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/Falling.mp3",
       "key": "Falling",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/Unlock.mp3",
       "key": "Unlock",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/GameOver.mp3",
       "key": "GameOver",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
     },
     {
       "file": "Resources/Sounds/GameClear.mp3",
       "key": "GameClear",
-      "allowMultiplePlay": false
+      "allowMultiplePlay": false,
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/TitleLogo.mp3",
+      "key": "TitleLogo",
+      "allowMultiplePlay": false,
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/UISelect.mp3",
+      "key": "UISelect",
+      "allowMultiplePlay": true,
+      "loop": false
     }
   ]
 }
