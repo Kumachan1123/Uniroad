@@ -3,6 +3,8 @@
 *	@brief		カウントダウンクラス
 */
 #pragma once
+// 標準ライブラリ
+#include <functional>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/Image/Image.h"
@@ -18,6 +20,9 @@ class CommonResources;
 // カウントダウンクラス
 class CountDown : public IImage
 {
+public:
+	// コールバック型の定義
+	using FrameChangedCallback = std::function<void(int)>;
 public:
 	// アクセサ
 	// ロゴの位置を取得
@@ -44,6 +49,8 @@ private:
 	// private関数
 	// 定数バッファを更新
 	void UpdateConstantBuffer()override;
+	// コールバックの登録
+	void SetOnFrameChanged(FrameChangedCallback cb) { m_onFrameChanged = cb; }
 private:
 	// private定数
 	// 表示位置（左上）
@@ -70,4 +77,8 @@ private:
 	Rect m_rect;
 	// 定数バッファ
 	SpriteSheetBuffer m_spriteSheetBuffer;
+	// 直前のフレーム番号
+	int m_prevFrame;
+	// フレーム変更時のコールバック
+	FrameChangedCallback m_onFrameChanged;
 };

@@ -31,6 +31,18 @@
       "loop": false
     },
     {
+      "file": "Resources/Sounds/Count321.mp3",
+      "key": "Count321",
+      "allowMultiplePlay": true,
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/CountEnd.mp3",
+      "key": "CountEnd",
+      "allowMultiplePlay": true,
+      "loop": false
+    },
+    {
       "file": "Resources/Sounds/GetMedal.mp3",
       "key": "GetMedal",
       "allowMultiplePlay": true,
