@@ -82,7 +82,7 @@ private:
 	// 頂点数
 	static const int VERTEX_COUNT = 4;
 	// 画像の位置X(ゲームクリア）
-	const float  POS_X_CLEAR = -0.75f;
+	const float  POS_X_CLEAR = -0.7f;
 	// 画像の位置X(ゲームオーバー）
 	const float POS_X_OVER = -0.65f;
 	// 画像の位置Y

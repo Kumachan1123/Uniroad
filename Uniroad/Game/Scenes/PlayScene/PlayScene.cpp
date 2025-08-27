@@ -98,6 +98,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
+	// ミニキャラのカメラ追従位置をスタート地点にする
+	m_pMiniCharacterBase->SetCameraPosition(m_pCSVMap->GetStart().pos);
 	// 操作画面の背景を作成する
 	m_pUIBack = std::make_unique<UIBack>(m_pCommonResources);
 	// 操作画面の背景を初期化する
@@ -112,6 +114,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pPanel->SetCSVItem(m_pCSVItem.get());
 	// パネルを初期化する
 	m_pPanel->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+	// パネルにプレイヤーの座標を設定
+	m_pPanel->SetPlayerPosition(m_pMiniCharacterBase->GetCameraPosition());
 	// 次のタイルを作成する
 	m_pNextTiles = std::make_unique<NextTiles>();
 	// 次のタイルにマウスを設定
@@ -150,6 +154,11 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pConfetti->Initialize(m_pCommonResources);
 	// BGMを再生する
 	m_pCommonResources->GetAudioManager()->PlaySound("PlayBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
+	// カウントダウンを作成する
+	m_pCountDown = std::make_unique<CountDown>();
+	// カウントダウンを初期化する
+	m_pCountDown->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+
 }
 /*
 *   @brief 更新処理
@@ -167,8 +176,12 @@ void PlayScene::Update(float elapsedTime)
 	m_time += elapsedTime;
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
-	// 開始から4秒後から以下を更新
-	if (m_time > elapsedTime && m_time < 4.0f)return;
+	// フェードインが終わったらフェード状態をなくす
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
+	// カウントダウンの更新
+	if (m_pFade->GetState() == Fade::FadeState::None)m_pCountDown->Update(elapsedTime);
+	// 5秒未満ならこれ以降の更新は行わない
+	if (m_time > elapsedTime * 2 && m_time < 5.0f)	return;
 	// カメラ用の座標をシャドウマップライトに設定
 	Vector3 playerPosition = m_pMiniCharacterBase->GetCameraPosition();
 	// シャドウマップライト更新
@@ -214,13 +227,11 @@ void PlayScene::Update(float elapsedTime)
 		{
 			// 有効にする
 			m_pResultButton->SetEnable(true);
-			// 結果に応じて鳴らす効果音を変える
-
-
 			// ミニキャラにリザルト用カメラを設定する
 			m_pMiniCharacterBase->SetCamera(m_pFixedCameraResult.get());
 			// 結果の設定
 			m_pResultButton->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
+			// 結果UIを初期化する
 			m_pResultButton->Initialize(m_pCommonResources, m_pCommonResources->GetDeviceResources()->GetOutputSize().right, m_pCommonResources->GetDeviceResources()->GetOutputSize().bottom);
 		}
 		// リザルト用固定カメラの更新
@@ -277,8 +288,6 @@ void PlayScene::Update(float elapsedTime)
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
 
-	// フェードインが終わったらフェード状態をなくす
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
 	// アニメーションが終わったらフェードアウトに移行
 	if (m_pResultAnimation->IsAnimationEnd() && //	アニメーションが終わって
 		m_pResultButton->GetSceneNum() != ResultButton::SceneID::NONE && // リザルトボタンのシーン番号が無効でなくて
@@ -369,6 +378,8 @@ void PlayScene::Render()
 		// 結果UIの描画
 		if (m_pResultAnimation->IsAnimationEnd())m_pResultButton->Render();
 	}
+	// カウントダウンの描画
+	m_pCountDown->Render();
 	// フェードを描画する
 	m_pFade->Render();
 }

@@ -360,7 +360,8 @@ void MiniCharacter::Moving(float elapsedTime, const DirectX::SimpleMath::Vector3
 	{
 		// 通常通りの移動処理
 		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3 * m_speed;
-
+		// 慌てている音を止める
+		m_pCommonResources->GetAudioManager()->StopSound("Panic");
 	}
 	// 移動中ならパーティクルの生成を再開する
 	if (m_isMoving && m_currentVelocity.LengthSquared() > 0.0001f)m_pDust->Start();
@@ -666,8 +667,8 @@ Utility::ParticleParams MiniCharacter::SetSweatParams() const
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 1.0f;
-	params.pos = m_currentPosition + Vector3(0.0f, 4.5f, 0.0f);
+	params.life = 1.5f;
+	params.pos = m_currentPosition + Vector3(0.0f, 10.0f, 0.0f);
 	params.velocity = randomVelocity - m_currentVelocity * 2;
 	params.accele = Vector3(0.0f, -9.8f, 0.0f);// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度

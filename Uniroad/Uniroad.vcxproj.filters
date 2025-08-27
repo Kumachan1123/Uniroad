@@ -125,6 +125,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultButton\ResultButton.h" />
     <ClInclude Include="KumachiLib\SettingManager\SettingManager.h" />
+    <ClInclude Include="Game\Scenes\PlayScene\CountDown\CountDown.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultButton\ResultButton.cpp" />
     <ClCompile Include="KumachiLib\SettingManager\SettingManager.cpp" />
+    <ClCompile Include="Game\Scenes\PlayScene\CountDown\CountDown.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
