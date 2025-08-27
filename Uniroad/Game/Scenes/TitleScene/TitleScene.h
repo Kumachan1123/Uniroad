@@ -99,6 +99,5 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// ŽžŠÔ
 	float m_time;
-	// BGM‰¹—Ê
-	float m_BGMvolume;
+
 };

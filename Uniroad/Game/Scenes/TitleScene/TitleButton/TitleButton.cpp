@@ -137,7 +137,7 @@ void TitleButton::Update(float elapsedTime)
 		m_isHit[i] = m_buttons[i]->Hit(mousePos, m_buttonRects[i]);
 		// ホバーした瞬間だけ音を鳴らす
 		if (!m_prevIsHit[i] && m_isHit[i])
-			m_pCommonResources->GetAudioManager()->PlaySound("UISelect", 0.2f);
+			m_pCommonResources->GetAudioManager()->PlaySound("UISelect", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		// スケールのターゲット値
 		float target = m_isHit[i] ? SCALE_ON : SCALE_OFF;
 		// スムーズに補間

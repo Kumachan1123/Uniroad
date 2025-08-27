@@ -124,6 +124,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultButton\ResultButton.h" />
+    <ClInclude Include="KumachiLib\SettingManager\SettingManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -206,6 +207,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultButton\ResultButton.cpp" />
+    <ClCompile Include="KumachiLib\SettingManager\SettingManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -233,6 +235,7 @@
     <None Include="Resources\Jsons\Models.json" />
     <None Include="Resources\Jsons\Textures.json" />
     <None Include="Resources\Jsons\Audios.json" />
+    <None Include="Resources\Jsons\Setting.json" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />

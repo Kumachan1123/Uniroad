@@ -21,7 +21,6 @@ TitleScene::TitleScene(IScene::SceneID sceneID)
 	, m_isChangeScene(false) // シーン変更フラグ
 	, m_nextSceneID(sceneID) // 次のシーンID
 	, m_time(0.0f) // 時間
-	, m_BGMvolume(0.2f) // BGM音量
 {
 }
 /*
@@ -96,7 +95,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 	// BGMの再生
-	m_pCommonResources->GetAudioManager()->PlaySound("TitleBGM", m_BGMvolume);
+	m_pCommonResources->GetAudioManager()->PlaySound("TitleBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
 
 }
 /*
@@ -167,7 +166,7 @@ void TitleScene::Update(float elapsedTime)
 		// BGMの停止
 		m_pCommonResources->GetAudioManager()->StopSound("TitleBGM", 1.0f);
 		// ボタンクリック音再生
-		m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", 0.2f);
+		m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", m_pCommonResources->GetSettingManager()->GetSEVolume());
 	}
 	// ミニキャラのタイトルアニメーションが終了状態なら
 	if (m_pMiniCharacterBase->GetTitleAnimationState() == END)

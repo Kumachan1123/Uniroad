@@ -21,6 +21,7 @@
 #include "KumachiLib/AudioManager/AudioManager.h"
 #include "KumachiLib/ModelManager/ModelManager.h"
 #include "KumachiLib/TextureManager/TextureManager.h"
+#include "KumachiLib/SettingManager/SettingManager.h"
 #include "Game/Screen/Screen.h"
 
 // ゲームクラス
@@ -32,17 +33,14 @@ public:
 	Game() noexcept(false);
 	// デストラクタ
 	~Game() = default;
-
 	// ムーブコンストラクタ
 	Game(Game&&) = default;
 	// ムーブ代入演算子
 	Game& operator= (Game&&) = default;
-
 	// コピーコンストラクタ
 	Game(Game const&) = delete;
 	// コピー代入演算子
 	Game& operator= (Game const&) = delete;
-
 	// 初期化
 	void Initialize(HWND window, int width, int height);
 	// ゲームループを実行
@@ -106,5 +104,7 @@ private:
 	std::unique_ptr<ModelManager>           m_modelManager;
 	// テクスチャマネージャ
 	std::unique_ptr<TextureManager>         m_textureManager;
+	// 設定マネージャ
+	std::unique_ptr<SettingManager>         m_settingManager;
 };
 #endif // GAME_DEFINED

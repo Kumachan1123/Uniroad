@@ -9,6 +9,7 @@
 #include "KumachiLib/AudioManager/AudioManager.h"
 #include "KumachiLib/ModelManager/ModelManager.h"
 #include "KumachiLib/TextureManager/TextureManager.h"
+#include "KumachiLib/SettingManager/SettingManager.h"
 
 // 前方宣言
 namespace DX
@@ -24,6 +25,7 @@ namespace mylib
 class AudioManager;
 class ModelManager;
 class TextureManager;
+class SettingManager;
 
 // 共通リソース
 class CommonResources
@@ -46,6 +48,8 @@ public:
 	ModelManager* GetModelManager() const { return m_modelManager; }
 	// テクスチャマネージャを取得する
 	TextureManager* GetTextureManager() const { return m_textureManager; }
+	// 設定マネージャを取得する
+	SettingManager* GetSettingManager() const { return m_settingManager; }
 public:
 	// publicメソッド
 	// コンストラクタ
@@ -61,7 +65,8 @@ public:
 		mylib::InputManager* inputManager,// 受け渡しする入力マネージャ
 		AudioManager* audioManager,// 受け渡しするオーディオマネージャ
 		ModelManager* modelManager,// 受け渡しするモデルマネージャ
-		TextureManager* textureManager  // 受け渡しするテクスチャマネージャ
+		TextureManager* textureManager,  // 受け渡しするテクスチャマネージャ
+		SettingManager* settingManager  // 受け渡しする設定マネージャ
 	);
 private:
 	// privateメンバ変数
@@ -82,4 +87,6 @@ private:
 	ModelManager* m_modelManager;
 	// テクスチャマネージャ
 	TextureManager* m_textureManager;
+	// 設定マネージャ
+	SettingManager* m_settingManager;
 };

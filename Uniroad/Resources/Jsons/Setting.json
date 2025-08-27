@@ -1,1 +1,5 @@
-{"BGM":5,"Mouse":1,"SE":2}
+{
+  "BGM": 0.01,
+  "SE": 1,
+  "SpeedMode": 10
+}

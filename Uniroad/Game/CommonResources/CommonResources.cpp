@@ -19,6 +19,7 @@ CommonResources::CommonResources()
 	, m_audioManager{ nullptr }		// オーディオマネージャ
 	, m_modelManager{ nullptr }		// モデルマネージャ
 	, m_textureManager{ nullptr }	// テクスチャマネージャ
+	, m_settingManager{ nullptr }	// 設定マネージャ
 {
 }
 /*
@@ -32,6 +33,7 @@ CommonResources::CommonResources()
 *	@param	audioManager	受け渡しするオーディオマネージャ
 *	@param	modelManager	受け渡しするモデルマネージャ
 *	@param	textureManager	受け渡しするテクスチャマネージャ
+*	@param	settingManager	受け渡しする設定マネージャ
 *	@return	なし
 */
 void CommonResources::Initialize(
@@ -42,7 +44,8 @@ void CommonResources::Initialize(
 	mylib::InputManager* inputManager,
 	AudioManager* audioManager,
 	ModelManager* modelManager,
-	TextureManager* textureManager
+	TextureManager* textureManager,
+	SettingManager* settingManager
 )
 {
 	assert(timer);			// タイマーがnullptrでないことを確認
@@ -53,6 +56,7 @@ void CommonResources::Initialize(
 	assert(audioManager);	// オーディオマネージャがnullptrでないことを確認
 	assert(modelManager);	// モデルマネージャがnullptrでないことを確認
 	assert(textureManager);	// テクスチャマネージャがnullptrでないことを確認
+	assert(settingManager);// 設定マネージャがnullptrでないことを確認
 
 	m_stepTimer = timer;			// タイマーを設定する
 	m_deviceResources = dr;			// デバイスリソースを設定する
@@ -62,4 +66,5 @@ void CommonResources::Initialize(
 	m_audioManager = audioManager;	// オーディオマネージャを設定する
 	m_modelManager = modelManager;	// モデルマネージャを設定する
 	m_textureManager = textureManager; // テクスチャマネージャを設定する
+	m_settingManager = settingManager; // 設定マネージャを設定する
 }

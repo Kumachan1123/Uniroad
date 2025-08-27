@@ -32,6 +32,7 @@ Game::Game() noexcept(false)
 	, m_audioManager{}// オーディオマネージャ
 	, m_modelManager{}// モデルマネージャ
 	, m_textureManager{}// テクスチャマネージャ
+	, m_settingManager{}// 設定マネージャ
 	, m_fullscreen{ FALSE }// フルスクリーン状態
 {
 	// デバイスリソースを作成する(ステンシルバッファを使用するため、DXGI_FORMAT_D24_UNORM_S8_UINTを指定)
@@ -85,24 +86,31 @@ void Game::Initialize(HWND window, int width, int height)
 	m_modelManager = std::make_unique<ModelManager>();
 	// テクスチャマネージャを作成する
 	m_textureManager = std::make_unique<TextureManager>();
-	//// モデルマネージャの初期化を別スレッドで行う
-	//std::thread modelInitializeThread([this, device]()
-	//	{
-	//		// モデルマネージャを初期化する
-	//		m_modelManager->Initialize(m_deviceResources->GetD3DDevice());
-	//	});
-	//// テクスチャマネージャの初期化を別スレッドで行う
-	//std::thread textureInitializeThread([this, device]()
-	//	{
-	//		// テクスチャマネージャを初期化する
-	//		m_textureManager->Initialize(m_deviceResources->GetD3DDevice());
-	//	});
-	//// モデルマネージャの初期化が完了するまで待機する
-	//modelInitializeThread.join();
-	//// テクスチャマネージャの初期化が完了するまで待機する
-	//textureInitializeThread.join();
-	m_modelManager->Initialize(m_deviceResources->GetD3DDevice());// モデルマネージャを初期化する
-	m_textureManager->Initialize(m_deviceResources->GetD3DDevice());// テクスチャマネージャを初期化する
+	// 設定マネージャを作成する
+	m_settingManager = std::make_unique<SettingManager>();
+	// モデルマネージャの初期化を別スレッドで行う
+	std::thread modelInitializeThread([this, device]()
+		{
+			// モデルマネージャを初期化する
+			m_modelManager->Initialize(m_deviceResources->GetD3DDevice());
+		});
+	// テクスチャマネージャの初期化を別スレッドで行う
+	std::thread textureInitializeThread([this, device]()
+		{
+			// テクスチャマネージャを初期化する
+			m_textureManager->Initialize(m_deviceResources->GetD3DDevice());
+		});
+	// モデルマネージャの初期化が完了するまで待機する
+	modelInitializeThread.join();
+	// テクスチャマネージャの初期化が完了するまで待機する
+	textureInitializeThread.join();
+	//// モデルマネージャを初期化する
+	//m_modelManager->Initialize(m_deviceResources->GetD3DDevice());
+	//// テクスチャマネージャを初期化する
+	//m_textureManager->Initialize(m_deviceResources->GetD3DDevice());
+	// 設定マネージャを初期化する
+	m_settingManager->Initialize();
+
 	// シーンへ渡す共通リソースを設定する
 	m_pCommonResources->Initialize(
 		&m_timer,				// タイマー
@@ -112,7 +120,8 @@ void Game::Initialize(HWND window, int width, int height)
 		m_inputManager.get(),	// 入力マネージャ
 		m_audioManager.get(),	// オーディオマネージャ
 		m_modelManager.get(),	// モデルマネージャ
-		m_textureManager.get()	// テクスチャマネージャ 
+		m_textureManager.get(),	// テクスチャマネージャ 
+		m_settingManager.get()	// 設定マネージャ
 	);
 	// シーンマネージャを作成する
 	m_sceneManager = std::make_unique<SceneManager>();

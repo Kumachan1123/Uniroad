@@ -274,6 +274,7 @@
     <ClInclude Include="KumachiLib\ModelManager\ModelManager.h" />
     <ClInclude Include="KumachiLib\MouseClick\MouseClick.h" />
     <ClInclude Include="KumachiLib\Rect\Rect.h" />
+    <ClInclude Include="KumachiLib\SettingManager\SettingManager.h" />
     <ClInclude Include="KumachiLib\ShaderBuffer\ShaderBuffer.h" />
     <ClInclude Include="KumachiLib\ShadowMapLight\ShadowMapLight.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
@@ -367,6 +368,7 @@
     <ClCompile Include="KumachiLib\Image\Image.cpp" />
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
+    <ClCompile Include="KumachiLib\SettingManager\SettingManager.cpp" />
     <ClCompile Include="KumachiLib\ShadowMapLight\ShadowMapLight.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
@@ -407,6 +409,7 @@
     <None Include="packages.config" />
     <None Include="Resources\Jsons\Audios.json" />
     <None Include="Resources\Jsons\Models.json" />
+    <None Include="Resources\Jsons\Setting.json" />
     <None Include="Resources\Jsons\Textures.json" />
   </ItemGroup>
   <ItemGroup>
