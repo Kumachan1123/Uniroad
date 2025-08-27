@@ -111,4 +111,6 @@ private:
 	bool m_isHitPlane;
 	// マウスクリック
 	bool m_isMouseClick;
+	// 前回何らかの平面と当たっていたかのフラグ
+	bool m_prevIsHitPlane;
 };

@@ -21,6 +21,7 @@ PlaneArea::PlaneArea(CommonResources* resources)
 	, m_projection(DirectX::SimpleMath::Matrix::Identity) // 射影行列
 	, m_hitPlaneIndex(PlaneArea::NO_HIT_PLANE_INDEX) // 当たった平面の番号
 	, m_isHitPlane(false) // 何らかの平面と当たっているか
+	, m_prevIsHitPlane(false) // 前フレームで何らかの平面と当たっていたか
 	, m_isMouseClick(false) // マウスクリックフラグ
 {
 
@@ -106,10 +107,21 @@ void PlaneArea::Update(float elapsedTime)
 	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)
 	{
 		// レイと平面の交差判定を行い、当たっていたらヒットフラグをtrueにする
-		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))m_isHitPlane = true;
+		if (RayIntersectPlane(i, ray, plane, m_debugPlaneVerticesPosition[i], intersection))
+		{
+			// 何らかの平面と当たっているフラグを立てる
+			m_isHitPlane = true;
+			// 前フレームで当たっていなくて今フレームで当たった時だけ鳴らす
+			if (!m_prevIsHitPlane)
+				m_pCommonResources->GetAudioManager()->PlaySound("UISelect", m_pCommonResources->GetSettingManager()->GetSEVolume());
+			// 1つでも当たったらもう鳴らさない
+			break;
+		}
 	}
 	// 平面と当たっていてクリックされたらマウスクリックフラグを立てる
 	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_isHitPlane)m_isMouseClick = true;
+	// 前フレームの当たり判定フラグを更新
+	m_prevIsHitPlane = m_isHitPlane;
 }
 /*
 *	@brief 描画

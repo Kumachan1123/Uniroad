@@ -29,6 +29,7 @@ BackButton::BackButton()
 	, m_pAnimation(std::make_unique<Animation>()) // アニメーションへのポインタ
 	, m_isPressed(false) // ボタンが押されたかどうか
 	, m_isHit(false) // 当たり判定フラグ
+	, m_prevIsHit(false)// 前回当たっていたかのフラグ
 	, m_position(DirectX::SimpleMath::Vector2(0.5f, 0.5f)) // ボタンの位置
 	, m_size(DirectX::SimpleMath::Vector2(0.2f, 0.1f)) // ボタンのサイズ
 	, m_frameRows(1) // 画像の行数
@@ -55,8 +56,6 @@ BackButton::~BackButton()
 	m_buttons.clear();
 	// ボタンの矩形をクリア
 	m_buttonRects.clear();
-	// 当たり判定フラグをクリア
-	m_isHit.clear();
 }
 /*
 *	@brief 初期化
@@ -95,7 +94,7 @@ void BackButton::Initialize(CommonResources* resources, int width, int height)
 		// ボタンの位置とサイズを配列に登録
 		m_buttonRects.push_back(buttonRect);
 		// 当たり判定フラグを初期化
-		m_isHit.push_back(false);
+		m_isHit = false;
 		// ホバー時の拡大率を初期化
 		m_hoverScales.push_back(1.0f);
 	}
@@ -124,21 +123,25 @@ void BackButton::Update(float elapsedTime)
 	const float SCALE_SPEED = 8.0f;
 	// 当たったボタンの番号を初期化
 	m_hitButtonIndex = -1;
+	// 当たり判定を初期化
+	m_isHit = false;
 	// ボタンの数ループ
 	for (int i = 0; i < m_buttons.size(); i++)
 	{
 		// 当たり判定を行う
-		m_isHit[i] = m_buttons[i]->Hit(mousePos, m_buttonRects[i]);
+		m_isHit = m_buttons[i]->Hit(mousePos, m_buttonRects[i]);
 		// スケールのターゲット値
-		float target = m_isHit[i] ? SCALE_ON : SCALE_OFF;
+		float target = m_isHit ? SCALE_ON : SCALE_OFF;
 		// スムーズに補間
 		m_hoverScales[i] += (target - m_hoverScales[i]) * (1.0f - expf(-SCALE_SPEED * elapsedTime));
 	}
 	// マウスが当たったボタンの番号を設定
-	for (int i = 0; i < m_buttons.size(); i++)	if (m_isHit[i])m_hitButtonIndex = i;
+	for (int i = 0; i < m_buttons.size(); i++)	if (m_isHit)m_hitButtonIndex = i;
 	// マウスが当たって左クリックされたら
 	if (m_pAnimation->IsPaused() && m_hitButtonIndex > NONE_BUTTON_INDEX)
 	{
+		// UI選択音を鳴らす
+		if (!m_prevIsHit)m_pCommonResources->GetAudioManager()->PlaySound("UISelect", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		// 左クリックされたら
 		if (MouseClick::IsLeftMouseButtonPressed(mouseState))
 		{
@@ -160,6 +163,8 @@ void BackButton::Update(float elapsedTime)
 	for (const auto& button : m_buttons)button->Update(elapsedTime);
 	// 定数バッファを更新
 	UpdateConstantBuffer();
+	// 前フレームの当たり判定フラグを更新
+	m_prevIsHit = m_isHit;
 }
 /*
 *	@brief 描画する

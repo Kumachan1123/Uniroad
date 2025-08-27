@@ -92,7 +92,7 @@ private:
 	// 画像の列数
 	int m_frameCols;
 	// 当たり判定
-	std::vector<bool> m_isHit;
+	bool m_isHit;
 	// 当たったボタンの番号
 	int m_hitButtonIndex;
 	// 押されたボタンの番号
@@ -101,5 +101,6 @@ private:
 	bool m_isPressed;
 	// 各ボタンのホバー時の拡大率
 	std::vector<float> m_hoverScales;
-
+	// 前回当たっていたかのフラグ
+	bool m_prevIsHit;
 };

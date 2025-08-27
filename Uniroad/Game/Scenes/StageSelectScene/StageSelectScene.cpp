@@ -128,6 +128,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pBackButton = std::make_unique<BackButton>();
 	// ボタンを初期化する
 	m_pBackButton->Initialize(m_pCommonResources, outputSize.right, outputSize.bottom);
+	// BGMを再生する
+	m_pCommonResources->GetAudioManager()->PlaySound("StageSelectBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
 }
 /*
 *	@brief 更新
@@ -140,6 +142,8 @@ void StageSelectScene::Update(float elapsedTime)
 	// 名前空間のエイリアス
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
+	// オーディオマネージャーの更新処理
+	m_pCommonResources->GetAudioManager()->Update(elapsedTime);
 	// カメラの位置となる場所を取得
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 	// シャドウマップライトを更新		
@@ -187,6 +191,10 @@ void StageSelectScene::Update(float elapsedTime)
 			m_pPlaneArea->SetMouseClick(false);
 			// フェードアウトに移行
 			m_pFade->SetState(Fade::FadeState::FadeOut);
+			// BGMを止める
+			m_pCommonResources->GetAudioManager()->StopSound("StageSelectBGM", 1.0f);
+			// ボタンクリック音を鳴らす
+			m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		}
 		// ボタンが押された場合
 		if (m_pBackButton->IsPressed())
@@ -195,7 +203,10 @@ void StageSelectScene::Update(float elapsedTime)
 			m_pFade->SetState(Fade::FadeState::FadeOut);
 			// ボタンの番号を取得
 			m_pBackButton->GetPressedButtonIndex();
-
+			// BGMを止める
+			m_pCommonResources->GetAudioManager()->StopSound("StageSelectBGM", 1.0f);
+			// ボタンクリック音を鳴らす
+			m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		}
 	}
 	// 何か選ばれているなら移動フラグを立てる

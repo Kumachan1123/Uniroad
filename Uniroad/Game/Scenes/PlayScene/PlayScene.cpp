@@ -169,7 +169,7 @@ void PlayScene::Update(float elapsedTime)
 	// スピードアップボタンの更新
 	m_pSpeedUpButton->Update(elapsedTime);
 	// スピードアップボタンが押された場合、ゲーム内経過時間を倍にする
-	float inGameTime = m_pSpeedUpButton->IsPressed() ? elapsedTime * 10.0f : elapsedTime;
+	float inGameTime = m_pSpeedUpButton->IsPressed() ? elapsedTime * m_pCommonResources->GetSettingManager()->GetSpeedMode() : elapsedTime;
 	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
