@@ -34,6 +34,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_speed(1.0f)// 移動速度
 	, m_fallTimerActive(false)// 落下タイマーが有効かどうか
 	, m_hasFallen(false)// 一度だけ落下処理を実行させるためのフラグ
+	, m_isPlayFallSE(false)// 落下音再生フラグ
 	, m_initialPosition(initialPosition)// 初期位置
 	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle))// 初期角度
 	, m_currentPosition{}// 現在の位置
@@ -300,6 +301,8 @@ void MiniCharacter::UpdateFallTimer(float elapsedTime)
 	{
 		// 落下タイマーを更新
 		m_fallTimer += elapsedTime;
+		// 慌てている効果音を鳴らす
+		m_pCommonResources->GetAudioManager()->PlaySound("Panic", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		// 落下タイマーが3秒を超えたら、落下処理を実行
 		if (m_fallTimer >= 3.0f)
 		{
@@ -345,6 +348,12 @@ void MiniCharacter::Moving(float elapsedTime, const DirectX::SimpleMath::Vector3
 		m_gameOverSwitchTime += elapsedTime;
 		// 表情を変える
 		m_expression = Expression::BAD;
+		// 慌てている音を止める
+		m_pCommonResources->GetAudioManager()->StopSound("Panic");
+		// 落下音を鳴らす
+		if (!m_isPlayFallSE) m_pCommonResources->GetAudioManager()->PlaySound("Falling", m_pCommonResources->GetSettingManager()->GetSEVolume());
+		// 落下音再生フラグを立てる
+		m_isPlayFallSE = true;
 	}
 	// 落下していない場合
 	else if (m_isMoving)

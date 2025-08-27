@@ -140,6 +140,8 @@ void Medal::OnGet(MiniCharacter* miniCharacter)
 	m_isCollected = true;
 	// ポインターを設定
 	m_pMiniCharacter = miniCharacter;
+	// 獲得音を鳴らす
+	m_pCommonResources->GetAudioManager()->PlaySound("GetMedal", m_pCommonResources->GetSettingManager()->GetSEVolume());
 }
 /*
 *	@brief アイテムの使用時処理

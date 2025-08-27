@@ -239,4 +239,6 @@ private:
 	float m_speed;
 	// •\î
 	Expression m_expression;
+	// —‰º‰¹Ä¶ƒtƒ‰ƒO
+	bool m_isPlayFallSE;
 };

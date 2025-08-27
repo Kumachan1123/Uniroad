@@ -195,6 +195,31 @@ void AudioManager::Update(float elapsedTime)
 	// FMODシステムの更新
 	if (m_pFMODSystem) m_pFMODSystem->update();
 }
+/*
+*	@brief すべての音を停止する
+*	@details 再生中のすべての音を停止し、チャンネルをクリアする
+*	@param なし
+*	@return なし
+*/
+void AudioManager::StopAllSounds()
+{
+	// すべてのチャンネルを停止
+	for (auto& pair : m_pChannels)
+	{
+		// チャンネルが存在する場合
+		if (pair.second)
+		{
+			// チャンネルを停止
+			pair.second->stop();
+			// チャンネルを解放
+			pair.second = nullptr;
+		}
+	}
+	// チャンネルをクリア
+	m_pChannels.clear();
+	// フェードアウトリストをクリア
+	m_fadeOuts.clear();
+}
 
 /*
 *	@brief 音声関連リソースの解放処理

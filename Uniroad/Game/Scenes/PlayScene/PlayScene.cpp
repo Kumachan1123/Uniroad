@@ -23,6 +23,7 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	, m_viewPortControll() // 操作画面用のビューポート
 	, m_nowSceneID(sceneID)// 現在のシーンID
 	, m_stageNumber(-1) // ステージ番号
+	, m_isPlayResultSE(false) // リザルト効果音再生フラグ
 
 {}
 /*
@@ -147,6 +148,8 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pConfetti = std::make_unique<Particle>(Utility::Type::CONFETTI, 200);
 	// パーティクルを初期化する
 	m_pConfetti->Initialize(m_pCommonResources);
+	// BGMを再生する
+	m_pCommonResources->GetAudioManager()->PlaySound("PlayBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
 }
 /*
 *   @brief 更新処理
@@ -158,8 +161,14 @@ void PlayScene::Update(float elapsedTime)
 {
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
+	// オーディオマネージャーの更新
+	m_pCommonResources->GetAudioManager()->Update(elapsedTime);
 	// 経過時間を加算
 	m_time += elapsedTime;
+	// フェードの更新
+	m_pFade->Update(elapsedTime);
+	// 開始から4秒後から以下を更新
+	if (m_time > elapsedTime && m_time < 4.0f)return;
 	// カメラ用の座標をシャドウマップライトに設定
 	Vector3 playerPosition = m_pMiniCharacterBase->GetCameraPosition();
 	// シャドウマップライト更新
@@ -173,13 +182,41 @@ void PlayScene::Update(float elapsedTime)
 	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
+		// BGMを止める
+		m_pCommonResources->GetAudioManager()->StopSound("PlayBGM", 1.0f);
+		// 効果音を一度だけ鳴らす
+		if (!m_isPlayResultSE)
+		{
+			// 再生フラグを立ててこれ以降効果音が鳴らないようにする
+			m_isPlayResultSE = true;
+			// ゲームクリアなら
+			if (m_pMiniCharacterBase->IsGameClear())
+			{
+				// ゲームクリアの効果音を鳴らす
+				m_pCommonResources->GetAudioManager()->PlaySound("GameClear", m_pCommonResources->GetSettingManager()->GetSEVolume());
+				// BGMも鳴らす
+				m_pCommonResources->GetAudioManager()->PlaySound("GameClearBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
+			}
+			// ゲームオーバーなら
+			else if (m_pMiniCharacterBase->IsGameOver())
+			{
+				// ゲームオーバーの効果音を鳴らす
+				m_pCommonResources->GetAudioManager()->PlaySound("GameOver", m_pCommonResources->GetSettingManager()->GetSEVolume());
+				// BGMも鳴らす
+				m_pCommonResources->GetAudioManager()->PlaySound("GameOverBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
+			}
+		}
+
 		// スピードアップボタンを強制的にオフにする
 		m_pSpeedUpButton->SetPressed(false);
 		// リザルトUIが無効な場合
 		if (m_pResultAnimation->IsAnimationEnd() && !m_pResultButton->IsEnable())
 		{
-			//// 有効にする
+			// 有効にする
 			m_pResultButton->SetEnable(true);
+			// 結果に応じて鳴らす効果音を変える
+
+
 			// ミニキャラにリザルト用カメラを設定する
 			m_pMiniCharacterBase->SetCamera(m_pFixedCameraResult.get());
 			// 結果の設定
@@ -239,8 +276,7 @@ void PlayScene::Update(float elapsedTime)
 	m_pMiniCharacterBase->Update(inGameTime, Vector3::Zero, Quaternion::Identity);
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
-	// フェードの更新
-	m_pFade->Update(elapsedTime);
+
 	// フェードインが終わったらフェード状態をなくす
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
 	// アニメーションが終わったらフェードアウトに移行
@@ -252,6 +288,7 @@ void PlayScene::Update(float elapsedTime)
 		m_pFade->SetState(Fade::FadeState::FadeOut);
 		// 押された状態を解除
 		m_pResultButton->SetPressed(false);
+
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
@@ -353,6 +390,7 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
+
 		// 遷移先のシーン番号によって分岐
 		switch (m_pResultButton->GetSceneNum())
 		{

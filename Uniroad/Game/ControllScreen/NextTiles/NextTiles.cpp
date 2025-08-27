@@ -313,6 +313,8 @@ void NextTiles::AddToPanel()
 		m_pPlacedTile.push_back(std::move(m_pTile[m_draggingIndex]));
 		// 元の配列から消したらその場所はemptyになる
 		m_pTile.erase(m_pTile.begin() + m_draggingIndex);
+		// 設置音を鳴らす
+		m_pCommonResources->GetAudioManager()->PlaySound("PutTile", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		// 配置可能タイルの座標を詰める
 		for (unsigned int i = 0; i < m_pTile.size(); i++)
 		{

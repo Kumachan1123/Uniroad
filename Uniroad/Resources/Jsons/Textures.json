@@ -36,5 +36,6 @@
   "ToNextStage": "Resources/Textures/ToNextStage.png",
   "ToStageSelect": "Resources/Textures/ToStageSelect.png",
   "ToTitle": "Resources/Textures/ToTitle.png",
-  "UI_Back": "Resources/Textures/UI_Back.png"
+  "UI_Back": "Resources/Textures/UI_Back.png",
+  "CountDown": "Resources/Textures/CountDown.png"
 }

@@ -5,7 +5,7 @@
 プレイ中BGM＿4_BPM180：そんなバカな！＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81
 タイトルBGM＿240_BPM126：プライマリーカラー＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81/page/3
 ステージセレクトBGM＿188_BPM130：そろそろ出番＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81/page/4
-タイル設置音＿PutTile：カーソル移動12＿https://soundeffect-lab.info/sound/button/
+タイル設置音＿PutTile：キャンセル3＿https://soundeffect-lab.info/sound/button/
 ボタンクリック音＿ButtonClick：決定ボタンを押す43＿https://soundeffect-lab.info/sound/button/
 メダル獲得音＿GetMedal：キラーン（目が光る）＿https://arspark.jp/material/motion/
 落下待機音＿Panic：Onoma-Panic07-2(Low-Mid)＿https://otologic.jp/free/se/panic01.html#google_vignette
@@ -15,3 +15,5 @@
 ゲームクリア＿GameClear：レベルアップ＿https://soundeffect-lab.info/sound/anime/
 ロゴ出現音＿TitleLogo：決定ボタンを押す12＿https://soundeffect-lab.info/sound/button/
 UI選択音＿UISelect：カーソル移動7＿https://soundeffect-lab.info/sound/button/
+ゲームオーバーBGM＿GameOverBGM：304_BPM120＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81/page/6
+ゲームクリアBGM＿GameClearBGM：045_BPM123＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81/page/9

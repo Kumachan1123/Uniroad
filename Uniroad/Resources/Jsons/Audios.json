@@ -33,7 +33,7 @@
     {
       "file": "Resources/Sounds/GetMedal.mp3",
       "key": "GetMedal",
-      "allowMultiplePlay": false,
+      "allowMultiplePlay": true,
       "loop": false
     },
     {
@@ -77,6 +77,18 @@
       "key": "UISelect",
       "allowMultiplePlay": true,
       "loop": false
+    },
+    {
+      "file": "Resources/Sounds/GameClearBGM.mp3",
+      "key": "GameClearBGM",
+      "allowMultiplePlay": false,
+      "loop": true
+    },
+    {
+      "file": "Resources/Sounds/GameOverBGM.mp3",
+      "key": "GameOverBGM",
+      "allowMultiplePlay": false,
+      "loop": true
     }
   ]
 }

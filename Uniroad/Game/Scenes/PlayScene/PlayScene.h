@@ -147,4 +147,6 @@ private:
 	int m_stageNumber;
 	// シーンチェンジカウント
 	float m_sceneChangeCount;
+	// 結果効果音再生フラグ
+	bool m_isPlayResultSE;
 };

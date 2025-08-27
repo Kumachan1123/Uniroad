@@ -67,6 +67,8 @@ public:
 	void StopSound(const std::string& soundKey, float fadeTime);
 	// 更新（FMODシステムの更新が必要）
 	void Update(float elapsedTime);
+	// 今なっているすべての音を止めて配列をクリア
+	void StopAllSounds();
 	// 解放
 	void Shutdown();
 private:
