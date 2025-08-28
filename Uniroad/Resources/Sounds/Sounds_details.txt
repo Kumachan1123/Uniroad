@@ -17,3 +17,7 @@
 UI選択音＿UISelect：カーソル移動7＿https://soundeffect-lab.info/sound/button/
 ゲームオーバーBGM＿GameOverBGM：304_BPM120＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81/page/6
 ゲームクリアBGM＿GameClearBGM：045_BPM123＿https://bgmer.net/music-cat/%e3%82%b2%e3%83%bc%e3%83%a0%e5%ae%9f%e6%b3%81/page/9
+3から1までのカウント＿Count321：決定ボタンを押す1＿https://soundeffect-lab.info/sound/button/
+カウント終了＿CountEnd：決定ボタンを押す37＿https://soundeffect-lab.info/sound/sub-category/business.html
+スピードアップ音＿SpeedUp：ゲージ回復1＿https://soundeffect-lab.info/sound/button/
+スピードダウン音＿SpeedDown：nc181305_【効果音】パワーダウン１０＿https://commons.nicovideo.jp/works/nc181305

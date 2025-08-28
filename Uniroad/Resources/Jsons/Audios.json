@@ -101,6 +101,18 @@
       "key": "GameOverBGM",
       "allowMultiplePlay": false,
       "loop": true
+    },
+    {
+      "file": "Resources/Sounds/SpeedUp.mp3",
+      "key": "SpeedUp",
+      "allowMultiplePlay": false,
+      "loop": false
+    },
+    {
+      "file": "Resources/Sounds/SpeedDown.mp3",
+      "key": "SpeedDown",
+      "allowMultiplePlay": false,
+      "loop": false
     }
   ]
 }

@@ -80,8 +80,16 @@ void SpeedUpButton::Update(float elapsedTime)
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
 	// 当たり判定を行う
 	m_isHit = m_pButton->Hit(mousePos, m_buttonRect);
-	// マウスが当たって左クリックされたら押された状態をトグル
-	if (m_isHit && MouseClick::IsLeftMouseButtonPressed(mouseState))m_isPressed = !m_isPressed;
+	// マウスが当たって左クリックされたら
+	if (m_isHit && MouseClick::IsLeftMouseButtonPressed(mouseState))
+	{
+		// 押された状態をトグル
+		m_isPressed = !m_isPressed;
+		// スピードアップの効果音を再生(押された状態ならスピードアップ、そうでなければスピードダウン)
+		if (m_isPressed) m_pCommonResources->GetAudioManager()->PlaySound("SpeedUp", m_pCommonResources->GetSettingManager()->GetSEVolume());
+		// スピードダウンの効果音を再生
+		else m_pCommonResources->GetAudioManager()->PlaySound("SpeedDown", m_pCommonResources->GetSettingManager()->GetSEVolume());
+	}
 	// 定数バッファを更新
 	UpdateConstantBuffer();
 }

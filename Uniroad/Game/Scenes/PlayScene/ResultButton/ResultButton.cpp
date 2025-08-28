@@ -32,6 +32,7 @@ ResultButton::ResultButton()
 	, m_pAnimation(std::make_unique<Animation>()) // アニメーションへのポインタ
 	, m_isPressed(false) // ボタンが押されたかどうか
 	, m_isHit(false) // 当たり判定フラグ
+	, m_prevIsHit(false) // 前フレームの当たり判定フラグ
 	, m_enable(false) // このクラスが有効かどうか
 	, m_position(DirectX::SimpleMath::Vector2(0.5f, 0.5f)) // ボタンの位置
 	, m_size(DirectX::SimpleMath::Vector2(0.2f, 0.1f)) // ボタンのサイズ
@@ -59,6 +60,11 @@ ResultButton::~ResultButton()
 }
 /*
 *	@brief 初期化
+*	@details リザルト画面のボタンを管理するクラスの初期化を行う
+*	@param resources 共通リソースへのポインタ
+*	@param width ウィンドウの幅
+*	@param height ウィンドウの高さ
+*	@return なし
 */
 void ResultButton::Initialize(CommonResources* resources, int width, int height)
 {
@@ -80,7 +86,6 @@ void ResultButton::Initialize(CommonResources* resources, int width, int height)
 		// ゲーム開始ボタンを追加
 		m_buttons.push_back(std::move(m_pRetryNextStageButton));
 	}
-
 	// ボタンの数ループ
 	for (auto& button : m_buttons)
 	{
@@ -103,16 +108,22 @@ void ResultButton::Initialize(CommonResources* resources, int width, int height)
 		m_buttonRects.push_back(buttonRect);
 		// 当たり判定フラグを初期化
 		m_isHit.push_back(false);
+		// 前フレームの当たり判定フラグを初期化
+		m_prevIsHit.push_back(false);
 		// ホバー時の拡大率を初期化
 		m_hoverScales.push_back(1.0f);
 	}
 	// アニメーションシーケンスを作成
 	CreateAnimationSequence();
-
 	// 最終ステージなら加算したステージ番号を戻す
 	if (m_stageNum >= fileCount)	m_stageNum--;
 }
-
+/*
+*	@brief 更新
+*	@details リザルト画面のボタンを管理するクラスの更新を行う
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
 void ResultButton::Update(float elapsedTime)
 {
 	// 名前空間の使用
@@ -136,14 +147,19 @@ void ResultButton::Update(float elapsedTime)
 	{
 		// 当たり判定を行う
 		m_isHit[i] = m_buttons[i]->Hit(mousePos, m_buttonRects[i]);
+		// ホバーした瞬間だけ音を鳴らす
+		if (!m_prevIsHit[i] && m_isHit[i])
+			m_pCommonResources->GetAudioManager()->PlaySound("UISelect", m_pCommonResources->GetSettingManager()->GetSEVolume());
+
 		// スケールのターゲット値
 		float target = m_isHit[i] ? SCALE_ON : SCALE_OFF;
 		// スムーズに補間
 		m_hoverScales[i] += (target - m_hoverScales[i]) * (1.0f - expf(-SCALE_SPEED * elapsedTime));
 	}
+	// ループの後で前フレーム記録を更新）
+	m_prevIsHit = m_isHit;
 	// マウスが当たったボタンの番号を設定
-	for (int i = 0; i < m_buttons.size(); i++)
-		if (m_isHit[i])m_hitButtonIndex = i;
+	for (int i = 0; i < m_buttons.size(); i++)if (m_isHit[i])m_hitButtonIndex = i;
 	// マウスが当たって左クリックされたら
 	if (MouseClick::IsLeftMouseButtonPressed(mouseState) && m_pAnimation->IsPaused() && m_hitButtonIndex > NONE_BUTTON_INDEX)
 	{
@@ -167,7 +183,12 @@ void ResultButton::Update(float elapsedTime)
 	// 定数バッファを更新
 	UpdateConstantBuffer();
 }
-
+/*
+*	@brief 画像を表示
+*	@details リザルト画面のボタンを管理するクラスの画像を表示する
+*	@param なし
+*	@return なし
+*/
 void ResultButton::Render()
 {
 	// 有効フラグが立っていない場合は何もしない
@@ -192,7 +213,12 @@ void ResultButton::Render()
 	debugString->AddString("HitButtonIndex:%i", m_hitButtonIndex);
 #endif
 }
-
+/*
+*	@brief アニメーションシーケンスを作成
+*	@details リザルト画面のボタンのアニメーションシーケンスを作成する
+*	@param なし
+*	@return なし
+*/
 void ResultButton::CreateAnimationSequence()
 {
 	// 名前空間の使用
@@ -270,7 +296,12 @@ void ResultButton::CreateAnimationSequence()
 			}
 	} });
 }
-
+/*
+*	@brief 定数バッファを更新
+*	@details リザルト画面のボタンを管理するクラスの定数バッファを更新する
+*	@param なし
+*	@return なし
+*/
 void ResultButton::UpdateConstantBuffer()
 {
 	// 名前空間を使用

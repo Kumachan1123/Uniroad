@@ -119,6 +119,8 @@ private:
 	int m_frameCols;
 	// 当たり判定
 	std::vector<bool> m_isHit;
+	// 前フレームの当たり判定
+	std::vector<bool>m_prevIsHit;
 	// 当たったボタンの番号
 	int m_hitButtonIndex;
 	// 押されたボタンの番号

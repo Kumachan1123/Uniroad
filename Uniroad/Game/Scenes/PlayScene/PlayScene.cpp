@@ -297,6 +297,11 @@ void PlayScene::Update(float elapsedTime)
 		m_pFade->SetState(Fade::FadeState::FadeOut);
 		// 押された状態を解除
 		m_pResultButton->SetPressed(false);
+		// BGMの停止
+		m_pCommonResources->GetAudioManager()->StopSound("GameClearBGM", 1.0f);
+		m_pCommonResources->GetAudioManager()->StopSound("GameOverBGM", 1.0f);
+		// ボタンクリック音再生
+		m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", m_pCommonResources->GetSettingManager()->GetSEVolume());
 
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる

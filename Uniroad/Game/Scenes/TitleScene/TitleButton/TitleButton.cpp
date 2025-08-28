@@ -34,6 +34,7 @@ TitleButton::TitleButton()
 	, m_pAnimation(std::make_unique<Animation>()) // アニメーションへのポインタ
 	, m_isPressed(false) // ボタンが押されたかどうか
 	, m_isHit(false) // 当たり判定フラグ
+	, m_prevIsHit(false) // 前フレームの当たり判定フラグ
 	, m_position(DirectX::SimpleMath::Vector2(0.5f, 0.5f)) // ボタンの位置
 	, m_size(DirectX::SimpleMath::Vector2(0.2f, 0.1f)) // ボタンのサイズ
 	, m_frameRows(1) // 画像の行数
@@ -100,7 +101,7 @@ void TitleButton::Initialize(CommonResources* resources, int width, int height)
 		m_buttonRects.push_back(buttonRect);
 		// 当たり判定フラグを初期化
 		m_isHit.push_back(false);
-		// 前フレームの当たり判定フラグを初期化（追加）
+		// 前フレームの当たり判定フラグを初期化
 		m_prevIsHit.push_back(false);
 		// ホバー時の拡大率を初期化
 		m_hoverScales.push_back(1.0f);
