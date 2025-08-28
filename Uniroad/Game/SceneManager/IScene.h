@@ -16,6 +16,7 @@ public:
 	{
 		NONE,
 		TITLE,
+		SETTING,
 		STAGESELECT,
 		PLAY,
 	};

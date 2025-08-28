@@ -14,6 +14,7 @@
 #include "Game/Scenes/TitleScene/TitleScene.h"
 #include "Game/Scenes/StageSelectScene/StageSelectScene.h"
 #include "Game/Scenes/PlayScene/PlayScene.h"
+#include "Game/Scenes/SettingScene/SettingScene.h"
 
 // ‘O•ûéŒ¾
 class CommonResources;

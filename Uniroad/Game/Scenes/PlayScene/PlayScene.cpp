@@ -302,7 +302,6 @@ void PlayScene::Update(float elapsedTime)
 		m_pCommonResources->GetAudioManager()->StopSound("GameOverBGM", 1.0f);
 		// ボタンクリック音再生
 		m_pCommonResources->GetAudioManager()->PlaySound("ButtonClick", m_pCommonResources->GetSettingManager()->GetSEVolume());
-
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;

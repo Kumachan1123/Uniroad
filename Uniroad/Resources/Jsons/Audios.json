@@ -113,6 +113,12 @@
       "key": "SpeedDown",
       "allowMultiplePlay": false,
       "loop": false
+    },
+    {
+      "file": "Resources/Sounds/SettingBGM.mp3",
+      "key": "SettingBGM",
+      "allowMultiplePlay": false,
+      "loop": true
     }
   ]
 }

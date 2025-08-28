@@ -3,7 +3,6 @@
 *	@brief シェーダーバッファの構造体をまとめたヘッダーファイル
 */
 #pragma once
-
 // 構造体
 // スプライトシート用定数バッファ
 struct SpriteSheetBuffer
@@ -14,6 +13,14 @@ struct SpriteSheetBuffer
 	DirectX::SimpleMath::Vector4 count;     // カウント
 	DirectX::SimpleMath::Vector4 height;    // 高さ
 	DirectX::SimpleMath::Vector4 width;     // 幅
+};
+// UVスクロール用定数バッファ
+struct UVScrollBuffer
+{
+	DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
+	DirectX::SimpleMath::Matrix matView;    // ビュー行列
+	DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
+	DirectX::SimpleMath::Vector4 time;     // 時間
 };
 // パーティクル用定数バッファ
 struct ParticleBuffer

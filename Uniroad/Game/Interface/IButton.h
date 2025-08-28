@@ -16,13 +16,12 @@ class IButton : public IImage
 {
 public:
 	// アクセサ
-	// スピードアップボタンが押されたかどうかを取得
+	// ボタンが押されたかどうかを取得
 	virtual bool IsPressed() const = 0;
-	// スピードアップボタンが押されたかどうかを設定
+	// ボタンが押されたかどうかを設定
 	virtual void SetPressed(bool isPressed) = 0;
 public:
 	// public関数
 	// デストラクタ
 	virtual ~IButton() = default;
-
 };

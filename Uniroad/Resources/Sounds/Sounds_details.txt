@@ -10,7 +10,7 @@
 メダル獲得音＿GetMedal：キラーン（目が光る）＿https://arspark.jp/material/motion/
 落下待機音＿Panic：Onoma-Panic07-2(Low-Mid)＿https://otologic.jp/free/se/panic01.html#google_vignette
 落下音＿Falling：ヒューンと落下＿https://soundeffect-lab.info/sound/anime/
-ゴールアンロック＿Unlock：きらーん2＿https://soundeffect-lab.info/sound/anime/
+ゴールアンロック＿Unlock：鍵を開ける1＿https://soundeffect-lab.info/sound/various/
 ゲームオーバー＿GameOver：呪いの旋律＿https://soundeffect-lab.info/sound/anime/
 ゲームクリア＿GameClear：レベルアップ＿https://soundeffect-lab.info/sound/anime/
 ロゴ出現音＿TitleLogo：決定ボタンを押す12＿https://soundeffect-lab.info/sound/button/
@@ -21,3 +21,4 @@ UI選択音＿UISelect：カーソル移動7＿https://soundeffect-lab.info/soun
 カウント終了＿CountEnd：決定ボタンを押す37＿https://soundeffect-lab.info/sound/sub-category/business.html
 スピードアップ音＿SpeedUp：ゲージ回復1＿https://soundeffect-lab.info/sound/button/
 スピードダウン音＿SpeedDown：nc181305_【効果音】パワーダウン１０＿https://commons.nicovideo.jp/works/nc181305
+設定画面BGM＿SettingBGM：After-Five＿https://dova-s.jp/bgm/play22169.html

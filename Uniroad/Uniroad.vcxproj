@@ -198,6 +198,7 @@
     <ClInclude Include="Game\Interface\ICamera.h" />
     <ClInclude Include="Game\Interface\IGameUI.h" />
     <ClInclude Include="Game\Interface\IImage.h" />
+    <ClInclude Include="Game\Interface\IScrollBar.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
     <ClInclude Include="Game\MainScreen\Items\GoalLock\GoalLock.h" />
     <ClInclude Include="Game\MainScreen\Items\ItemBase\ItemBase.h" />
@@ -246,7 +247,16 @@
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultButton\ResultButton.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\Back\Back.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\MaxTexture\MaxTexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\MinTexture\MinTexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SETexture\SETexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SettingBar\SettingBar.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SettingPanel\SettingPanel.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SettingScene.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\BackButton\BackButton.h" />
+    <ClInclude Include="KumachiLib\ScrollBar\ScrollBar.h" />
     <ClInclude Include="Game\Scenes\TitleScene\Road\Road.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleAnimationState\TitleAnimationState.h" />
     <ClInclude Include="Game\Scenes\TitleScene\TitleButton\TitleButton.h" />
@@ -348,6 +358,14 @@
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultButton\ResultButton.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\Back\Back.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\MaxTexture\MaxTexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\MinTexture\MinTexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SETexture\SETexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SettingBar\SettingBar.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SettingPanel\SettingPanel.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SettingScene.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\BackButton\BackButton.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\Road\Road.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
@@ -370,6 +388,7 @@
     <ClCompile Include="KumachiLib\Image\Image.cpp" />
     <ClCompile Include="KumachiLib\ModelManager\ModelManager.cpp" />
     <ClCompile Include="KumachiLib\MouseClick\MouseClick.cpp" />
+    <ClCompile Include="KumachiLib\ScrollBar\ScrollBar.cpp" />
     <ClCompile Include="KumachiLib\SettingManager\SettingManager.cpp" />
     <ClCompile Include="KumachiLib\ShadowMapLight\ShadowMapLight.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
@@ -408,6 +427,7 @@
     <None Include="HLSL\ShadowMapLight\Params.hlsli" />
     <None Include="HLSL\Sky\Header.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
+    <None Include="HLSL\UVScroll\UVScroll.hlsli" />
     <None Include="packages.config" />
     <None Include="Resources\Jsons\Audios.json" />
     <None Include="Resources\Jsons\Models.json" />
@@ -645,6 +665,22 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\UI\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\UI\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\UVScroll\PS_UVScroll.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\UVScroll\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\UVScroll\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\UVScroll\VS_UVScroll.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\UVScroll\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\UVScroll\%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

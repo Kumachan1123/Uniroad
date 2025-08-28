@@ -125,4 +125,5 @@ void GoalLock::OnDiscard(MiniCharacter* miniCharacter)
 	UNREFERENCED_PARAMETER(miniCharacter);
 	// ƒAƒCƒeƒ€‚ðíœ
 	m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);
+
 }

@@ -74,8 +74,6 @@ void TitleLogo::Initialize(CommonResources* resources, int width, int height)
 */
 void TitleLogo::Update(float elapsedTime)
 {
-	// 名前空間の使用
-	using namespace DirectX::SimpleMath;
 	// アニメーションを更新
 	m_pAnimation->Update(elapsedTime);
 	// 定数バッファを更新

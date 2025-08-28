@@ -126,6 +126,16 @@
     <ClInclude Include="Game\Scenes\PlayScene\ResultButton\ResultButton.h" />
     <ClInclude Include="KumachiLib\SettingManager\SettingManager.h" />
     <ClInclude Include="Game\Scenes\PlayScene\CountDown\CountDown.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SettingScene.h" />
+    <ClInclude Include="KumachiLib\ScrollBar\ScrollBar.h" />
+    <ClInclude Include="Game\Interface\IScrollBar.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SettingBar\SettingBar.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\MinTexture\MinTexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\MaxTexture\MaxTexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SettingPanel\SettingPanel.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\SETexture\SETexture.h" />
+    <ClInclude Include="Game\Scenes\SettingScene\Back\Back.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -210,6 +220,15 @@
     <ClCompile Include="Game\Scenes\PlayScene\ResultButton\ResultButton.cpp" />
     <ClCompile Include="KumachiLib\SettingManager\SettingManager.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\CountDown\CountDown.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SettingScene.cpp" />
+    <ClCompile Include="KumachiLib\ScrollBar\ScrollBar.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SettingBar\SettingBar.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\MinTexture\MinTexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\MaxTexture\MaxTexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SettingPanel\SettingPanel.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\SETexture\SETexture.cpp" />
+    <ClCompile Include="Game\Scenes\SettingScene\Back\Back.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -238,6 +257,7 @@
     <None Include="Resources\Jsons\Textures.json" />
     <None Include="Resources\Jsons\Audios.json" />
     <None Include="Resources\Jsons\Setting.json" />
+    <None Include="HLSL\UVScroll\UVScroll.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -266,5 +286,7 @@
     <FxCompile Include="HLSL\ShadowMapLight\VS_ShadowMap.hlsl" />
     <FxCompile Include="HLSL\Particle\GS_Confetti.hlsl" />
     <FxCompile Include="HLSL\Particle\PS_Confetti.hlsl" />
+    <FxCompile Include="HLSL\UVScroll\VS_UVScroll.hlsl" />
+    <FxCompile Include="HLSL\UVScroll\PS_UVScroll.hlsl" />
   </ItemGroup>
 </Project>

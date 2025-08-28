@@ -126,24 +126,11 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		m_pCurrentScene = std::make_unique<TitleScene>(sceneID);
 		// 処理を抜ける
 		break;
-		/*case IScene::SceneID::TITLE:
-			m_currentScene = std::make_unique<TitleScene>(sceneID);
-			break;
-		case IScene::SceneID::SETTING:
-			m_currentScene = std::make_unique<SettingScene>(sceneID);
-			break;
-		case IScene::SceneID::STAGESELECT:
-			m_currentScene = std::make_unique<StageSelectScene>(sceneID);
-			break;
-		case IScene::SceneID::PLAY:
-			m_currentScene = std::make_unique<PlayScene>(sceneID);
-
-			break;
-		case IScene::SceneID::CLEAR:
-		case IScene::SceneID::GAMEOVER:
-
-			m_currentScene = std::make_unique<ResultScene>(sceneID);
-			break;*/
+	case IScene::SceneID::SETTING:// 設定シーン
+		// 設定シーンを作成
+		m_pCurrentScene = std::make_unique<SettingScene>(sceneID);
+		// 処理を抜ける
+		break;
 	default:
 		assert(!"SceneManager::CreateScene::シーン名が存在しません！");
 		// no break

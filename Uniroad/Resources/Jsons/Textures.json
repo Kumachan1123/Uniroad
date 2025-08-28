@@ -37,5 +37,13 @@
   "ToStageSelect": "Resources/Textures/ToStageSelect.png",
   "ToTitle": "Resources/Textures/ToTitle.png",
   "UI_Back": "Resources/Textures/UI_Back.png",
-  "CountDown": "Resources/Textures/CountDown.png"
+  "CountDown": "Resources/Textures/CountDown.png",
+  "ScrollBar": "Resources/Textures/ScrollBar.png",
+  "Wheel": "Resources/Textures/Wheel.png",
+  "SettingPanel": "Resources/Textures/SettingPanel.png",
+  "BGMText": "Resources/Textures/BGM.png",
+  "SEText": "Resources/Textures/SE.png",
+  "Min": "Resources/Textures/Min.png",
+  "Max": "Resources/Textures/Max.png",
+  "Sky": "Resources/Textures/Sky.png"
 }

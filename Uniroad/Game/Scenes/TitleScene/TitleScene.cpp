@@ -236,7 +236,7 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 		break;
 	case 1: // 設定メニューボタンが押された場合
 		// 設定メニューへ
-		return IScene::SceneID::TITLE;
+		return IScene::SceneID::SETTING;
 		break;
 	case 2: // ゲーム終了ボタンが押された場合
 		// アプリケーションを終了する

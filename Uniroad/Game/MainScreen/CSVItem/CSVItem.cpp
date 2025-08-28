@@ -182,6 +182,8 @@ void CSVItem::Update(float elapsedTime)
 			// メダルの数が一致したら
 			if (m_collectedMedals == m_createdMedals)
 			{
+				// ロック解除音を鳴らす
+				m_pCommonResources->GetAudioManager()->PlaySound("Unlock", m_pCommonResources->GetSettingManager()->GetSEVolume());
 				// ロックを削除
 				RemoveItem(col, row);
 				// ゴールをアンロック
