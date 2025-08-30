@@ -325,6 +325,13 @@
   </Class>
   <Class Name="MiniCharacterSelectStage" Collapsed="true">
     <Position X="8" Y="12.25" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="MiniCharacterSelectStage::PartID" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>UAQEGkFUEvDAIQ4GGIACAABEBKZCo0FgALEAAIRTiIE=</HashCode>
       <FileName>Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h</FileName>
