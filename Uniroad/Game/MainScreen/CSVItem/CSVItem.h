@@ -18,7 +18,6 @@
 #include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
-#include "KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/MainScreen/Items/ItemDatas/ItemDatas.h"
 #include "Game/MainScreen/Items/ItemFactory/ItemFactory.h"
 #include "Game/Interface/ICamera.h"
@@ -39,8 +38,10 @@ public:
 	// 指定座標のタイルのアイテム情報を消す(獲得後に呼ぶ)(行, 列)
 	void  RemoveItem(int row, int col);
 	// マップの最大列数と行数を取得する
-	const int GetMaxCol() const { return MAXCOL; }// 列数
-	const int GetMaxRow() const { return MAXRAW; }// 行数
+	// 列数
+	const int GetMaxCol() const { return MAXCOL; }
+	// 行数
+	const int GetMaxRow() const { return MAXRAW; }
 	// 獲得された枚数を加算する
 	void CountMedals() { m_collectedMedals++; }
 	// 獲得されたメダルの枚数を取得する
@@ -67,8 +68,6 @@ public:
 	void LoadItem(const std::string& filePath);
 	// 更新処理
 	void Update(float elapsedTime);
-	// 当たり判定描画
-	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 描画
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 private:

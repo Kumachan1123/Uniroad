@@ -15,9 +15,6 @@ class CommonResources;
 class IScrollBar : public IImage
 {
 public:
-	// アクセサ
-
-public:
 	// public関数
 	// デストラクタ
 	virtual ~IScrollBar() = default;

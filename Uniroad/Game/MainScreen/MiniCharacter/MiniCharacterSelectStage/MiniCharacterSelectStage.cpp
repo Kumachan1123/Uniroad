@@ -1,7 +1,6 @@
 /*
 *	@file MiniCharacterSelectStage.cpp
 *	@brief ミニキャラクターの処理を定義するクラス
-*	@details ミニキャラクターの位置、角度、速度などを管理し、タイルのイベントを処理する。
 */
 #include <pch.h>
 #include "MiniCharacterSelectStage.h"
@@ -69,9 +68,9 @@ void MiniCharacterSelectStage::Initialize(CommonResources* resources)
 	// 現在位置に反映
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
-	Attach(std::make_unique<SheepBody>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	Attach(std::make_unique<SheepBody>(this, MiniCharacterParameters::BODY_POSITION, 0.0f));
 	// パーティクルを作成する
-	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 50);
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, MiniCharacterParameters::PARTICLE_COUNT);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
 }
@@ -85,8 +84,9 @@ void MiniCharacterSelectStage::Initialize(CommonResources* resources)
 */
 void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	// 必要な名前空間を使用
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(currentPosition);
@@ -100,18 +100,18 @@ void MiniCharacterSelectStage::Update(float elapsedTime, const DirectX::SimpleMa
 	if (parent->GetPlaneArea()->GetHitPlaneIndex() > -1 && parent->GetPlaneArea()->IsHitPlane())
 		m_destinationPosition = parent->GetPlaneArea()->GetPlanePosition(parent->GetPlaneArea()->GetHitPlaneIndex());
 	// 目的地にむかって速度を更新する
-	m_currentVelocity = (m_destinationPosition - m_currentPosition) * elapsedTime * 3.0f;
+	m_currentVelocity = (m_destinationPosition - m_currentPosition) * elapsedTime * MOVE_SPEED;
 	m_currentVelocity.y = 0.0f;
 	// 移動中ならパーティクルの生成を再開する
-	if (m_isMoving && m_currentVelocity.LengthSquared() > 0.0001f)m_pParticle->Start();
+	if (m_isMoving && m_currentVelocity.LengthSquared() > MiniCharacterParameters::SPEED_MIN)m_pParticle->Start();
 	// プレイヤーの位置を更新する
 	m_currentPosition += m_currentVelocity;
+	// Y座標は初期位置に固定する
 	m_currentPosition.y = m_initialPosition.y;
 	// 親にカメラに渡すための座標を渡す
 	parent->SetCameraPosition(m_currentPosition);
 	// 部品を更新する　
-	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
-		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
+	for (auto& MiniCharacterPart : m_pMiniCharacterParts)	MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 	// パーティクルの更新
 	m_pParticle->SetParams(SetParticleParams());
 	m_pParticle->Update(elapsedTime);
@@ -157,7 +157,6 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 	m_pParticle->Render(parent->GetCamera()->GetViewMatrix(), parent->GetCamera()->GetProjectionMatrix());
 	// 部品を描画する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Render(view, proj);
-
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
@@ -170,9 +169,6 @@ void MiniCharacterSelectStage::Render(const DirectX::SimpleMath::Matrix& view, c
 	// 移動中かを見る
 	debugString->AddString("Is Moving: %s", m_isMoving ? "true" : "false");
 #endif // DEBUG
-
-
-
 }
 /*
 *	@brief プレイヤーの後処理を行う
@@ -184,7 +180,6 @@ void MiniCharacterSelectStage::Finalize()
 {
 	// 何もしない
 }
-
 /*
 *	@brief プレイヤーの回転を補間する
 *	@details プレイヤーの回転を補間して、滑らかな回転を実現する。
@@ -197,7 +192,7 @@ void MiniCharacterSelectStage::InterpolateRotation(const DirectX::SimpleMath::Qu
 	// 速度ベクトルから目標回転を計算
 	Quaternion targetQuat;
 	// 現在の速度がゼロでない場合、回転を計算
-	if (m_currentVelocity.LengthSquared() > 0.0001f)
+	if (m_currentVelocity.LengthSquared() > MiniCharacterParameters::SPEED_MIN)
 	{
 		// 現在の速度ベクトルからヨー角を計算
 		float yaw = atan2f(m_currentVelocity.x, m_currentVelocity.z);
@@ -212,14 +207,11 @@ void MiniCharacterSelectStage::InterpolateRotation(const DirectX::SimpleMath::Qu
 		// パーティクルの生成を止める
 		m_pParticle->Stop();
 	}
-	// 現在の回転角を更新する
-	float rotateSpeed = 0.05f;
 	// 滑らかに回転させるために、現在の回転角と目標回転角を補間
-	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
+	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, ROTATE_SPEED);
 	// 揺れを加味した回転を適用
 	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
 }
-
 /*
 *	@brief タイルの中心にいるかどうかを判定する
 *	@details プレイヤーの位置がタイルの中心に近いかどうかを判定する。
@@ -243,7 +235,9 @@ bool MiniCharacterSelectStage::IsAtTileCenter(const DirectX::SimpleMath::Vector3
 */
 Utility::ParticleParams MiniCharacterSelectStage::SetParticleParams() const
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 乱数の設定
 	std::random_device seed;
@@ -252,7 +246,7 @@ Utility::ParticleParams MiniCharacterSelectStage::SetParticleParams() const
 	// ランダムな角度
 	std::uniform_real_distribution<> angleDist(0, XM_2PI);
 	// ランダムな速度の範囲を設定
-	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	std::uniform_real_distribution<> speedDist(MiniCharacterParameters::VELOCITY_MIN, MiniCharacterParameters::VELOCITY_MAX);
 	// XY平面上のランダムな角度
 	float randAngleXY = static_cast<float>(angleDist(engine));
 	// XZ平面上のランダムな角度
@@ -261,22 +255,22 @@ Utility::ParticleParams MiniCharacterSelectStage::SetParticleParams() const
 	float speed = static_cast<float>(speedDist(engine));
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = speed * Vector3(
-		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
-		0.5f,									 // Y成分
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分
+		MiniCharacterParameters::VELOCITY_MIN,	 // Y成分
 		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 0.75f;
-	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
+	params.life = MiniCharacterParameters::LIFE;
+	params.pos = m_currentPosition + MiniCharacterParameters::POSITION_OFFSET;
 	params.velocity = randomVelocity;
-	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
+	params.accele = Vector3::Zero;// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
-	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
-	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
-	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(1, 1, 0.75, 0.5); // 初期カラー（白）
-	params.endColor = Vector4(0.75, 0.75, 0.5, 0); // 最終カラー（白→透明）
+	params.rotate = Vector3::Zero; // 初期回転
+	params.startScale = Vector3::One; // 初期スケール
+	params.endScale = Vector3::Zero; // 最終スケール
+	params.startColor = MiniCharacterParameters::INITIAL_COLOR; // 初期カラー
+	params.endColor = MiniCharacterParameters::FINAL_COLOR; // 最終カラー
 	params.type = Utility::Type::STEAM; // パーティクルのタイプ
 	return params;
 }

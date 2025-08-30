@@ -21,8 +21,6 @@ CSVItem::CSVItem(CommonResources* resources)
 {
 	// アイテムのタイルの辞書を初期化
 	InitializeTileDictionary();
-	// 当たり判定描画の初期化
-	DrawCollision::Initialize(m_pCommonResources);
 }
 /*
 *	@brief デストラクタ
@@ -33,12 +31,10 @@ CSVItem::CSVItem(CommonResources* resources)
 CSVItem::~CSVItem()
 {
 	// 共通リソースの解放は不要
-	// DrawCollisionの終了処理は不要
 	// タイルの辞書をクリア
 	m_tileDictionary.clear();
 	// タイルのレンダリングデータをクリア
 	m_tiles.clear();
-
 }
 /*
 *	@brief タイルの辞書を初期化する
@@ -50,13 +46,12 @@ void CSVItem::InitializeTileDictionary()
 {
 	// タイルの種類とその情報を辞書に登録
 	// 空白
-	m_tileDictionary["0"] = ItemInfo{ "", false };
+	m_tileDictionary["0"] = ItemInfo{ "" };
 	// メダル
-	m_tileDictionary["m"] = ItemInfo{ "Medal", false };
+	m_tileDictionary["m"] = ItemInfo{ "Medal" };
 	// ゴールロック
-	m_tileDictionary["l"] = ItemInfo{ "GoalLock", false };
+	m_tileDictionary["l"] = ItemInfo{ "GoalLock" };
 }
-
 /*
 *	@brief CSV形式のアイテムを読み込む
 *	@details 指定されたファイルパスからCSV形式のアイテムデータを読み込み、タイルの情報を解析してアイテムを構築する。
@@ -65,15 +60,15 @@ void CSVItem::InitializeTileDictionary()
 */
 void CSVItem::LoadItem(const std::string& filePath)
 {
-	// DirectXとSimpleMathの名前空間を使用
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// ファイルを開く
 	std::ifstream file(filePath);
 	// ファイルが開けなかった場合は何もしない
 	if (!file.is_open()) return;
 	// CSV読み込む前に2次元配列を確保する
-	// 行数確保
 	m_mapItemData.resize(MAXCOL);
 	// 各行に列数確保
 	for (int i = 0; i < MAXCOL; i++)m_mapItemData[i].resize(MAXRAW);
@@ -124,8 +119,10 @@ void CSVItem::LoadItem(const std::string& filePath)
 				// アイテムを初期化
 				itemBase->Initialize(m_pCommonResources, tileInfo);
 				// アイテムに行と列の情報を設定
-				itemBase->SetRow(row);// 行番号を設定
-				itemBase->SetCol(col);// 列番号を設定
+				// 行番号を設定
+				itemBase->SetRow(row);
+				// 列番号を設定
+				itemBase->SetCol(col);
 				// アイテムにカメラのポインターを設定
 				itemBase->SetCamera(m_pCamera);
 				// アイテムデータにタイル情報を保存
@@ -133,8 +130,7 @@ void CSVItem::LoadItem(const std::string& filePath)
 				// 生成したアイテムがメダルならカウント
 				if (tileInfo.modelName == "Medal") m_createdMedals++;
 				// ゴールロックが生成されたら解除フラグをfalseにする
-				if (tileInfo.modelName == "GoalLock")
-					m_goalUnlocked = false;
+				if (tileInfo.modelName == "GoalLock")m_goalUnlocked = false;
 			}
 			else
 			{
@@ -189,36 +185,10 @@ void CSVItem::Update(float elapsedTime)
 				// ゴールをアンロック
 				m_goalUnlocked = true;
 			}
-
 		}
 	}
 }
-/*
-*	@brief 当たり判定を描画する
-*	@details デバッグモードで当たり判定のボックスを描画する。
-*	@param view ビュー行列
-*	@param proj プロジェクション行列
-*	@return なし
-*/
-void CSVItem::DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
-{
-	// DirectXとSimpleMathの名前空間を使用
-	using namespace DirectX;
-	using namespace DirectX::SimpleMath;
-	// 未使用の警告を出さない
-	UNREFERENCED_PARAMETER(view);
-	UNREFERENCED_PARAMETER(proj);
-	// 当たり判定の描画を開始
-#ifdef _DEBUG
-	//// 描画開始
-	//DrawCollision::DrawStart(view, proj);
-	//// 当たり判定のボックスを描画
-	//for (int i = 0; i < m_wallBox.size(); i++)	DrawCollision::DrawBoundingBox(m_wallBox[i], Colors::Red);
-	//// 描画終了
-	//DrawCollision::DrawEnd();
 
-#endif
-}
 /*
 *	@brief アイテムを描画する
 *	@details アイテムのタイルを描画する。
@@ -228,20 +198,18 @@ void CSVItem::DrawCollision(const DirectX::SimpleMath::Matrix& view, const Direc
 */
 void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	using namespace DirectX::SimpleMath;
 	// 列の数繰り返す
 	for (int col = 0; col < MAXCOL; ++col)
-	{
 		// 行の数繰り返す
 		for (int row = 0; row < MAXRAW; ++row)
-		{
 			// アイテムがあるなら更新
 			if (m_mapItemData[col][row].itemBasePtr != nullptr)	m_mapItemData[col][row].itemBasePtr->Render(view, proj);
-		}
-	}
 #ifdef _DEBUG
+	// デバッグ情報の表示
 	const auto debugString = m_pCommonResources->GetDebugString();
+	// 集めたメダルの数
 	debugString->AddString("CountMedals:%i", m_collectedMedals);
+	// ゴールロックが解除されているかどうか
 	debugString->AddString("GoalUnlocked:%s", m_goalUnlocked ? "true" : "false");
 #endif
 }
@@ -256,7 +224,9 @@ void CSVItem::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Sim
 */
 const  MapItemData& CSVItem::GetItemData(int row, int col) const
 {
+	// 指定された行と列が有効な範囲内であることを確認
 	assert(col >= 0 && col < MAXCOL && row >= 0 && row < MAXRAW);
+	// 指定された位置のタイル情報を返す
 	return m_mapItemData[row][col];
 }
 /*
@@ -271,6 +241,7 @@ const MapItemData& CSVItem::GetItemData(const DirectX::SimpleMath::Vector3& pos)
 	using namespace DirectX::SimpleMath;
 	// 最小距離と対応するタイルのインデックスを初期化
 	float minDistance = std::numeric_limits<float>::max();
+	// 最も近いタイルの行と列のインデックスを初期化
 	int closestRow = -1;
 	int closestCol = -1;
 	// アイテムデータを走査して最も近いタイルを探す
@@ -278,22 +249,24 @@ const MapItemData& CSVItem::GetItemData(const DirectX::SimpleMath::Vector3& pos)
 	{
 		for (int col = 0; col < MAXCOL; ++col)
 		{
+			// 現在のタイル情報を取得
 			const MapItemData& tile = m_mapItemData[row][col];
-
 			// タイルの位置との距離を計算
 			float distance = (tile.pos - pos).LengthSquared();
 			// 最小距離を更新
 			if (distance < minDistance)
 			{
+				// 最小の距離を更新
 				minDistance = distance;
+				// 最も近いタイルのインデックスを更新
 				closestRow = row;
 				closestCol = col;
 			}
 		}
 	}
-	// 最も近いタイルの情報を返す
+	// 最も近いタイルのインデックスが有効であることを確認
 	assert(closestRow >= 0 && closestRow < MAXCOL && closestCol >= 0 && closestCol < MAXRAW);
-
+	// 最も近いタイルの情報を返す
 	return m_mapItemData[closestRow][closestCol];
 }
 /*
@@ -304,8 +277,8 @@ const MapItemData& CSVItem::GetItemData(const DirectX::SimpleMath::Vector3& pos)
 */
 void CSVItem::RemoveItem(int row, int col)
 {
-	// DirectXとSimpleMathの名前空間を使用
 	// アイテムのポインタをリセットして消去
-	m_mapItemData[row][col].itemBasePtr = nullptr; // アイテムを消去
-	return; // 見つかったら終了
+	m_mapItemData[row][col].itemBasePtr = nullptr;
+	// 見つかったら終了
+	return;
 }

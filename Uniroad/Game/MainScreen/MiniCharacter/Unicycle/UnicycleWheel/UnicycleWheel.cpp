@@ -5,12 +5,10 @@
 #include "pch.h"
 #include "UnicycleWheel.h"
 #include "Game/MainScreen/MiniCharacter/Unicycle/UnicycleBody/UnicycleBody.h"
-
 // 一輪車のタイヤの半径
 const float UnicycleWheel::WHEEL_RADIUS = 1.0f;
 // プレイシーン以外でのタイヤの回転速度
 const float UnicycleWheel::WHEEL_SPEED = 3.0f;
-
 /*
 *	@brief コンストラクタ
 *	@details 一輪車のタイヤクラスのコンストラクタ

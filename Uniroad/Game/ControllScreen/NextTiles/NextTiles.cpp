@@ -4,7 +4,7 @@
 */
 #include <pch.h>
 #include "NextTiles.h"
-#include <random>
+
 /*
 *	@brief コンストラクタ
 *	@details 次のタイルクラスのコンストラクタ
@@ -55,15 +55,15 @@ void NextTiles::Initialize(CommonResources* resources, int width, int height)
 	// デバイスリソース取得
 	m_pDR = m_pCommonResources->GetDeviceResources();
 	// ウィンドウ幅
-	m_windowWidth = (int)(width * .3f);
+	m_windowWidth = (int)(width * Display::RATIO_CONTROLL_SCREEN_WIDTH);
 	// ウィンドウ高さ
 	m_windowHeight = height;
 	// UI追加
-	Add("NextTilesBack"
-		, Vector2(290.0f, 300.0f)
-		, Vector2(0.6f, 0.6f)
-		, KumachiLib::ANCHOR::MIDDLE_CENTER
-		, UIType::ITEM);
+	Add("NextTilesBack",
+		NEXT_TILES_BACK_POS,
+		NEXT_TILES_BACK_SIZE,
+		KumachiLib::ANCHOR::MIDDLE_CENTER,
+		UIType::ITEM);
 	// 使うタイルを宣言
 	// 直進(横)
 	m_tilesDictionary.push_back("StraightHorizontalBlock");
@@ -88,60 +88,75 @@ void NextTiles::Initialize(CommonResources* resources, int width, int height)
 */
 void NextTiles::Update(const float elapsedTime)
 {
+	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	m_pMouse->SetHitNewTile(false); // マウスのヒットフラグをリセット
-	m_pMouse->SetHitNewTileIndex(-1);// 当たっている新しく出てきたタイルの番号をリセット
-	// --- ドラッグ中は他UIのヒット判定をしない ---
+	// マウスのヒットフラグをリセット
+	m_pMouse->SetHitNewTile(false);
+	// 当たっている新しく出てきたタイルの番号をリセット
+	m_pMouse->SetHitNewTileIndex(TILE_NOT_SELECTED);
+	// ドラッグ中は他UIのヒット判定をしない
 	if (m_pMouse->IsMouseDrag() && m_draggingIndex >= 0)
 	{
 		// ドラッグ中の処理だけやる
+		// 左ボタン押している間はドラッグ
 		if (mouseState.leftButton)
 		{
+			// ドラッグ中のタイルの位置をマウスに合わせる
 			m_pTile[m_draggingIndex].canvas->SetPosition(m_pMouse->GetPosition());
-			m_pMouse->SetNewTilePosition(m_pTile[m_draggingIndex].canvas->GetPosition()); // 当たった新しいタイルの位置をセット
+			// 当たった新しいタイルの位置をセット
+			m_pMouse->SetNewTilePosition(m_pTile[m_draggingIndex].canvas->GetPosition());
 		}
-		else// 左ボタン離した瞬間だけリセット
+		// 左ボタン離した瞬間だけリセット
+		else
 		{
 			// パネルに当たっていなければ元の位置に戻す
-			if (m_pMouse->GetHitPanelIndex() == -1)	ResetTilePosition();
+			if (m_pMouse->GetHitPanelIndex() == TILE_NOT_SELECTED)	ResetTilePosition();
+			// パネルに当たっていればパネルに配置
 			else AddToPanel();
+			// ドラッグ終了
 			m_pMouse->SetMouseDrag(false);
-			m_draggingIndex = -1;
+			// ドラッグ中のインデックスをリセット
+			m_draggingIndex = TILE_NOT_SELECTED;
 		}
 	}
+	// ドラッグしていない状態
 	else
 	{
 		// ドラッグしていない状態のみヒット判定&ドラッグ開始
 		for (int i = 0; i < m_pTile.size(); i++)
 		{
+			// 操作画面外なら次のループへ
 			if (m_pMouse->GetPosition().x < 0 || m_pMouse->GetPosition().y < 0 ||
 				m_pMouse->GetPosition().x >= m_pMouse->GetVpWidthUI() ||
-				m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())
-				continue;
-
+				m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())	continue;
+			// マウスとタイルの当たり判定
 			if (m_pTile[i].canvas->IsHit(m_pMouse->GetPosition()))
 			{
-				m_pMouse->SetHitNewTile(true); // マウスのヒットフラグをセット
-				m_pMouse->SetHitNewTileIndex(i); // 当たった新しいタイルのインデックスをセット
-				m_pMouse->SetNewTilePosition(m_pTile[i].canvas->GetPosition()); // 当たった新しいタイルの位置をセット
-
-
+				// マウスのヒットフラグをセット
+				m_pMouse->SetHitNewTile(true);
+				// 当たった新しいタイルのインデックスをセット
+				m_pMouse->SetHitNewTileIndex(i);
+				// 当たった新しいタイルの位置をセット
+				m_pMouse->SetNewTilePosition(m_pTile[i].canvas->GetPosition());
 				// ドラッグ開始（ドラッグしていない時のみ）
 				if (mouseState.leftButton && !m_pMouse->IsMouseDrag())
 				{
+					// ドラッグ中のインデックスをセット
 					m_draggingIndex = i;
+					// ドラッグ中フラグをセット
 					m_pMouse->SetMouseDrag(true);
 				}
+				// ループを抜ける
 				break;
 			}
 		}
 	}
 	// 経過時間を加算
 	if (!m_pMouse->IsMouseDrag())m_time += elapsedTime;
-	// 10秒ごとにUIを追加する
-	if (m_time >= 1.5f)
+	// 一定時間経過したら新しいタイルを追加
+	if (m_time >= NEW_TILE_INTERVAL)
 	{
 		// UIを追加
 		AddNextTiles();
@@ -149,23 +164,11 @@ void NextTiles::Update(const float elapsedTime)
 		m_time = 0.0f;
 	}
 	// 全背景UIの経過時間を更新
-	for (int i = 0; i < m_pBack.size(); i++)
-	{
-		// 背景UIの時間を更新
-		m_pBack[i].canvas->SetTime(m_pBack[i].canvas->GetTime() + elapsedTime);
-	}
+	for (int i = 0; i < m_pBack.size(); i++)m_pBack[i].canvas->SetTime(m_pBack[i].canvas->GetTime() + elapsedTime);
 	// 全タイルの経過時間を更新
-	for (int i = 0; i < m_pTile.size(); i++)
-	{
-		// タイルの時間を更新
-		m_pTile[i].canvas->SetTime(m_pTile[i].canvas->GetTime() + elapsedTime);
-	}
+	for (int i = 0; i < m_pTile.size(); i++)m_pTile[i].canvas->SetTime(m_pTile[i].canvas->GetTime() + elapsedTime);
 	// 全設置済みタイルの経過時間を更新
-	for (int i = 0; i < m_pPlacedTile.size(); i++)
-	{
-		// 設置済みタイルの時間を更新
-		m_pPlacedTile[i].canvas->SetTime(m_pPlacedTile[i].canvas->GetTime() + elapsedTime);
-	}
+	for (int i = 0; i < m_pPlacedTile.size(); i++)m_pPlacedTile[i].canvas->SetTime(m_pPlacedTile[i].canvas->GetTime() + elapsedTime);
 	// 選択中のUIがあるなら座標を変更する
 	if (m_pMouse->GetHitNewTileIndex() >= 0 && mouseState.leftButton)m_pTile[m_pMouse->GetHitNewTileIndex()].canvas->SetPosition(m_pMouse->GetPosition());
 #ifdef _DEBUG
@@ -183,18 +186,10 @@ void NextTiles::Update(const float elapsedTime)
 */
 void NextTiles::Render()
 {
-	// 背景の数だけ繰り返す
-	for (unsigned int i = 0; i < m_pBack.size(); i++)
-	{
-		// 背景の描画
-		m_pBack[i].canvas->Render();
-	}
-	// タイルの数だけ繰り返す
-	for (unsigned int i = 0; i < m_pTile.size(); i++)
-	{
-		// タイルの描画
-		m_pTile[i].canvas->Render();
-	}
+	// 背景の描画
+	for (unsigned int i = 0; i < m_pBack.size(); i++) m_pBack[i].canvas->Render();
+	// タイルの描画
+	for (unsigned int i = 0; i < m_pTile.size(); i++)m_pTile[i].canvas->Render();
 }
 /*
 *	@brief 設置済みタイルを描画
@@ -204,13 +199,8 @@ void NextTiles::Render()
 */
 void NextTiles::DrawPlacedTiles() const
 {
-	// 設置済みタイルの数だけ繰り返す
-	for (unsigned int i = 0; i < m_pPlacedTile.size(); i++)
-	{
-		// 設置済みタイルの描画
-		m_pPlacedTile[i].canvas->Render();
-	}
-
+	// 設置済みタイルの描画
+	for (unsigned int i = 0; i < m_pPlacedTile.size(); i++)	m_pPlacedTile[i].canvas->Render();
 }
 /*
 *	@brief UI追加
@@ -237,14 +227,11 @@ void NextTiles::Add(const std::string& key, const DirectX::SimpleMath::Vector2& 
 	tileInfo.canvas = std::move(userInterface);
 	// テクスチャのキーを設定
 	tileInfo.textureKey = key;
-	// 選択可能ならタイルとして、選択不可なら背景として追加		
+	// 選択可能ならタイルとして追加	
 	if (type == UIType::TILE)m_pTile.push_back(std::move(tileInfo));
+	// 選択不可なら背景として追加		
 	else m_pBack.push_back(std::move(tileInfo));
-
 }
-
-
-
 /*
 *	@brief 定期的にUIを追加する
 *	@details 更新中に定期的に一個UIを追加する
@@ -263,29 +250,29 @@ void NextTiles::AddNextTiles()
 	std::vector<std::string> availableTiles = GetAvailableNextTiles(tileName, m_miniCharacterVelocity);
 	// 接続可能なタイルをランダムに選ぶ
 	std::string selectedTile = GetRandomConnectableTile(availableTiles, m_previousTileName);
-	// Y座標を調整
-	float positionY = 480.0f - (float(m_pTile.size()) * 90.0f);
-	// X座標は固定
-	const float positionX = 290.0f;
 	// 位置を設定
-	Vector2 position(positionX, positionY);
+	Vector2 position(NEW_TILE_POSITION.x, NEW_TILE_POSITION.y - (float(m_pTile.size()) * TILE_SIZE));
 	// 5個たまってたら一番古いタイルを消す
-	if (m_pTile.size() == 5)
+	if (m_pTile.size() == MAX_TILE_STOCK)
 	{
-		// 先頭を削除（eraseで前詰め）
+		// 先頭を削除し,eraseで前詰め
 		m_pTile.erase(m_pTile.begin());
 		// 初期位置も同様
 		m_initialPositions.erase(m_initialPositions.begin());
 	}
 	// UI追加
-	Add(selectedTile, position, Vector2(0.6f), KumachiLib::ANCHOR::MIDDLE_CENTER, UIType::TILE);
+	Add(selectedTile, position, NEXT_TILES_BACK_SIZE, KumachiLib::ANCHOR::MIDDLE_CENTER, UIType::TILE);
 	// 初期位置を保存
 	m_initialPositions.push_back(position);
-	// 位置を詰め直す（必要なら全タイル再配置も検討）
-	for (size_t i = 0; i < m_pTile.size(); i++) {
-		float newY = 480.0f - (float)i * 90.0f;
-		m_pTile[i].canvas->SetPosition(Vector2(positionX, newY));
-		m_initialPositions[i] = Vector2(positionX, newY);
+	// 位置を詰め直す
+	for (size_t i = 0; i < m_pTile.size(); i++)
+	{
+		// Y座標を調整
+		float newY = NEW_TILE_POSITION.y - (float)i * TILE_SIZE;
+		// 座標を再設定
+		m_pTile[i].canvas->SetPosition(Vector2(position.x, newY));
+		// 初期位置も更新
+		m_initialPositions[i] = Vector2(position.x, newY);
 	}
 	// 前回生成したタイル名を更新
 	m_previousTileName = selectedTile;
@@ -300,7 +287,7 @@ void NextTiles::AddToPanel()
 {
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
-	// タイルデータが空でない場合は何もしない
+	// タイルデータが空の場合、以下の処理をする
 	if (m_pCSVMap->GetTileData(m_pMouse->GetHitPanelRowIndex(), m_pMouse->GetHitPanelColIndex()).tileInfo.modelName == "")
 	{
 		// ドラッグ中のタイルをパネルに配置
@@ -319,21 +306,13 @@ void NextTiles::AddToPanel()
 		for (unsigned int i = 0; i < m_pTile.size(); i++)
 		{
 			// Y座標を調整
-			float positionY = 480.0f - (float(i) * 90.0f);
-			// X座標は固定
-			const float positionX = 290.0f;
-			// 位置を設定
-			Vector2 position(positionX, positionY);
+			float positionY = NEW_TILE_POSITION.y - (float)i * TILE_SIZE;
 			// タイルの位置を更新
 			m_pTile[i].canvas->SetPosition(Vector2(m_pTile[i].canvas->GetPosition().x, positionY));
 		}
 	}
-	else
-	{
-		// タイルが既に存在する場合は元の位置に戻す
-		ResetTilePosition();
-	}
-
+	// タイルが既に存在する場合は元の位置に戻す
+	else ResetTilePosition();
 }
 /*
 *	@brief 元の位置にタイルを戻す
@@ -359,7 +338,6 @@ std::vector<std::string> NextTiles::GetAvailableNextTiles(const std::string& cur
 	Direction dir = GetDirectionFromVelocity(velocity);
 	// 接続可能なタイルのリストを返す
 	return TileConnectionTable::GetConnectableTiles(currentTileName, dir);
-
 }
 /*
 *	@brief 速度から進行方向を取得
@@ -370,14 +348,16 @@ std::vector<std::string> NextTiles::GetAvailableNextTiles(const std::string& cur
 Direction NextTiles::GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3& velocity) const
 {
 	// 速度ベクトルのX, Z成分をチェックして進行方向を決定
-	// Z成分が正なら上、負なら下
+	// Z成分が正なら上、
 	if (velocity.z < 0) return Direction::UP;
+	// Z成分が負なら下
 	if (velocity.z > 0) return Direction::DOWN;
-	// X成分が正なら右、負なら左
+	// X成分が正なら右
 	if (velocity.x > 0) return Direction::RIGHT;
+	// X成分が負なら左
 	if (velocity.x < 0) return Direction::LEFT;
 	// 速度ゼロや斜めは例外処理
-	return Direction::UP; // デフォルト
+	return Direction::UP;
 }
 /*
 *	@brief 接続可能なタイルをランダムに取得

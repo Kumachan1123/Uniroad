@@ -13,6 +13,7 @@
 */
 void BlockTile::OnEnter(MiniCharacter* character)
 {
+	// SimpleMath–¼‘O‹óŠÔ‚ğg—p
 	using namespace DirectX::SimpleMath;
 	// 2‰ñ–ÚˆÈ~‚Í‰½‚à‚µ‚È‚¢
 	if (character->HasEnteredTile(this)) return;

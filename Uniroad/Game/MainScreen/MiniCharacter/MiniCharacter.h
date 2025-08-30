@@ -1,3 +1,7 @@
+/*
+*	@file	MiniCharacter.h
+*	@brief	ミニキャラクタークラスのヘッダーファイル
+*/
 #pragma once
 // 標準ライブラリ
 #include <cassert>
@@ -154,6 +158,7 @@ private:
 	// 汗パーティクルのパラメーターを設定する
 	Utility::ParticleParams SetSweatParams() const;
 public:
+	// static関数
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
 	// ノードカウントを取得する
@@ -170,9 +175,32 @@ private:
 	static int s_nodeCount;
 	// 部品カウント
 	static int s_partsNumber;
+	// 回転速度
+	static constexpr float ROTATE_SPEED = 2.0f;
 	// 重力
-	static const float GRAVITY;
+	static constexpr float GRAVITY = -9.8f;
+	// 落下までの時間
+	static constexpr float FALL_TIME = 3.0f;
+	// 揺れの強さ
+	static constexpr float SHAKE_AMOUNT = 0.075f;
+	// 揺れの速さ
+	static constexpr float SHAKE_SPEED = 7.0f;
+	// 揺れ最大進行度到達時間
+	static constexpr float SHAKE_PROGRESS_TIME = 3.0f;
+	// x揺れのベース倍率
+	static constexpr float XSWING_BASE = 0.8f;
+	// x揺れの変調倍率
+	static constexpr float XSWING_MOD = 0.4f;
+	// z揺れの速度倍率
+	static constexpr float ZSWING_SPEED_SCALE = 0.7f;
+	// z揺れのベース倍率
+	static constexpr float ZSWING_BASE = 0.7f;
+	// z揺れの変調倍率
+	static constexpr float ZSWING_MOD = 0.6f;
+	// z揺れの周波数
+	static constexpr float ZSWING_FREQ = 3.1f;
 private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 親

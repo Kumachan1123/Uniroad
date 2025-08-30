@@ -85,14 +85,32 @@ private:
 public:
 	// public定数
 	// ボタンが押されていない状態のインデックス
-	static const int NONE_BUTTON_INDEX;
+	static constexpr int NONE_BUTTON_INDEX = -1;
 private:
 	// private定数
 	// 表示位置（左上）
 	static const std::vector<DirectX::SimpleMath::Vector2> POSITIONS;
 	// 表示サイズ
 	static const std::vector<DirectX::SimpleMath::Vector2> SIZES;
-
+	// ホバー時の拡大率を定義
+	static constexpr float SCALE_ON = 1.125f;
+	// ホバーしていないときの拡大率を定義
+	static constexpr float SCALE_OFF = 1.0f;
+	// 補間係数
+	static constexpr float SCALE_SPEED = 8.0f;
+	// アニメーション関連
+	// アニメーション初期待機
+	static constexpr float ANIMATION_WAIT_TIME = 1.0f;
+	// アニメーション移動時間
+	static constexpr float ANIMATION_MOVE_DURATION = 1.0f;
+	// アニメーション開始Y座標
+	static constexpr float ANIMATION_START_Y = 2.5f;
+	// アニメーション第1移動オフセット
+	static constexpr float ANIMATION_MOVE_OFFSET_1 = 0.5f;
+	// アニメーション第2移動オフセット
+	static constexpr float ANIMATION_MOVE_OFFSET_2 = 0.1f;
+	// アニメーション終了Y座標
+	static constexpr float ANIMATION_END_Y = 1.5f;
 private:
 	// private変数
 	// 共通リソース 

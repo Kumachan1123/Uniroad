@@ -134,7 +134,8 @@ void MiniCharacterBase::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 *	@return ‚È‚µ
 */
 void MiniCharacterBase::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
-{	// ƒm[ƒh‚ð•`‰æ‚·‚é
+{
+	// ƒm[ƒh‚ð•`‰æ‚·‚é
 	for (auto& node : m_nodes)node->Render(view, proj);
 }
 /*

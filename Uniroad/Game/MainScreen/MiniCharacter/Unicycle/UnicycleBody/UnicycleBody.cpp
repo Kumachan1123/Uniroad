@@ -50,16 +50,14 @@ UnicycleBody::~UnicycleBody()
 */
 void UnicycleBody::Initialize(CommonResources* commonResources)
 {
-	// 必要な名前空間を使用
-	using namespace DirectX;
 	// 共通リソースへのポインタが有効であることを確認する
 	assert(commonResources);
 	// 共通リソースへのポインタを設定する
 	m_pCommonResources = commonResources;
 	// モデルを読み込む
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Unicycle_Body");
-	// 頭部を追加
-	Attach(std::make_unique<UnicycleWheel>(this, DirectX::SimpleMath::Vector3(0.0f, -0.85f, 0.0f), 0.0f));
+	// タイヤを追加
+	Attach(std::make_unique<UnicycleWheel>(this, MiniCharacterParameters::UNICYCLE_WHEEL_POSITION, 0.0f));
 }
 /*
 *	@brief 一輪車の車体クラスの更新を行う
@@ -80,40 +78,62 @@ void UnicycleBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3&
 	// シャドウマップにモデルを登録する
 	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
 	// 「胴体」部品を更新する
-	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
-	{
-		// 部品を更新する
-		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	}
+	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
-
+/*
+*	@brief 一輪車の車体クラスの描画を行う
+*	@details 一輪車の車体クラスの描画を行う
+*	@param view ビュー行列
+*	@param proj プロジェクション行列
+*	@return なし
+*/
 void UnicycleBody::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	// DirectX名前空間のSimpleMathを使用する
 	using namespace DirectX::SimpleMath;
+	// Direct3Dデバイスコンテキストを取得
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
 	auto states = m_pCommonResources->GetCommonStates();
-
 	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(1) *
+	m_worldMatrix = Matrix::CreateScale(Vector3::One) *
 		Matrix::CreateFromQuaternion(m_currentAngle) *
 		Matrix::CreateTranslation(m_currentPosition);
+	// モデルを描画する
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
-	for (auto& part : m_pMiniCharacterParts)
-	{
-		part->Render(view, proj);
-	}
+	// 部品を描画する
+	for (auto& part : m_pMiniCharacterParts)part->Render(view, proj);
 }
-
+/*
+*	@brief 一輪車の車体クラスに部品を追加する
+*	@details 一輪車の車体クラスに部品を追加する
+*	@param MiniCharacterPart 追加する部品のコンポーネント
+*	@return なし
+*/
 void UnicycleBody::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
+	// 部品を初期化する
 	MiniCharacterPart->Initialize(m_pCommonResources);
+	// 部品を追加する
 	m_pMiniCharacterParts.emplace_back(std::move(MiniCharacterPart));
 }
-
+/*
+*	@brief 一輪車の車体クラスから部品を削除する
+*	@details 一輪車の車体クラスから部品を削除する
+*	@param MiniCharacterPart 削除する部品のコンポーネント
+*	@return なし
+*/
 void UnicycleBody::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
+	// 今は何もしない
 }
-
+/*
+*	@brief 一輪車の車体クラスの後処理を行う
+*	@details 一輪車の車体クラスの後処理を行う
+*	@param なし
+*	@return なし
+*/
 void UnicycleBody::Finalize()
 {
+	// 今は何もしない
 }

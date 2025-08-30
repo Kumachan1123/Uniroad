@@ -103,7 +103,6 @@ void SceneManager::ChangeScene(IScene::SceneID sceneID)
 */
 void SceneManager::CreateScene(IScene::SceneID sceneID)
 {
-
 	// 現在のシーンがnullptrであることを確認
 	assert(m_pCurrentScene == nullptr);
 	// シーンIDによって処理を分ける
@@ -135,9 +134,11 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		assert(!"SceneManager::CreateScene::シーン名が存在しません！");
 		// no break
 	}
-
-
+	// シーンがnullptrでないことを確認
+	assert(m_pCurrentScene);
+	// シーンを初期化する
 	m_pCurrentScene->Initialize(m_pCommonResources);
+	// シーンIDを設定する
 	SetSceneID(sceneID);
 }
 /*

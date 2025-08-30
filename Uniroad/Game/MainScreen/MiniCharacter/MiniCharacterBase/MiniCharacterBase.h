@@ -1,3 +1,7 @@
+/*
+*	@file	MiniCharacterBase.h
+*	@brief	ミニキャラクターのベースクラス
+*/
 #pragma once
 // 標準ライブラリ
 #include <cassert>
@@ -28,7 +32,6 @@ class CommonResources;
 // ミニキャラクターのベースクラス
 class MiniCharacterBase : public IComposite
 {
-
 public:
 	// アクセサ
 	// ノード番号を取得する
@@ -104,6 +107,7 @@ public:
 	// カメラのポインターを設定する
 	void SetCamera(ICamera* camera) { m_pCamera = camera; }
 public:
+	// public関数
 	// コンストラクタ
 	MiniCharacterBase(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -121,6 +125,7 @@ public:
 	// 後処理を行う
 	void Finalize();
 private:
+	// private変数
 	// 親
 	IComponent* m_pParent;
 	// 共通リソース

@@ -34,9 +34,15 @@ void GoalTile::OnExit(MiniCharacter* character)
 	// フラグを解除する
 	character->ResetEnteredTiles();
 }
-
+/*
+*	@brief タイルの中心に来たときの処理
+*	@details キャラクターがこのタイルの中心に来たときの処理を定義する。
+*	@param character タイルの中心に来たキャラクターへのポインタ
+*	@return なし
+*/
 void GoalTile::OnCenterReached(MiniCharacter* character)
 {
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(character);
@@ -47,17 +53,12 @@ void GoalTile::OnCenterReached(MiniCharacter* character)
 	// 表情をハッピーにする
 	character->SetExpression(MiniCharacter::Expression::HAPPY);
 	// 5秒後にゲームクリアのフラグを立てる
-	if (character->GetGameClearSwitchTime() > 5.0f)
+	if (character->GetGameClearSwitchTime() > GAME_CLEAR_SWITCH_TIME)
 	{
 		// ベースクラスのポインターを取得
 		const auto& pMinicharacterBase = dynamic_cast<MiniCharacterBase*>(character->GetParent());
-		// ベースクラスのポインターが取れたら
-		if (pMinicharacterBase)
-		{
-			// ゲームクリアフラグを立てる
-			pMinicharacterBase->SetGameClear(true);
-
-		}
+		// ベースクラスのポインターが取れたらゲームクリアフラグを立てる
+		if (pMinicharacterBase)	pMinicharacterBase->SetGameClear(true);
 		// 取れなかったらエラー
 		else assert(false && "MiniCharacterBase is not set correctly.");
 	}

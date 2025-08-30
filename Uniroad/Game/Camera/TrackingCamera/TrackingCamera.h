@@ -1,7 +1,6 @@
 /*
 *	@file TrackingCamera.h
 *	@brief 追従カメラクラス
-*	@details 特定の方向を持ち、常に対象を追いかけシーンを描画する
 */
 #pragma once
 // 自作ヘッダーファイル
@@ -41,8 +40,11 @@ public:
 	// カメラのパラメータを設定する
 	void SetCameraParameters(float distance, float height, float angle)
 	{
+		// カメラの距離を設定
 		m_cameraDistance = distance;
+		// カメラの高さを設定
 		m_cameraHeight = height;
+		// カメラの角度を設定
 		m_cameraAngle = angle;
 	}
 public:
@@ -55,7 +57,6 @@ public:
 	void Initialize(int screenWidth, int screenHeight);
 	// 更新する
 	void Update();
-
 private:
 	// private関数
 	// ビュー行列を計算する
@@ -70,6 +71,8 @@ private:
 	static const float DEFAULT_CAMERA_HEIGHT;
 	// カメラの角度（Y軸回転）
 	static const float DEFAULT_CAMERA_ANGLE;
+	// 追従速度
+	static const float FOLLOW_SPEED;
 private:
 	// privateメンバ変数
 	// 相対スケール

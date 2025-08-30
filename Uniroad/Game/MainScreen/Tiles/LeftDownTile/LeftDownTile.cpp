@@ -12,6 +12,7 @@
 */
 void LeftDownTile::OnEnter(MiniCharacter* character)
 {
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this))
@@ -43,11 +44,12 @@ void LeftDownTile::OnExit(MiniCharacter* character)
 */
 void LeftDownTile::OnCenterReached(MiniCharacter* character)
 {
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 左方向からタイルに入ったら下に方向転換
 	if (character->GetVelocity().x > 0.0f)
-		character->SetVelocity(Vector3(0.0f, 0.0f, 1.0f));
+		character->SetVelocity(Vector3::Backward);
 	// 下方向からタイルに入ったら左に方向転換
 	else if (character->GetVelocity().z < 0.0f)
-		character->SetVelocity(Vector3(-1.0f, 0.0f, 0.0f));
+		character->SetVelocity(Vector3::Left);
 }

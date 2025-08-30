@@ -15,8 +15,8 @@ class ShadowMapLight;
 // アイテムベースクラス
 class ItemBase
 {
-	// アクセサ
 public:
+	// アクセサ
 	// アイテムの位置を取得する
 	virtual const DirectX::SimpleMath::Vector3& GetPosition() const = 0;
 	// アイテムの位置を設定する
@@ -45,7 +45,6 @@ public:
 	virtual ShadowMapLight* GetShadowMapLight() const = 0;
 	// シャドウマップライトを設定する
 	virtual void SetShadowMapLight(ShadowMapLight* shadowMapLight) = 0;
-
 public:
 	// public関数
 	// デストラクタ
@@ -62,5 +61,4 @@ public:
 	virtual void OnUse(MiniCharacter* miniCharacter) = 0;
 	// アイテムを破棄したときの処理
 	virtual void OnDiscard(MiniCharacter* miniCharacter) = 0;
-
 };

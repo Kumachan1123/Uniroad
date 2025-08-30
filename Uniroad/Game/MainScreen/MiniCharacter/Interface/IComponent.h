@@ -3,15 +3,18 @@
 *	@brief ミニキャラクターの部品インターフェース
 */
 #pragma once
+// 前方宣言
 class CommonResources;
 class CSVMap;
 class CSVItem;
 class NextTiles;
 class ShadowMapLight;
+
 // IComponentインターフェースを定義する
 class IComponent
 {
 public:
+	// アクセサ
 	// ノード番号を取得する
 	virtual int GetNodeNumber() const = 0;
 	// 部品IDを取得する
@@ -46,8 +49,8 @@ public:
 	virtual ShadowMapLight* GetShadowMapLight() = 0;
 	// 移動フラグを取得
 	virtual bool IsMoving() const = 0;
-
 public:
+	// public関数
 	// 仮想デストラクタ
 	virtual ~IComponent() = default;
 	// 初期化する

@@ -12,7 +12,6 @@
 #include "Game/Particle/Utility.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 
-
 // 前方宣言
 class CommonResources;
 
@@ -49,7 +48,6 @@ public:
 	ShadowMapLight* GetShadowMapLight() const override { return m_pShadowMapLight; }
 	// シャドウマップライトを設定する
 	void SetShadowMapLight(ShadowMapLight* shadowMapLight) override { m_pShadowMapLight = shadowMapLight; }
-
 public:
 	// public関数
 	// コンストラクタ
@@ -78,6 +76,18 @@ private:
 	static constexpr float DEFAULT_ROTATION_SPEED = 1.0f;
 	// 獲得されて消えるまでの回転速度
 	static constexpr float COLLECTED_ROTATION_SPEED = 100.0f;
+	// 獲得されてから上昇するまでの時間
+	static constexpr float COLLECTED_RISE_DURATION = 3.0f;
+	// 獲得されてから消えるまでの時間
+	static constexpr float DELETE_TIME_THRESHOLD = 2.0f;
+	// 回転する角度
+	static constexpr float ROTATION_ANGLE = DirectX::XM_PI * 2.0f / 5.0f;
+	// パーティクルの最小速度
+	static constexpr float PARTICLE_MIN_SPEED = 0.5f;
+	// パーティクルの最大速度
+	static constexpr float PARTICLE_MAX_SPEED = 2.0f;
+	// パーティクルの寿命
+	static constexpr float PARTICLE_LIFE = 1.0f;
 private:
 	// private変数
 	// 共通リソースへのポインタ

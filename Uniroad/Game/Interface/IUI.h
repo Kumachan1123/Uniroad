@@ -17,8 +17,6 @@ class CommonResources;
 // UIのインターフェースクラス
 class IUI
 {
-
-
 public:
 	// public関数
 	// デストラクタ

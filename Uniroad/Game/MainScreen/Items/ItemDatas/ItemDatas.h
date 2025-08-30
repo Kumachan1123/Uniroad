@@ -1,5 +1,9 @@
+/*
+*	@file	ItemDatas.h
+*	@brief	アイテムの情報構造体をまとめたヘッダーファイル
+*/
 #pragma once
-// // 標準ライブラリ
+// 標準ライブラリ
 #include <string>
 // DirectX
 #include <SimpleMath.h>
@@ -7,23 +11,30 @@
 
 // 前方宣言
 class ItemBase;
+
 // アイテムの情報構造体
 struct  ItemInfo
 {
-	std::string modelName;                   // 使用するモデル名
-	bool hasCollision = false;              // 当たり判定を持つか
-	DirectX::SimpleMath::Vector3 scale = { 1.0f, 1.0f, 1.0f }; // スケーリング
+	// 使用するモデル名
+	std::string modelName;
+	// スケーリング
+	DirectX::SimpleMath::Vector3 scale = { 1.0f, 1.0f, 1.0f };
 };
 // アイテムのレンダリングデータ構造体
 struct  ItemRenderData
 {
+	// モデルデータ
 	DirectX::Model* model;
+	// ワールド行列
 	DirectX::SimpleMath::Matrix world;
 };
 // マップの1マス分の情報
 struct MapItemData
 {
-	ItemInfo itemInfo;               // その場所のアイテムの種類（Block、Start、Goalなど）
-	DirectX::SimpleMath::Vector3 pos; // そのマスのワールド座標
-	std::unique_ptr<ItemBase> itemBasePtr = nullptr; // アイテムのベースクラスへのポインタ
+	// その場所のアイテムの種類（Block、Start、Goalなど）
+	ItemInfo itemInfo;
+	// そのマスのワールド座標
+	DirectX::SimpleMath::Vector3 pos;
+	// アイテムのベースクラスへのポインタ
+	std::unique_ptr<ItemBase> itemBasePtr = nullptr;
 };

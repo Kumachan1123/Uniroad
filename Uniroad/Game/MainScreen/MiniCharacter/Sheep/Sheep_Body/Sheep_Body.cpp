@@ -23,7 +23,7 @@ SheepBody::SheepBody(IComponent* parent, const DirectX::SimpleMath::Vector3& ini
 	, m_initialPosition(initialPosition)// 初期位置
 	, m_time(0.0f) // 時間
 	, m_initialAngle(DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Up, initialAngle)) // 初期角度
-	, m_currentPosition{ 0.0f, 0.0f, 0.0f } // 現在の位置
+	, m_currentPosition{ DirectX::SimpleMath::Vector3::Zero } // 現在の位置
 	, m_currentAngle{} // 現在の角度
 	, m_mass(0.0f) // 質量
 {
@@ -55,10 +55,9 @@ void SheepBody::Initialize(CommonResources* commonResources)
 	// モデルを読み込む
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Sheep_Body");
 	// 頭部を追加
-	Attach(std::make_unique<SheepHead>(this, Vector3(0.0f, 1.0f, 0.0f), 0.0f));
+	Attach(std::make_unique<SheepHead>(this, MiniCharacterParameters::HEAD_POSITION, 0.0f));
 	// 一輪車の胴体を追加
-	Attach(std::make_unique<UnicycleBody>(this, Vector3(0.0f, -1.0f, 0.0f), 0.0f));
-
+	Attach(std::make_unique<UnicycleBody>(this, MiniCharacterParameters::UNICYCLE_BODY_POSITION, 0.0f));
 }
 /*
 *	@brief 更新する
@@ -79,7 +78,7 @@ void SheepBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	// 現在の角度を更新する
 	m_currentAngle = m_rotationBodyAngle * currentAngle;
 	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(1) * // スケール行列を生成
+	m_worldMatrix = Matrix::CreateScale(Vector3::One) * // スケール行列を生成
 		Matrix::CreateFromQuaternion(m_currentAngle) * // 回転行列を生成
 		Matrix::CreateTranslation(m_currentPosition); // 平行移動行列を生成
 	// ベースを取得する
@@ -87,11 +86,7 @@ void SheepBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	// シャドウマップにモデルを登録する
 	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
 	// 「胴体」部品を更新する
-	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
-	{
-		// 部品を更新する
-		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	}
+	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
 /*
 *	@brief 部品を追加する
@@ -125,7 +120,7 @@ void SheepBody::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 */
 void SheepBody::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// DirectX::SimpleMathを使用するための名前空間を指定
+	// SimpleMathを使用するための名前空間を指定
 	using namespace DirectX::SimpleMath;
 	/// Direct3Dデバイスコンテキストを取得
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();

@@ -24,7 +24,8 @@ PlayScene::PlayScene(IScene::SceneID sceneID)
 	, m_nowSceneID(sceneID)// 現在のシーンID
 	, m_stageNumber(-1) // ステージ番号
 	, m_isPlayResultSE(false) // リザルト効果音再生フラグ
-
+	, m_skyPosition(DirectX::SimpleMath::Vector3(0.0f, 10.0f, 0.0f)) // 天球の座標
+	, m_skyScale(DirectX::SimpleMath::Vector3(0.1f, 0.1f, 0.1f)) // 天球のスケール
 {}
 /*
 *	@brief デストラクタ
@@ -59,9 +60,9 @@ void PlayScene::Initialize(CommonResources* resources)
 	// 空を初期化する
 	m_pSky->Initialize();
 	// 空の位置を設定
-	m_pSky->SetPosition(Vector3(0.0f, 10.0f, 0.0f));
+	m_pSky->SetPosition(m_skyPosition);
 	// 天球のスケールを設定
-	m_pSky->SetScale(Vector3(0.1f));
+	m_pSky->SetScale(m_skyScale);
 	// マウスを作成する
 	m_pMouse = std::make_unique<MyMouse>();
 	// マウスを初期化する
@@ -85,7 +86,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// CSVアイテムを読み込む
 	m_pCSVItem->LoadItem("Resources/Item/" + stagePath + "_item.csv");
 	// ミニキャラを作成する
-	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3::Zero, 0.0f);
 	// ミニキャラベースにCSVマップを設定
 	m_pMiniCharacterBase->SetCSVMap(m_pCSVMap.get());
 	// ミニキャラベースにCSVアイテムを設定
@@ -97,7 +98,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3(0.0f, 0.0f, 0.0f), 0.0f));
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3::Zero, 0.0f));
 	// ミニキャラのカメラ追従位置をスタート地点にする
 	m_pMiniCharacterBase->SetCameraPosition(m_pCSVMap->GetStart().pos);
 	// 操作画面の背景を作成する
@@ -149,7 +150,7 @@ void PlayScene::Initialize(CommonResources* resources)
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
 	// パーティクルを作成する
-	m_pConfetti = std::make_unique<Particle>(Utility::Type::CONFETTI, 200);
+	m_pConfetti = std::make_unique<Particle>(Utility::Type::CONFETTI, MAX_CONFETTI);
 	// パーティクルを初期化する
 	m_pConfetti->Initialize(m_pCommonResources);
 	// BGMを再生する
@@ -158,7 +159,6 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pCountDown = std::make_unique<CountDown>();
 	// カウントダウンを初期化する
 	m_pCountDown->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
-
 }
 /*
 *   @brief 更新処理
@@ -181,11 +181,11 @@ void PlayScene::Update(float elapsedTime)
 	// カウントダウンの更新
 	if (m_pFade->GetState() == Fade::FadeState::None)m_pCountDown->Update(elapsedTime);
 	// 5秒未満ならこれ以降の更新は行わない
-	if (m_time > elapsedTime * 2 && m_time < 5.0f)	return;
+	if (m_time > elapsedTime * 2 && m_time < COUNTDOWN_TIME)	return;
 	// カメラ用の座標をシャドウマップライトに設定
 	Vector3 playerPosition = m_pMiniCharacterBase->GetCameraPosition();
 	// シャドウマップライト更新
-	m_pShadowMapLight->SetLightPosition(Vector3(playerPosition.x, 30.0f, playerPosition.z));
+	m_pShadowMapLight->SetLightPosition(playerPosition + SHADOWMAPLIGHT_POSITION);
 	// 空の更新
 	m_pSky->Update(elapsedTime);
 	// スピードアップボタンの更新
@@ -219,7 +219,6 @@ void PlayScene::Update(float elapsedTime)
 				m_pCommonResources->GetAudioManager()->PlaySound("GameOverBGM", m_pCommonResources->GetSettingManager()->GetBGMVolume());
 			}
 		}
-
 		// スピードアップボタンを強制的にオフにする
 		m_pSpeedUpButton->SetPressed(false);
 		// リザルトUIが無効な場合
@@ -249,10 +248,10 @@ void PlayScene::Update(float elapsedTime)
 			m_pConfetti->SetParams(SetConfettiParams());
 			m_pConfetti->Update(elapsedTime);
 			// カメラの位置を調整
-			m_pFixedCameraResult->SetCameraDistance(Vector3(0.0f, 5.75f, 10.0f));
+			m_pFixedCameraResult->SetCameraDistance(FIXEDCAMERA_RESULT_OFFSET);
 			// カメラのターゲット位置をミニキャラのカメラ位置に設定
 			Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
-			m_pFixedCameraResult->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 3.0f, targetPos.z));
+			m_pFixedCameraResult->SetTargetPosition(Vector3(targetPos + FIXEDCAMERA_RESULT_TARGET_OFFSET));
 			// カメラの座標を更新
 			m_pFixedCameraResult->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCameraResult->GetCameraDistance());
 			// 次のステージ番号を取得
@@ -297,7 +296,7 @@ void PlayScene::Update(float elapsedTime)
 		m_pFade->SetState(Fade::FadeState::FadeOut);
 		// 押された状態を解除
 		m_pResultButton->SetPressed(false);
-		// BGMの停止
+		// 各BGMの停止
 		m_pCommonResources->GetAudioManager()->StopSound("GameClearBGM", 1.0f);
 		m_pCommonResources->GetAudioManager()->StopSound("GameOverBGM", 1.0f);
 		// ボタンクリック音再生
@@ -405,7 +404,6 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 	// シーン変更がある場合
 	if (m_isChangeScene)
 	{
-
 		// 遷移先のシーン番号によって分岐
 		switch (m_pResultButton->GetSceneNum())
 		{
@@ -416,7 +414,6 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 			// ステージセレクト画面へ
 			return IScene::SceneID::STAGESELECT;
 		}
-
 	}
 	// シーン変更がない場合何もしない
 	return IScene::SceneID::NONE;
@@ -429,26 +426,28 @@ IScene::SceneID PlayScene::GetNextSceneID() const
 */
 void PlayScene::CreateCamera()
 {
+	// DirectX名前空間のエイリアス
 	using namespace DirectX;
+	// SimpleMath名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// プレイ中の固定カメラを作成する
 	m_pFixedCameraPlay = std::make_unique<FixedCamera>();
-	m_pFixedCameraPlay->Initialize((int)(rect.right * 0.7f), rect.bottom);
+	m_pFixedCameraPlay->Initialize((int)(rect.right * Display::RATIO_MAIN_SCREEN_WIDTH), rect.bottom);
 	// リザルト用固定カメラを作成する
 	m_pFixedCameraResult = std::make_unique<FixedCamera>();
 	m_pFixedCameraResult->Initialize(rect.right, rect.bottom);
 	// 射影行列(ゲーム画面用)を作成する
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right * 0.7f) / static_cast<float>(rect.bottom),
+		static_cast<float>(rect.right * Display::RATIO_MAIN_SCREEN_WIDTH) / static_cast<float>(rect.bottom),
 		0.1f, 1000.0f
 	);
 	// 射影行列(操作画面用)を作成する
 	m_projectionControll = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right * 0.3f) / static_cast<float>(rect.bottom),
+		static_cast<float>(rect.right * Display::RATIO_CONTROLL_SCREEN_WIDTH) / static_cast<float>(rect.bottom),
 		0.1f, 1000.0f
 	);
 	// 射影行列(リザルト用)を作成する
@@ -477,7 +476,7 @@ void PlayScene::CreateViewports()
 	viewportLeft.TopLeftX = 0;
 	viewportLeft.TopLeftY = 0;
 	// 幅と高さを設定
-	viewportLeft.Width = (FLOAT)rect.right * 0.7f; // 左7割
+	viewportLeft.Width = (FLOAT)rect.right * Display::RATIO_MAIN_SCREEN_WIDTH;
 	viewportLeft.Height = (FLOAT)rect.bottom;
 	// 深度の範囲を設定
 	viewportLeft.MinDepth = 0.0f;
@@ -487,10 +486,10 @@ void PlayScene::CreateViewports()
 	// --- 右側: 操作画面用ビューポートの設定 ---
 	D3D11_VIEWPORT viewportRight = {};
 	// 左上の座標を設定
-	viewportRight.TopLeftX = (FLOAT)rect.right * 0.7f;
+	viewportRight.TopLeftX = (FLOAT)rect.right * Display::RATIO_MAIN_SCREEN_WIDTH;
 	viewportRight.TopLeftY = 0;
 	// 幅と高さを設定
-	viewportRight.Width = (FLOAT)rect.right * 0.3f; // 右3割
+	viewportRight.Width = (FLOAT)rect.right * Display::RATIO_CONTROLL_SCREEN_WIDTH;
 	viewportRight.Height = (FLOAT)rect.bottom;
 	// 深度の範囲を設定
 	viewportRight.MinDepth = 0.0f;
@@ -525,8 +524,9 @@ void PlayScene::DrawDebugString()
 */
 Utility::ParticleParams PlayScene::SetConfettiParams()
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// SimpleMath名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 乱数の設定
 	std::random_device seed;
@@ -534,28 +534,34 @@ Utility::ParticleParams PlayScene::SetConfettiParams()
 	// ランダムな角度
 	std::uniform_real_distribution<> angleDist(0, XM_2PI);
 	// ランダムなXY平面の速度の大きさ
-	std::uniform_real_distribution<> horizSpeedDist(0.8f, 1.5f);
+	std::uniform_real_distribution<> horizSpeedDist(CONFETTI_HORIZ_SPEED_RANGE.x, CONFETTI_HORIZ_SPEED_RANGE.y);
 	// ランダムなX座標
-	std::uniform_real_distribution<> xDist(-15.0f, 15.0f);
+	std::uniform_real_distribution<> xDist(CONFETTI_X_RANGE.x, CONFETTI_X_RANGE.y);
 	// ランダムなZ座標
-	std::uniform_real_distribution<> zDist(-1.8f, 1.8f);
+	std::uniform_real_distribution<> zDist(CONFETTI_Z_RANGE.x, CONFETTI_Z_RANGE.y);
 	// ランダムな回転スピード
-	std::uniform_real_distribution<> rotSpeedDist(-2.5f, 2.5f);
+	std::uniform_real_distribution<> rotSpeedDist(CONFETTI_ROT_SPEED_RANGE.x, CONFETTI_ROT_SPEED_RANGE.y);
 	// ランダムなスケール
-	std::uniform_real_distribution<> scaleDist(0.35f, 0.7f);
+	std::uniform_real_distribution<> scaleDist(CONFETTI_SCALE_RANGE.x, CONFETTI_SCALE_RANGE.y);
 	// ランダムな色
-	std::uniform_real_distribution<> colorDist(0.7f, 1.0f);
+	std::uniform_real_distribution<> colorDist(CONFETTI_COLOR_RANGE.x, CONFETTI_COLOR_RANGE.y);
+	// ランダムなパラメーターを生成
+	// XY平面のランダムな角度
 	float randAngleXY = static_cast<float>(angleDist(engine));
+	// XY平面のランダムな速度の大きさ
 	float horizSpeed = static_cast<float>(horizSpeedDist(engine));
+	// ランダムなX座標
 	float randX = static_cast<float>(xDist(engine));
+	// ランダムなZ座標
 	float randZ = static_cast<float>(zDist(engine));
+	// ランダムなスケール
 	float scale = static_cast<float>(scaleDist(engine));
-	// ゲーミングカラー
+	// 多色発光
 	Vector4 gamingColor(
 		static_cast<float>(colorDist(engine)),
 		static_cast<float>(colorDist(engine)),
 		static_cast<float>(colorDist(engine)),
-		static_cast<float>(0.75f + colorDist(engine) * 0.15f)
+		static_cast<float>(CONFETTI_START_ALPHA + colorDist(engine) * CONFETTI_ALPHA_RANGE)
 	);
 	// ランダムな回転速度
 	Vector3 rotateSpeed(
@@ -566,19 +572,19 @@ Utility::ParticleParams PlayScene::SetConfettiParams()
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = Vector3(
 		cosf(randAngleXY) * horizSpeed,  // X成分
-		0.0f,                         // Y成分（上方向に初速）
+		0.0f,							 // Y成分（上方向に初速）
 		sinf(randAngleXY) * horizSpeed   // Z成分
 	);
 	// パーティクルのパラメーターを設定して返す
 	Utility::ParticleParams params{};
-	params.life = 3.5f;
-	params.pos = Vector3(randX, 7.0f, randZ);  // 高さ7から広がって生える
+	params.life = CONFETTI_LIFE;
+	params.pos = Vector3(randX, CONFETTI_Y_START, randZ);  // 高さ7から広がって生える
 	params.velocity = randomVelocity;
-	params.accele = Vector3(0.0f, -9.8f * 0.4f, 0.0f); // 重力はやや弱め（ひらひら感）
+	params.accele = Vector3(0.0f, CONFETTI_GRAVITY, 0.0f); // 重力はやや弱め（ひらひら感）
 	params.rotateAccele = rotateSpeed; // 回転加速度なし（一定速度でひらひら）
 	params.rotate = rotateSpeed; // 初期回転
-	params.startScale = Vector3(scale, scale, 0.0f);
-	params.endScale = Vector3(scale * 0.7f, scale * 0.7f, 0.0f); // 少しだけ縮む
+	params.startScale = Vector3(scale, scale, 0.0f); // ランダムなスケール
+	params.endScale = Vector3(scale * CONFETTI_END_SCALE_RATIO, scale * CONFETTI_END_SCALE_RATIO, 0.0f); // 少しだけ縮む
 	params.startColor = gamingColor; // 虹色ゲーミングカラー
 	params.endColor = Vector4(gamingColor.x, gamingColor.y, gamingColor.z, 0.0f); // 色はそのまま透明へ
 	params.type = Utility::Type::CONFETTI; // パーティクルのタイプ

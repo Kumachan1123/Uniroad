@@ -11,6 +11,9 @@
 class StraightVerticalTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
+	StraightVerticalTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;
 	// プレイヤーがこのタイルから出たときの処理

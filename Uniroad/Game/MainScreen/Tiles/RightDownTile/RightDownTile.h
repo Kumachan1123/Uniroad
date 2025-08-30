@@ -11,6 +11,8 @@
 class RightDownTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	RightDownTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;

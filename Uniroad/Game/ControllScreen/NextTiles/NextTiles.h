@@ -6,6 +6,7 @@
 // 標準ライブラリ
 #include <vector>
 #include <string>
+#include <random>
 // DirectX
 #include <DeviceResources.h>
 #include <SimpleMath.h>
@@ -18,7 +19,7 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/ControllScreen/Canvas/Canvas.h"
 #include "Game/Interface/IGameUI.h"
-#include "Game/Screen/Screen.h"
+#include "Game/Display/Display.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/Mouse/Mouse.h"
 #include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
@@ -32,13 +33,13 @@ class CommonResources;
 class NextTiles : public IGameUI
 {
 private:
+	// private構造体
 	// タイル情報を保持する構造体
 	struct TileInfo
 	{
 		std::string textureKey; // テクスチャのキー
 		std::unique_ptr<Canvas> canvas; // キャンバスオブジェクト
 	};
-
 public:
 	// アクセサ
 	// UIにヒットしたかどうか取得
@@ -90,6 +91,22 @@ private:
 	Direction GetDirectionFromVelocity(const DirectX::SimpleMath::Vector3& velocity) const;
 	// 接続可能なタイルを抽選
 	std::string GetRandomConnectableTile(const std::vector<std::string>& availableTiles, const std::string& previousTileName) const;
+private:
+	// private定数
+	// 次のタイルUIの背景の位置
+	static constexpr DirectX::SimpleMath::Vector2 NEXT_TILES_BACK_POS = DirectX::SimpleMath::Vector2(290.0f, 300.0f);
+	// 次のタイルUIの背景のサイズ
+	static constexpr DirectX::SimpleMath::Vector2 NEXT_TILES_BACK_SIZE = DirectX::SimpleMath::Vector2(0.6f, 0.6f);
+	// タイルの最大ストック数
+	static constexpr int MAX_TILE_STOCK = 5;
+	// タイル未選択時の値
+	static constexpr int TILE_NOT_SELECTED = -1;
+	// 新しいタイルの生成間隔（秒）
+	static constexpr float NEW_TILE_INTERVAL = 1.5f;
+	// 新しいタイルの生成位置
+	static constexpr DirectX::SimpleMath::Vector2 NEW_TILE_POSITION = DirectX::SimpleMath::Vector2(290.0f, 480.0f);
+	// タイル一枚当たりのサイズ
+	static constexpr float TILE_SIZE = 90.0f;
 private:
 	// private関数
 	// デバイスリソース

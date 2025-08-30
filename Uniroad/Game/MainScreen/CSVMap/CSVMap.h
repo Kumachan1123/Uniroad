@@ -18,7 +18,6 @@
 #include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
-#include "KumachiLib/DrawCollision/DrawCollision.h"
 #include "Game/MainScreen/Tiles/TileDatas/TileDatas.h"
 #include "Game/MainScreen/Tiles/TileFactory/TileFactory.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
@@ -40,8 +39,10 @@ public:
 	// 指定座標の列番号を取得する
 	int GetColFromPosition(const DirectX::SimpleMath::Vector3& pos) const;
 	// マップの最大列数と行数を取得する
-	const int GetMaxCol() const { return MAXCOL; }// 列数
-	const int GetMaxRow() const { return MAXRAW; }// 行数
+	// 列数
+	const int GetMaxCol() const { return MAXCOL; }
+	// 行数
+	const int GetMaxRow() const { return MAXRAW; }
 	// 指定した位置に指定したモデルを配置する
 	void SetTileModel(int row, int col, const std::string& modelName);
 	// スタート地点を返す
@@ -60,19 +61,16 @@ public:
 	~CSVMap();
 	// CSV形式のマップを読み込む
 	void LoadMap(const std::string& filePath);
-	// 当たり判定描画
-	void DrawCollision(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 描画
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 private:
 	// private関数
 	// 辞書を初期化する
 	void InitializeTileDictionary();
-
 private:
 	// private定数
 	// 場外のタイルデータ
-	const MapTileData m_outOfMapData = { {""},DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f) };
+	const MapTileData OUT_OF_MAP_DATA = { {""},DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f) };
 	//マップ
 	const int MAXCOL = 5;
 	const int MAXRAW = 5;
@@ -88,5 +86,4 @@ private:
 	std::vector<TileRenderData> m_tiles;
 	// マップデータ
 	std::vector<std::vector<MapTileData>> m_mapData;
-
 };

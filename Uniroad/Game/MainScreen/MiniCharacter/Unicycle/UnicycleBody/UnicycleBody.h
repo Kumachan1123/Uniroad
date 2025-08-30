@@ -19,12 +19,16 @@
 #include "Game/Scenes/PlayScene/PlayScene.h"
 #include "Game/MainScreen/MiniCharacter/Interface/IComposite.h"
 #include "Game/MainScreen/MiniCharacter/Unicycle/UnicycleBody/UnicycleBody.h"
+#include "Game/MainScreen/MiniCharacter/Parameters/Parameters.h"
 
+// 前方宣言
 class CommonResources;
 
+// 一輪車の車体クラス
 class UnicycleBody : public IComposite
 {
 public:
+	// アクセサ
 	// ノード番号を取得する
 	int GetNodeNumber() const { return m_nodeNumber; }
 	// 部品IDを取得する
@@ -62,6 +66,7 @@ public:
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:
+	// public関数
 	// コンストラクタ
 	UnicycleBody(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -79,6 +84,7 @@ public:
 	// 後処理を行う
 	void Finalize();
 private:
+	// private変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
 	// 親

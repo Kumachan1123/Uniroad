@@ -9,10 +9,7 @@
 #include <random>
 // DirectXライブラリ
 #include <SimpleMath.h>
-// 外部ライブラリ
 #include <DeviceResources.h>
-
-
 
 // パーティクルユーティリティクラス
 class Utility
@@ -81,12 +78,11 @@ public:
 public:
 	// public関数
 	// コンストラクタ　
-	Utility(const ParticleParams& params);// タイプ
+	Utility(const ParticleParams& params);
 	// デストラクタ
 	~Utility();
 	// 更新
 	bool Update(float elapsedTime);
-
 private:
 	// private変数
 	// 座標

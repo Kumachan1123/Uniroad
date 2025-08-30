@@ -4,10 +4,7 @@
 */
 #include "pch.h"
 #include "MedalCounter.h"
-/*
-*	@brief	インプットレイアウト
-*	@return なし
-*/
+// インプットレイアウトを定義
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  MedalCounter::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -36,28 +33,29 @@ MedalCounter::MedalCounter()
 }
 /*
 *	@brief デストラクタ
-*	@details メダルカウンタークラスのデストラクタ(ここでは何もしない)
+*	@details メダルカウンタークラスのデストラクタ
 *	@param なし
 *	@return なし
 */
 MedalCounter::~MedalCounter()
 {
-	// メダルカウンターの終了処理を行う
 	// 共通リソースへのポインタをnullptrに設定
 	m_pCommonResources = nullptr;
 }
 /*
-*	@brief デストラクタ
-*	@details メダルカウンタークラスのデストラクタ(ここでは何もしない)
-*	@param なし
-*	@return なし
+*	@brief 初期化する
+*	@details メダルカウンターの初期化処理を行う
+*	@param resources 共通リソースへのポインタ
+*	@param width ウィンドウの幅
+*	@param height ウィンドウの高さ
 */
 void MedalCounter::Initialize(CommonResources* resources, int width, int height)
 {
 	// 共通リソースへのポインタを設定
 	m_pCommonResources = resources;
-	// ウィンドウの幅と高さを設定
+	// ウィンドウの幅を設定
 	m_viewportWidth = width;
+	// ウィンドウの高さを設定
 	m_viewportHeight = height;
 	// メダル画像
 	m_pMedalTextures.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));
@@ -87,14 +85,13 @@ void MedalCounter::CreateShaders()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(SpriteSheetBuffer));
 	// シェーダーの構造体に頂点シェーダーをセット
 	m_shaders.vs = m_pVertexShader.Get();
 	// シェーダーの構造体にピクセルシェーダーをセット
 	m_shaders.ps = m_pPixelShader.Get();
 	// シェーダーの構造体にジオメトリシェーダーをセット（使わないのでnullptr）
 	m_shaders.gs = nullptr;
-
 }
 /*
 *	@brief 更新する
@@ -111,31 +108,53 @@ void MedalCounter::Update(float elapsedTime)
 	// 1の位の計算
 	m_collectedMedalCount.unit1 = m_collectedMedalCountSave % 10;
 }
-
+/*
+*	@brief 描画する
+*	@details メダルカウンターの描画処理を行う
+*	@param なし
+*	@return なし
+*/
 void MedalCounter::Render()
 {
 	// メダル画像描画
-	DrawQuad(m_pMedalTextures, m_verticesMedal, MEDAL_POS_X, MEDAL_POS_Y, MEDAL_SIZE_X, MEDAL_SIZE_Y, 0, 1, 1);
+	DrawQuad(m_pMedalTextures, m_verticesMedal, MEDAL_POS, MEDAL_SIZE, 0, 1, 1);
 	// 「×」画像描画
-	DrawQuad(m_pXTextures, m_verticesX, X_POS_X, X_POS_Y, X_SIZE_X, X_SIZE_Y, 0, 1, 1);
+	DrawQuad(m_pXTextures, m_verticesX, X_POS, X_SIZE, 0, 1, 1);
 	// 10の位の数字画像描画
-	DrawQuad(m_pNumberTextures, m_verticesMedal, NUMBER10_POS_X, NUMBER10_POS_Y, NUMBER10_SIZE_X, NUMBER10_SIZE_Y, m_collectedMedalCount.unit10, m_frameCols, m_frameRows);
+	DrawQuad(m_pNumberTextures, m_verticesMedal, NUMBER10_POS, NUMBER10_SIZE, m_collectedMedalCount.unit10, m_frameCols, m_frameRows);
 	// 1の位の数字画像描画
-	DrawQuad(m_pNumberTextures, m_verticesMedal, NUMBER1_POS_X, NUMBER1_POS_Y, NUMBER1_SIZE_X, NUMBER1_SIZE_Y, m_collectedMedalCount.unit1, m_frameCols, m_frameRows);
-
+	DrawQuad(m_pNumberTextures, m_verticesMedal, NUMBER1_POS, NUMBER1_SIZE, m_collectedMedalCount.unit1, m_frameCols, m_frameRows);
 }
-
+/*
+*	@brief 矩形を描画する
+*	@details メダルカウンターの矩形描画処理を行う
+*	@param texture 描画するテクスチャ
+*	@param vertices 頂点情報
+*	@param startPos 描画する位置
+*	@param size 描画するサイズ
+*	@param frameIndex 描画するアニメーションのコマ
+*	@param frameCols 画像の列数
+*	@param frameRows 画像の行数
+*	@return なし
+*/
 void MedalCounter::DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
 	DirectX::VertexPositionTexture* vertices,
-	float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
+	const DirectX::SimpleMath::Vector2& startPos, const DirectX::SimpleMath::Vector2& size,
+	int frameIndex, int frameCols, int frameRows)
 {
+	// DirectXの名前空間の使用
 	using namespace DirectX;
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 頂点座標の設定
-	vertices[0] = { VertexPositionTexture(Vector3(startX, startY, 0), Vector2(0, 0)) };// 左上
-	vertices[1] = { VertexPositionTexture(Vector3(startX + width, startY, 0), Vector2(1, 0)) };// 右上
-	vertices[2] = { VertexPositionTexture(Vector3(startX + width, startY - height, 0), Vector2(1, 1)) };// 右下
-	vertices[3] = { VertexPositionTexture(Vector3(startX, startY - height, 0), Vector2(0, 1)) };// 左下
+	// 左上
+	vertices[0] = { VertexPositionTexture(Vector3(startPos.x, startPos.y, 0), Vector2(0, 0)) };
+	// 右上
+	vertices[1] = { VertexPositionTexture(Vector3(startPos.x + size.x, startPos.y, 0), Vector2(1, 0)) };
+	// 右下
+	vertices[2] = { VertexPositionTexture(Vector3(startPos.x + size.x, startPos.y - size.y, 0), Vector2(1, 1)) };
+	// 左下
+	vertices[3] = { VertexPositionTexture(Vector3(startPos.x, startPos.y - size.y, 0), Vector2(0, 1)) };
 	// コンスタントバッファに渡すデータを設定
 	// ワールド行列を単位行列に設定
 	m_constBuffer.matWorld = Matrix::Identity;

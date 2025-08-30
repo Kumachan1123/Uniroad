@@ -14,6 +14,7 @@ GoalLock::GoalLock()
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
 	, m_pCamera(nullptr) // カメラへのポインタ
 	, m_pMiniCharacter(nullptr) // ミニキャラクターへのポインタ
+	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタ
 	, m_itemInfo() // アイテム情報
 	, m_row(-1) // 行番号（保存用）
 	, m_col(-1) // 列番号（保存用）
@@ -25,7 +26,6 @@ GoalLock::GoalLock()
 	, m_isCollected(false) // 獲得されたかどうか
 {
 }
-
 /*
 *	@brief デストラクタ
 *	@details ゴールロックのデストラクタ
@@ -36,7 +36,6 @@ GoalLock::~GoalLock()
 {
 	// 何もしない
 }
-
 /*
 *	@brief 初期化
 *	@details ゴールロックの初期化を行う
@@ -71,7 +70,7 @@ void GoalLock::Update(float elapsedTime)
 */
 void GoalLock::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// DirectX::SimpleMathの名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// モデルが設定されていない場合は何もしない
 	if (m_pModel == nullptr) return;
@@ -83,7 +82,7 @@ void GoalLock::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Si
 	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) *
 		Matrix::CreateFromQuaternion(m_rotation) *
 		Matrix::CreateTranslation(m_position);
-	// レンダリング
+	// 描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 }
 /*
@@ -125,5 +124,4 @@ void GoalLock::OnDiscard(MiniCharacter* miniCharacter)
 	UNREFERENCED_PARAMETER(miniCharacter);
 	// アイテムを削除
 	m_pMiniCharacter->GetParent()->GetCSVItem()->RemoveItem(m_row, m_col);
-
 }

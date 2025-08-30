@@ -41,7 +41,6 @@ MyMouse::~MyMouse()
 {
 	// 何もしない
 }
-
 /*
 *	@brief 初期化
 *	@details マウスクラスの初期化を行う
@@ -61,7 +60,9 @@ void MyMouse::Initialize(CommonResources* resources)
 */
 void MyMouse::Update(const float elapsedTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime); // 経過時間は使用しない
+	// 経過時間は使用しない
+	UNREFERENCED_PARAMETER(elapsedTime);
+	// SimpleMath名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
@@ -78,11 +79,11 @@ void MyMouse::Update(const float elapsedTime)
 	// ビューポート設定 
 	D3D11_VIEWPORT viewportRight = {};
 	// ビューポートの左上X座標（画面幅の70%位置）
-	viewportRight.TopLeftX = m_renderWidth * 0.7f;
+	viewportRight.TopLeftX = m_renderWidth * Display::RATIO_MAIN_SCREEN_WIDTH;
 	// ビューポートの左上Y座標（最上部）
 	viewportRight.TopLeftY = 0;
 	// ビューポートの幅（画面幅の30%）
-	viewportRight.Width = m_renderWidth * 0.3f;
+	viewportRight.Width = m_renderWidth * Display::RATIO_CONTROLL_SCREEN_WIDTH;
 	// ビューポートの高さ（画面高さ全体）
 	viewportRight.Height = m_renderHeight;
 	// 最小深度
@@ -99,12 +100,11 @@ void MyMouse::Update(const float elapsedTime)
 	float vp_width = m_viewPortControll.Width;
 	// ビューポート高さ
 	float vp_height = m_viewPortControll.Height;
-
 	// UIの論理解像度 
 	// 論理解像度の幅
-	constexpr float logicalWidth = 1920.0f;
+	constexpr float logicalWidth = RENDER_TARGET_WIDTH;
 	// 論理解像度の高さ
-	constexpr float logicalHeight = 1080.0f;
+	constexpr float logicalHeight = RENDER_TARGET_HEIGHT;
 	// マウス座標を論理解像度基準にスケーリング
 	// 論理解像度基準のマウスX座標
 	float mouseX_UI = mouseState.x * (logicalWidth / m_renderWidth);
@@ -121,7 +121,6 @@ void MyMouse::Update(const float elapsedTime)
 	m_vp_height_UI = vp_height * (logicalHeight / m_renderHeight);
 	// マウス座標をビューポート内ローカル座標に変換
 	m_position = Vector2(mouseX_UI - m_vp_left_UI, mouseY_UI - m_vp_top_UI);
-
 	// 離されたか判定
 	m_leftReleased = (!mouseState.leftButton) && m_prevLeftButton;
 	// 最後に、前フレームの状態を更新しておく
@@ -129,17 +128,26 @@ void MyMouse::Update(const float elapsedTime)
 #ifdef _DEBUG
 	// ---デバッグ表示---
 	const auto debugString = m_pCommonResources->GetDebugString();
+	// マウスがビューポート内にあるか
 	debugString->AddString("isInside: %s",
 		(mouseX_UI >= m_vp_left_UI) && (mouseX_UI < m_vp_left_UI + m_vp_width_UI)
 		&& (mouseY_UI >= m_vp_top_UI) && (mouseY_UI < m_vp_top_UI + m_vp_height_UI)
-		? "true" : "false"); // マウスがビューポート内にあるか
-	debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", m_position.x, m_position.y); // ビューポート内マウス座標
-	debugString->AddString("PanelPosition:%f,%f", GetPanelPosition().x, GetPanelPosition().y);// 当たっているパネルの位置
-	debugString->AddString("PanelRow:%i, PanelCol:%i", GetHitPanelRowIndex(), GetHitPanelColIndex());// 当たっているパネルの行と列のインデックス
-	debugString->AddString("HitNextTilePosition: %f, %f", GetNewTilePosition().x, GetNewTilePosition().y);// 当たっている新しいタイルの位置
-	debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");// ドラッグフラグの状態
-	debugString->AddString("hitPanel:%i", GetHitPanelIndex());// 当たっているパネルのインデックス
-	debugString->AddString("hitNextTile:%i", GetHitNewTileIndex());// 当たっている新しく出てきたタイルのインデックス
-	debugString->AddString("LeftReleased: %s", m_leftReleased ? "true" : "false");// 左ボタンが離されたかどうか
+		? "true" : "false");
+	// ビューポート内マウス座標
+	debugString->AddString("Inside ViewPort Mouse Position: (%f, %f)", m_position.x, m_position.y);
+	// 当たっているパネルの位置
+	debugString->AddString("PanelPosition:%f,%f", GetPanelPosition().x, GetPanelPosition().y);
+	// 当たっているパネルの行と列のインデックス
+	debugString->AddString("PanelRow:%i, PanelCol:%i", GetHitPanelRowIndex(), GetHitPanelColIndex());
+	// 当たっている新しいタイルの位置
+	debugString->AddString("HitNextTilePosition: %f, %f", GetNewTilePosition().x, GetNewTilePosition().y);
+	// ドラッグフラグの状態
+	debugString->AddString("DragFlag:%s", m_isMouseDrag ? "true" : "false");
+	// 当たっているパネルのインデックス
+	debugString->AddString("hitPanel:%i", GetHitPanelIndex());
+	// 当たっている新しく出てきたタイルのインデックス
+	debugString->AddString("hitNextTile:%i", GetHitNewTileIndex());
+	// 左ボタンが離されたかどうか
+	debugString->AddString("LeftReleased: %s", m_leftReleased ? "true" : "false");
 #endif
 }

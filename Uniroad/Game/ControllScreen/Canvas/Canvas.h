@@ -22,6 +22,7 @@
 // 前方宣言
 class CommonResources;
 
+// キャンバスクラス
 class Canvas
 {
 public:
@@ -40,12 +41,12 @@ public:
 	struct ConstBuffer
 	{
 		DirectX::SimpleMath::Vector4 windowSize;// ウィンドウサイズ
-		float time;// 時間
-		DirectX::SimpleMath::Vector3 color;// 色
+		DirectX::SimpleMath::Vector4 time;// 時間
+		DirectX::SimpleMath::Vector4 color;// 色
 	};
 public:
 	// アクセサ
-		// ウィンドウのサイズを設定
+	// ウィンドウのサイズを設定
 	void SetWindowSize(const int& width, const int& height);
 	// シェーダータイプを設定
 	void SetShaderType(ShaderType shaderType) { m_shaderType = shaderType; }
@@ -70,6 +71,7 @@ public:
 	// 指定位置にヒットしたかどうかを取得
 	bool IsHit(const DirectX::SimpleMath::Vector2& pos) const;
 public:
+	// public関数
 	// コンストラクタ
 	Canvas(CommonResources* pCommonResources);
 	// デストラクタ
@@ -94,7 +96,7 @@ private:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:
 	// private変数
-// 共通リソースへのポインタ
+	// 共通リソースへのポインタ
 	CommonResources* m_pCommonResources;
 	// デバイスリソース
 	DX::DeviceResources* m_pDR;

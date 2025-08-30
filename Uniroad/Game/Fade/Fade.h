@@ -65,8 +65,8 @@ private:
 	void FadeOut(float elapsedTime);
 	// フェードイン
 	void FadeIn(float elapsedTime);
-public:
-	// public定数
+private:
+	// private定数
 	// フェード最小値
 	static const float FADE_MIN;
 	// フェード最大値
@@ -77,8 +77,6 @@ public:
 	static const float FADE_INIT;
 	// フェードの滑らかさ
 	static const float FADE_SMOOTHNESS;
-private:
-	// private定数
 	// 表示位置（左上）
 	static const DirectX::SimpleMath::Vector2 POSITION;
 	// 表示サイズ

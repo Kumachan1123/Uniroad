@@ -19,6 +19,6 @@ std::unique_ptr<ItemBase> ItemFactory::CreateItemByName(const std::string& name)
 	// ゴールロック
 	if (name == "GoalLock")
 		return std::make_unique<GoalLock>();
-
+	// 該当するアイテムがない場合はnullptrを返す
 	return nullptr;
 }

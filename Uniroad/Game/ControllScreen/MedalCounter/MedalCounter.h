@@ -20,6 +20,7 @@
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "KumachiLib/CreateShader/CreateShader.h"
 #include "KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
 
 // 前方宣言
 class CommonResources;
@@ -29,16 +30,6 @@ class MedalCounter
 {
 private:
 	// private構造体
-	// シェーダーに渡す定数バッファ
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
-		DirectX::SimpleMath::Matrix matView;    // ビュー行列
-		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
-		DirectX::SimpleMath::Vector4 count;     // カウント
-		DirectX::SimpleMath::Vector4 height;    // 高さ
-		DirectX::SimpleMath::Vector4 width;     // 幅
-	};
 	// カウンターの単位
 	struct Counter
 	{
@@ -63,7 +54,6 @@ public:
 	void Update(float elapsedTime);
 	// 描画する
 	void Render();
-
 private:
 	// private関数
 	// シェーダーの作成
@@ -71,7 +61,7 @@ private:
 	// 画像を表示
 	void DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
 		DirectX::VertexPositionTexture* vertices,
-		float startX, float startY, float width, float height,
+		const DirectX::SimpleMath::Vector2& startPos, const DirectX::SimpleMath::Vector2& size,
 		int frameIndex, int frameCols, int frameRows);
 private:
 	// private定数
@@ -79,38 +69,22 @@ private:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 頂点数
 	static const int VERTEX_COUNT = 4;
-	// メダル画像の位置X
-	const float MEDAL_POS_X = -1.0f;
-	// メダル画像の位置Y
-	const float MEDAL_POS_Y = 1.0f;
-	// メダル画像のサイズX
-	const float MEDAL_SIZE_X = 0.11f;
-	// メダル画像のサイズY
-	const float MEDAL_SIZE_Y = 0.11f / 0.58f;
-	// 「×」画像の位置X
-	const float X_POS_X = -0.9f;
-	// 「×」画像の位置Y
-	const float X_POS_Y = 0.99f;
-	// 「×」画像のサイズX
-	const float X_SIZE_X = 0.078f;
-	// 「×」画像のサイズY
-	const float X_SIZE_Y = 0.1f / 0.58f;
-	// 10の位の位置X
-	const float NUMBER10_POS_X = -0.82f;
-	// 10の位の位置Y
-	const float NUMBER10_POS_Y = 0.99f;
-	// 10の位のサイズX
-	const float NUMBER10_SIZE_X = 0.078f;
-	// 10の位のサイズY
-	const float NUMBER10_SIZE_Y = 0.1f / 0.58f;
-	// 1の位の位置X
-	const float NUMBER1_POS_X = -0.745f;
-	// 1の位の位置Y
-	const float NUMBER1_POS_Y = 0.99f;
-	// 1の位のサイズX
-	const float NUMBER1_SIZE_X = 0.078f;
-	// 1の位のサイズY
-	const float NUMBER1_SIZE_Y = 0.1f / 0.58f;
+	// メダル画像の位置
+	const DirectX::SimpleMath::Vector2 MEDAL_POS = DirectX::SimpleMath::Vector2(-1.0f, 1.0f);
+	// メダル画像のサイズ
+	const DirectX::SimpleMath::Vector2 MEDAL_SIZE = DirectX::SimpleMath::Vector2(0.11f, 0.11f / 0.58f);
+	// 「×」画像の位置
+	const DirectX::SimpleMath::Vector2 X_POS = DirectX::SimpleMath::Vector2(-0.9f, 0.99f);
+	// 「×」画像のサイズ
+	const DirectX::SimpleMath::Vector2 X_SIZE = DirectX::SimpleMath::Vector2(0.078f, 0.1f / 0.58f);
+	// 10の位の位置
+	const DirectX::SimpleMath::Vector2 NUMBER10_POS = DirectX::SimpleMath::Vector2(-0.82f, 0.99f);
+	// 10の位のサイズ
+	const DirectX::SimpleMath::Vector2 NUMBER10_SIZE = DirectX::SimpleMath::Vector2(0.078f, 0.1f / 0.58f);
+	// 1の位の位置
+	const DirectX::SimpleMath::Vector2 NUMBER1_POS = DirectX::SimpleMath::Vector2(-0.745f, 0.99f);
+	// 1の位のサイズ
+	const DirectX::SimpleMath::Vector2 NUMBER1_SIZE = DirectX::SimpleMath::Vector2(0.078f, 0.1f / 0.58f);
 private:
 	// private変数
 	// 共通リソースへのポインタ
@@ -134,12 +108,12 @@ private:
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// コンスタントバッファ
-	ConstBuffer m_constBuffer;
+	SpriteSheetBuffer m_constBuffer;
 	// 集めたメダル枚数
 	Counter m_collectedMedalCount;
 	// 集めたメダル枚数（保存用）
 	int m_collectedMedalCountSave;
-	//	入力レイアウト 
+	// 入力レイアウト 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// コンスタントバッファ
 	Microsoft::WRL::ComPtr<ID3D11Buffer>	m_pCBuffer;

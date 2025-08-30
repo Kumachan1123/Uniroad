@@ -19,6 +19,7 @@
 #include "Game/ControllScreen/Canvas/Canvas.h"
 #include "Game/Interface/IGameUI.h"
 #include "Game/Screen/Screen.h"
+#include "Game/Display/Display.h"
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/CSVItem/CSVItem.h"
@@ -58,7 +59,6 @@ public:
 	void SetViewport(const D3D11_VIEWPORT& viewport) { m_viewPortControll = viewport; }
 	// プレイヤーの座標を設定
 	void SetPlayerPosition(const DirectX::SimpleMath::Vector3& position) { m_playerPosition = position; }
-
 public:
 	// public関数
 	// コンストラクタ
@@ -80,12 +80,10 @@ public:
 		const DirectX::SimpleMath::Vector2& scale,	// スケール
 		KumachiLib::ANCHOR anchor,					// アンカー
 		UIType type) override;						// UIの種類
-
 	// タイル情報の描画
 	void DrawTiles();
 	// アイテム情報の描画
 	void DrawItems();
-
 private:
 	// private関数
 	// アイテムの配置
@@ -95,22 +93,21 @@ private:
 private:
 	// private定数
 	// 1タイルの幅
-	static const float TILE_SIZE;
+	static constexpr float TILE_SIZE = 90.0f;
 	// タイルの数（0～5）
-	static const int TILE_COUNT;
+	static constexpr int TILE_COUNT = 5;
 	// タイルの座標の補正値
-	static const float TILE_POSITION_CORRECTION;
+	static constexpr float TILE_POSITION_CORRECTION = 0.6f;
 	// タイルの数（補正値考慮）
-	static const float TILE_COUNT_CORRECTED;
+	static constexpr float TILE_COUNT_CORRECTED = TILE_COUNT - TILE_POSITION_CORRECTION;
 	// 3D空間上のプレイヤーの座標の補正値
-	static const float PLAYER_POSITION_CORRECTION;
+	static constexpr float PLAYER_POSITION_CORRECTION = 4.0f;
 	// 3D空間上のタイルの幅（補正値考慮）
-	static const float TILE_SIZE_3D;
+	static constexpr float TILE_SIZE_3D = 8.75f;
 	// 描画オフセットX
-	static const float DRAW_OFFSET_X;
+	static constexpr float DRAW_OFFSET_X = -350.0f;
 	// 描画オフセットY
-	static const float DRAW_OFFSET_Y;
-
+	static constexpr float DRAW_OFFSET_Y = 420.0f;
 private:
 	// メンバ変数
 	// デバイスリソース

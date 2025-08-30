@@ -1,6 +1,6 @@
 /*
-	@file	IScene.h
-	@brief	シーンのインターフェイスクラス
+*	@file IScene.h
+*	@brief シーンのインターフェイスクラス
 */
 #pragma once
 
@@ -11,17 +11,15 @@ class CommonResources;
 class IScene
 {
 public:
-	// シーンＩＤ
+	// シーンID
 	enum class SceneID : unsigned int
 	{
-		NONE,
-		TITLE,
-		SETTING,
-		STAGESELECT,
-		PLAY,
+		NONE,// なし
+		TITLE,// タイトル
+		SETTING,// 設定
+		STAGESELECT,// ステージ選択
+		PLAY,// プレイ
 	};
-
-
 public:
 	// publicメンバ関数
 	// デストラクタ

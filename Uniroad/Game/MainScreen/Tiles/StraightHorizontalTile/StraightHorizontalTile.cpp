@@ -12,11 +12,13 @@
  */
 void StraightHorizontalTile::OnEnter(MiniCharacter* character)
 {
+	// SimpleMath名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 2回目以降は何もしない
 	if (character->HasEnteredTile(this)) return;
 	// 横方向（x軸±方向）のみ侵入可能
 	Vector3 v = character->GetVelocity();
+	// 侵入方向が横方向なら
 	if (v == Vector3::Left || v == Vector3::Right)
 	{
 		// 侵入可能なら通過記録のみ
@@ -25,6 +27,7 @@ void StraightHorizontalTile::OnEnter(MiniCharacter* character)
 		// キャラクターを動かすフラグを立てる
 		character->SetMoving(true);
 	}
+	// それ以外の方向から侵入したら
 	else
 	{
 		// 侵入不可なら停止
@@ -53,5 +56,4 @@ void StraightHorizontalTile::OnCenterReached(MiniCharacter* character)
 {
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(character);
-	return;
 }

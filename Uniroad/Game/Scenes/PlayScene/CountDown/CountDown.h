@@ -51,12 +51,17 @@ private:
 	void UpdateConstantBuffer()override;
 	// コールバックの登録
 	void SetOnFrameChanged(FrameChangedCallback cb) { m_onFrameChanged = cb; }
+public:
+	// public定数
+	// 処理終了時間
+	static constexpr float END_TIME = 4.0f;
 private:
 	// private定数
 	// 表示位置（左上）
-	static const DirectX::SimpleMath::Vector2 POSITION;
+	static constexpr DirectX::SimpleMath::Vector2 POSITION = DirectX::SimpleMath::Vector2(0.5f, 0.5f);
 	// 表示サイズ
-	static const DirectX::SimpleMath::Vector2 SIZE;
+	static constexpr DirectX::SimpleMath::Vector2 SIZE = DirectX::SimpleMath::Vector2(1.0f, 0.35f);
+
 private:
 	// privateメンバ変数
 	// 共通リソース

@@ -11,6 +11,8 @@
 class CrossTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	CrossTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;

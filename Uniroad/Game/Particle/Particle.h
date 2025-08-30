@@ -69,6 +69,12 @@ private:
 	// 定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+	// アニメ―ションリセット時間
+	static constexpr float ANIM_RESET_TIME = 2.0f;
+	// 紙吹雪の回転
+	static constexpr float CONFETTI_ROTATE = 4.0f;
+	// デフォルトの色
+	static constexpr DirectX::SimpleMath::Vector4 DEFAULT_COLOR = { 1.0f,1.0f,1.0f,0.75f };
 public:
 	// public変数
 	// 共通リソース

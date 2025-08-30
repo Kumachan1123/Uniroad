@@ -11,6 +11,8 @@
 class LeftUpTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	LeftUpTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;

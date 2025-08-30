@@ -11,6 +11,8 @@
 class GoalTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	GoalTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;
@@ -18,4 +20,7 @@ public:
 	void OnExit(MiniCharacter* character) override;
 	// プレイヤーがこのタイルの中心に来たときの処理
 	void OnCenterReached(MiniCharacter* character) override;
+private:
+	// private定数
+	static constexpr float GAME_CLEAR_SWITCH_TIME = 5.0f;
 };

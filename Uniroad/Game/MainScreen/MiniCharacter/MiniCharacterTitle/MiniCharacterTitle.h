@@ -1,3 +1,7 @@
+/*
+*	@file		MiniCharacterTitle.h
+*	@brief		ミニキャラクター（タイトルシーン用）のクラスのヘッダーファイル
+*/
 #pragma once
 // 標準ライブラリ
 #include <cassert>
@@ -19,10 +23,12 @@
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
+#include "Game/MainScreen/MiniCharacter/Parameters/Parameters.h"
 
 // 前方宣言
 class CommonResources;
 
+// ミニキャラクター（タイトルシーン用）のクラス
 class MiniCharacterTitle : public IComposite
 {
 public:
@@ -78,7 +84,6 @@ public:
 	NextTiles* GetNextTiles() { return nullptr; }
 	// シャドウマップライトを取得する
 	ShadowMapLight* GetShadowMapLight() { return nullptr; }
-
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 	// タイルに入ったかどうかを確認する
@@ -101,8 +106,8 @@ public:
 	TitleAnimation GetTitleAnimationState() const;
 	// タイトルシーンにおけるアニメーションステートを設定する
 	void SetTitleAnimationState(TitleAnimation state);
-
 public:
+	// public関数
 	// コンストラクタ
 	MiniCharacterTitle(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -130,6 +135,7 @@ private:
 	// パーティクルのパラメーターを設定する
 	Utility::ParticleParams SetParticleParams() const;
 public:
+	// static public関数
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
 	// ノードカウントを取得する
@@ -146,6 +152,15 @@ private:
 	static int s_nodeCount;
 	// 部品カウント
 	static int s_partsNumber;
+	// STARTでつかう目標座標
+	static const DirectX::SimpleMath::Vector3 START_TARGET_POSITION;
+	// CONTINUEでつかう目標座標
+	static const DirectX::SimpleMath::Vector3 CONTINUE_TARGET_POSITION;
+	// CONTINUEでの移動速度
+	static const float  CONTINUE_SPEED;
+	// 目標座標到達の許容値
+	static const float TARGET_POSITION_EPSILON;
+
 private:
 	// privateメンバ変数
 	// 共通リソース

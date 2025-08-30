@@ -11,6 +11,8 @@
 class StartTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	StartTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;

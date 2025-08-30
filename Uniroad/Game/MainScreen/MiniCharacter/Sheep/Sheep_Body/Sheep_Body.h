@@ -21,6 +21,7 @@
 #include "Game/MainScreen/MiniCharacter/Unicycle/UnicycleBody/UnicycleBody.h"
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep_Head/Sheep_Head.h"
 #include "KumachiLib/Easing/Easing.h"
+#include "Game/MainScreen/MiniCharacter/Parameters/Parameters.h"
 
 // 前方宣言
 class CommonResources;
@@ -67,6 +68,7 @@ public:
 	// ワールド行列を取得する
 	DirectX::SimpleMath::Matrix& GetWorldMatrix() { return m_worldMatrix; }
 public:
+	// public関数
 	// コンストラクタ
 	SheepBody(IComponent* parent, const DirectX::SimpleMath::Vector3& initialPosition, const float& initialAngle);
 	// デストラクタ
@@ -84,6 +86,7 @@ public:
 	// 後処理を行う
 	void Finalize();
 private:
+	// private変数
 	// 親
 	IComponent* m_pParent;
 	// 共通リソース
@@ -114,6 +117,5 @@ private:
 	std::vector<std::unique_ptr<IComponent>> m_pMiniCharacterParts;
 	//	ワールド行列
 	DirectX::SimpleMath::Matrix m_worldMatrix;
-
 };
 

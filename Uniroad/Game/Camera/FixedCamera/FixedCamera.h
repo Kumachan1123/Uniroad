@@ -1,7 +1,6 @@
 /*
 *	@file FixedCamera.h
 *	@brief 固定カメラクラス
-*	@details 特定の位置と方向を持ち、常にその位置からシーンを描画する
 */
 #pragma once
 // 自作ヘッダーファイル
@@ -35,7 +34,7 @@ public:
 	// カメラの距離を設定する
 	void SetCameraDistance(const DirectX::SimpleMath::Vector3& distance) { m_cameraDistance = distance; }
 public:
-	// publicなメンバ関数
+	// public関数
 	// コンストラクタ
 	FixedCamera();
 	// デストラクタ
@@ -45,13 +44,17 @@ public:
 	// 更新する
 	void Update();
 private:
+	// private関数
 	// ビュー行列を計算する
 	void CalculateViewMatrix();
 	// 相対スケールを計算する
 	void CalculateRerativeScale(int windowWidth, int windowHeight);
 private:
+	// private定数
 	// デフォルトでカメラが注視点からどのくらい離れているか
 	static const float DEFAULT_CAMERA_DISTANCE;
+private:
+	// private変数
 	// 相対スケール
 	float m_sx, m_sy;
 	// 生成されたビュー行列

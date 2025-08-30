@@ -4,7 +4,7 @@
 */
 #include <pch.h>
 #include "Canvas.h"
-// インプットレイアウト
+// インプットレイアウトの定義
 const std::vector<D3D11_INPUT_ELEMENT_DESC> Canvas::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -19,25 +19,26 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> Canvas::INPUT_LAYOUT =
 *	@return なし
 */
 Canvas::Canvas(CommonResources* pCommonResources)
-	: m_pCommonResources(pCommonResources)
-	, m_pDR(nullptr)
-	, m_textureWidth(0)
-	, m_textureHeight(0)
-	, m_windowWidth(0)
-	, m_windowHeight(0)
-	, m_position(0.0f, 0.0f)
-	, m_scale(1.0f, 1.0f)
-	, m_baseScale(1.0f, 1.0f)
-	, m_anchor(KumachiLib::ANCHOR::TOP_LEFT)
-	, m_shaderType(ShaderType::OTHER)
-	, m_pTexture(nullptr)
-	, m_pVertexShader(nullptr)
-	, m_pPixelShader(nullptr)
-	, m_pGeometryShader(nullptr)
-	, m_pInputLayout(nullptr)
-	, m_pCBuffer(nullptr)
-	, m_pDrawPolygon(DrawPolygon::GetInstance())
-	, m_pCreateShader(CreateShader::GetInstance())
+	: m_pCommonResources(pCommonResources)// 共通リソース
+	, m_pDR(nullptr)// デバイスリソース
+	, m_textureWidth(0)// テクスチャの幅
+	, m_textureHeight(0)// テクスチャの高さ
+	, m_windowWidth(0)// ウィンドウの幅
+	, m_windowHeight(0)// ウィンドウの高さ
+	, m_time(0.0f)// 時間
+	, m_position(0.0f, 0.0f)// 位置
+	, m_scale(1.0f, 1.0f)// スケール
+	, m_baseScale(1.0f, 1.0f)// ベーススケール
+	, m_anchor(KumachiLib::ANCHOR::TOP_LEFT)// アンカー
+	, m_shaderType(ShaderType::OTHER)// シェーダーの種類
+	, m_pTexture(nullptr)// テクスチャ
+	, m_pVertexShader(nullptr)// 頂点シェーダー
+	, m_pPixelShader(nullptr)// ピクセルシェーダー
+	, m_pGeometryShader(nullptr)// ジオメトリシェーダー
+	, m_pInputLayout(nullptr)// 入力レイアウト
+	, m_pCBuffer(nullptr)// コンスタントバッファ
+	, m_pDrawPolygon(DrawPolygon::GetInstance())// 描画クラス
+	, m_pCreateShader(CreateShader::GetInstance())// シェーダー作成クラス
 {
 }
 /*
@@ -46,8 +47,9 @@ Canvas::Canvas(CommonResources* pCommonResources)
 *	@param なし
 *	@return なし
 */
-Canvas::~Canvas(/*do nothing*/)
+Canvas::~Canvas()
 {
+	// 何もしない
 }
 /*
 *	@brief	テクスチャの読み込み
@@ -92,13 +94,13 @@ void Canvas::LoadTexture(std::string key)
 */
 void Canvas::Create(DX::DeviceResources* pDR, const std::string& key, const DirectX::SimpleMath::Vector2& position, const DirectX::SimpleMath::Vector2& scale, KumachiLib::ANCHOR anchor)
 {
-	// デバイスリソース
+	// デバイスリソースを設定
 	m_pDR = pDR;
-	// 位置
+	// 位置を設定
 	m_position = position;
-	// スケール
+	// スケールを設定
 	m_baseScale = m_scale = scale;
-	// アンカー
+	// アンカーを設定
 	m_anchor = anchor;
 	// シェーダー作成クラスの初期化
 	m_pCreateShader->Initialize(m_pDR->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
@@ -117,21 +119,24 @@ void Canvas::Create(DX::DeviceResources* pDR, const std::string& key, const Dire
 */
 void Canvas::Render()
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 頂点情報
-	VertexPositionColorTexture vertex[1] = {
-		VertexPositionColorTexture(Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))// 大きさとアンカー
-		, Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))// 位置と幅と高さ
-		, Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))// ウィンドウの幅と高さ
+	VertexPositionColorTexture vertex[1] =
+	{
+		VertexPositionColorTexture(Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor)),// 大きさとアンカー
+		Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight)),// 位置と幅と高さ
+		Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))// ウィンドウの幅と高さ
 	};
 	// シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	// ウィンドウサイズを設定
 	m_constBuffer.windowSize = Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
 	// 時間を設定
-	m_constBuffer.time = m_time;
+	m_constBuffer.time = Vector4(m_time);
 	// 色を設定
-	m_constBuffer.color = Vector3(0.5, 0.5, 0.5);
+	m_constBuffer.color = Vector4(0.5f, 0.5f, 0.5f, 1.0f);
 	// 受け渡し用バッファの内容更新
 	m_pDrawPolygon->UpdateSubResources(m_pCBuffer.Get(), &m_constBuffer);
 	// ConstBufferからID3D11Bufferへの変換
@@ -152,8 +157,6 @@ void Canvas::Render()
 	m_pDrawPolygon->DrawColorTexture(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertex[0], 1);
 	// シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
-
-
 }
 /*
 *	@brief	シェーダーの作成
@@ -202,14 +205,14 @@ void Canvas::SetWindowSize(const int& width, const int& height)
 */
 bool Canvas::IsHit(const DirectX::SimpleMath::Vector2& pos) const
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 画像の左上の座標を取得
 	Vector2 leftTop = m_position - Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.x / 2;
 	// 画像の右下の座標を取得
 	Vector2 rightBottom = m_position + Vector2(float(m_textureWidth), float(m_textureHeight)) * m_scale.y / 2;
 	// マウスの座標が画像の範囲内にあるならtrueを返す
-	if (leftTop.x <= pos.x && pos.x <= rightBottom.x && leftTop.y <= pos.y && pos.y <= rightBottom.y)
-		return true;
+	if (leftTop.x <= pos.x && pos.x <= rightBottom.x && leftTop.y <= pos.y && pos.y <= rightBottom.y)return true;
 	// 当たり判定なしならfalseを返す
 	return false;
 }

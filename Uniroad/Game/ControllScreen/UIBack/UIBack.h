@@ -3,8 +3,6 @@
 *	@brief	操作画面の背景クラス　
 */
 #pragma once
-#ifndef UIBACK_DEFINED
-#define UIBACK_DEFINED
 // 標準ライブラリ
 #include <vector>
 // DirectX
@@ -19,6 +17,7 @@
 #include "KumachiLib/BinaryFile/BinaryFile.h"
 #include "KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "KumachiLib/CreateShader/CreateShader.h"
+#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
 
 // 前方宣言
 class CommonResources;
@@ -27,16 +26,6 @@ class CommonResources;
 class UIBack
 {
 public:
-	// 構造体
-	// シェーダーに渡すデータ構造体
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
-		DirectX::SimpleMath::Matrix matView;    // ビュー行列
-		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
-		DirectX::SimpleMath::Vector4 colors;    // カラー
-		DirectX::SimpleMath::Vector4 time;		// 時間                            
-	};
 public:
 	// public関数
 	// コンストラクタ
@@ -80,7 +69,7 @@ private:
 	// シェーダー作成クラス
 	CreateShader* m_pCreateShader;
 	// コンスタントバッファ（シェーダーに送るデータ）
-	ConstBuffer m_constBuffer;
+	BackgroundBuffer m_constBuffer;
 	// ワールド行列
 	DirectX::SimpleMath::Matrix m_world;
 	// ビュー行列
@@ -90,4 +79,3 @@ private:
 	// 時間
 	float m_time;
 };
-#endif // UIBACK_DEFINED

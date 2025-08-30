@@ -11,6 +11,8 @@
 class RightUpTile : public TileBase
 {
 public:
+	// public関数
+	// コンストラクタ
 	RightUpTile() = default;
 	// プレイヤーがこのタイルに入ったときの処理
 	void OnEnter(MiniCharacter* character) override;

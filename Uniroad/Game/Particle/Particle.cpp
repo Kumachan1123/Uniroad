@@ -86,6 +86,7 @@ void Particle::Initialize(CommonResources* resources)
 		m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);
 		// ジオメトリシェーダーの作成
 		m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_pGeometryShader);
+		// 処理を抜ける
 		break;
 	case Utility::Type::SHINE:// 光
 		//	アニメーションの速度
@@ -95,14 +96,17 @@ void Particle::Initialize(CommonResources* resources)
 		//	フレームの行数
 		m_frameRows = 1;
 		// テクスチャの取得
-		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine"));// メインテクスチャ
-		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine_Gradation"));// サブテクスチャ
+		// メインテクスチャ
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine"));
+		// サブテクスチャ
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Shine_Gradation"));
 		// ピクセルシェーダーの作成
 		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Shine.cso", m_pPixelShader);
 		// 頂点シェーダーの作成
 		m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);
 		// ジオメトリシェーダーの作成
 		m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_pGeometryShader);
+		// 処理を抜ける
 		break;
 	case Utility::Type::SWEAT:// 汗
 		//	アニメーションの速度
@@ -112,13 +116,14 @@ void Particle::Initialize(CommonResources* resources)
 		//	フレームの行数
 		m_frameRows = 1;
 		// テクスチャの取得
-		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Sweat"));// メインテクスチャ
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Sweat"));
 		// ピクセルシェーダーの作成
 		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Sweat.cso", m_pPixelShader);
 		// 頂点シェーダーの作成
 		m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);
 		// ジオメトリシェーダーの作成
 		m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Particle.cso", m_pGeometryShader);
+		// 処理を抜ける
 		break;
 	case Utility::Type::CONFETTI:// 紙吹雪
 		//	アニメーションの速度
@@ -128,16 +133,17 @@ void Particle::Initialize(CommonResources* resources)
 		//	フレームの行数
 		m_frameRows = 1;
 		// テクスチャの取得
-		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));// メインテクスチャ
+		m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));
 		// ピクセルシェーダーの作成
 		m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Particle/PS_Confetti.cso", m_pPixelShader);
 		// 頂点シェーダーの作成
 		m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Particle/VS_Particle.cso", m_pVertexShader);
 		// ジオメトリシェーダーの作成
 		m_pCreateShader->CreateGeometryShader(L"Resources/Shaders/Particle/GS_Confetti.cso", m_pGeometryShader);
+		// 処理を抜ける
 		break;
-
 	default:// それ以外のパーティクル
+		// 処理を抜ける
 		break;
 	}
 	// シェーダーの作成
@@ -160,7 +166,7 @@ void Particle::Update(float elapsedTime)
 	// アニメーションの更新
 	m_animTime += elapsedTime * m_animSpeed;
 	// アニメーションタイマーが一定時間を超えたらリセット
-	if (m_animTime >= 2.0f)
+	if (m_animTime >= ANIM_RESET_TIME)
 	{
 		// フレーム数を更新
 		m_anim++;
@@ -175,9 +181,7 @@ void Particle::Update(float elapsedTime)
 		// 生成したパーティクルをリストに追加
 		m_particleUtility.push_back(pU);
 	}
-	//// タイマーをリセット
-	//m_timer = 0.0f;
-	//	timerを渡して更新処理を行う
+	// timerを渡して更新処理を行う
 	for (std::list<Utility>::iterator ite = m_particleUtility.begin(); ite != m_particleUtility.end(); ite++)
 	{
 		// パーティクルの更新
@@ -199,21 +203,17 @@ void Particle::Update(float elapsedTime)
 */
 void Particle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	// DirectX名前空間の使用
 	using namespace DirectX;
+	// SimpleMath名前空間の使用
 	using namespace DirectX::SimpleMath;
-	// 一定期間が過ぎたら描画しない
-
 	// カメラの方向を取得
 	Vector3 cameraDir = m_cameraTarget - m_cameraPosition;
 	// カメラの方向を正規化
 	cameraDir.Normalize();
-	// カメラの前方に近い順にソート
-	m_particleUtility.sort(
-		[&](Utility lhs, Utility  rhs)
-		{
-			// 内積でソート
-			return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition);
-		});
+	// カメラの前方に近い順に内積でソート
+	m_particleUtility.sort([&](Utility lhs, Utility  rhs)
+		{return cameraDir.Dot(lhs.GetPosition() - m_cameraPosition) > cameraDir.Dot(rhs.GetPosition() - m_cameraPosition); });
 	// 頂点をクリア
 	m_vertices.clear();
 	// リストのパーティクルを全て描画する
@@ -242,10 +242,10 @@ void Particle::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Si
 	// ビルボード行列をワールド行列としてセットする
 	m_constantBuffer.matWorld = m_billboard.Transpose();
 	// 色をセットする
-	m_constantBuffer.color = Vector4(1, 1, 1, .75);
+	m_constantBuffer.color = DEFAULT_COLOR;
 	// フレーム数をセットする
 	if (m_type != Utility::Type::CONFETTI) m_constantBuffer.count = Vector4((float)(m_anim));
-	else  m_constantBuffer.count = Vector4(4.0f, m_timer, 0, 0);
+	else  m_constantBuffer.count = Vector4(CONFETTI_ROTATE, m_timer, 0, 0);
 	// 行数をセットする
 	m_constantBuffer.height = Vector4((float)(m_frameRows));
 	// 列数をセットする

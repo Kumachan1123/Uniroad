@@ -8,6 +8,14 @@
 int MiniCharacterTitle::s_nodeCount = 0;
 // 部品カウンター
 int MiniCharacterTitle::s_partsNumber = 0;
+// STARTでつかう目標座標
+const DirectX::SimpleMath::Vector3 MiniCharacterTitle::START_TARGET_POSITION = DirectX::SimpleMath::Vector3(0.0f, -0.45f, 0.0f);
+// CONTINUEでつかう目標座標
+const DirectX::SimpleMath::Vector3 MiniCharacterTitle::CONTINUE_TARGET_POSITION = DirectX::SimpleMath::Vector3(10.0f, -0.45f, 0.0f);
+// CONTINUEでの移動速度
+const float MiniCharacterTitle::CONTINUE_SPEED = 4.0f;
+// 目標座標到達の許容値
+const float MiniCharacterTitle::TARGET_POSITION_EPSILON = 0.1f;
 
 /*
 *	@brief コンストラクタ
@@ -50,6 +58,7 @@ MiniCharacterTitle::MiniCharacterTitle(IComponent* parent, const DirectX::Simple
 */
 MiniCharacterTitle::~MiniCharacterTitle()
 {
+	// 後処理
 	Finalize();
 }
 /*
@@ -69,9 +78,9 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 	// 現在位置に反映
 	m_currentPosition = m_initialPosition;
 	// ヒツジパーツをアタッチ
-	Attach(std::make_unique<SheepBody>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	Attach(std::make_unique<SheepBody>(this, MiniCharacterParameters::BODY_POSITION, 0.0f));
 	// パーティクルを作成する
-	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, 50);
+	m_pParticle = std::make_unique<Particle>(Utility::Type::STEAM, MiniCharacterParameters::PARTICLE_COUNT);
 	// パーティクルを初期化する
 	m_pParticle->Initialize(m_pCommonResources);
 }
@@ -85,8 +94,9 @@ void MiniCharacterTitle::Initialize(CommonResources* commonResources)
 */
 void MiniCharacterTitle::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
-	// 必要な名前空間を使用
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(currentPosition);
@@ -97,11 +107,10 @@ void MiniCharacterTitle::Update(float elapsedTime, const DirectX::SimpleMath::Ve
 	// 部品を更新する　
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
-	// パーティクルの更新
-
+	// パーティクルのパラメーターを設定
 	m_pParticle->SetParams(SetParticleParams());
+	// パーティクルの更新
 	m_pParticle->Update(elapsedTime);
-
 }
 /*
 *	@brief タイトルシーン用のミニキャラの追加処理をする
@@ -153,7 +162,6 @@ void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const D
 	debugString->AddString("MiniCharacter Velocity: (%f, %f, %f)",
 		m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
 #endif // DEBUG
-
 }
 /*
 *	@brief タイトルシーン用のミニキャラの後処理を行う
@@ -163,6 +171,8 @@ void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const D
 */
 void MiniCharacterTitle::Finalize()
 {
+	// 部品の後処理
+	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Finalize();
 }
 /*
 *	@brief タイトルシーン用のミニキャラの回転を補間する
@@ -172,28 +182,26 @@ void MiniCharacterTitle::Finalize()
 */
 void MiniCharacterTitle::InterpolateRotation(const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 目標回転を計算（速度ベクトルから）
 	Quaternion targetQuat;
-
-
 	// 現在の速度がゼロでない場合、回転を計算
-	if (m_currentVelocity.LengthSquared() > 0.0001f)
+	if (m_currentVelocity.LengthSquared() > MiniCharacterParameters::SPEED_MIN)
 	{
 		// 現在の速度ベクトルからヨー角を計算
 		float yaw = atan2f(m_currentVelocity.x, m_currentVelocity.z);
 		// ヨー角からクォータニオンを作成
 		targetQuat = Quaternion::CreateFromYawPitchRoll(yaw, 0.0f, 0.0f);
 	}
+	// 速度がゼロの場合
 	else
 	{
-		// 速度がゼロの場合は、回転なし
+		// 回転なし
 		targetQuat = Quaternion::Identity;
 	}
-	// 現在の回転角を更新する
-	float rotateSpeed = 0.05f;
 	// 滑らかに回転させるために、現在の回転角と目標回転角を補間
-	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, rotateSpeed);
+	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, MiniCharacterParameters::WHEEL_ROTATE_SPEED);
 	// 揺れを加味した回転を適用
 	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
 }
@@ -208,9 +216,9 @@ void MiniCharacterTitle::InterpolateRotation(const DirectX::SimpleMath::Quaterni
 */
 bool MiniCharacterTitle::IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon) const
 {
-	//// タイルの中心とプレイヤーの位置の距離を計算
+	// タイルの中心とプレイヤーの位置の距離を計算
 	float distance = (charPos - tileCenter).Length();
-	//// 距離が許容誤差以下であれば、タイルの中心にいると判断
+	// 距離が許容誤差以下であれば、タイルの中心にいると判断
 	return distance < epsilon;
 }
 /*
@@ -223,11 +231,10 @@ void MiniCharacterTitle::ExecuteAnimation(float elapsedTime)
 {
 	// 必要な名前空間を使用
 	using namespace DirectX::SimpleMath;
-	// 目標座標を初期化
 	// STARTでつかう目標座標
-	Vector3 targetPosition(0.0f, -0.45f, 0.0f);
+	Vector3 targetPosition = START_TARGET_POSITION;
 	// CONTINUEでつかう目標座標
-	Vector3 goalPosition(10.0f, -0.45f, 0.0f);
+	Vector3 goalPosition = CONTINUE_TARGET_POSITION;
 	// アニメーションの実行
 	switch (GetTitleAnimationState())
 	{
@@ -236,7 +243,7 @@ void MiniCharacterTitle::ExecuteAnimation(float elapsedTime)
 		// 現在の位置を目標座標に向けて補間
 		m_currentPosition = Vector3::Lerp(m_currentPosition, targetPosition, elapsedTime);
 		// 目的地に到達したらアニメーションを待機状態に変更
-		if ((m_currentPosition - targetPosition).Length() < 0.1f)SetTitleAnimationState(WAIT);
+		if ((m_currentPosition - targetPosition).Length() < TARGET_POSITION_EPSILON)SetTitleAnimationState(WAIT);
 		break;
 	case TitleAnimation::WAIT:
 		// 待機アニメーションの処理
@@ -244,10 +251,9 @@ void MiniCharacterTitle::ExecuteAnimation(float elapsedTime)
 	case TitleAnimation::CONTINUE:
 		// アニメーション再開の処理
 		// 現在の位置を目標座標に向けて補間
-		m_currentPosition = Vector3::Lerp(m_currentPosition, goalPosition, elapsedTime * 4.0f);
+		m_currentPosition = Vector3::Lerp(m_currentPosition, goalPosition, elapsedTime * CONTINUE_SPEED);
 		// 目的地に到達したらアニメーションを待機状態に変更
-		if ((m_currentPosition - goalPosition).Length() < 0.5f)
-			SetTitleAnimationState(END);
+		if ((m_currentPosition - goalPosition).Length() < TARGET_POSITION_EPSILON)SetTitleAnimationState(END);
 		break;
 	case TitleAnimation::END:
 		// アニメーション終了なので何もしない
@@ -265,7 +271,9 @@ void MiniCharacterTitle::ExecuteAnimation(float elapsedTime)
 */
 Utility::ParticleParams MiniCharacterTitle::SetParticleParams() const
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 乱数の設定
 	std::random_device seed;
@@ -274,7 +282,7 @@ Utility::ParticleParams MiniCharacterTitle::SetParticleParams() const
 	// ランダムな角度
 	std::uniform_real_distribution<> angleDist(0, XM_2PI);
 	// ランダムな速度の範囲を設定
-	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	std::uniform_real_distribution<> speedDist(MiniCharacterParameters::VELOCITY_MIN, MiniCharacterParameters::VELOCITY_MAX);
 	// XY平面上のランダムな角度
 	float randAngleXY = static_cast<float>(angleDist(engine));
 	// XZ平面上のランダムな角度
@@ -283,22 +291,22 @@ Utility::ParticleParams MiniCharacterTitle::SetParticleParams() const
 	float speed = static_cast<float>(speedDist(engine));
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = speed * Vector3(
-		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分
 		1.0f,									 // Y成分
 		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 0.25f;
-	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
+	params.life = MiniCharacterParameters::LIFE;
+	params.pos = m_currentPosition + MiniCharacterParameters::POSITION_OFFSET;
 	params.velocity = randomVelocity;
-	params.accele = Vector3(-150.0f, 0.0f, 0.0f);// 加速度
+	params.accele = MiniCharacterParameters::ACCELERATION;// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
-	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
-	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
-	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(1, 1, 0.75, 0.5); // 初期カラー（白）
-	params.endColor = Vector4(0.75, 0.75, 0.5, 0); // 最終カラー（白→透明）
+	params.rotate = Vector3::Zero; // 初期回転
+	params.startScale = Vector3::One; // 初期スケール
+	params.endScale = Vector3::Zero; // 最終スケール
+	params.startColor = MiniCharacterParameters::INITIAL_COLOR; // 初期カラー
+	params.endColor = MiniCharacterParameters::FINAL_COLOR; // 最終カラー
 	params.type = Utility::Type::STEAM; // パーティクルのタイプ
 	return params;
 }

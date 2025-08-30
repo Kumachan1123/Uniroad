@@ -8,11 +8,11 @@
 #include "Game/MainScreen/Items/Medal/Medal.h"
 #include "Game/MainScreen/Items/GoalLock/GoalLock.h"
 
+// アイテムファクトリークラス
 class ItemFactory
 {
 public:
 	// public関数
 	// アイテム名に基づいてアイテムを生成する
 	static std::unique_ptr<ItemBase> CreateItemByName(const std::string& name);
-
 };

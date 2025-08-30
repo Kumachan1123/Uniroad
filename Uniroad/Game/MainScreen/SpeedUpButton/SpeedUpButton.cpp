@@ -4,10 +4,6 @@
 */
 #include "pch.h"
 #include "SpeedUpButton.h"
-// 表示位置（左上）の定義
-const DirectX::SimpleMath::Vector2 SpeedUpButton::POSITION = DirectX::SimpleMath::Vector2(0.665f, 0.07f);
-// 表示サイズの定義
-const DirectX::SimpleMath::Vector2 SpeedUpButton::SIZE = DirectX::SimpleMath::Vector2(0.07f, 0.07f);
 /*
 *	@brief コンストラクタ
 *	@details スピードアップUIの初期化を行う
@@ -49,8 +45,9 @@ void SpeedUpButton::Initialize(CommonResources* resources, int width, int height
 	m_pCommonResources = resources;
 	// ボタンの作成
 	m_pButton = std::make_unique<Button>();
-	// シェーダーパスを渡す
+	// 頂点シェーダーのパスを渡す
 	m_pButton->SetVertexShaderFilePath("Resources/Shaders/Counter/VS_Counter.cso");
+	// ピクセルシェーダーのパスを渡す	
 	m_pButton->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 	// 画像を設定
 	m_pButton->SetTexture(resources->GetTextureManager()->GetTexture("SpeedUP"));
@@ -59,7 +56,9 @@ void SpeedUpButton::Initialize(CommonResources* resources, int width, int height
 	// ボタンの初期化
 	m_pButton->Initialize(resources, width, height);
 	// ボタンの矩形を設定
+	// 座標
 	m_buttonRect.position = m_position;
+	// サイズ
 	m_buttonRect.size = m_size;
 }
 /*
@@ -72,7 +71,7 @@ void SpeedUpButton::Update(float elapsedTime)
 {
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(elapsedTime);
-	// 名前空間の使用
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
@@ -101,9 +100,7 @@ void SpeedUpButton::Update(float elapsedTime)
 */
 void SpeedUpButton::Render()
 {
-
 	// ボタンの描画
-	//m_pButton->RenderCircleShadow(m_buttonRect, m_isPressed, m_frameCols, m_frameRows);
 	m_pButton->DrawQuadWithBuffer(m_buttonRect, m_spriteSheetBuffer);
 }
 /*

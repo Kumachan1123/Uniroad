@@ -8,6 +8,8 @@
 const float TrackingCamera::DEFAULT_CAMERA_DISTANCE = 12.5f;
 const float TrackingCamera::DEFAULT_CAMERA_HEIGHT = 9.0f;
 const float TrackingCamera::DEFAULT_CAMERA_ANGLE = 30.0f;
+// 追従速度
+const float TrackingCamera::FOLLOW_SPEED = 0.1f;
 /*
 *	@brief コンストラクタ
 *	@details 追従カメラクラスの初期化を行う
@@ -62,16 +64,13 @@ void TrackingCamera::Update()
 void TrackingCamera::CalculateViewMatrix()
 {
 	using namespace DirectX::SimpleMath;
-	// 0.0 ～ 1.0の範囲で「どれだけ速く追従するか」を決める
-	float followSpeed = 0.1f; // 0.05～0.2くらいで調整
-
 	// ターゲットのX座標
 	float targetX = m_target.x;
 	// カメラの現在X座標
 	float currentX = m_eye.x;
 
 	// Lerp（線形補間）で少しずつ近づける
-	float newX = currentX + (targetX - currentX) * followSpeed;
+	float newX = currentX + (targetX - currentX) * FOLLOW_SPEED;
 
 	// Y/Zは固定
 	float camY = m_cameraHeight;
@@ -82,7 +81,7 @@ void TrackingCamera::CalculateViewMatrix()
 	m_target = DirectX::SimpleMath::Vector3(newX, 0.0f, 0.0f);
 
 	// ビュー行列を再計算
-	m_up = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+	m_up = DirectX::SimpleMath::Vector3::Up;
 	m_view = DirectX::SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up);
 	m_direction = (m_target - m_eye);
 	m_direction.Normalize();

@@ -4,7 +4,7 @@
 */
 #include <pch.h>
 #include "UIBack.h"
-// インプットレイアウト
+// インプットレイアウトを定義
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  UIBack::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -24,20 +24,25 @@ UIBack::UIBack(CommonResources* resources)
 	, m_pDrawPolygon{ DrawPolygon::GetInstance() }// 板ポリゴン描画クラス
 	, m_pCreateShader{ CreateShader::GetInstance() }// シェーダー作成クラス
 {
-	using namespace DirectX::SimpleMath;
-	m_constBuffer.colors = Vector4(1.0f, 1.0f, 0.0f, 1.0f);// 色の初期化
+	// 色の初期化
+	m_constBuffer.colors = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 0.0f, 1.0f);
 }
 /*
 *	@brief	デストラクタ
-*	@details 操作画面の背景のデストラクタ(ここでは何もしない)
+*	@details 操作画面の背景のデストラクタ
 *	@param なし
 *	@return なし
 */
 UIBack::~UIBack()
 {
-	/*do nothing*/
+	// ここでは何もしない
 }
-
+/*
+*	@brief	生成
+*	@details 操作画面の背景の生成
+*	@param pDR デバイスリソース
+*	@return なし
+*/
 void UIBack::Create(DX::DeviceResources* pDR)
 {
 	// デバイスリソースをセット
@@ -51,22 +56,32 @@ void UIBack::Create(DX::DeviceResources* pDR)
 	// マネージャーからテクスチャを取得
 	m_pTexture.push_back(m_pCommonResources->GetTextureManager()->GetTexture("UI_Back"));
 }
-
+/*
+*	@brief	更新
+*	@details 操作画面の背景の更新
+*	@param elapsedTime 経過時間
+*	@return なし
+*/
 void UIBack::Update(float elapsedTime)
 {
-	using namespace DirectX::SimpleMath;
 	// 時間更新 
 	m_time += elapsedTime;
 }
-
+/*
+*	@brief	描画
+*	@details 操作画面の背景の描画
+*	@param なし
+*	@return なし
+*/
 void UIBack::Render()
 {
+	// DirectX名前空間を使用
 	using namespace DirectX;
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
-	//	頂点情報 
+	//	頂点座標とUV情報を設定
 	VertexPositionTexture vertex[4] =
 	{
-		//	頂点情報													UV情報
 		VertexPositionTexture(Vector3(-1.0f,  1.0f, 0.0f),  Vector2(0.0f, 0.0f)),// 左上
 		VertexPositionTexture(Vector3(1.0f,  1.0f, 0.0f),   Vector2(1.0f, 0.0f)),// 右上
 		VertexPositionTexture(Vector3(1.0, -1.0f, 0.0f),    Vector2(1.0f, 1.0f)),// 右下
@@ -102,7 +117,12 @@ void UIBack::Render()
 	// シェーダの登録を解除しておく
 	m_pDrawPolygon->ReleaseShader();
 }
-
+/*
+*	@brief	シェーダーの作成
+*	@details 操作画面の背景のシェーダーの作成
+*	@param なし
+*	@return なし
+*/
 void UIBack::CreateShaders()
 {
 	// 頂点シェーダーの作成
@@ -112,7 +132,7 @@ void UIBack::CreateShaders()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(BackgroundBuffer));
 	// シェーダーの構造体に頂点シェーダーをセット
 	m_shaders.vs = m_pVertexShader.Get();
 	// シェーダーの構造体にピクセルシェーダーをセット

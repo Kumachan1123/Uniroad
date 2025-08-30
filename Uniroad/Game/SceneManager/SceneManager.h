@@ -22,7 +22,6 @@ class CommonResources;
 // シーンマネージャクラス
 class SceneManager
 {
-
 public:
 	// publicメンバ関数
 	// コンストラクタ
@@ -59,5 +58,4 @@ private:
 	IScene::SceneID m_nowSceneID;
 	// プレイシーンにステージ番号を渡すための変数
 	int m_stageNumber;
-
 };

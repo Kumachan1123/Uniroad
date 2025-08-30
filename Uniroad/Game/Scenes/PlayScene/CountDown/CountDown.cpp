@@ -4,10 +4,7 @@
 */
 #include "pch.h"
 #include "CountDown.h"
-// 座標を定義
-const DirectX::SimpleMath::Vector2 CountDown::POSITION(0.5f, 0.5f);
-// サイズを定義
-const DirectX::SimpleMath::Vector2 CountDown::SIZE(1.0f, 0.35f);
+
 /*
 *	@brief コンストラクタ
 *	@details カウントダウンクラスのコンストラクタ
@@ -51,8 +48,9 @@ void CountDown::Initialize(CommonResources* resources, int width, int height)
 	m_pCommonResources = resources;
 	// 画像を作成
 	m_pImage = std::make_unique<Image>();
-	// シェーダーパスを渡す
+	// 頂点シェーダーのパスを渡す
 	m_pImage->SetVertexShaderFilePath("Resources/Shaders/Counter/VS_Counter.cso");
+	// ピクセルシェーダーのパスを渡す
 	m_pImage->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 	// 画像を設定
 	m_pImage->SetTexture(resources->GetTextureManager()->GetTexture("CountDown"));
@@ -67,9 +65,11 @@ void CountDown::Initialize(CommonResources* resources, int width, int height)
 	SetOnFrameChanged([this](int frame)
 		{
 			// 効果音を再生
-			// 3,2,1の時は"Count321"、0の時は"CountEnd"を再生
+			// 3,2,1の時は"Count321"を再生
 			if (frame < 3) m_pCommonResources->GetAudioManager()->PlaySound("Count321", m_pCommonResources->GetSettingManager()->GetSEVolume());
+			// 0の時は"CountEnd"を再生
 			else if (frame == 3)m_pCommonResources->GetAudioManager()->PlaySound("CountEnd", m_pCommonResources->GetSettingManager()->GetSEVolume());
+			// それ以外は何もしない
 			else return;
 		});
 }
@@ -81,10 +81,10 @@ void CountDown::Initialize(CommonResources* resources, int width, int height)
 */
 void CountDown::Update(float elapsedTime)
 {
-	// 名前空間の使用
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
-	// 5秒以上経過したら更新しない
-	if (m_time > 4.0f)return;
+	// 一定時間経過したら更新しない
+	if (m_time > END_TIME)return;
 	// 時間を更新
 	m_time += elapsedTime;
 	// 現在のフレーム番号計算
@@ -95,8 +95,7 @@ void CountDown::Update(float elapsedTime)
 		// 今のフレームを保存
 		m_prevFrame = currentFrame;
 		// コールバック呼び出し
-		if (m_onFrameChanged)
-			m_onFrameChanged(currentFrame);
+		if (m_onFrameChanged)m_onFrameChanged(currentFrame);
 	}
 	// 定数バッファを更新
 	UpdateConstantBuffer();
@@ -109,11 +108,10 @@ void CountDown::Update(float elapsedTime)
 */
 void CountDown::Render()
 {
-	// 5秒以上経過したら描画しない
-	if (m_time > 4.0f)return;
+	// 一定時間以上経過したら描画しない
+	if (m_time > END_TIME)return;
 	// 画像を描画
 	m_pImage->DrawQuadWithBuffer(m_rect, m_spriteSheetBuffer);
-
 }
 /*
 *	@brief 定数バッファを更新
@@ -123,7 +121,7 @@ void CountDown::Render()
 */
 void CountDown::UpdateConstantBuffer()
 {
-	// 名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 定数バッファを更新
 	// ワールド行列を単位行列に設定

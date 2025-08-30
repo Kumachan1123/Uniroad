@@ -78,7 +78,6 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// Œãˆ—‚ğs‚¤
 	void Finalize();
-
 private:
 	// private’è”
 	// Ô—Ö”¼Œa

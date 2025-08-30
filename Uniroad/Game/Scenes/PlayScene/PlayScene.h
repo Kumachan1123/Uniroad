@@ -17,6 +17,8 @@
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
 #include "Game/CommonResources/CommonResources.h"
+#include "Game/Screen/Screen.h"
+#include "Game/Display/Display.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/MainScreen/CSVMap/CSVMap.h"
 #include "Game/MainScreen/CSVItem/CSVItem.h"
@@ -87,6 +89,43 @@ private:
 	// 紙吹雪パーティクルのパラメーターを設定
 	Utility::ParticleParams SetConfettiParams();
 private:
+	// private定数
+	// 紙吹雪の最大数
+	static constexpr int MAX_CONFETTI = 200;
+	// 紙吹雪のパラメーター
+	// 寿命
+	static constexpr float CONFETTI_LIFE = 3.5f;
+	// 開始位置のY座標
+	static constexpr float CONFETTI_Y_START = 7.0f;
+	// 終了位置のY座標
+	static constexpr float CONFETTI_GRAVITY = -9.8f * 0.4f;
+	// 開始スケール
+	static constexpr float CONFETTI_END_SCALE_RATIO = 0.7f;
+	// 開始アルファ値
+	static constexpr float CONFETTI_START_ALPHA = 0.75f;
+	// アルファ変化量
+	static constexpr float CONFETTI_ALPHA_RANGE = 0.15f;
+	// X座標の範囲
+	static constexpr DirectX::SimpleMath::Vector2 CONFETTI_X_RANGE = DirectX::SimpleMath::Vector2(-15.0f, 15.0f);
+	// Z座標の範囲
+	static constexpr DirectX::SimpleMath::Vector2 CONFETTI_Z_RANGE = DirectX::SimpleMath::Vector2(-1.8f, 1.8f);
+	// 水平速度の範囲
+	static constexpr DirectX::SimpleMath::Vector2 CONFETTI_HORIZ_SPEED_RANGE = DirectX::SimpleMath::Vector2(0.8f, 1.5f);
+	// 垂直速度の範囲
+	static constexpr DirectX::SimpleMath::Vector2 CONFETTI_ROT_SPEED_RANGE = DirectX::SimpleMath::Vector2(-2.5f, 2.5f);
+	// スケールの範囲
+	static constexpr DirectX::SimpleMath::Vector2 CONFETTI_SCALE_RANGE = DirectX::SimpleMath::Vector2(0.35f, 0.7f);
+	// 色の範囲
+	static constexpr DirectX::SimpleMath::Vector2 CONFETTI_COLOR_RANGE = DirectX::SimpleMath::Vector2(0.7f, 1.0f);
+	// カウントダウン時間
+	static constexpr float COUNTDOWN_TIME = 5.0f;
+	// リザルト用のカメラ座標オフセット
+	static constexpr DirectX::SimpleMath::Vector3 FIXEDCAMERA_RESULT_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 5.75f, 10.0f);
+	// リザルト用のカメラのターゲット座標オフセット
+	static constexpr DirectX::SimpleMath::Vector3 FIXEDCAMERA_RESULT_TARGET_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 3.0f, 0.0f);
+	// シャドウマップライトの位置
+	static constexpr DirectX::SimpleMath::Vector3 SHADOWMAPLIGHT_POSITION = DirectX::SimpleMath::Vector3(0.0f, 30.0f, 0.0f);
+private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -136,6 +175,10 @@ private:
 	DirectX::SimpleMath::Matrix m_projectionControll;
 	// 射影行列(リザルト用)
 	DirectX::SimpleMath::Matrix m_projectionResult;
+	// 天球の座標
+	DirectX::SimpleMath::Vector3 m_skyPosition;
+	// 天球のスケール
+	DirectX::SimpleMath::Vector3 m_skyScale;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 	// ゲーム画面用ビューポート　

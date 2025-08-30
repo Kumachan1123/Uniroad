@@ -33,7 +33,15 @@ struct ParticleBuffer
 	DirectX::SimpleMath::Vector4 height;    // 高さ
 	DirectX::SimpleMath::Vector4 width;     // 幅
 };
-
+// 背景用定数バッファ
+struct BackgroundBuffer
+{
+	DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
+	DirectX::SimpleMath::Matrix matView;    // ビュー行列
+	DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
+	DirectX::SimpleMath::Vector4 colors;    // カラー
+	DirectX::SimpleMath::Vector4 time;		// 時間 
+};
 // フェード用定数バッファ
 struct FadeBuffer
 {

@@ -29,11 +29,15 @@ void StartTile::OnEnter(MiniCharacter* character)
 */
 void StartTile::OnExit(MiniCharacter* character)
 {
-
 	// フラグを解除する
 	character->ResetEnteredTiles();
 }
-
+/*
+*	@brief タイルの中心に来たときの処理
+*	@details キャラクターがこのタイルの中心に来たときの処理を定義する。
+*	@param character タイルの中心に来たキャラクターへのポインタ
+*	@return なし
+*/
 void StartTile::OnCenterReached(MiniCharacter* character)
 {
 	// 未使用警告非表示

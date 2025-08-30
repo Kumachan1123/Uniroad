@@ -34,9 +34,9 @@ public:
 	virtual ~IGameUI() = default;
 	// UI追加	
 	virtual void Add(
-		const std::string& key					// テクスチャのキー
+		const std::string& key							// テクスチャのキー
 		, const DirectX::SimpleMath::Vector2& position	// 位置
-		, const DirectX::SimpleMath::Vector2& scale	// スケール
-		, KumachiLib::ANCHOR anchor				// アンカー
-		, UIType type) = 0;			// UIの種類	
+		, const DirectX::SimpleMath::Vector2& scale		// スケール
+		, KumachiLib::ANCHOR anchor						// アンカー
+		, UIType type) = 0;								// UIの種類	
 };

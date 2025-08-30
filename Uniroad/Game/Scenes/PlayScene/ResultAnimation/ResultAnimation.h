@@ -21,24 +21,14 @@
 #include "KumachiLib/CreateShader/CreateShader.h"
 #include "KumachiLib/DrawPolygon/DrawPolygon.h"
 #include "KumachiLib/Easing/Easing.h"
+#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
+
 // 前方宣言
 class CommonResources;
 
 // 結果アニメーションクラス
 class ResultAnimation
 {
-private:
-	// private構造体
-	// シェーダーに渡す定数バッファ
-	struct ConstBuffer
-	{
-		DirectX::SimpleMath::Matrix matWorld;   // ワールド行列
-		DirectX::SimpleMath::Matrix matView;    // ビュー行列
-		DirectX::SimpleMath::Matrix matProj;    // プロジェクション行列
-		DirectX::SimpleMath::Vector4 count;     // カウント
-		DirectX::SimpleMath::Vector4 height;    // 高さ
-		DirectX::SimpleMath::Vector4 width;     // 幅
-	};
 public:
 	// アクセサ
 	// プレイシーンから結果を受け取る
@@ -73,25 +63,28 @@ private:
 	// 画像を表示
 	void DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
 		DirectX::VertexPositionTexture* vertices,
-		float startX, float startY, float width, float height,
+		const DirectX::SimpleMath::Vector2& startPos, const DirectX::SimpleMath::Vector2& size,
 		int frameIndex, int frameCols, int frameRows);
 private:
 	// private定数
 	// インプットレイアウト
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	// 頂点数
-	static const int VERTEX_COUNT = 4;
+	static constexpr int VERTEX_COUNT = 4;
+	// アニメーション時間
+	static constexpr float ANIMATION_TIME = 3.0f;
+	// ゲームクリアの時の列数
+	static constexpr int CLEAR_COLS = 9;
+	// ゲームオーバーの時の列数
+	static constexpr int OVER_COLS = 8;
 	// 画像の位置X(ゲームクリア）
 	const float  POS_X_CLEAR = -0.7f;
 	// 画像の位置X(ゲームオーバー）
 	const float POS_X_OVER = -0.65f;
 	// 画像の位置Y
 	const float POS_Y = 0.75;
-	// 画像のサイズX
-	const float SIZE_X = 1.0f * 0.16f;
-	// 画像のサイズY
-	const float SIZE_Y = 1.0f * 0.32f;
-
+	// 画像のサイズ
+	static constexpr DirectX::SimpleMath::Vector2 SIZE = DirectX::SimpleMath::Vector2(0.16f, 0.32f);
 private:
 	// private変数
 	// 共通リソースへのポインタ
@@ -127,7 +120,7 @@ private:
 	// シェーダーの構造体
 	DrawPolygon::Shaders m_shaders;
 	// コンスタントバッファ
-	ConstBuffer m_constBuffer;
+	SpriteSheetBuffer m_constBuffer;
 	// 描画クラス
 	DrawPolygon* m_pDrawPolygon;
 	// シェーダー作成クラス

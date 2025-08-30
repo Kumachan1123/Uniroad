@@ -73,7 +73,6 @@
     <ClInclude Include="Game\MainScreen\Tiles\GoalTile\GoalTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\StartTile\StartTile.h" />
     <ClInclude Include="Game\MainScreen\Tiles\CrossTile\CrossTile.h" />
-    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.h" />
     <ClInclude Include="Game\MainScreen\CSVItem\CSVItem.h" />
@@ -136,6 +135,8 @@
     <ClInclude Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.h" />
     <ClInclude Include="Game\Scenes\SettingScene\SETexture\SETexture.h" />
     <ClInclude Include="Game\Scenes\SettingScene\Back\Back.h" />
+    <ClInclude Include="Game\Display\Display.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -178,7 +179,6 @@
     <ClCompile Include="Game\MainScreen\Tiles\GoalTile\GoalTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\StartTile\StartTile.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\CrossTile\CrossTile.cpp" />
-    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleWheel\UnicycleWheel.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
@@ -229,6 +229,8 @@
     <ClCompile Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.cpp" />
     <ClCompile Include="Game\Scenes\SettingScene\SETexture\SETexture.cpp" />
     <ClCompile Include="Game\Scenes\SettingScene\Back\Back.cpp" />
+    <ClCompile Include="Game\Display\Display.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

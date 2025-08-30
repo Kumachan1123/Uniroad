@@ -4,22 +4,6 @@
 */
 #include <pch.h>
 #include "Panel.h"
-// 1タイルの幅
-const float Panel::TILE_SIZE = 90.0f;
-// タイルの枚数(補正値も考慮）
-const int Panel::TILE_COUNT = 5;
-// タイルの座標の補正値
-const float Panel::TILE_POSITION_CORRECTION = 0.6f;
-// タイルの枚数（補正値考慮）
-const float Panel::TILE_COUNT_CORRECTED = TILE_COUNT - TILE_POSITION_CORRECTION;
-// 3D空間上のプレイヤーの座標の補正値
-const float Panel::PLAYER_POSITION_CORRECTION = 4.0f;
-// 3D空間上のタイルの幅（補正値考慮）
-const float Panel::TILE_SIZE_3D = 8.75f;
-// 描画オフセットX
-const float Panel::DRAW_OFFSET_X = -350.0f;
-// 描画オフセットY
-const float Panel::DRAW_OFFSET_Y = 420.0f;
 
 /*
 *	@brief コンストラクタ
@@ -48,13 +32,13 @@ Panel::Panel(int mapSizeX, int mapSizeY)
 }
 /*
 *	@brief デストラクタ
-*	@details パネルクラスのデストラクタ(ここでは何もしない)
+*	@details パネルクラスのデストラクタ
 *	@param なし
 *	@return なし
 */
 Panel::~Panel()
 {
-	/*do nothing*/
+	// 特に何もしない
 }
 /*
 *	@brief 初期化
@@ -73,13 +57,13 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 	// デバイスリソース取得
 	m_pDR = m_pCommonResources->GetDeviceResources();
 	// ウィンドウ幅
-	m_windowWidth = (int)(width * .3f);
+	m_windowWidth = (int)(width * Display::RATIO_CONTROLL_SCREEN_WIDTH);
 	// ウィンドウ高さ
 	m_windowHeight = height;
 	// 左端の位置
-	const float startX = Screen::CENTER_X - (TILE_SIZE * 2);
+	const float startX = Screen::CENTER_X - (TILE_SIZE * 2.0f);
 	// 上端の位置
-	const float startY = Screen::CENTER_Y - (TILE_SIZE * 2);
+	const float startY = Screen::CENTER_Y - (TILE_SIZE * 2.0f);
 	// グリッドのキーを決定するためのループ
 	for (int row = 0; row < m_mapSizeX; ++row)
 	{
@@ -92,9 +76,7 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			// タイルの種類に応じてテクスチャキーを変更
 			textureKey = tileData.tileInfo.modelName.empty() ? textureKey : tileData.tileInfo.modelName;
 			// 位置計算
-			float posX = startX + col * TILE_SIZE + DRAW_OFFSET_X;
-			float posY = startY + row * TILE_SIZE + DRAW_OFFSET_Y;
-			Vector2 pos(posX, posY);
+			Vector2 pos(startX + col * TILE_SIZE + DRAW_OFFSET_X, startY + row * TILE_SIZE + DRAW_OFFSET_Y);
 			// タイルの種類に応じてテクスチャキーを変更して並べる
 			Add(textureKey
 				, pos
@@ -105,7 +87,6 @@ void Panel::Initialize(CommonResources* resources, int width, int height)
 			PlaceItems(m_pCSVItem->GetItemData(row, col), row, col, pos);
 			// プレイヤーを配置する
 			PlacePlayer(tileData, row, col, pos);
-
 		}
 	}
 }
@@ -129,18 +110,21 @@ void Panel::Update(const float elapsedTime)
 		// マウスがビューポート外ならスキップ
 		if (m_pMouse->GetPosition().x < 0 || m_pMouse->GetPosition().y < 0 ||
 			m_pMouse->GetPosition().x >= m_pMouse->GetVpWidthUI() ||
-			m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())
-			continue;
-		// ヒット判定（UI要素ごと）
+			m_pMouse->GetPosition().y >= m_pMouse->GetVpHeightUI())	continue;
+		// UI要素ごとにヒット判定を行う
 		if (m_pTiles[i]->IsHit(m_pMouse->GetPosition()))
 		{
-			m_pMouse->SetHit(true); // マウスのヒットフラグをセット
-			m_pMouse->SetHitPanelIndex(i);// 当たったパネルのインデックスをセット
-			m_pMouse->SetPanelPosition(m_pTiles[i]->GetPosition()); // 当たったパネルの位置をセット
+			// マウスのヒットフラグをセット
+			m_pMouse->SetHit(true);
+			// 当たったパネルのインデックスをセット
+			m_pMouse->SetHitPanelIndex(i);
+			// 当たったパネルの位置をセット
+			m_pMouse->SetPanelPosition(m_pTiles[i]->GetPosition());
 			// 当たったパネルの行番号を設定
 			m_pMouse->SetHitPanelRowIndex(i / m_mapSizeX);
 			// 当たったパネルの列番号を設定
 			m_pMouse->SetHitPanelColIndex(i % m_mapSizeX);
+			// ヒットしたらループを抜ける
 			break;
 		}
 	}
@@ -152,11 +136,9 @@ void Panel::Update(const float elapsedTime)
 	// アイテムの経過時間を更新
 	for (int i = 0; i < m_pItems.size(); i++)
 	{
-		// アイテムのデータが存在する場合のみ更新
+		// アイテムのデータが存在する場合のみ経過時間を更新
 		if (m_pCSVItem->GetItemData(m_pItems[i].second.row, m_pItems[i].second.col).itemBasePtr != nullptr)
-			// アイテムの経過時間を更新
 			m_pItems[i].first->SetTime(m_pItems[i].first->GetTime() + elapsedTime);
-
 	}
 	// プレイヤーアイコンの更新
 	UpdatePlayerIcons(elapsedTime);
@@ -172,16 +154,14 @@ void Panel::UpdatePlayerIcons(const float elapsedTime)
 	// 名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 左端の位置
-	const float startX = Screen::CENTER_X - (TILE_SIZE * 2);
+	const float startX = Screen::CENTER_X - (TILE_SIZE * 2.0f);
 	// 上端の位置
-	const float startY = Screen::CENTER_Y - (TILE_SIZE * 2);
+	const float startY = Screen::CENTER_Y - (TILE_SIZE * 2.0f);
 	// 3D空間上の座標（-4～4）をタイル座標（0～5）に線形変換
 	float tileCoordX = ((m_playerPosition.x) + PLAYER_POSITION_CORRECTION) * TILE_COUNT_CORRECTED / TILE_SIZE_3D;
 	float tileCoordZ = ((m_playerPosition.z) + PLAYER_POSITION_CORRECTION) * TILE_COUNT_CORRECTED / TILE_SIZE_3D;
 	// 位置計算
-	float posX = startX + (tileCoordX)*TILE_SIZE + DRAW_OFFSET_X;
-	float posY = startY + (tileCoordZ)*TILE_SIZE + DRAW_OFFSET_Y;
-	Vector2 position(posX, posY);
+	Vector2 position(startX + (tileCoordX)*TILE_SIZE + DRAW_OFFSET_X, startY + (tileCoordZ)*TILE_SIZE + DRAW_OFFSET_Y);
 	// プレイヤーの位置を更新
 	for (unsigned int i = 0; i < m_pPlayerIcons.size(); i++)
 	{
@@ -202,7 +182,6 @@ void Panel::Render()
 	// プレイヤーアイコンの描画
 	for (unsigned int i = 0; i < m_pPlayerIcons.size(); i++)m_pPlayerIcons[i]->Render();
 }
-
 /*
 *	@brief タイル情報の描画
 *	@details パネルに配置されたタイル情報を描画する
@@ -321,12 +300,9 @@ void Panel::Add(const std::string& key,
 		// アイテムをパネルに追加
 		m_pItems.push_back(std::move(item));
 	}
-	// プレイヤーアイコンなら
+	// プレイヤーアイコンならアイコンをパネルに追加
 	else if (type == UIType::PLAYERICON)
-	{
-		// プレイヤーアイコンをパネルに追加
 		m_pPlayerIcons.push_back(std::move(userInterface));
-	}
-	// 未知のUIタイプ
+	// 未知のUIタイプの場合は例外を投げる
 	else throw std::runtime_error("Unknown UIType in Panel::Add");
 }

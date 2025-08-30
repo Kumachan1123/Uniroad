@@ -23,11 +23,11 @@
 #include "Game/MainScreen/MiniCharacter/Sheep/Sheep_Body/Sheep_Body.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
-
+#include "Game/MainScreen/MiniCharacter/Parameters/Parameters.h"
 // 前方宣言
 class CommonResources;
 
-// タイルベース
+// ミニキャラクターのクラス(ステージセレクト用)
 class MiniCharacterSelectStage : public IComposite
 {
 public:
@@ -129,6 +129,7 @@ private:
 	// パーティクルのパラメーターを設定する
 	Utility::ParticleParams SetParticleParams() const;
 public:
+	// public静的関数
 	// ノードカウントアップした後ノードカウントを取得する
 	static int GetNodeCountAfterCountUp() { return ++s_nodeCount; }
 	// ノードカウントを取得する
@@ -145,6 +146,11 @@ private:
 	static int s_nodeCount;
 	// 部品カウント
 	static int s_partsNumber;
+	// 移動速度
+	static constexpr float MOVE_SPEED = 3.0f;
+	// 回転速度
+	static constexpr float ROTATE_SPEED = 0.05f;
+
 private:
 	// privateメンバ変数
 	// 共通リソース

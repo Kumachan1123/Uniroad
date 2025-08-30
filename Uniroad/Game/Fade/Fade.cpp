@@ -4,7 +4,6 @@
 */
 #include "pch.h"
 #include "Fade.h"
-
 // フェード最小値
 const float Fade::FADE_MIN = -1.0f;
 // フェード最大値
@@ -19,7 +18,6 @@ const float Fade::FADE_SMOOTHNESS = 0.01f;
 const DirectX::SimpleMath::Vector2 Fade::POSITION(1.0f, 1.0f);
 // サイズを定義
 const DirectX::SimpleMath::Vector2 Fade::SIZE(2.0f, 2.0f);
-
 /*
 *	@brief コンストラクタ
 *	@details フェードクラスのコンストラクタ
@@ -60,8 +58,9 @@ void Fade::Initialize(CommonResources* resources, int width, int height)
 	m_pCommonResources = resources;
 	// 画像を作成
 	m_pImage = std::make_unique<Image>();
-	// シェーダーパスを渡す
+	// 頂点シェーダーのパスを渡す
 	m_pImage->SetVertexShaderFilePath("Resources/Shaders/Fade/VS_Fade.cso");
+	// ピクセルシェーダーのパスを渡す
 	m_pImage->SetPixelShaderFilePath("Resources/Shaders/Fade/PS_Fade.cso");
 	// 画像を設定
 	m_pImage->SetTexture(resources->GetTextureManager()->GetTexture("Fade"));
@@ -69,8 +68,9 @@ void Fade::Initialize(CommonResources* resources, int width, int height)
 	m_pImage->SetShaderBufferSize(sizeof(FadeBuffer));
 	// 画像の初期化
 	m_pImage->Initialize(m_pCommonResources, width, height);
-	// 矩形を設定
+	// 矩形の座標を設定
 	m_rect.position = POSITION;
+	// 矩形のサイズを設定
 	m_rect.size = SIZE;
 }
 /*
@@ -127,8 +127,7 @@ void Fade::FadeOut(float elapsedTime)
 		// フェードを制限
 		m_fadeTime = Clamp(m_fadeTime, FADE_MIN, FADE_MAX);
 		// フェードが最小値になったらフェードアウト終了
-		if (m_fadeTime <= FADE_MIN)
-			m_fadeState = FadeState::FadeOutEnd;
+		if (m_fadeTime <= FADE_MIN)	m_fadeState = FadeState::FadeOutEnd;
 	}
 }
 /*
@@ -146,7 +145,6 @@ void Fade::FadeIn(float elapsedTime)
 		// フェードを制限
 		m_fadeTime = Clamp(m_fadeTime, FADE_MIN, FADE_MAX);
 		// フェードが最大値になったらフェードイン終了
-		if (m_fadeTime >= FADE_MAX)
-			m_fadeState = FadeState::FadeInEnd;
+		if (m_fadeTime >= FADE_MAX)	m_fadeState = FadeState::FadeInEnd;
 	}
 }

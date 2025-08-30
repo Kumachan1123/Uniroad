@@ -13,6 +13,7 @@
 #include <Libraries/MyLib/DebugString.h>
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
+#include "Game/Display/Display.h"
 
 // 前方宣言
 class CommonResources;
@@ -87,6 +88,11 @@ public:
 	void Initialize(CommonResources* resources);
 	// 更新
 	void Update(const float elapsedTime);
+private:
+	// private定数
+	// 論理解像度
+	static constexpr float  RENDER_TARGET_WIDTH = 1920.0f; // 幅
+	static constexpr float  RENDER_TARGET_HEIGHT = 1080.0f; // 高さ
 private:
 	// private変数
 	// 共通リソース

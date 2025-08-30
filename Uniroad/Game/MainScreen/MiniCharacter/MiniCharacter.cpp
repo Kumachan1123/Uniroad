@@ -9,8 +9,7 @@
 int MiniCharacter::s_nodeCount = 0;
 // 部品カウンター
 int MiniCharacter::s_partsNumber = 0;
-// 重力を定義
-const float MiniCharacter::GRAVITY = -9.8f;
+
 /*
 *	@brief コンストラクタ
 *	@details ミニキャラクターの初期位置と角度を設定し、必要な変数を初期化する。
@@ -31,7 +30,7 @@ MiniCharacter::MiniCharacter(IComponent* parent, const DirectX::SimpleMath::Vect
 	, m_fallTimer(0.0f)// 落下タイマー
 	, m_gameOverSwitchTime(0.0f)// ゲームオーバーのスイッチ時間
 	, m_gameClearSwitchTime(0.0f)// ゲームクリアのスイッチ時間
-	, m_speed(1.0f)// 移動速度
+	, m_speed(3.0f)// 移動速度
 	, m_fallTimerActive(false)// 落下タイマーが有効かどうか
 	, m_hasFallen(false)// 一度だけ落下処理を実行させるためのフラグ
 	, m_isPlayFallSE(false)// 落下音再生フラグ
@@ -79,13 +78,13 @@ void MiniCharacter::Initialize(CommonResources* resources)
 	// スタート地点の前後左右のタイルを調べてプレイヤーの速度を更新する
 	UpdateSpeedByStartTile();
 	// ヒツジパーツをアタッチ
-	Attach(std::make_unique<SheepBody>(this, Vector3(0.0f, 3.5f, 0.0f), 0.0f));
+	Attach(std::make_unique<SheepBody>(this, MiniCharacterParameters::BODY_POSITION, 0.0f));
 	// 土煙パーティクルを作成する
-	m_pDust = std::make_unique<Particle>(Utility::Type::STEAM, 50);
+	m_pDust = std::make_unique<Particle>(Utility::Type::STEAM, MiniCharacterParameters::PARTICLE_COUNT);
 	// 土煙パーティクルを初期化する
 	m_pDust->Initialize(m_pCommonResources);
 	// 汗パーティクルを作成する
-	m_pSweat = std::make_unique<Particle>(Utility::Type::SWEAT, 10);
+	m_pSweat = std::make_unique<Particle>(Utility::Type::SWEAT, MiniCharacterParameters::SWEAT_PARTICLE_COUNT);
 	// 汗パーティクルを初期化する
 	m_pSweat->Initialize(m_pCommonResources);
 }
@@ -101,7 +100,6 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 {
 	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
-
 	// タイルイベントを更新する
 	UpdateTileEvents();
 	// 落下タイマー処理
@@ -120,10 +118,13 @@ void MiniCharacter::Update(float elapsedTime, const DirectX::SimpleMath::Vector3
 		MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 	// ゲームオーバー、ゲームクリア分岐処理
 	HandleGameOverAndClear(elapsedTime);
-	// パーティクルの更新
+	// 土煙パーティクルのパラメーターを設定
 	m_pDust->SetParams(SetDustParams());
+	// 土煙パーティクルの更新
 	m_pDust->Update(elapsedTime);
+	// 汗パーティクルのパラメーターを設定
 	m_pSweat->SetParams(SetSweatParams());
+	// 汗パーティクルの更新
 	m_pSweat->Update(elapsedTime);
 }
 /*
@@ -195,13 +196,13 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 }
 /*
 *	@brief プレイヤーの後処理を行う
-*	@details プレイヤーの後処理を行う(今は何もしない)。
+*	@details プレイヤーの後処理を行う
 *	@param なし
 *	@return なし
 */
 void MiniCharacter::Finalize()
 {
-
+	// 後処理は今は何もしない
 }
 /*
 *	@brief タイルイベントを更新する
@@ -215,11 +216,8 @@ void MiniCharacter::UpdateTileEvents()
 	std::string currentTileName = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName;
 	// 現在いるタイルの位置を取得
 	m_currentTilePosition = GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos;
-
 	// 現在の位置がタイルの中心にいるかどうかを判定
 	bool isAtTileCenter = IsAtTileCenter(m_currentPosition, GetParent()->GetCSVMap()->GetTileData(m_currentPosition).pos);
-
-
 	// 今いるタイルと前フレームでいたタイルが異なる場合、タイルのイベントを処理する
 	if (currentTileName != m_prevTileName || m_currentTilePosition != m_prevTilePosition)
 	{
@@ -284,8 +282,7 @@ void MiniCharacter::UpdateTileEvents()
 		}
 	}
 	// 今いるタイルから進めるタイルを決めるために名前を保存
-	if (m_parent->GetNextTiles() != nullptr && currentTileName != "")
-		m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
+	if (m_parent->GetNextTiles() != nullptr && currentTileName != "") m_parent->GetNextTiles()->SetMiniCharacterTileName(currentTileName);
 }
 /*
 *	@brief 落下タイマーを更新する
@@ -304,7 +301,7 @@ void MiniCharacter::UpdateFallTimer(float elapsedTime)
 		// 慌てている効果音を鳴らす
 		m_pCommonResources->GetAudioManager()->PlaySound("Panic", m_pCommonResources->GetSettingManager()->GetSEVolume());
 		// 落下タイマーが3秒を超えたら、落下処理を実行
-		if (m_fallTimer >= 3.0f)
+		if (m_fallTimer >= FALL_TIME)
 		{
 			// 速度を0にする
 			m_currentVelocity = Vector3::Zero;
@@ -359,12 +356,12 @@ void MiniCharacter::Moving(float elapsedTime, const DirectX::SimpleMath::Vector3
 	else if (m_isMoving)
 	{
 		// 通常通りの移動処理
-		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / 3 * m_speed;
+		m_miniCharacterVelocity += m_currentVelocity * elapsedTime / m_speed;
 		// 慌てている音を止める
 		m_pCommonResources->GetAudioManager()->StopSound("Panic");
 	}
 	// 移動中ならパーティクルの生成を再開する
-	if (m_isMoving && m_currentVelocity.LengthSquared() > 0.0001f)m_pDust->Start();
+	if (m_isMoving && m_currentVelocity.LengthSquared() > MiniCharacterParameters::SPEED_MIN)m_pDust->Start();
 	// 座標に速度を適用する
 	m_currentPosition = currentPosition + m_initialPosition + m_miniCharacterVelocity;
 }
@@ -383,20 +380,16 @@ void MiniCharacter::Shake()
 	// 落下タイマーが有効で、まだ落下していない場合
 	if (m_fallTimerActive && !m_hasFallen)
 	{
-		// 揺れの強さ
-		float shakeAmount = 0.075f;
-		// 揺れの速さ
-		float shakeSpeed = 7.0f;
 		// 落下タイマーの時間を取得
 		float time = m_fallTimer;
 		// 揺れの進行度を計算（0.0fから1.0fの範囲）
-		float progress = std::min(time / 3.0f, 1.0f);
+		float progress = std::min(time / SHAKE_PROGRESS_TIME, 1.0f);
 		// 揺れの振幅を計算（進行度に応じて変化）
-		float amp = shakeAmount * (0.5f + 1.0f * progress);
+		float amp = SHAKE_AMOUNT * (0.5f + progress);
 		// 揺れの角度を計算
-		float xSwing = sinf(time * shakeSpeed) * amp * (0.8f + 0.4f * sinf(time * 2.0f));
+		float xSwing = sinf(time * SHAKE_SPEED) * amp * (XSWING_BASE + XSWING_MOD * sinf(time * 2.0f));
 		// z軸の揺れは少し小さくする
-		float zSwing = cosf(time * shakeSpeed * 0.7f) * amp * (0.7f + 0.6f * cosf(time * 3.1f));
+		float zSwing = cosf(time * SHAKE_SPEED * ZSWING_SPEED_SCALE) * amp * (ZSWING_BASE + ZSWING_MOD * cosf(time * ZSWING_FREQ));
 		// 揺れクォータニオンを作成
 		m_shakeQuaternion = Quaternion::CreateFromYawPitchRoll(0.0f, xSwing, zSwing);
 		// 土煙パーティクルの生成を止める
@@ -435,10 +428,8 @@ void MiniCharacter::InterpolateRotation(float elapsedTime, const DirectX::Simple
 		// パーティクルの生成を止める
 		m_pDust->Stop();
 	}
-	// 現在の回転角を更新する
-	float rotateSpeed = 2.0f;
 	// 滑らかに回転させるために、現在の回転角と目標回転角を補間
-	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, elapsedTime * rotateSpeed);
+	m_rotationMiniCharacterAngle = Quaternion::Slerp(m_rotationMiniCharacterAngle, targetQuat, elapsedTime * ROTATE_SPEED);
 	// 揺れを加味した回転を適用
 	m_currentAngle = currentAngle * m_initialAngle * m_rotationMiniCharacterAngle * m_shakeQuaternion;
 }
@@ -520,9 +511,11 @@ void MiniCharacter::UpdateSpeedByStartTile()
 				break;
 			}
 		}
+		// どの方向にも進めない場合
 		else
 		{
-			m_currentVelocity = Vector3::Left; // デフォルトは後ろ向き
+			// デフォルトは後ろ向き
+			m_currentVelocity = Vector3::Left;
 		}
 	}
 }
@@ -536,9 +529,6 @@ void MiniCharacter::UpdateSpeedByStartTile()
 */
 bool MiniCharacter::IsAtTileCenter(const DirectX::SimpleMath::Vector3& charPos, const DirectX::SimpleMath::Vector3& tileCenter, float epsilon) const
 {
-
-	// SimpleMathの名前空間を使うためにusing宣言を追加
-	using namespace DirectX::SimpleMath;
 	// タイルの中心とプレイヤーの位置の距離を計算
 	float distance = (charPos - tileCenter).Length();
 	// 距離が許容誤差以下であれば、タイルの中心にいると判断
@@ -598,7 +588,9 @@ void MiniCharacter::HandleGameOverAndClear(float elapsedTime)
 */
 Utility::ParticleParams MiniCharacter::SetDustParams() const
 {
+	// DirectXの名前空間を使うためにusing宣言を追加
 	using namespace DirectX;
+	// SimpleMathの名前空間を使うためにusing宣言を追加
 	using namespace DirectX::SimpleMath;
 	// 乱数の設定
 	std::random_device seed;
@@ -607,7 +599,7 @@ Utility::ParticleParams MiniCharacter::SetDustParams() const
 	// ランダムな角度
 	std::uniform_real_distribution<> angleDist(0, XM_2PI);
 	// ランダムな速度の範囲を設定
-	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	std::uniform_real_distribution<> speedDist(MiniCharacterParameters::VELOCITY_MIN, MiniCharacterParameters::VELOCITY_MAX);
 	// XY平面上のランダムな角度
 	float randAngleXY = static_cast<float>(angleDist(engine));
 	// XZ平面上のランダムな角度
@@ -616,22 +608,22 @@ Utility::ParticleParams MiniCharacter::SetDustParams() const
 	float speed = static_cast<float>(speedDist(engine));
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = speed * Vector3(
-		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
-		0.5f,									 // Y成分
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分
+		MiniCharacterParameters::VELOCITY_MIN,	 // Y成分
 		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 1.0f;
-	params.pos = m_currentPosition + Vector3(0.0f, 1.0f, 0.0f);
+	params.life = MiniCharacterParameters::LIFE;// 寿命
+	params.pos = m_currentPosition + MiniCharacterParameters::POSITION_OFFSET;// 位置
 	params.velocity = randomVelocity;
-	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
+	params.accele = Vector3::Zero;// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
-	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
-	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
-	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(1, 1, 0.75, 0.75); // 初期カラー（白）
-	params.endColor = Vector4(0.75, 0.75, 0.5, 0); // 最終カラー（白→透明）
+	params.rotate = Vector3::Zero; // 初期回転
+	params.startScale = Vector3::One; // 初期スケール
+	params.endScale = Vector3::Zero; // 最終スケール
+	params.startColor = MiniCharacterParameters::INITIAL_COLOR; // 初期カラー
+	params.endColor = MiniCharacterParameters::FINAL_COLOR; // 最終カラー
 	params.type = Utility::Type::STEAM; // パーティクルのタイプ
 	return params;
 }
@@ -652,7 +644,7 @@ Utility::ParticleParams MiniCharacter::SetSweatParams() const
 	// ランダムな角度
 	std::uniform_real_distribution<> angleDist(0, XM_2PI);
 	// ランダムな速度の範囲を設定
-	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	std::uniform_real_distribution<> speedDist(MiniCharacterParameters::VELOCITY_MIN, MiniCharacterParameters::VELOCITY_MAX);
 	// XY平面上のランダムな角度
 	float randAngleXY = static_cast<float>(angleDist(engine));
 	// XZ平面上のランダムな角度
@@ -661,22 +653,22 @@ Utility::ParticleParams MiniCharacter::SetSweatParams() const
 	float speed = static_cast<float>(speedDist(engine));
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = speed * Vector3(
-		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
-		0.5f,									 // Y成分
+		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分
+		MiniCharacterParameters::VELOCITY_MIN,	 // Y成分
 		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 1.5f;
-	params.pos = m_currentPosition + Vector3(0.0f, 10.0f, 0.0f);
+	params.life = MiniCharacterParameters::SWEAT_LIFE;
+	params.pos = m_currentPosition + MiniCharacterParameters::SWEAT_POSITION_OFFSET;
 	params.velocity = randomVelocity - m_currentVelocity * 2;
-	params.accele = Vector3(0.0f, -9.8f, 0.0f);// 加速度
+	params.accele = Vector3(0.0f, GRAVITY, 0.0f);// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
-	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
-	params.startScale = Vector3(0.1f, 0.1f, 0.0f); // 初期スケール
-	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(1.0f, 1.0f, 1.0f, 1.75f); // 初期カラー（白）
-	params.endColor = Vector4(1.0f, 1.0f, 1.0f, 0.0f); // 最終カラー（白→透明）
+	params.rotate = Vector3::Zero; // 初期回転
+	params.startScale = Vector3::One * 0.1f; // 初期スケール
+	params.endScale = Vector3::Zero; // 最終スケール
+	params.startColor = Vector4::One; // 初期カラー
+	params.endColor = Vector4(1.0f, 1.0f, 1.0f, 0.0f); // 最終カラー
 	params.type = Utility::Type::SWEAT; // パーティクルのタイプ
 	return params;
 }

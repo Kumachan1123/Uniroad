@@ -4,10 +4,7 @@
 */
 #include "pch.h"
 #include "ResultAnimation.h"
-/*
-*	@brief	インプットレイアウト
-*	@return なし
-*/
+// インプットレイアウトの定義
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  ResultAnimation::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -44,6 +41,8 @@ ResultAnimation::ResultAnimation()
 */
 ResultAnimation::~ResultAnimation()
 {
+	// 共通リソースへのポインタをnullptrに設定
+	m_pCommonResources = nullptr;
 }
 /*
 *	@brief 初期化
@@ -74,8 +73,8 @@ void ResultAnimation::Update(float elapsedTime)
 	m_time += elapsedTime;
 	// 各画像のY座標を更新
 	for (int i = 0; i < m_frameCols; i++)m_positionsY[i] = m_gameclear ? POS_Y * Easing::EaseOutExpo(m_time) : POS_Y * Easing::RandomJitter(m_time);
-	// 5秒経ったらアニメーションを終了
-	if (m_time >= 3.0f)m_animationEnd = true;
+	// 一定時間経ったらアニメーションを終了
+	if (m_time >= ANIMATION_TIME)m_animationEnd = true;
 }
 /*
 *	@brief 描画
@@ -85,12 +84,9 @@ void ResultAnimation::Update(float elapsedTime)
 */
 void ResultAnimation::Render()
 {
-
 	// 画像描画
 	for (int i = 0; i < m_frameCols; i++)
-	{
-		DrawQuad(m_pTextures, m_vertices, m_positionX + (SIZE_X * i), m_positionsY[i], SIZE_X, SIZE_Y, i, m_frameCols, m_frameRows);
-	}
+		DrawQuad(m_pTextures, m_vertices, DirectX::SimpleMath::Vector2(m_positionX + (SIZE.x * i), m_positionsY[i]), SIZE, i, m_frameCols, m_frameRows);
 
 }
 /*
@@ -107,7 +103,7 @@ void ResultAnimation::DecideTexture()
 	// 行数は1
 	m_frameRows = 1;
 	// 列数はゲームクリアなら9、ゲームオーバーなら8
-	m_frameCols = m_gameclear ? 9 : 8;
+	m_frameCols = m_gameclear ? CLEAR_COLS : OVER_COLS;
 	// 画像の位置Xを設定
 	m_positionX = m_gameclear ? POS_X_CLEAR : POS_X_OVER;
 	// 画像の位置Yの数を設定
@@ -136,7 +132,7 @@ void ResultAnimation::CreateShaders()
 	// インプットレイアウトを受け取る
 	m_pInputLayout = m_pCreateShader->GetInputLayout();
 	// シェーダーにデータを渡すためのコンスタントバッファ生成
-	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(ConstBuffer));
+	m_pCreateShader->CreateConstantBuffer(m_pCBuffer, sizeof(SpriteSheetBuffer));
 	// シェーダーの構造体に頂点シェーダーをセット
 	m_shaders.vs = m_pVertexShader.Get();
 	// シェーダーの構造体にピクセルシェーダーをセット
@@ -144,16 +140,32 @@ void ResultAnimation::CreateShaders()
 	// シェーダーの構造体にジオメトリシェーダーをセット（使わないのでnullptr）
 	m_shaders.gs = nullptr;
 }
-
-void ResultAnimation::DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture, DirectX::VertexPositionTexture* vertices, float startX, float startY, float width, float height, int frameIndex, int frameCols, int frameRows)
+/*
+*	@brief 矩形を描画する
+*	@details 矩形描画処理を行う
+*	@param texture 描画するテクスチャ
+*	@param vertices 頂点情報
+*	@param startPos 描画する位置
+*	@param size 描画するサイズ
+*	@param frameIndex 描画するアニメーションのコマ
+*	@param frameCols 画像の列数
+*	@param frameRows 画像の行数
+*	@return なし
+*/
+void ResultAnimation::DrawQuad(std::vector<Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>>& texture,
+	DirectX::VertexPositionTexture* vertices,
+	const DirectX::SimpleMath::Vector2& startPos, const DirectX::SimpleMath::Vector2& size,
+	int frameIndex, int frameCols, int frameRows)
 {
+	// DirectX名前空間の使用
 	using namespace DirectX;
+	// SimpleMath名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 頂点座標の設定
-	vertices[0] = { VertexPositionTexture(Vector3(startX, startY, 0), Vector2(0, 0)) };// 左上
-	vertices[1] = { VertexPositionTexture(Vector3(startX + width, startY, 0), Vector2(1, 0)) };// 右上
-	vertices[2] = { VertexPositionTexture(Vector3(startX + width, startY - height, 0), Vector2(1, 1)) };// 右下
-	vertices[3] = { VertexPositionTexture(Vector3(startX, startY - height, 0), Vector2(0, 1)) };// 左下
+	vertices[0] = { VertexPositionTexture(Vector3(startPos.x, startPos.y, 0), Vector2(0, 0)) };// 左上
+	vertices[1] = { VertexPositionTexture(Vector3(startPos.x + size.x, startPos.y, 0), Vector2(1, 0)) };// 右上
+	vertices[2] = { VertexPositionTexture(Vector3(startPos.x + size.x, startPos.y - size.y, 0), Vector2(1, 1)) };// 右下
+	vertices[3] = { VertexPositionTexture(Vector3(startPos.x, startPos.y - size.y, 0), Vector2(0, 1)) };// 左下
 	// コンスタントバッファに渡すデータを設定
 	// ワールド行列を単位行列に設定
 	m_constBuffer.matWorld = Matrix::Identity;
@@ -200,8 +212,6 @@ void ResultAnimation::SetResult(bool gameover, bool gameclear)
 	// ゲームオーバーフラグとゲームクリアフラグを設定
 	m_gameover = gameover;
 	m_gameclear = gameclear;
-
-
 	// ゲームオーバーかゲームクリアなら
 	if (m_gameover || m_gameclear)
 	{
@@ -211,11 +221,5 @@ void ResultAnimation::SetResult(bool gameover, bool gameclear)
 		if (m_decideTexture)DecideTexture();
 	}
 	// どちらでもない場合はアニメーションを無効にする
-	else
-	{
-		m_animationEnable = false;
-	}
-
-
-
+	else m_animationEnable = false;
 }

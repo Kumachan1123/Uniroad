@@ -1,10 +1,10 @@
 /*
 *	@file FixedCamera.cpp
 *	@brief 固定カメラクラス
-*	@details 特定の位置と方向を持ち、常にその位置からシーンを描画する
 */
 #include <pch.h>
 #include "FixedCamera.h"
+// 通常時のカメラの距離
 const float FixedCamera::DEFAULT_CAMERA_DISTANCE = 12.5f;
 /*
 *	@brief コンストラクタ
@@ -15,7 +15,7 @@ const float FixedCamera::DEFAULT_CAMERA_DISTANCE = 12.5f;
 FixedCamera::FixedCamera()
 	: m_eye(0.0f, 0.0f, DEFAULT_CAMERA_DISTANCE) // 視点を初期化
 	, m_target(0.0f, 0.0f, 0.0f)// 注視点を原点に設定
-	, m_up(0.0f, 1.0f, 0.0f) // 上方向をY軸正方向に設定
+	, m_up(DirectX::SimpleMath::Vector3::Up) // 上方向をY軸正方向に設定
 	, m_sx(0.0f), m_sy(0.0f)// 相対スケールを初期化
 	, m_cameraDistance(DEFAULT_CAMERA_DISTANCE) // カメラの距離をデフォルト値に設定
 	, m_view(DirectX::SimpleMath::Matrix::Identity) // ビュー行列を単位行列で初期化
@@ -30,6 +30,7 @@ FixedCamera::FixedCamera()
 */
 void FixedCamera::Initialize(int screenWidth, int screenHeight)
 {
+	// 名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 相対スケールを計算
 	CalculateRerativeScale(screenWidth, screenHeight);
@@ -40,7 +41,9 @@ void FixedCamera::Initialize(int screenWidth, int screenHeight)
 	// 視点をデフォルトの位置に設定
 	// 視点を設定
 	Vector3 eye(0.0f, 1.0f, 1.0f);
-	eye *= m_cameraDistance; // デフォルトのカメラ距離を適用
+	// デフォルトのカメラ距離を適用
+	eye *= m_cameraDistance;
+	// 視点を設定
 	m_eye = eye;
 }
 /*
@@ -62,17 +65,12 @@ void FixedCamera::Update()
 */
 void FixedCamera::CalculateViewMatrix()
 {
+	// 名前空間を使用
 	using namespace DirectX::SimpleMath;
-
-
-	// 上方向をY軸正方向に設定
-	Vector3 up(0.0f, 1.0f, 0.0f);
-
-
 	// 上方向を設定
-	m_up = up;
+	m_up = Vector3::Up;
 	// ビュー行列を計算する
-	m_view = Matrix::CreateLookAt(m_eye, m_target, up);
+	m_view = Matrix::CreateLookAt(m_eye, m_target, m_up);
 }
 /*
 *	@brief 相対スケールを計算する

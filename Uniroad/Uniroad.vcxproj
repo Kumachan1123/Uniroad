@@ -193,6 +193,7 @@
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
+    <ClInclude Include="Game\Display\Display.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
     <ClInclude Include="Game\Interface\ICamera.h" />
@@ -207,7 +208,7 @@
     <ClInclude Include="Game\MainScreen\Items\Medal\Medal.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.h" />
-    <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.h" />
+    <ClInclude Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.h" />
@@ -317,6 +318,7 @@
     <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
+    <ClCompile Include="Game\Display\Display.cpp" />
     <ClCompile Include="Game\Fade\Fade.cpp" />
     <ClCompile Include="Game\MainScreen\CSVItem\CSVItem.cpp" />
     <ClCompile Include="Game\MainScreen\Items\GoalLock\GoalLock.cpp" />
@@ -324,7 +326,7 @@
     <ClCompile Include="Game\MainScreen\Items\Medal\Medal.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterSelectStage\MiniCharacterSelectStage.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterTitle\MiniCharacterTitle.cpp" />
-    <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep.cpp" />
+    <ClCompile Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Body\Sheep_Body.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Sheep\Sheep_Head\Sheep_Head.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Unicycle\UnicycleBody\UnicycleBody.cpp" />

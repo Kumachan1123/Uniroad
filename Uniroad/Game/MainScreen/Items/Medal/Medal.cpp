@@ -4,6 +4,12 @@
 */
 #include "pch.h"
 #include "Medal.h"
+
+// 初期色
+const DirectX::SimpleMath::Vector4 PARTICLE_START_COLOR = DirectX::SimpleMath::Vector4(0.0f, 1.0f, 1.0f, 0.75f);
+// 終了色
+const DirectX::SimpleMath::Vector4 PARTICLE_END_COLOR = DirectX::SimpleMath::Vector4(0.0f, 0.25f, 0.75f, 0.0f);
+
 /*
 *	@brief コンストラクタ
 *	@details メダルクラスのコンストラクタ
@@ -75,9 +81,9 @@ void Medal::Update(float elapsedTime)
 		// 消えるまでの時間を加算
 		m_deleteTime += elapsedTime;
 		// Y座標を滑らかに変える
-		m_position.y += Easing::EaseInCirc(m_deleteTime / 3.0f);
+		m_position.y += Easing::EaseInCirc(m_deleteTime / COLLECTED_RISE_DURATION);
 		// 獲得されたら消えるまでの時間が2秒を超えたら
-		if (m_deleteTime > 2.0f)
+		if (m_deleteTime > DELETE_TIME_THRESHOLD)
 		{
 			// アイテムを削除
 			OnDiscard(m_pMiniCharacter);
@@ -86,9 +92,10 @@ void Medal::Update(float elapsedTime)
 		}
 	}
 	// 時間経過で回転させる
-	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * DirectX::XM_PI * 2.0f / 5.0f * m_rotationSpeed, 0.0f, 0.0f);
-	// パーティクルの更新
+	m_rotation = Quaternion::CreateFromYawPitchRoll(m_time * ROTATION_ANGLE * m_rotationSpeed, 0.0f, 0.0f);
+	// パーティクルのパラメーター設定
 	m_pParticle->SetParams(SetParticleParams());
+	// パーティクルの更新
 	m_pParticle->Update(elapsedTime);
 	// ワールド行列を設定
 	m_worldMatrix = Matrix::CreateScale(m_itemInfo.scale) * Matrix::CreateFromQuaternion(m_rotation) * Matrix::CreateTranslation(m_position);
@@ -116,11 +123,8 @@ void Medal::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simpl
 	m_pParticle->CreateBillboard(GetCamera()->GetTargetPosition(), GetCamera()->GetEyePosition(), GetCamera()->GetUpPosition());
 	// パーティクルの描画
 	m_pParticle->Render(view, proj);
-	// 影用に座標を定義
-	Vector3 shadowPosition = m_position + Vector3(0.0f, -2.99f, 0.0f);
 	// モデルの描画
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
-
 }
 /*
 *	@brief アイテムの取得時処理
@@ -175,7 +179,9 @@ void Medal::OnDiscard(MiniCharacter* miniCharacter)
 */
 Utility::ParticleParams Medal::SetParticleParams() const
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// DirectX::SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 乱数の設定
 	std::random_device seed;
@@ -184,7 +190,7 @@ Utility::ParticleParams Medal::SetParticleParams() const
 	// ランダムな角度
 	std::uniform_real_distribution<> angleDist(0, XM_2PI);
 	// ランダムな速度の範囲を設定
-	std::uniform_real_distribution<> speedDist(0.5f, 2.0f);
+	std::uniform_real_distribution<> speedDist(PARTICLE_MIN_SPEED, PARTICLE_MAX_SPEED);
 	// XY平面上のランダムな角度
 	float randAngleXY = static_cast<float>(angleDist(engine));
 	// XZ平面上のランダムな角度
@@ -193,22 +199,22 @@ Utility::ParticleParams Medal::SetParticleParams() const
 	float speed = static_cast<float>(speedDist(engine));
 	// ランダムな方向の速度ベクトル
 	Vector3 randomVelocity = speed * Vector3(
-		cosf(randAngleXY) * sinf(randAngleXZ),	 // X成分s
-		0.5f,									 // Y成分
-		sinf(randAngleXY) * sinf(randAngleXZ)	 // Z成分
+		cosf(randAngleXY) * sinf(randAngleXZ),	// X成分
+		PARTICLE_MAX_SPEED,						// Y成分
+		sinf(randAngleXY) * sinf(randAngleXZ)	// Z成分
 	);
 	// パーティクルのパラメーターを設定
 	Utility::ParticleParams params{};
-	params.life = 1.0f;
-	params.pos = m_position;
+	params.life = PARTICLE_LIFE;// 寿命
+	params.pos = m_position;// 位置
 	params.velocity = randomVelocity;
-	params.accele = Vector3(0.0f, 0.0f, 0.0f);// 加速度
+	params.accele = Vector3::Zero;// 加速度
 	params.rotateAccele = Vector3::One; // 回転加速度
-	params.rotate = Vector3(0.0f, 0.0f, 0.0f); // 初期回転
-	params.startScale = Vector3(1.0f, 1.0f, 0.0f); // 初期スケール
-	params.endScale = Vector3(0.01f, 0.01f, 0.0f); // 最終スケール（小さくなる）
-	params.startColor = Vector4(0, 1, 1, 0.75); // 初期カラー（白）
-	params.endColor = Vector4(0, 0.25, 0.75, 0); // 最終カラー（白→透明）
+	params.rotate = Vector3::Zero; // 初期回転
+	params.startScale = Vector3::One; // 初期スケール
+	params.endScale = Vector3::Zero; // 最終スケール
+	params.startColor = PARTICLE_START_COLOR; // 初期カラー
+	params.endColor = PARTICLE_END_COLOR; // 最終カラー
 	params.type = Utility::Type::SHINE; // パーティクルのタイプ
 	return params;
 }
