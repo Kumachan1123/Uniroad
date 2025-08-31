@@ -24,13 +24,11 @@ int FileCounter::CountFilesInFolder(const std::string& folderPath, const std::st
 	// ファイルが見つかった場合
 	if (hFind != INVALID_HANDLE_VALUE)
 	{
+		// ループしてすべてのファイルを処理
 		do
 		{
 			// ファイルがディレクトリでない場合、カウントを増やす
-			if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
-			{
-				count++;
-			}
+			if (!(findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))count++;
 		} while (FindNextFileA(hFind, &findFileData) != 0); // 次のファイルを検索
 		// 検索ハンドルを閉じる
 		FindClose(hFind);

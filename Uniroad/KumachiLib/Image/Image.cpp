@@ -52,8 +52,9 @@ void Image::Initialize(CommonResources* resources, int width, int height)
 {
 	// 共通リソースへのポインタを設定
 	m_pCommonResources = resources;
-	// ウィンドウの幅と高さを設定
+	// ウィンドウの幅を設定
 	m_viewportWidth = width;
+	// ウィンドウの高さを設定
 	m_viewportHeight = height;
 	// 描画クラスの初期化
 	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());
@@ -70,8 +71,9 @@ void Image::CreateShaders()
 {
 	// シェーダー作成クラスの初期化
 	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
-	// 文字列変換
+	// 頂点シェーダーのパスの文字列を変換
 	std::wstring wpathVS = std::wstring(m_vertexShaderFilePath.begin(), m_vertexShaderFilePath.end());
+	// ピクセルシェーダーのパスの文字列を変換
 	std::wstring wpathPS = std::wstring(m_pixelShaderFilePath.begin(), m_pixelShaderFilePath.end());
 	// 頂点シェーダー作成
 	m_pCreateShader->CreateVertexShader(wpathVS.c_str(), m_pVertexShader);
@@ -88,7 +90,6 @@ void Image::CreateShaders()
 	// シェーダーの構造体にジオメトリシェーダーをセット（使わないのでnullptr）
 	m_shaders.gs = nullptr;
 }
-
 /*
 *	@brief 更新
 *	@details 画像の更新を行う

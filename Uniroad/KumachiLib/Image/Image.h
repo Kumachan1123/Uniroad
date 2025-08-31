@@ -27,6 +27,7 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include "KumachiLib/Rect/Rect.h"
 #include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
+
 // 前方宣言
 class CommonResources;
 
@@ -53,7 +54,6 @@ public:
 	void Initialize(CommonResources* resources, int width, int height);
 	// 更新
 	void Update(const float elapsedTime);
-
 	// 画像を表示
 	template<typename T>
 	void DrawQuadWithBuffer(const Rect& buttonRect, const T& buffer);

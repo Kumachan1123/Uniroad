@@ -66,18 +66,20 @@ bool ScrollBar::Hit(const DirectX::SimpleMath::Vector2& mousePosition,
 	const Rect& scrollBarRect,
 	float& outRatioX)
 {
-	// 名前空間の使用
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// ウィンドウサイズ取得
 	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
 	// ウィンドウサイズを取得
 	RECT rect;
 	GetClientRect(hwnd, &rect);
-	// ウィンドウの幅と高さをfloat型に変換
+	// ウィンドウの幅をfloat型に変換
 	float winWidth = static_cast<float>(rect.right);
+	// ウィンドウの高さをfloat型に変換
 	float winHeight = static_cast<float>(rect.bottom);
-	// マウス座標を0～1の正規化座標へ
+	// マウスのX座標を0～1の正規化座標へ
 	float mouseNormX = mousePosition.x / winWidth;
+	// マウスのY座標を0～1の正規化座標へ
 	float mouseNormY = mousePosition.y / winHeight;
 	// 矩形座標系で棒部分の範囲
 	// 左
@@ -113,9 +115,9 @@ float ScrollBar::MapRatioToRect(const Rect& barRect, float ratio01)
 	// 右
 	float right = barRect.position.x + barRect.size.x / 2.0f;
 	// clamp（念のため0～1範囲外のときも補正）
-	if (ratio01 < 0.0f) ratio01 = 0.0f;
-	if (ratio01 > 1.0f) ratio01 = 1.0f;
-	return left + (right - left) * ratio01;
+	float ratio = Clamp(ratio01, 0.0f, 1.0f);
+	// 矩形に対する割合を座標に変換して返す
+	return left + (right - left) * ratio;
 }
 /*
 *	@brief 矩形に対する割合を座標に変換
@@ -127,14 +129,16 @@ float ScrollBar::MapRatioToRect(const Rect& barRect, float ratio01)
 
 float ScrollBar::UnmapRectToRatio(const Rect& barRect, float positionX)
 {
-	// 左
+	// 左端を計算
 	float left = barRect.position.x - barRect.size.x / 2.0f;
-	// 右
+	// 右端を計算
 	float right = barRect.position.x + barRect.size.x / 2.0f;
-	if (right == left) return 0.0f; // ゼロ割防止
+	// ゼロ割防止
+	if (right == left) return 0.0f;
+	// 矩形に対する割合を計算
 	float ratio = (positionX - left) / (right - left);
-	// clamp
-	if (ratio < 0.0f) ratio = 0.0f;
-	if (ratio > 1.0f) ratio = 1.0f;
+	// clamp（念のため0～1範囲外のときも補正）
+	ratio = Clamp(ratio, 0.0f, 1.0f);
+	// 計算した割合を返す
 	return ratio;
 }

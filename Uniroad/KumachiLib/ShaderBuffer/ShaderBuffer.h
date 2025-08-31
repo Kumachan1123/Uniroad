@@ -3,6 +3,7 @@
 *	@brief シェーダーバッファの構造体をまとめたヘッダーファイル
 */
 #pragma once
+
 // 構造体
 // スプライトシート用定数バッファ
 struct SpriteSheetBuffer
@@ -55,4 +56,12 @@ struct DummyVertex
 	DirectX::SimpleMath::Vector4 position;//wは使わない
 	DirectX::SimpleMath::Vector4 color;// RGBA
 	DirectX::SimpleMath::Vector4 tex;//z w は使わない
+};
+// ライトの定数バッファ用構造体
+struct cbLight
+{
+	DirectX::XMMATRIX lightViewProjection;	// ライトの投影空間へ座標変換する行列
+	DirectX::XMVECTOR lightPosition;		// ライトの位置
+	DirectX::XMVECTOR lightDirection;		// ライトの方向
+	DirectX::XMVECTOR lightAmbient;			// ライトの環境光
 };

@@ -4,8 +4,6 @@
 */
 #include "pch.h"
 #include "ShadowMapLight.h"
-// シャドウマップのサイズ
-const int ShadowMapLight::SHADOWMAP_SIZE = 1024;
 /*
 *	@brief コンストラクタ
 *	@details シャドウマップ用ライトクラスのコンストラクタ
@@ -23,20 +21,23 @@ ShadowMapLight::ShadowMapLight(CommonResources* commonResources)
 	, m_pShadowMapSampler(nullptr)// シャドウマップのサンプラー
 	, m_lightTheta(100.0f)// ライトの画角 (100度を初期値として設定
 	, m_viewport(commonResources->GetDeviceResources()->GetScreenViewport()) // ビューポート
+	, m_lightPosition(0.0f, 10.0f, 0.0f) // ライトの座標
 {
-	// 名前空間
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
-	// ライトの座標
-	m_lightPosition = Vector3(0.0f, 10.0f, 0.0f);
 	// ライトの回転
 	m_lightQuaternion = Quaternion::CreateFromYawPitchRoll(
 		XMConvertToRadians(-90.0f),	// Y軸時計回り90度
 		XMConvertToRadians(90.0f),	// X軸反時計回り45度
-		0.0f
+		0.0f// Z軸0度
 	);
+	// シェーダの読み込み
 	LoadShader(m_pDevice);
+	// 定数バッファの作成
 	CreateConstanBuffer(m_pDevice);
+	// シャドウマップ用の各種オブジェクトを作成
 	CreateShadowMapObject(m_pDevice);
 }
 /*
@@ -47,6 +48,7 @@ ShadowMapLight::ShadowMapLight(CommonResources* commonResources)
 */
 ShadowMapLight::~ShadowMapLight()
 {
+	// 特になし
 }
 /*
 *	@brief 更新
@@ -56,8 +58,8 @@ ShadowMapLight::~ShadowMapLight()
 */
 void ShadowMapLight::Update(float elapsedTime)
 {
+	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(elapsedTime);
-
 }
 /*
 *	@brief 影になるモデルを描画
@@ -67,24 +69,28 @@ void ShadowMapLight::Update(float elapsedTime)
 */
 void ShadowMapLight::RenderShadow()
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
+	// デバイスコンテキストを取得する
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// 共通ステートを取得する
 	auto states = m_pCommonResources->GetCommonStates();
 	// ライトの向いている方向を調整する
-	const Vector3 lightDir = Vector3::Transform(Vector3(-1.0f, 0.0f, 1.0f), m_lightQuaternion);
+	const Vector3 lightDir = Vector3::Transform(LIGHT_DIRECTION, m_lightQuaternion);
 	// ライト空間のビュー行列を計算する
 	const Matrix lightView = Matrix::CreateLookAt(
-		m_lightPosition,			// eye
-		m_lightPosition + lightDir,	// target
-		Vector3::UnitY 				// up
+		m_lightPosition,			// 視点
+		m_lightPosition + lightDir,	// 注視点
+		Vector3::UnitY 				// 上方向
 	);
 	// ライト空間の射影行列を計算する
 	const Matrix lightProjection = Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(m_lightTheta),	// fov
-		1.0f,	// aspectRatio
-		0.1f,	// nearPlane
-		1000.0f	// farPlane
+		XMConvertToRadians(m_lightTheta),	// 視野角
+		1.0f,	// アスペクト比
+		0.1f,	// 近平面
+		1000.0f	// 遠平面
 	);
 	// GPUが使用するリソースのメモリにCPUからアクセスする際に利用する構造体
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -92,11 +98,16 @@ void ShadowMapLight::RenderShadow()
 	context->Map(m_pConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	// 定数バッファに送るデータを準備する
 	cbLight* cb = static_cast<cbLight*>(mappedResource.pData);
+	// ビュー行列と射影行列を乗算したものを代入
 	const Matrix viewProj = lightView * lightProjection;
-	cb->lightViewProjection = XMMatrixTranspose(viewProj);	// ビュー行列と射影行列を合算したもの
-	cb->lightPosition = m_lightPosition;					// ライトの座標
-	cb->lightDirection = lightDir;							// ライトが照らす方向
-	cb->lightAmbient = Color(0.125f, 0.125f, 0.125f, 0.001f);				// 環境光
+	// ビュー行列と射影行列を合算したもの
+	cb->lightViewProjection = XMMatrixTranspose(viewProj);
+	// ライトの座標
+	cb->lightPosition = m_lightPosition;
+	// ライトが照らす方向
+	cb->lightDirection = lightDir;
+	// 環境光
+	cb->lightAmbient = AMBIENT_LIGHT_COLOR;
 	// マップを解除する
 	context->Unmap(m_pConstantBuffer.Get(), 0);
 	// シャドウマップ用のRTVとDSVを設定する
@@ -123,7 +134,9 @@ void ShadowMapLight::RenderShadow()
 		// 影を描画
 		model->Draw(context, *states, world, lightView, lightProjection, false, [&]
 			{
+				// シャドウマップ用頂点シェーダーを設定する
 				context->VSSetShader(m_pVSShadowMap.Get(), nullptr, 0);
+				// シャドウマップ用ピクセルシェーダーを設定する
 				context->PSSetShader(m_pPSShadowMap.Get(), nullptr, 0);
 			}
 		);
@@ -140,10 +153,7 @@ void ShadowMapLight::RenderShadow()
 	context->PSSetShaderResources(1, 1, nullsrv);
 	// モデルとワールド行列のペアをクリアする
 	m_pShadowInfos.clear();
-
 }
-
-
 /*
 *	@brief シェーダの読み込み
 *	@details シャドウマップ用のシェーダを読み込む
@@ -154,17 +164,21 @@ void ShadowMapLight::LoadShader(ID3D11Device* device)
 {
 	// シェーダを読み込むためのblob
 	std::vector<uint8_t> blob;
-	// ライト＋影の頂点シェーダをロードする
+	// ライト＋影の頂点シェーダーをロードする
 	blob = DX::ReadData(L"Resources/Shaders/ShadowMapLight/VS_Light.cso");
+	// ライト＋影の頂点シェーダーを作成する
 	device->CreateVertexShader(blob.data(), blob.size(), nullptr, m_pVS.ReleaseAndGetAddressOf());
-	// ライト＋影のピクセルシェーダをロードする
+	// ライト＋影のピクセルシェーダーをロードする
 	blob = DX::ReadData(L"Resources/Shaders/ShadowMapLight/PS_Light.cso");
+	// ライト＋影のピクセルシェーダーを作成する
 	device->CreatePixelShader(blob.data(), blob.size(), nullptr, m_pPS.ReleaseAndGetAddressOf());
-	// シャドウマップ用頂点シェーダをロードする
+	// シャドウマップ用頂点シェーダーをロードする
 	blob = DX::ReadData(L"Resources/Shaders/ShadowMapLight/VS_ShadowMap.cso");
+	// シャドウマップ用頂点シェーダーを作成する
 	device->CreateVertexShader(blob.data(), blob.size(), nullptr, m_pVSShadowMap.ReleaseAndGetAddressOf());
-	// シャドウマップ用ピクセルシェーダをロードする
+	// シャドウマップ用ピクセルシェーダーをロードする
 	blob = DX::ReadData(L"Resources/Shaders/ShadowMapLight/PS_ShadowMap.cso");
+	// シャドウマップ用ピクセルシェーダーを作成する
 	device->CreatePixelShader(blob.data(), blob.size(), nullptr, m_pPSShadowMap.ReleaseAndGetAddressOf());
 }
 /*
@@ -187,7 +201,6 @@ void ShadowMapLight::CreateConstanBuffer(ID3D11Device* device)
 	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	// バッファの構造を設定
 	device->CreateBuffer(&bufferDesc, nullptr, m_pConstantBuffer.ReleaseAndGetAddressOf());
-
 }
 /*
 *	@brief シャドウマップ用の各種オブジェクトを作成する
@@ -221,9 +234,9 @@ void ShadowMapLight::CreateShadowMapObject(ID3D11Device* device)
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 	// 比較関数を設定
 	samplerDesc.ComparisonFunc = D3D11_COMPARISON_LESS;
+	// サンプラーの境界色を設定
 	device->CreateSamplerState(&samplerDesc, m_pShadowMapSampler.ReleaseAndGetAddressOf());
 }
-
 /*
 *	@brief モデル描画時のラムダ式内で呼ぶ処理をまとめた関数
 *	@details モデル描画時に必要な設定を行う
@@ -233,17 +246,22 @@ void ShadowMapLight::CreateShadowMapObject(ID3D11Device* device)
 */
 void ShadowMapLight::ApplyShader(ID3D11DeviceContext1* context, DirectX::DX11::CommonStates* states)
 {
+	// シャドウマップのシェーダーリソースビューを取得する
 	m_pSRV = m_pShadowMapRT->GetShaderResourceView();
 	// 定数バッファを指定する
 	ID3D11Buffer* cbuf[] = { m_pConstantBuffer.Get() };
+	// 頂点シェーダーに定数バッファを設定する
 	context->VSSetConstantBuffers(1, 1, cbuf);
+	// ピクセルシェーダーに定数バッファを設定する
 	context->PSSetConstantBuffers(1, 1, cbuf);
-	// シェーダを設定する
+	// 頂点シェーダーを設定する
 	context->VSSetShader(m_pVS.Get(), nullptr, 0);
+	// ピクセルシェーダーを設定する
 	context->PSSetShader(m_pPS.Get(), nullptr, 0);
 	// サンプラーステートを指定する
 	ID3D11SamplerState* sampler[] = { states->LinearWrap(), m_pShadowMapSampler.Get() };
+	// ピクセルシェーダーにサンプラーを設定する
 	context->PSSetSamplers(0, 2, sampler);
-	// 作成した深度マップをシェーダリソースとして設定する
+	// 作成した深度マップをシェーダーリソースとして設定する
 	context->PSSetShaderResources(1, 1, &m_pSRV);
 }

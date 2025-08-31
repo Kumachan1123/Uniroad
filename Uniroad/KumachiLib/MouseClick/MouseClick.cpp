@@ -4,12 +4,10 @@
 */
 #include <pch.h>
 #include "MouseClick.h"
-
 // 前回のマウスボタンの状態(左）を初期化
 bool MouseClick::m_prevLeftMouseButtonState = false;
 // 前回のマウスボタンの状態(右）を初期化
 bool MouseClick::m_prevRightMouseButtonState = false;
-
 /*
 *	@brief 左クリックが押された瞬間を取得
 *	@details マウスの状態を受け取り、左クリックが押された瞬間を判定する

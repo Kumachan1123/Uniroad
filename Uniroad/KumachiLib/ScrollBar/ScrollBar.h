@@ -35,13 +35,17 @@ public:
 	// 頂点シェーダーのファイルパスを設定
 	void SetVertexShaderFilePath(std::string filePath)
 	{
+		// 操作部分の頂点シェーダーのファイルパスを設定
 		m_pController->SetVertexShaderFilePath(filePath);
+		// 棒部分の頂点シェーダーのファイルパスを設定
 		m_pBar->SetVertexShaderFilePath(filePath);
 	}
 	// ピクセルシェーダーのファイルパスを設定
 	void SetPixelShaderFilePath(std::string filePath)
 	{
+		// 操作部分のピクセルシェーダーのファイルパスを設定
 		m_pController->SetPixelShaderFilePath(filePath);
+		// 棒部分のピクセルシェーダーのファイルパスを設定
 		m_pBar->SetPixelShaderFilePath(filePath);
 	}
 	// 操作部分テクスチャの設定
@@ -51,7 +55,9 @@ public:
 	// シェーダーバッファサイズを設定
 	void SetShaderBufferSize(int size)
 	{
+		// 操作部分のシェーダーバッファサイズを設定
 		m_pController->SetShaderBufferSize(size);
+		// 棒部分のシェーダーバッファサイズを設定
 		m_pBar->SetShaderBufferSize(size);
 	}
 public:
@@ -85,7 +91,6 @@ private:
 	std::unique_ptr<Image> m_pController;
 	// 棒画像クラス
 	std::unique_ptr<Image> m_pBar;
-
 };
 /*
 *	@brief 描画

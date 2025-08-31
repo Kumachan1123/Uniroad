@@ -62,7 +62,7 @@ void Button::Update(const float elapsedTime)
 */
 bool Button::Hit(const DirectX::SimpleMath::Vector2& mousePosition, const Rect& buttonRect)
 {
-	// 名前空間の使用
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 左上・右下をスクリーン座標へ変換
 	// アスペクト比を考慮してY方向サイズを補正
@@ -76,16 +76,21 @@ bool Button::Hit(const DirectX::SimpleMath::Vector2& mousePosition, const Rect& 
 	float aspect = static_cast<float>(rect.right) / static_cast<float>(rect.bottom);
 	float correctedHeight = buttonRect.size.y * aspect;
 	// 中心座標を左上・右下座標へ変換
+	// 左
 	float left = buttonRect.position.x - buttonRect.size.x / 2.0f;
+	// 上
 	float top = buttonRect.position.y - correctedHeight / 2.0f;
+	// 右
 	float right = left + buttonRect.size.x;
+	// 下
 	float bottom = top + correctedHeight;
 	// スクリーン座標へ変換
+	// 左上
 	Vector2 leftTop = Vector2(left * rect.right, top * rect.bottom);
+	// 右下
 	Vector2 rightBottom = Vector2(right * rect.right, bottom * rect.bottom);
 	// マウスの座標が画像の範囲内にあるならtrueを返す
-	if (leftTop.x <= mousePosition.x && mousePosition.x <= rightBottom.x && leftTop.y <= mousePosition.y && mousePosition.y <= rightBottom.y)
-		return true;
+	if (leftTop.x <= mousePosition.x && mousePosition.x <= rightBottom.x && leftTop.y <= mousePosition.y && mousePosition.y <= rightBottom.y)return true;
 	// 当たり判定なしならfalseを返す
 	return false;
 }

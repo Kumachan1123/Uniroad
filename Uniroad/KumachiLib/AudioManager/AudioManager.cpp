@@ -25,7 +25,11 @@ AudioManager::AudioManager()
 *	@param なし
 *	@retrun なし
 */
-AudioManager::~AudioManager() { Shutdown(); }// FMODシャットダウン
+AudioManager::~AudioManager()
+{
+	// FMODシャットダウン
+	Shutdown();
+}
 
 /*
 *	@brief 初期化
@@ -98,7 +102,6 @@ void AudioManager::PlaySound(const std::string& soundKey, float volume)
 {
 	// 再生リクエストを登録
 	m_playRequests.push_back({ soundKey, volume });
-
 }
 /*
 *	@brief 音声システムの更新
@@ -113,12 +116,14 @@ void AudioManager::Update(float elapsedTime)
 	{
 		// 指定された音声データのキーを検索
 		auto soundIt = m_pSounds.find(request.key);
+		// 音声データが見つかった場合
 		if (soundIt != m_pSounds.end())
 		{
 			// 音声データの取得
 			FMOD::Sound* sound = soundIt->second;
 			// 二重再生可否のフラグを取得
 			auto allowIt = m_pAllowMultiplePlayMap.find(request.key);
+			// 二重再生可否のフラグを取得（見つからなければfalse）
 			bool allowMultiple = (allowIt != m_pAllowMultiplePlayMap.end()) ? allowIt->second : false;
 			// 二重再生を許可していない場合
 			if (!allowMultiple)
@@ -130,7 +135,9 @@ void AudioManager::Update(float elapsedTime)
 				{
 					// チャンネルが再生中か確認
 					FMOD::Channel* existingChannel = channelIt->second;
+					// 再生フラグを初期化
 					bool isPlaying = false;
+					// 再生フラグを取得
 					existingChannel->isPlaying(&isPlaying);
 					// 再生中なら音量を更新して終了
 					if (isPlaying)
@@ -142,8 +149,9 @@ void AudioManager::Update(float elapsedTime)
 					}
 				}
 			}
-			// 音を再生する
+			// チャンネルを初期化
 			FMOD::Channel* channel = nullptr;
+			// 音声を再生
 			m_pFMODSystem->playSound(sound, nullptr, false, &channel);
 			// チャンネルを保存
 			m_pChannels[request.key] = channel;
@@ -292,7 +300,10 @@ bool AudioManager::LoadSound(const std::string& filePath, const std::string& key
 	FMOD::Sound* sound = nullptr;
 	// ループ再生のフラグに応じてFMODのフラグを切り替え
 	int mode = FMOD_DEFAULT;
+	// ループ設定
+	// trueならループ
 	if (loop) mode |= FMOD_LOOP_NORMAL;
+	// falseならループしない
 	else      mode |= FMOD_LOOP_OFF;
 	// 音声データの作成
 	FMOD_RESULT result = m_pFMODSystem->createSound(filePath.c_str(), mode, nullptr, &sound);

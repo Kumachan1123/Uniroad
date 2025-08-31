@@ -5,6 +5,8 @@
 #pragma once
 // 標準ライブラリ
 #include <functional>
+
+// アニメーションステップ構造体
 struct AnimationStep
 {
 	// 演出の長さ

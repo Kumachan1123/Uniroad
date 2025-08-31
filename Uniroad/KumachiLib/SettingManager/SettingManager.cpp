@@ -20,8 +20,15 @@ SettingManager::SettingManager()
 	, m_speedMode(1.0f) // 倍速モード初期値
 {
 }
+/*
+*	@brief デストラクタ
+*	@details 設定管理クラスのデストラクタ
+*	@param なし
+*	@return なし
+*/
 SettingManager::~SettingManager()
 {
+	// 何もしない
 }
 /*
 *	@brief 初期化
@@ -82,5 +89,4 @@ void SettingManager::SaveSettings()
 		//ファイルを閉じる
 		ofs.close();
 	}
-
 }

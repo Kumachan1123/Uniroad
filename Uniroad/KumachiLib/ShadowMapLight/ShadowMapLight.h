@@ -9,6 +9,7 @@
 #include "Libraries/MyLib/DepthStencil.h"
 // 自作ヘッダーファイル
 #include "Game/CommonResources/CommonResources.h"
+#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
 
 // 前方宣言
 class CommonResources;
@@ -16,18 +17,10 @@ namespace DX
 {
 	class RenderTexture;
 }
+
 // シャドウマップ用ライトクラス
 class ShadowMapLight
 {
-private:
-	// ライトの定数バッファ用構造体
-	struct cbLight
-	{
-		DirectX::XMMATRIX lightViewProjection;	// ライトの投影空間へ座標変換する行列
-		DirectX::XMVECTOR lightPosition;		// ライトの位置
-		DirectX::XMVECTOR lightDirection;		// ライトの方向
-		DirectX::XMVECTOR lightAmbient;			// ライトの環境光
-	};
 public:
 	// アクセサ
 	// モデルとワールド行列のペアを設定
@@ -36,8 +29,6 @@ public:
 	void SetLightPosition(const DirectX::SimpleMath::Vector3& position) { m_lightPosition = position; }
 	// ビューポートを設定する
 	void SetViewport(const D3D11_VIEWPORT& viewport) { m_viewport = viewport; }
-
-
 public:
 	// public関数
 	// コンストラクタ
@@ -59,8 +50,14 @@ private:
 	// シャドウマップ用の各種オブジェクトを作成する
 	void CreateShadowMapObject(ID3D11Device* device);
 private:
+	// 定数
 	// シャドウマップのサイズ
-	static const int SHADOWMAP_SIZE;
+	static constexpr int SHADOWMAP_SIZE = 1024;
+	// ライドの向き
+	static constexpr DirectX::SimpleMath::Vector3 LIGHT_DIRECTION = DirectX::SimpleMath::Vector3(-1.0f, 0.0f, 1.0f);
+	// 環境光の色
+	static constexpr DirectX::SimpleMath::Color AMBIENT_LIGHT_COLOR = DirectX::SimpleMath::Color(0.125f, 0.125f, 0.125f, 0.001f);
+
 private:
 	// private変数
 	// 共通リソース

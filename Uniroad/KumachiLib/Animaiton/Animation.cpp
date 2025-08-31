@@ -4,7 +4,6 @@
 */
 #include "pch.h"
 #include "Animation.h"
-
 /*
 *	@brief コンストラクタ
 *	@details アニメーションクラスのコンストラクタ

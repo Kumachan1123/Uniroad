@@ -85,7 +85,6 @@ void TextureManager::LoadTexture(const std::string& key, const wchar_t* path)
 	DirectX::CreateWICTextureFromFile(m_pDevice, path, nullptr, texture.ReleaseAndGetAddressOf());
 	// マップに追加
 	m_pTextureMap[key] = texture;
-
 }
 /*
 *	@brief テクスチャの取得
