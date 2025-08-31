@@ -46,7 +46,12 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
 	// 終了
 	void Finalize();
-
+private:
+	// 定数
+	// 道の初期X座標
+	static constexpr float INITIAL_X = 10.0f;
+	// 道の初期Y座標
+	static constexpr float INITIAL_Y = -0.52f;
 private:
 	// private変数
 	// 共通リソースへのポインタ

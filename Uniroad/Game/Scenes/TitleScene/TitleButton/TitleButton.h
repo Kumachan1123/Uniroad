@@ -61,14 +61,32 @@ private:
 	void UpdateConstantBuffer()override;
 public:
 	// public定数
-	// ボタンが押されていない状態のインデックス
-	static const int NONE_BUTTON_INDEX;
+	// 何も押されていない状態のインデックス
+	static constexpr int NONE_BUTTON_INDEX = -1;
 private:
 	// private定数
 	// 表示位置（左上）
 	static const std::vector<DirectX::SimpleMath::Vector2> POSITIONS;
 	// 表示サイズ
 	static const std::vector<DirectX::SimpleMath::Vector2> SIZES;
+	// ホバー時の拡大率を定義
+	static constexpr float SCALE_ON = 1.125f;
+	// ホバーしていないときの拡大率を定義
+	static constexpr float SCALE_OFF = 1.0f;
+	// 補間係数
+	static constexpr float SCALE_SPEED = 8.0f;
+	// 初期待機時間
+	static constexpr float ANIMATION_WAIT_TIME = 2.5f;
+	// アニメ開始X
+	static constexpr float START_X = 2.5f;
+	// 開始位置オフセット1
+	static constexpr float START_X_OFFSET_1 = 0.5f;
+	// 開始位置オフセット2
+	static constexpr float START_X_OFFSET_2 = 0.1f;
+	// アニメ終了X
+	static constexpr float END_X = 1.5f;
+	// ボタン移動時間
+	static constexpr float MOVE_DURATION = 1.0f;
 
 private:
 	// private変数

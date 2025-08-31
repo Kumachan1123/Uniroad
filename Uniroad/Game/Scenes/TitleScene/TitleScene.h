@@ -66,7 +66,19 @@ private:
 private:
 	// private定数
 	// フェード開始時間
-	static const float FADE_START_TIME;
+	static constexpr float FADE_START_TIME = 0.5f;
+	// 天球のスケール
+	static constexpr DirectX::SimpleMath::Vector3 SKY_SCALE = { 0.2f, 0.2f, 0.2f };
+	// 天球の回転速度
+	static constexpr float SKY_ROTATION_SPEED = 1.0f;
+	// ひつじの初期生成位置
+	static constexpr DirectX::SimpleMath::Vector3 SHEEP_START_POS = { -10.0f, -0.45f, 0.0f };
+	// カメラの位置
+	static constexpr DirectX::SimpleMath::Vector3 CAMERA_POSITION = { 0.0f, 1.8f, 5.0f };
+	// カメラの注視点の補正値
+	static constexpr DirectX::SimpleMath::Vector3 CAMERA_LOOK_OFFSET = { 0.0f, 2.5f, 0.0f };
+	// シャドウマップライトの位置
+	static constexpr DirectX::SimpleMath::Vector3 SHADOW_MAP_LIGHT_POSITION = { 0.0f, 30.0f, 0.0f };
 private:
 	// privateメンバ変数
 	// 共通リソース

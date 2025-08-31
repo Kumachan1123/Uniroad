@@ -51,9 +51,23 @@ private:
 private:
 	// private定数
 	// 表示位置（左上）
-	static const DirectX::SimpleMath::Vector2 POSITION;
+	static constexpr DirectX::SimpleMath::Vector2 POSITION = { 0.125f, 0.15f };
 	// 表示サイズ
-	static const DirectX::SimpleMath::Vector2 SIZE;
+	static constexpr DirectX::SimpleMath::Vector2 SIZE = { 0.55f / 2.5f, 0.35f / 2.5f };
+	// 拡大にかける秒数
+	static constexpr float ENLARGE_DURATION = 0.5f;
+	// 待機時間
+	static constexpr float WAIT_DURATION = 2.0f;
+	// 縮小・移動にかける秒数
+	static constexpr float SHRINK_MOVE_DURATION = 0.5f;
+	// 退出アニメ時間
+	static constexpr float EXIT_MOVE_DURATION = 0.5f;
+	// 画面中央
+	static constexpr   DirectX::SimpleMath::Vector2 CENTER_POS = { 0.5f, 0.5f };
+	// 拡大時サイズ
+	static constexpr   DirectX::SimpleMath::Vector2 ENLARGE_SIZE = { 0.55f, 0.35f };
+	// 退出時オフセット
+	static constexpr   DirectX::SimpleMath::Vector2 EXIT_OFFSET = { -1.5f, 0.0f };
 private:
 	// privateメンバ変数
 	// 共通リソース

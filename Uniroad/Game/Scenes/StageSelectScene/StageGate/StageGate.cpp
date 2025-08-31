@@ -13,6 +13,7 @@
 StageGate::StageGate(CommonResources* resources)
 	: m_pCommonResources(resources) // 共通リソースへのポインタ
 	, m_pModel(nullptr) // モデルポインター
+	, m_pShadowMapLight(nullptr) // シャドウマップライト
 {
 }
 /*
@@ -57,7 +58,7 @@ void StageGate::Update(float elapsedTime)
 */
 void StageGate::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// 必要な名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// Direct3Dデバイスコンテキストを取得
 	const auto& context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();

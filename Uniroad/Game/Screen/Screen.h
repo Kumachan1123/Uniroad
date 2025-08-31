@@ -1,12 +1,12 @@
 /*
-	@file	Screen.h
-	@brief	画面にまつわる定数をまとめたクラス
+*	@file	Screen.h
+*	@brief	画面にまつわる定数をまとめたクラス
 */
 #pragma once
-
 class Screen
 {
 public:
+	// 定数
 	// 画面サイズ
 	// 幅
 	static const int WIDTH = 1280;
@@ -24,8 +24,6 @@ public:
 	static const int LEFT = 0;
 	// 右端
 	static const int RIGHT = WIDTH;
-
-
 public:
 	// public関数
 	// コンストラクタ

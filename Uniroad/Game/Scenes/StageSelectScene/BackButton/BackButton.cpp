@@ -14,8 +14,6 @@ const std::vector<DirectX::SimpleMath::Vector2> BackButton::SIZES =
 {
 	DirectX::SimpleMath::Vector2(0.4f, 0.18f), // ゲーム開始ボタンのサイズ
 };
-// 何も押されていない状態のインデックス
-const int BackButton::NONE_BUTTON_INDEX = -1;
 
 /*
 *	@brief コンストラクタ
@@ -34,8 +32,8 @@ BackButton::BackButton()
 	, m_size(DirectX::SimpleMath::Vector2(0.2f, 0.1f)) // ボタンのサイズ
 	, m_frameRows(1) // 画像の行数
 	, m_frameCols(1) // 画像の列数
-	, m_pressedButtonIndex(-1) // 押されたボタンの番号
-	, m_hitButtonIndex(-1) // 当たったボタンの番号
+	, m_pressedButtonIndex(NONE_BUTTON_INDEX) // 押されたボタンの番号
+	, m_hitButtonIndex(NONE_BUTTON_INDEX) // 当たったボタンの番号
 {
 }
 /*
@@ -76,8 +74,9 @@ void BackButton::Initialize(CommonResources* resources, int width, int height)
 	// ボタンの数ループ
 	for (auto& button : m_buttons)
 	{
-		// シェーダーパスを渡す
+		// 頂点シェーダーのパスを渡す
 		button->SetVertexShaderFilePath("Resources/Shaders/Counter/VS_Counter.cso");
+		// ピクセルシェーダーのパスを渡す
 		button->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 		// シェーダーバッファサイズを設定
 		button->SetShaderBufferSize(sizeof(SpriteSheetBuffer));
@@ -87,9 +86,11 @@ void BackButton::Initialize(CommonResources* resources, int width, int height)
 	// ボタンの矩形を設定
 	for (size_t i = 0; i < m_buttons.size(); i++)
 	{
-		// ボタンの位置とサイズを設定
+		// ボタンの矩形を作成
 		Rect buttonRect;
+		// 座標を設定
 		buttonRect.position = POSITIONS[i];
+		// サイズを設定
 		buttonRect.size = SIZES[i];
 		// ボタンの位置とサイズを配列に登録
 		m_buttonRects.push_back(buttonRect);
@@ -109,20 +110,14 @@ void BackButton::Initialize(CommonResources* resources, int width, int height)
 */
 void BackButton::Update(float elapsedTime)
 {
-	// 名前空間の使用
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
 	// マウスの座標を取得
 	Vector2 mousePos = Vector2(static_cast<float>(mouseState.x), static_cast<float>(mouseState.y));
-	// ホバー時の拡大率を定義
-	const float SCALE_ON = 1.125f;
-	// ホバーしていないときの拡大率を定義
-	const float SCALE_OFF = 1.0f;
-	// 補間係数
-	const float SCALE_SPEED = 8.0f;
 	// 当たったボタンの番号を初期化
-	m_hitButtonIndex = -1;
+	m_hitButtonIndex = NONE_BUTTON_INDEX;
 	// 当たり判定を初期化
 	m_isHit = false;
 	// ボタンの数ループ
@@ -187,10 +182,15 @@ void BackButton::Render()
 #ifdef _DEBUG
 	// デバッグ文字を描画
 	const auto& debugString = m_pCommonResources->GetDebugString();
+	// アニメーションフェーズを表示
 	debugString->AddString("AnimationPhase:%i", m_pAnimation->GetAnimationPhase());
+	// アニメーションシーケンスの数を表示
 	debugString->AddString("AllAnimationSequenceCount:%i", m_pAnimation->GetAnimationSequenceCount());
+	// アニメーションの停止状態を表示
 	debugString->AddString("AnimationPaused:%s", m_pAnimation->IsPaused() ? "true" : "false");
+	// 押されたボタンの番号を表示
 	debugString->AddString("PressedButtonIndex:%i", m_pressedButtonIndex);
+	// 当たったボタンの番号を表示
 	debugString->AddString("HitButtonIndex:%i", m_hitButtonIndex);
 #endif
 }
@@ -208,13 +208,11 @@ void BackButton::CreateAnimationSequence()
 	const std::vector<float> DELAYS = { 0.0f, 0.15f, 0.3f };
 	// フェーズ1: 待機
 	m_pAnimation->CreateAnimationSequence({
-			0.001f,// 待機時間
+			ANIM_WAIT_TIME,// 待機時間
 			[this](float) {
 			// 0で動かした場所とサイズで固定
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
-			{
-				m_buttonRects[i].position = Vector2(-1.5f + i * 0.5f, POSITIONS[i].y + 0.0f);
-			}
+				m_buttonRects[i].position = Vector2(ANIM_START_X + i * ANIM_START_OFFSET_1, POSITIONS[i].y);
 	} });
 	// フェーズ2: 移動 
 	// 各ボタンの移動にかける時間
@@ -222,19 +220,20 @@ void BackButton::CreateAnimationSequence()
 	m_pAnimation->CreateAnimationSequence({
 		DELAYS.back() + START_DURATION, // 全体の演出時間
 		[this, DELAYS, START_DURATION](float globalT) {
-			// globalTは0～1でシーケンス全体に対応する進行度
-			float totalTime = globalT * (DELAYS.back() + START_DURATION); // 実際の経過秒数
+			// 実際の経過秒数
+			float totalTime = globalT * (DELAYS.back() + START_DURATION);
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / START_DURATION;
+				// 補間
 				t = Clamp(t, 0.0f, 1.0f);
+				// イージング
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
-				m_buttonRects[i].position = Vector2::Lerp(Vector2(-1.5f + i * 0.1f, POSITIONS[i].y + 0.0f), POSITIONS[i], easing);
+				m_buttonRects[i].position = Vector2::Lerp(Vector2(ANIM_START_X + i * ANIM_START_OFFSET_2, POSITIONS[i].y), POSITIONS[i], easing);
 			}
-		}
-		});
+	} });
 	// フェーズ3: 固定 
 	m_pAnimation->CreateAnimationSequence({
 			0.0f, // 無限
@@ -261,10 +260,12 @@ void BackButton::CreateAnimationSequence()
 			{
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / END_DURATION;
+				// 補間
 				t = Clamp(t, 0.0f, 1.0f);
+				// イージング
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
-				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(-1.5f + i  , POSITIONS[i].y + 0.0f), easing);
+				m_buttonRects[i].position = Vector2::Lerp(POSITIONS[i], Vector2(ANIM_START_X + i * ANIM_END_OFFSET, POSITIONS[i].y), easing);
 			}
 		}
 		});
@@ -275,7 +276,9 @@ void BackButton::CreateAnimationSequence()
 			// 0で動かした場所とサイズで固定
 			for (size_t i = 0; i < m_buttonRects.size(); i++)
 			{
-				m_buttonRects[i].position = Vector2(-1.5f + i, POSITIONS[i].y + 0.0f);
+				// 最終的な位置に設定
+				m_buttonRects[i].position = Vector2(ANIM_START_X + i * ANIM_END_OFFSET, POSITIONS[i].y);
+				// 最終的なサイズに設定
 				m_buttonRects[i].size = SIZES[i];
 			}
 	} });
@@ -288,7 +291,7 @@ void BackButton::CreateAnimationSequence()
 */
 void BackButton::UpdateConstantBuffer()
 {
-	// 名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 定数バッファを更新
 	// ワールド行列を単位行列に設定

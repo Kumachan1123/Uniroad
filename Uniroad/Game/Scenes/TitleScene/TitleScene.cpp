@@ -4,8 +4,6 @@
 */
 #include "pch.h"
 #include "TitleScene.h"
-// フェード開始時間
-const float TitleScene::FADE_START_TIME = 0.5f;
 /*
 *	@brief コンストラクタ
 *	@details タイトルシーンクラスのコンストラクタ
@@ -41,8 +39,9 @@ TitleScene::~TitleScene()
 */
 void TitleScene::Initialize(CommonResources* resources)
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// DirectXのSimpleMath名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 共通リソースをセット
 	m_pCommonResources = resources;
@@ -56,12 +55,10 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
 	m_pSky->Initialize();
-	// 空の位置を設定
-	m_pSky->SetPosition(Vector3(0.0f, 40.0f, 0.0f));
 	// 空のスケールを設定
-	m_pSky->SetScale(Vector3(0.2f));
+	m_pSky->SetScale(SKY_SCALE);
 	// 空の回転速度を設定
-	m_pSky->SetRotationSpeed(1.0f);
+	m_pSky->SetRotationSpeed(SKY_ROTATION_SPEED);
 	// 道路を作成する
 	m_pRoad = std::make_unique<Road>(m_pCommonResources);
 	// 道路にシャドウマップライトを設定する
@@ -83,7 +80,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
 	// ミニキャラを作成する
-	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(0.0f, 0.0f, 0.0f), 0.0f);
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3::Zero, 0.0f);
 	// ミニキャラにカメラを設定する
 	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
 	// ミニキャラのベースにシャドウマップライトを設定する
@@ -91,7 +88,7 @@ void TitleScene::Initialize(CommonResources* resources)
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), Vector3(-10.0f, -0.45f, 0.0f), 0.0f));
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterTitle>(m_pMiniCharacterBase.get(), SHEEP_START_POS, 0.0f));
 	// ミニキャラのアニメーションステートを設定
 	m_pMiniCharacterBase->SetTitleAnimationState(NONE);
 	// BGMの再生
@@ -106,14 +103,14 @@ void TitleScene::Initialize(CommonResources* resources)
 */
 void TitleScene::Update(float elapsedTime)
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// SinpleMathの名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 時間を更新
 	m_time += elapsedTime;
 	// オーディオマネージャーの更新処理
 	m_pCommonResources->GetAudioManager()->Update(elapsedTime);
-
 	// 固定カメラの更新
 	m_pFixedCamera->Update();
 	// デバッグカメラを更新する
@@ -121,10 +118,11 @@ void TitleScene::Update(float elapsedTime)
 	// ビュー行列を取得
 	m_view = m_pFixedCamera->GetViewMatrix();
 	// カメラの位置を調整
-	m_pFixedCamera->SetCameraDistance(Vector3(0.0f, 1.8f, 5.0f));
+	m_pFixedCamera->SetCameraDistance(CAMERA_POSITION);
+	// ミニキャラのカメラ位置を取得
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
 	// カメラのターゲット位置をミニキャラのカメラ位置に設定
-	m_pFixedCamera->SetTargetPosition(Vector3(targetPos.x, targetPos.y + 2.5f, targetPos.z));
+	m_pFixedCamera->SetTargetPosition(targetPos + CAMERA_LOOK_OFFSET);
 	// カメラの座標を更新
 	m_pFixedCamera->SetEyePosition(m_pMiniCharacterBase->GetCameraPosition() + m_pFixedCamera->GetCameraDistance());
 	// ロゴを更新
@@ -139,7 +137,8 @@ void TitleScene::Update(float elapsedTime)
 	m_pRoad->Update(elapsedTime);
 	// シャドウマップライトを更新
 	m_pShadowMapLight->Update(elapsedTime);
-	m_pShadowMapLight->SetLightPosition(targetPos + Vector3(0.0f, 30.0f, 0.0f));
+	// 
+	m_pShadowMapLight->SetLightPosition(targetPos + SHADOW_MAP_LIGHT_POSITION);
 	// 座標を初期化
 	Vector3 position(Vector3::Zero);
 	// Y軸に90°回転
@@ -195,7 +194,6 @@ void TitleScene::Render()
 	m_pShadowMapLight->RenderShadow();
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
-
 	// 以下、2D描画のものを描画する
 	// ボタンを描画する
 	m_pTitleButton->Render();
@@ -214,7 +212,6 @@ void TitleScene::Finalize()
 {
 	// ミニキャラの終了
 	if (m_pMiniCharacterBase) m_pMiniCharacterBase->Finalize();
-
 }
 
 /*
@@ -227,25 +224,27 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 {
 	// シーン変更がないならすぐ戻る
 	if (!m_isChangeScene)return IScene::SceneID::NONE;
-
+	// 押されたボタンで分岐
 	switch (m_pTitleButton->GetPressedButtonIndex())
 	{
 	case 0: // ゲーム開始ボタンが押された場合
 		// ステージセレクトへ
 		return IScene::SceneID::STAGESELECT;
+		// 処理を終える
 		break;
 	case 1: // 設定メニューボタンが押された場合
 		// 設定メニューへ
 		return IScene::SceneID::SETTING;
+		// 処理を終える
 		break;
 	case 2: // ゲーム終了ボタンが押された場合
 		// アプリケーションを終了する
 		PostQuitMessage(0);
+		// 処理を終える
 		break;
 	}
 	// ステージセレクトへ
 	return IScene::SceneID::NONE;
-
 }
 
 /*
@@ -256,20 +255,25 @@ IScene::SceneID TitleScene::GetNextSceneID() const
 */
 void TitleScene::CreateCamera()
 {
+	// DirectXの名前空間の使用
 	using namespace DirectX;
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// 固定カメラを作成する
 	m_pFixedCamera = std::make_unique<FixedCamera>();
+	// 固定カメラを初期化する
 	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
+	// デバッグカメラを作成する
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
+	// デバッグカメラを初期化する
 	m_debugCamera->Initialize(rect.right, rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(60.0f),
-		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 100.0f);
+		XMConvertToRadians(60.0f),// 視野角
+		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
+		0.1f, 100.0f);// ニアクリップ距離、ファークリップ距離
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
 }

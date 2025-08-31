@@ -28,6 +28,13 @@ class CommonResources;
 // 平面エリアクラス
 class PlaneArea
 {
+private:
+	// private構造体
+	struct Vector2Int
+	{
+		int x; // X座標
+		int y; // Y座標
+	};
 public:
 	// アクセサ
 	// ビュー行列を設定
@@ -54,7 +61,6 @@ public:
 	bool IsMouseClick() const { return m_isMouseClick; }
 	// マウスクリックを設定する
 	void SetMouseClick(bool isClick) { m_isMouseClick = isClick; }
-
 public:
 	// public関数
 	// コンストラクタ
@@ -72,7 +78,7 @@ public:
 private:
 	// private関数
 	// マウス座標からワールドレイを生成
-	DirectX::SimpleMath::Ray ScreenPointToRay(int mouseX, int mouseY, int screenWidth, int screenHeight);
+	DirectX::SimpleMath::Ray ScreenPointToRay(const Vector2Int& mousePosition, const Vector2Int& screenSize);
 	// Planeとレイの交差判定
 	bool RayIntersectPlane(int index, const DirectX::SimpleMath::Ray& ray,
 		const DirectX::SimpleMath::Plane& plane,
@@ -83,8 +89,7 @@ private:
 public:
 	// public定数
 	// 当たった平面がない場合のインデックス
-	static const int NO_HIT_PLANE_INDEX = -1;
-
+	static constexpr int NO_HIT_PLANE_INDEX = -1;
 private:
 	// privateメンバ変数
 	// 共通リソースへのポインタ

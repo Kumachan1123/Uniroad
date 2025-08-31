@@ -53,6 +53,7 @@ SettingBar::SettingBar()
 */
 SettingBar::~SettingBar()
 {
+	// 特になし
 }
 /*
 *	@brief 初期化
@@ -81,8 +82,9 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 	// スクロールバーの数ループ
 	for (auto& bar : m_bars)
 	{
-		// シェーダーパスを渡す
+		// 頂点シェーダーのパスを渡す
 		bar->SetVertexShaderFilePath("Resources/Shaders/Counter/VS_Counter.cso");
+		// ピクセルシェーダーのパスを渡す
 		bar->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 		// シェーダーバッファサイズを設定
 		bar->SetShaderBufferSize(sizeof(SpriteSheetBuffer));
@@ -92,17 +94,21 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 	// スクロールバーの矩形を設定
 	for (int i = 0; i < m_bars.size(); i++)
 	{
-		// 矩形の定義
+		// 棒部分の矩形の定義
 		Rect barRect;
+		// 操作部分の矩形の定義
 		Rect controllerRect;
-		// 矩形の位置を設定
+		// 棒部分の矩形の位置を設定
 		barRect.position = BAR_POSITIONS[i];
+		// 操作部分の矩形の位置を設定
 		controllerRect.position = CONTROLLER_POSITIONS[i];
-		// 矩形のサイズを設定
+		// 棒部分の矩形のサイズを設定
 		barRect.size = BAR_SIZES[i];
+		// 操作部分の矩形のサイズを設定
 		controllerRect.size = CONTROLLER_SIZES[i];
-		// 矩形を追加
+		// 棒部分の矩形を追加
 		m_barRects.push_back(barRect);
+		// 操作部分の矩形を追加
 		m_controllerRects.push_back(controllerRect);
 		// 当たり判定フラグを初期化
 		m_isHit.push_back(false);
@@ -122,7 +128,7 @@ void SettingBar::Initialize(CommonResources* resources, int width, int height)
 */
 void SettingBar::Update(float elapsedTime)
 {
-	// 名前空間の使用
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// マウスの状態を取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
@@ -168,7 +174,7 @@ void SettingBar::Render()
 */
 void SettingBar::UpdateConstantBuffer()
 {
-	// 名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 定数バッファを更新
 	// ワールド行列を単位行列に設定

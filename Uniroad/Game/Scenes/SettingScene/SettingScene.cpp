@@ -36,8 +36,9 @@ SettingScene::~SettingScene()
 */
 void SettingScene::Initialize(CommonResources* resources)
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// SimpleMathの名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 共通リソースをセット
 	m_pCommonResources = resources;
@@ -73,7 +74,7 @@ void SettingScene::Initialize(CommonResources* resources)
 		// Minテクスチャを作成する
 		std::unique_ptr<MinTexture> pMinTexture = std::make_unique<MinTexture>();
 		// 座標を設定する
-		pMinTexture->SetPosition(DirectX::SimpleMath::Vector2(0.275f, 0.36f + 0.3f * i));
+		pMinTexture->SetPosition(MIN_POSITION + INTERVAL_Y * float(i));
 		// Minテクスチャを初期化する
 		pMinTexture->Initialize(m_pCommonResources, outputSize.right, outputSize.bottom);
 		// 配列に追加する
@@ -81,7 +82,7 @@ void SettingScene::Initialize(CommonResources* resources)
 		// Maxテクスチャを作成する
 		std::unique_ptr<MaxTexture> pMaxTexture = std::make_unique<MaxTexture>();
 		// 座標を設定する
-		pMaxTexture->SetPosition(DirectX::SimpleMath::Vector2(0.925f, 0.36f + 0.3f * i));
+		pMaxTexture->SetPosition(MAX_POSITION + INTERVAL_Y * float(i));
 		// Minテクスチャを初期化する
 		pMaxTexture->Initialize(m_pCommonResources, outputSize.right, outputSize.bottom);
 		// 配列に追加する
@@ -104,8 +105,9 @@ void SettingScene::Initialize(CommonResources* resources)
 */
 void SettingScene::Update(float elapsedTime)
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// SimpleMathの名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 時間を更新
 	m_time += elapsedTime;

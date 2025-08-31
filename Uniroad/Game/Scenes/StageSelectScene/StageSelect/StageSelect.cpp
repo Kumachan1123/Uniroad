@@ -24,8 +24,8 @@ StageSelect::StageSelect(CommonResources* resources)
 */
 StageSelect::~StageSelect()
 {
-
-	// 共通リソースの解放は不要
+	// 終了処理を呼び出す
+	Finalize();
 }
 /*
 *	@brief 初期化
@@ -46,7 +46,6 @@ void StageSelect::Initialize()
 */
 void StageSelect::Update(float elapsedTime)
 {
-	// 更新処理は特にない
 	// 未使用警告非表示
 	UNREFERENCED_PARAMETER(elapsedTime);
 	// シャドウマップライトの更新
@@ -61,6 +60,7 @@ void StageSelect::Update(float elapsedTime)
 */
 void StageSelect::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// デバイスコンテキストを取得
 	const auto& context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();

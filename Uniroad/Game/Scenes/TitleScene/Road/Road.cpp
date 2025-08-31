@@ -49,7 +49,7 @@ void Road::Initialize()
 	{	// モデルを読み込む
 		m_pModels.push_back(m_pCommonResources->GetModelManager()->GetModel("Road"));
 		// 初期位置をリセット
-		m_positions.push_back(Vector3(i * 10.0f, -0.52f, 0.0f));
+		m_positions.push_back(Vector3(float(i) * INITIAL_X, INITIAL_Y, 0.0f));
 	}
 }
 /*
@@ -60,25 +60,23 @@ void Road::Initialize()
 */
 void Road::Update(float elapsedTime)
 {
-	// 必要な名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 時間を加算
 	m_time += elapsedTime;
 	// スクロール
 	for (int i = 0; i < 2; ++i)	m_positions[i].x -= m_scrollSpeed * elapsedTime;
 	// ループ処理：手前に来たやつを奥に回す
-	// 道の長さを定義
-	const float roadLength = 10.0f;
 	// 道路の位置を更新
 	for (int i = 0; i < 2; ++i)
 	{
 		// 道路の位置が手前に来たら奥に回す
-		if (m_positions[i].x < -roadLength)
+		if (m_positions[i].x < -INITIAL_X)
 		{
 			// もう一方の道路の位置を取得
 			int other = (i == 0) ? 1 : 0;
 			// 手前の道路の位置を奥の道路の位置に設定
-			m_positions[i].x = m_positions[other].x + roadLength;
+			m_positions[i].x = m_positions[other].x + INITIAL_X;
 		}
 	}
 }
@@ -100,19 +98,10 @@ void Road::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	{
 		// ワールド行列を作成 
 		auto world = DirectX::SimpleMath::Matrix::CreateTranslation(m_positions[i]);
-
 		// モデルを描画
 		m_pModels[i]->Draw(context, *states, world, view, proj, false, [&]
 			{
-				//// ブレンドステートを設定する
-				//context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
-				//// 深度ステンシルステートを設定する
-				//context->OMSetDepthStencilState(m_pDepthStencilState.Get(), 0);	// 参照値：0
-				//// カリングを設定する
-				//context->RSSetState(states->CullCounterClockwise());
-				//// テクスチャサンプラを適用する
-				//ID3D11SamplerState* sampler = states->PointWrap();
-				//context->PSSetSamplers(0, 1, &sampler);
+				// 影を加味したライティング
 				m_pShadowMapLight->ApplyShader(context, states);
 			});
 	}
@@ -129,5 +118,4 @@ void Road::Finalize()
 	m_pCommonResources = nullptr;
 	// モデルを解放
 	for (auto& model : m_pModels) if (model)model = nullptr;
-
 }

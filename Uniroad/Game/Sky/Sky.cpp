@@ -42,23 +42,20 @@ Sky::~Sky()
 */
 void Sky::Initialize()
 {
-
+	// Direct3Dデバイスを取得
 	const auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 	// モデルを読み込む
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Sky");
 	// シェーダを読み込むための変数
 	std::vector<uint8_t> blob;
-	// 頂点シェーダをロードする
+	// 頂点シェーダのパスを指定して読み込む
 	blob = DX::ReadData(L"Resources/Shaders/Sky/VS_Sky.cso");
-	DX::ThrowIfFailed(
-		device->CreateVertexShader(blob.data(), blob.size(), nullptr, m_vs.ReleaseAndGetAddressOf())
-	);
-	// ライト用のピクセルシェーダをロードする
+	// 頂点シェーダーを作成する
+	device->CreateVertexShader(blob.data(), blob.size(), nullptr, m_vs.ReleaseAndGetAddressOf());
+	// ピクセルシェーダのパスを指定して読み込む
 	blob = DX::ReadData(L"Resources/Shaders/Sky/PS_Sky.cso");
-	DX::ThrowIfFailed(
-		device->CreatePixelShader(blob.data(), blob.size(), nullptr, m_ps.ReleaseAndGetAddressOf())
-	);
-
+	// ピクセルシェーダーを作成する
+	device->CreatePixelShader(blob.data(), blob.size(), nullptr, m_ps.ReleaseAndGetAddressOf());
 }
 /*
 *	@brief 更新
@@ -68,7 +65,7 @@ void Sky::Initialize()
 */
 void Sky::Update(float elapsedTime)
 {
-	// 必要な名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 時間を加算
 	m_time += elapsedTime;
@@ -93,7 +90,6 @@ void Sky::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleM
 	// モデルを描画
 	m_pModel->Draw(context, *states, m_world, view, proj, false, [&]
 		{
-
 			// 頂点シェーダを設定する
 			context->VSSetShader(m_vs.Get(), nullptr, 0);
 			// ピクセルシェーダを設定する
@@ -110,8 +106,9 @@ void Sky::Finalize()
 {
 	// モデルが存在する場合は解放する
 	if (m_pModel) m_pModel = nullptr;
-	// シェーダーを解放する
+	// 頂点シェーダーを解放する
 	m_vs.Reset();
+	// ピクセルシェーダーを解放する
 	m_ps.Reset();
 	// リソースを解放する
 	m_pCommonResources = nullptr;

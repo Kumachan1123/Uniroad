@@ -4,7 +4,6 @@
 */
 #include "pch.h"
 #include "StageSelectScene.h"
-
 /*
 *	@brief コンストラクタ
 *	@details ステージ選択シーンクラスのコンストラクタ
@@ -33,7 +32,6 @@ StageSelectScene::~StageSelectScene()
 {
 	// 何もしない
 }
-
 /*
 *	@brief 初期化
 *	@details ステージ選択シーンクラスの初期化を行う
@@ -42,8 +40,9 @@ StageSelectScene::~StageSelectScene()
 */
 void StageSelectScene::Initialize(CommonResources* resources)
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// SimpleMathの名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 共通リソースをセット
 	m_pCommonResources = resources;
@@ -71,19 +70,15 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	for (int i = 0; i < FileCounter::CountFilesInFolder("Resources/Map/", ".csv"); i++)
 	{
 		// 中心座標を計算
-		Vector3 center(4.0f * (float)i, 0.5f, 2.0f);
-		// 横幅
-		float width = 2.0f;
-		// 奥行き
-		float depth = 2.0f;
+		Vector3 center(GATE_POSITION_X * (float)i, GATE_POSITION_Y, GATE_INTERVAL);
 		// 平面の頂点を作成
-		std::vector<Vector3> vertices = CreatePlaneVertices(center, width, depth, center.y);
+		std::vector<Vector3> vertices = CreatePlaneVertices(center, GATE_INTERVAL, GATE_INTERVAL);
 		// 平面に頂点配列を登録
 		m_pPlaneArea->AddPlane(vertices);
 		// 平面の中心座標を登録する
 		m_pPlaneArea->AddPlanePosition(center);
 		// 平面の色を赤に設定
-		m_pPlaneArea->SetPlaneColor(Color(1, 0, 0));
+		m_pPlaneArea->SetPlaneColor(Color(1.0f, 0.0f, 1.0f));
 		// ステージの入り口を作成する
 		m_pStageGates.push_back(std::make_unique<StageGate>(m_pCommonResources));
 		// ステージの入り口にシャドウマップライトを設定する
@@ -97,7 +92,7 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
 	// ミニキャラを作成する
-	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3(-2.0f, 0.0f, 2.0f), 0.0f);
+	m_pMiniCharacterBase = std::make_unique<MiniCharacterBase>(nullptr, Vector3::Zero, 0.0f);
 	// ミニキャラベースにCSVマップを設定
 	m_pMiniCharacterBase->SetCSVMap(nullptr);
 	// ミニキャラベースにCSVアイテムを設定
@@ -113,9 +108,9 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
-	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), Vector3(-4.0f, -0.5f, 2.0f), 0.0f));
+	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacterSelectStage>(m_pMiniCharacterBase.get(), MINI_CHARACTER_POSITION, 0.0f));
 	// 最初に追従する座標を設定
-	m_pTrackingCamera->SetTargetPosition(Vector3(5.0f, -0.5f, 2.0f));
+	m_pTrackingCamera->SetTargetPosition(TRACKING_CAMERA_INITIAL_POSITION);
 	// 出力サイズを取得
 	auto outputSize = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// フェードを作成する
@@ -139,15 +134,17 @@ void StageSelectScene::Initialize(CommonResources* resources)
 */
 void StageSelectScene::Update(float elapsedTime)
 {
-	// 名前空間のエイリアス
+	// DirectXの名前空間のエイリアス
 	using namespace DirectX;
+	// SimpleMathの名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// オーディオマネージャーの更新処理
 	m_pCommonResources->GetAudioManager()->Update(elapsedTime);
 	// カメラの位置となる場所を取得
 	Vector3 targetPos = m_pMiniCharacterBase->GetCameraPosition();
+	// シャドウマップライトの位置を設定
+	m_pShadowMapLight->SetLightPosition(targetPos + SHADOW_MAP_LIGHT_POSITION);
 	// シャドウマップライトを更新		
-	m_pShadowMapLight->SetLightPosition(targetPos + Vector3(0.0f, 30.0f, 0.0f));
 	m_pShadowMapLight->Update(elapsedTime);
 	// 空の更新
 	m_pSky->Update(elapsedTime);
@@ -166,7 +163,7 @@ void StageSelectScene::Update(float elapsedTime)
 	// ビュー行列を取得
 	m_view = m_pTrackingCamera->GetViewMatrix();
 	// 座標を初期化
-	Vector3 position(-2.0f, -0.5f, -1.75f);
+	Vector3 position = Vector3::Zero;
 	// 角度を初期化
 	Quaternion angle(Quaternion::Identity);
 	// ミニキャラの更新
@@ -235,7 +232,6 @@ void StageSelectScene::Render()
 	for (auto& gate : m_pStageGates)gate->Render(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
-
 	// 空を描画する
 	m_pSky->Render(m_view, m_projection);
 	// ボタンを描画する
@@ -287,19 +283,10 @@ IScene::SceneID StageSelectScene::GetNextSceneID() const
 {
 	// シーン変更がない場合何もしない
 	if (!m_isChangeScene)return IScene::SceneID::NONE;
-	// シーン変更がある場合
-	if (m_pBackButton->GetPressedButtonIndex() == 0)
-	{
-		// タイトルシーンへ
-		return IScene::SceneID::TITLE;
-	}
-	// シーン変更があってボタンが押されてないとき
-	else
-	{
-		// プレイシーンへ
-		return IScene::SceneID::PLAY;
-	}
-
+	// シーン変更がある場合タイトルシーンへ
+	if (m_pBackButton->GetPressedButtonIndex() == 0)return IScene::SceneID::TITLE;
+	// シーン変更があってボタンが押されてないときプレイシーンへ
+	else return IScene::SceneID::PLAY;
 }
 
 /*
@@ -310,24 +297,29 @@ IScene::SceneID StageSelectScene::GetNextSceneID() const
 */
 void StageSelectScene::CreateCamera()
 {
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// デバッグカメラを作成する
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
+	// デバッグカメラを初期化する
 	m_debugCamera->Initialize(rect.right, rect.bottom);
 	// 固定カメラを作成する
 	m_pFixedCamera = std::make_unique<FixedCamera>();
+	// 固定カメラを初期化する
 	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
 	// トラッキングカメラを作成する
 	m_pTrackingCamera = std::make_unique<TrackingCamera>();
+	// トラッキングカメラを初期化する
 	m_pTrackingCamera->Initialize((int)(rect.right), rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 10000.0f
+		XMConvertToRadians(45.0f),// 視野角
+		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
+		0.1f, 10000.0f// ニアクリップ距離、ファークリップ距離
 	);
 	// 固定カメラに射影行列を設定
 	m_pTrackingCamera->SetProjectionMatrix(m_projection);
@@ -343,13 +335,14 @@ void StageSelectScene::CreateCamera()
 */
 std::vector<DirectX::SimpleMath::Vector3> StageSelectScene::CreatePlaneVertices(const DirectX::SimpleMath::Vector3& center, float width, float depth, float y) const
 {
-	// 名前空間のエイリアス
+	// SimpleMathの名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
 	// 平面の頂点を計算する
 	float halfW = width / 2.0f;
 	// 平面の奥行きの半分を計算する
 	float halfD = depth / 2.0f;
-	return {
+	return
+	{
 		Vector3(center.x - halfW, y, center.z - halfD), // 左下
 		Vector3(center.x + halfW, y, center.z - halfD), // 右下
 		Vector3(center.x + halfW, y, center.z + halfD), // 右上

@@ -434,30 +434,33 @@ void PlayScene::CreateCamera()
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// プレイ中の固定カメラを作成する
 	m_pFixedCameraPlay = std::make_unique<FixedCamera>();
+	// プレイ中の固定カメラを初期化する
 	m_pFixedCameraPlay->Initialize((int)(rect.right * Display::RATIO_MAIN_SCREEN_WIDTH), rect.bottom);
 	// リザルト用固定カメラを作成する
 	m_pFixedCameraResult = std::make_unique<FixedCamera>();
+	// リザルト用固定カメラを初期化する
 	m_pFixedCameraResult->Initialize(rect.right, rect.bottom);
 	// 射影行列(ゲーム画面用)を作成する
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right * Display::RATIO_MAIN_SCREEN_WIDTH) / static_cast<float>(rect.bottom),
-		0.1f, 1000.0f
+		XMConvertToRadians(45.0f),// 視野角
+		static_cast<float>(rect.right * Display::RATIO_MAIN_SCREEN_WIDTH) / static_cast<float>(rect.bottom),// アスペクト比
+		0.1f, 1000.0f// ニアクリップ距離、ファークリップ距離
 	);
 	// 射影行列(操作画面用)を作成する
 	m_projectionControll = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right * Display::RATIO_CONTROLL_SCREEN_WIDTH) / static_cast<float>(rect.bottom),
-		0.1f, 1000.0f
+		XMConvertToRadians(45.0f),// 視野角
+		static_cast<float>(rect.right * Display::RATIO_CONTROLL_SCREEN_WIDTH) / static_cast<float>(rect.bottom),// アスペクト比
+		0.1f, 1000.0f// ニアクリップ距離、ファークリップ距離
 	);
 	// 射影行列(リザルト用)を作成する
 	m_projectionResult = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 1000.0f
+		XMConvertToRadians(45.0f),// 視野角
+		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
+		0.1f, 1000.0f// ニアクリップ距離、ファークリップ距離
 	);
 	// カメラに射影行列をセット
 	m_pFixedCameraPlay->SetProjectionMatrix(m_projectionGame);
+	// リザルト用カメラに射影行列をセット
 	m_pFixedCameraResult->SetProjectionMatrix(m_projectionResult);
 }
 /*

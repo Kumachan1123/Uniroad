@@ -68,13 +68,26 @@ public:
 	void Finalize() override;
 	// シーンIDを取得する
 	SceneID GetNextSceneID() const override;
-
 private:
 	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
 	// 平面の中心座標を基に４つの頂点を設定する
 	std::vector<DirectX::SimpleMath::Vector3> CreatePlaneVertices(const DirectX::SimpleMath::Vector3& center, float width, float depth, float y = 0.5f) const;
+private:
+	// 定数
+	// ステージゲートの生成間隔
+	static constexpr float GATE_INTERVAL = 2.0f;
+	// ステージゲートの生成位置X
+	static constexpr float GATE_POSITION_X = 4.0f;
+	// ステージゲートの生成位置Y
+	static constexpr float GATE_POSITION_Y = 0.5f;
+	// ひつじの生成位置
+	static constexpr DirectX::SimpleMath::Vector3 MINI_CHARACTER_POSITION = { -4.0f, -0.5f, 2.0f };
+	// 追従カメラの初期位置
+	static constexpr DirectX::SimpleMath::Vector3 TRACKING_CAMERA_INITIAL_POSITION = { 5.0f,-0.5f, 2.0f };
+	// シャドウマップライトの位置
+	static constexpr DirectX::SimpleMath::Vector3 SHADOW_MAP_LIGHT_POSITION = { 0.0f, 30.0f, 0.0f };
 private:
 	// privateメンバ変数
 	// 共通リソース

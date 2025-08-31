@@ -20,7 +20,6 @@ public:
 	ShadowMapLight* GetShadowMapLight() const { return m_pShadowMapLight; }
 	// シャドウマップライトを設定する
 	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
-
 public:
 	// public関数
 	// コンストラクタ
@@ -49,5 +48,4 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotation;
 	// スケール
 	DirectX::SimpleMath::Vector3 m_scale;
-
 };

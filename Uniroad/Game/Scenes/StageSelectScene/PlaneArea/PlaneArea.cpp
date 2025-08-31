@@ -4,8 +4,6 @@
 */
 #include "pch.h"
 #include "PlaneArea.h"
-
-
 /*
 *	@brief コンストラクタ
 *	@details 平面エリアクラスのコンストラクタ
@@ -24,7 +22,6 @@ PlaneArea::PlaneArea(CommonResources* resources)
 	, m_prevIsHitPlane(false) // 前フレームで何らかの平面と当たっていたか
 	, m_isMouseClick(false) // マウスクリックフラグ
 {
-
 }
 /*
 *	@brief デストラクタ
@@ -45,7 +42,9 @@ PlaneArea::~PlaneArea()
 */
 void PlaneArea::Initialize()
 {
+	// DirectX名前空間を使用
 	using namespace DirectX;
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// デバイスを取得
 	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
@@ -64,10 +63,10 @@ void PlaneArea::Initialize()
 	// ベーシックエフェクトからシェーダーバイトコードを取得
 	m_pBasicEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 	// 入力レイアウトの生成
-	device->CreateInputLayout(VertexPositionColor::InputElements,
-		VertexPositionColor::InputElementCount,
-		shaderByteCode, byteCodeLength,
-		&m_pInputLayout);
+	device->CreateInputLayout(VertexPositionColor::InputElements,// 入力要素の配列
+		VertexPositionColor::InputElementCount,// 入力要素の数
+		shaderByteCode, byteCodeLength,// シェーダーバイトコードとその長さ
+		&m_pInputLayout);// 入力レイアウト
 }
 /*
 *	@brief 更新
@@ -83,18 +82,26 @@ void PlaneArea::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 	// マウス座標取得
 	auto& mouseState = m_pCommonResources->GetInputManager()->GetMouseState();
-	int mouseX = mouseState.x;
-	int mouseY = mouseState.y;
+	// マウス座標を取得
+	Vector2Int mousePos;
+	// XY座標を代入
+	mousePos.x = mouseState.x;
+	// Y座標を代入
+	mousePos.y = mouseState.y;
 	// ウィンドウハンドルを取得
 	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
 	// ウィンドウサイズ取得
 	RECT rect;
 	// クライアント領域サイズを取得
 	GetClientRect(hwnd, &rect);
-	int screenWidth = rect.right;
-	int screenHeight = rect.bottom;
+	// 画面サイズを取得
+	Vector2Int screenSize;
+	// 幅を代入
+	screenSize.x = rect.right;
+	// 高さを代入
+	screenSize.y = rect.bottom;
 	// レイ生成
-	Ray ray = ScreenPointToRay(mouseX, mouseY, screenWidth, screenHeight);
+	Ray ray = ScreenPointToRay(mousePos, screenSize);
 	// 平面の定義
 	Plane plane(Vector3(0.0f, 1.0f, 0.0f), 0.0f);
 	// レイと平面の交差判定
@@ -112,8 +119,7 @@ void PlaneArea::Update(float elapsedTime)
 			// 何らかの平面と当たっているフラグを立てる
 			m_isHitPlane = true;
 			// 前フレームで当たっていなくて今フレームで当たった時だけ鳴らす
-			if (!m_prevIsHitPlane)
-				m_pCommonResources->GetAudioManager()->PlaySound("UISelect", m_pCommonResources->GetSettingManager()->GetSEVolume());
+			if (!m_prevIsHitPlane)	m_pCommonResources->GetAudioManager()->PlaySound("UISelect", m_pCommonResources->GetSettingManager()->GetSEVolume());
 			// 1つでも当たったらもう鳴らさない
 			break;
 		}
@@ -132,8 +138,7 @@ void PlaneArea::Update(float elapsedTime)
 void PlaneArea::Render()
 {
 	// 平面を描画
-	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)
-		DrawDebugLine(m_debugPlaneVerticesPosition[i], m_debugPlaneVerticesColor[i]);
+	for (int i = 0; i < m_debugPlaneVerticesPosition.size(); i++)DrawDebugLine(m_debugPlaneVerticesPosition[i], m_debugPlaneVerticesColor[i]);
 }
 /*
 *	@brief 終了処理
@@ -148,30 +153,38 @@ void PlaneArea::Finalize()
 /*
 *	@brief マウス座標からワールドレイを生成
 *	@details マウス座標からワールドレイを生成する
-*	@param mouseX マウスのX座標
-*	@param mouseY マウスのY座標
-*	@param screenWidth 画面の幅
-*	@param screenHeight 画面の高さ
+*	@param mousePos マウスの座標
+*	@param screenSize 画面
 *	@param view ビュー行列
 *	@param projection 射影行列
 *	@return 生成されたレイ
 */
-DirectX::SimpleMath::Ray PlaneArea::ScreenPointToRay(int mouseX, int mouseY, int screenWidth, int screenHeight)
+DirectX::SimpleMath::Ray PlaneArea::ScreenPointToRay(const Vector2Int& mousePos, const Vector2Int& screenSize)
 {
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// スクリーン座標をNDC(-1～1)の範囲に変換
-	float px = ((2.0f * mouseX) / screenWidth - 1.0f);
-	float py = (1.0f - (2.0f * mouseY) / screenHeight);
+	// X座標を変換
+	float px = ((2.0f * mousePos.x) / screenSize.x - 1.0f);
+	// Y座標を変換
+	float py = (1.0f - (2.0f * mousePos.y) / screenSize.y);
 	// Clip空間でnear/far平面の座標を計算
+	// Rayの始点を定義
 	Vector3 rayStartNDC(px, py, 0.0f);
+	// Rayの終点を定義
 	Vector3 rayEndNDC(px, py, 1.0f);
 	// 逆行列でワールド行列に変換
 	Matrix invViewProj = (m_view * m_projection).Invert();
+	// NDCからワールド座標に変換
+	// Rayの始点の位置を計算
 	Vector3 rayStartWorld = Vector3::Transform(rayStartNDC, invViewProj);
+	// Rayの終点の位置を計算
 	Vector3 rayEndWorld = Vector3::Transform(rayEndNDC, invViewProj);
 	// レイを生成
 	Vector3 dir = (rayEndWorld - rayStartWorld);
+	// 正規化
 	dir.Normalize();
+	// レイを返す
 	return Ray(rayStartWorld, dir);
 }
 
@@ -191,7 +204,7 @@ bool PlaneArea::RayIntersectPlane(
 	const std::vector<DirectX::SimpleMath::Vector3>& rectVertices,
 	DirectX::SimpleMath::Vector3& outIntersection)
 {
-	// DirectX::SimpleMath名前空間を使用
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 平面との交点計算
 	// 平面の法線を取得
@@ -223,19 +236,30 @@ bool PlaneArea::RayIntersectPlane(
 		auto PointInTriangle = [](const Vector3& p, const Vector3& a, const Vector3& b, const Vector3& c)
 			{
 				// 三角形の頂点a, b, cと点pが与えられたとき、点pが三角形内にあるかを判定
-				Vector3 v0 = c - a;// 三角形の辺aからcへのベクトル
-				Vector3 v1 = b - a;// 三角形の辺aからbへのベクトル
-				Vector3 v2 = p - a;// 三角形の頂点aから点pへのベクトル
+				// 三角形の辺aからcへのベクトル
+				Vector3 v0 = c - a;
+				// 三角形の辺aからbへのベクトル
+				Vector3 v1 = b - a;
+				// 三角形の頂点aから点pへのベクトル
+				Vector3 v2 = p - a;
 				// ベクトルの内積を計算
-				float dot00 = v0.Dot(v0);// 辺aからcへのベクトルの長さの二乗
-				float dot01 = v0.Dot(v1);// 辺aからcへのベクトルと辺aからbへのベクトルの内積
-				float dot02 = v0.Dot(v2);// 辺aからcへのベクトルと点pへのベクトルの内積
-				float dot11 = v1.Dot(v1);// 辺aからbへのベクトルの長さの二乗
-				float dot12 = v1.Dot(v2);// 辺aからbへのベクトルと点pへのベクトルの内積
+				// 辺aからcへのベクトルの長さの二乗
+				float dot00 = v0.Dot(v0);
+				// 辺aからcへのベクトルと辺aからbへのベクトルの内積
+				float dot01 = v0.Dot(v1);
+				// 辺aからcへのベクトルと点pへのベクトルの内積
+				float dot02 = v0.Dot(v2);
+				// 辺aからbへのベクトルの長さの二乗
+				float dot11 = v1.Dot(v1);
+				// 辺aからbへのベクトルと点pへのベクトルの内積
+				float dot12 = v1.Dot(v2);
 				// バリデーション
-				float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);// 逆数を計算
-				float u = (dot11 * dot02 - dot01 * dot12) * invDenom;// uパラメータを計算
-				float v = (dot00 * dot12 - dot01 * dot02) * invDenom;// vパラメータを計算
+				// 逆数を計算
+				float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
+				// uパラメータを計算
+				float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+				// vパラメータを計算
+				float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 				// u, vが0以上かつu + vが1以下ならば、点pは三角形内にある
 				return (u >= 0) && (v >= 0) && (u + v <= 1);
 			};
@@ -253,7 +277,6 @@ bool PlaneArea::RayIntersectPlane(
 	}
 	// 当たってない平面の色は赤に戻す
 	m_debugPlaneVerticesColor[index] = Color(1, 0, 0);
-
 	// 矩形の頂点が4つ未満の場合は、矩形として扱わない
 	return false;
 }
@@ -266,8 +289,9 @@ bool PlaneArea::RayIntersectPlane(
 */
 void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& vertices, const DirectX::SimpleMath::Color& color)
 {
-	// DirectXとSimpleMath名前空間を使用
+	// DirectXの名前空間を使用
 	using namespace DirectX;
+	// SimpleMath名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// デバイスコンテキストを取得
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
@@ -302,8 +326,8 @@ void PlaneArea::DrawDebugLine(const std::vector<DirectX::SimpleMath::Vector3>& v
 */
 DirectX::SimpleMath::Vector3 PlaneArea::GetPlanePosition(int index) const
 {
-	if (index < 0)
-		return m_positions[0]; // インデックスが負の場合は最初の位置を返す
+	// インデックスが負の場合は最初の位置を返す
+	if (index < 0)	return m_positions[0];
 	// 指定したインデックスの平面の位置を返す
 	return m_positions[index];
 }

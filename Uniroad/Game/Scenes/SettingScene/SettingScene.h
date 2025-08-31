@@ -57,6 +57,14 @@ public:
 	// シーンIDを取得する
 	SceneID GetNextSceneID() const override;
 private:
+	// 定数
+	// Minテクスチャの座標
+	static constexpr DirectX::SimpleMath::Vector2 MIN_POSITION = DirectX::SimpleMath::Vector2(0.275f, 0.36f);
+	// MinテクスチャのY座標
+	static constexpr DirectX::SimpleMath::Vector2 MAX_POSITION = DirectX::SimpleMath::Vector2(0.925f, 0.36f);
+	// Y座標の間隔
+	static constexpr DirectX::SimpleMath::Vector2 INTERVAL_Y = DirectX::SimpleMath::Vector2(0.0f, 0.3f);
+private:
 	// privateメンバ変数
 	// 共通リソース
 	CommonResources* m_pCommonResources;
@@ -78,7 +86,6 @@ private:
 	std::unique_ptr<SETexture> m_pSETexture;
 	// 背景画像
 	std::unique_ptr<Back> m_pBack;
-
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列

@@ -44,8 +44,9 @@ void MinTexture::Initialize(CommonResources* resources, int width, int height)
 	m_pCommonResources = resources;
 	// 画像を作成
 	m_pImage = std::make_unique<Image>();
-	// シェーダーパスを渡す
+	// 頂点シェーダーのパスを渡す
 	m_pImage->SetVertexShaderFilePath("Resources/Shaders/Counter/VS_Counter.cso");
+	// ピクセルシェーダーのパスを渡す
 	m_pImage->SetPixelShaderFilePath("Resources/Shaders/Counter/PS_Counter.cso");
 	// 画像を設定
 	m_pImage->SetTexture(resources->GetTextureManager()->GetTexture("Min"));
@@ -54,7 +55,9 @@ void MinTexture::Initialize(CommonResources* resources, int width, int height)
 	// 画像の初期化
 	m_pImage->Initialize(m_pCommonResources, width, height);
 	// 矩形を設定
+	// 位置を設定
 	m_rect.position = m_position;
+	// サイズを設定
 	m_rect.size = m_size;
 }
 /*
@@ -89,7 +92,7 @@ void MinTexture::Render()
 */
 void MinTexture::UpdateConstantBuffer()
 {
-	// 名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 定数バッファを更新
 	// ワールド行列を単位行列に設定

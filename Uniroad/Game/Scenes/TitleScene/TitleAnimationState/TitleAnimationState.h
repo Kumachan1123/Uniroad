@@ -3,6 +3,7 @@
 *	@brief タイトルシーンのアニメーションステート
 */
 #pragma once
+
 // タイトルシーンのひつじのアニメーションステートを定義する
 enum TitleAnimation
 {

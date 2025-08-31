@@ -46,8 +46,9 @@ void Back::Initialize(CommonResources* resources, int width, int height)
 	m_pCommonResources = resources;
 	// 画像を作成
 	m_pImage = std::make_unique<Image>();
-	// シェーダーパスを渡す
+	// 頂点シェーダーのパスを渡す
 	m_pImage->SetVertexShaderFilePath("Resources/Shaders/UVScroll/VS_UVScroll.cso");
+	// ピクセルシェーダーのパスを渡す
 	m_pImage->SetPixelShaderFilePath("Resources/Shaders/UVScroll/PS_UVScroll.cso");
 	// 画像を設定
 	m_pImage->SetTexture(resources->GetTextureManager()->GetTexture("Sky"));
@@ -55,8 +56,10 @@ void Back::Initialize(CommonResources* resources, int width, int height)
 	m_pImage->SetShaderBufferSize(sizeof(UVScrollBuffer));
 	// 画像の初期化
 	m_pImage->Initialize(m_pCommonResources, width, height);
-	// 矩形を設定
+	// 矩形の設定
+	// 座標を設定
 	m_rect.position = m_position;
+	// サイズを設定
 	m_rect.size = m_size;
 }
 /*
@@ -91,7 +94,7 @@ void Back::Render()
 */
 void Back::UpdateConstantBuffer()
 {
-	// 名前空間を使用
+	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 定数バッファを更新
 	// ワールド行列を単位行列に設定
