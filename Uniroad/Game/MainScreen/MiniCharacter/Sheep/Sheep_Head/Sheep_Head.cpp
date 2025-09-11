@@ -91,9 +91,9 @@ void SheepHead::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	// •\î‚É‰ž‚¶‚Äƒ‚ƒfƒ‹‚ðØ‚è‘Ö‚¦‚é
 	if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::NORMAL)
 		ChangeExpression("Sheep_Head");	// ’Êí‚ÌŠç
-	else if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::HAPPY)
+	else if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::HAPPY && pBase->IsGameClear())
 		ChangeExpression("Sheep_HappyHead");	// ƒS[ƒ‹‚ÌŽž‚ÌŠç
-	else if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::BAD)
+	else if (pMiniCharacter->GetExpression() == MiniCharacter::Expression::BAD || pBase->IsGameOver())
 		ChangeExpression("Sheep_BadHead");	// —Ž‚¿‚»‚¤‚É‚È‚Á‚½Žž‚â—Ž‚¿‚Ä‚¢‚éŽž‚ÌŠç
 
 }
