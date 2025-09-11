@@ -85,6 +85,8 @@ void SheepBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent());
 	// ƒVƒƒƒhƒEƒ}ƒbƒv‚Éƒ‚ƒfƒ‹‚ð“o˜^‚·‚é
 	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
+	// —ÖŠsü•`‰æ‚Éƒ‚ƒfƒ‹‚ð“o˜^‚·‚é
+	pBase->GetOutLine()->SetOutLineModel(m_pModel, m_worldMatrix);
 	// u“·‘Ìv•”•i‚ðXV‚·‚é
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }

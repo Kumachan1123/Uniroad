@@ -137,6 +137,7 @@
     <ClInclude Include="Game\Scenes\SettingScene\Back\Back.h" />
     <ClInclude Include="Game\Display\Display.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.h" />
+    <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="Game\Scenes\SettingScene\Back\Back.cpp" />
     <ClCompile Include="Game\Display\Display.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.cpp" />
+    <ClCompile Include="KumachiLib\OutLine\OutLine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -248,7 +250,6 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="HLSL\Particle\Particle.hlsli" />
-    <None Include="HLSL\CRT\CRT.hlsli" />
     <None Include="HLSL\Tile\Tile.hlsli" />
     <None Include="ClassDiagram.cd" />
     <None Include="HLSL\Counter\Counter.hlsli" />
@@ -260,15 +261,13 @@
     <None Include="Resources\Jsons\Audios.json" />
     <None Include="Resources\Jsons\Setting.json" />
     <None Include="HLSL\UVScroll\UVScroll.hlsli" />
+    <None Include="HLSL\OutLine\Common.hlsli" />
+    <None Include="HLSL\OutLine\Params.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
     <FxCompile Include="HLSL\Particle\PS_Shine.hlsl" />
     <FxCompile Include="HLSL\Particle\VS_Particle.hlsl" />
-    <FxCompile Include="HLSL\CRT\PS_CRT.hlsl" />
-    <FxCompile Include="HLSL\CRT\VS_CRT.hlsl" />
-    <FxCompile Include="HLSL\Radar\PS_Radar.hlsl" />
-    <FxCompile Include="HLSL\Radar\VS_Radar.hlsl" />
     <FxCompile Include="HLSL\UI\VS_UI.hlsl" />
     <FxCompile Include="HLSL\UI\PS_UI.hlsl" />
     <FxCompile Include="HLSL\Tile\GS_Tile.hlsl" />
@@ -290,5 +289,7 @@
     <FxCompile Include="HLSL\Particle\PS_Confetti.hlsl" />
     <FxCompile Include="HLSL\UVScroll\VS_UVScroll.hlsl" />
     <FxCompile Include="HLSL\UVScroll\PS_UVScroll.hlsl" />
+    <FxCompile Include="HLSL\OutLine\PS_Outline.hlsl" />
+    <FxCompile Include="HLSL\OutLine\VS_Outline.hlsl" />
   </ItemGroup>
 </Project>

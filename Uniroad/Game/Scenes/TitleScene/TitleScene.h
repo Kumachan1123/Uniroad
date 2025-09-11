@@ -27,6 +27,7 @@
 #include "Game/Sky/Sky.h"
 #include "Game/Scenes/TitleScene/Road/Road.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
+#include "KumachiLib/OutLine/OutLine.h"
 
 // 前方宣言
 class CommonResources;
@@ -79,6 +80,8 @@ private:
 	static constexpr DirectX::SimpleMath::Vector3 CAMERA_LOOK_OFFSET = { 0.0f, 2.5f, 0.0f };
 	// シャドウマップライトの位置
 	static constexpr DirectX::SimpleMath::Vector3 SHADOW_MAP_LIGHT_POSITION = { 0.0f, 30.0f, 0.0f };
+	// 視野角(FOV)の角度（デグリー）
+	static constexpr float FOV = 60.0f;
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -103,6 +106,8 @@ private:
 	std::unique_ptr<Road> m_pRoad;
 	// シャドウマップライト
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
+	// 輪郭線描画
+	std::unique_ptr<OutLine> m_pOutLine;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列

@@ -4,6 +4,7 @@
 */
 #include <pch.h>
 #include "MiniCharacterBase.h"
+
 /*
 *	@brief ミニキャラクターのベースクラスのコンストラクタ
 *	@details ミニキャラクターのベースクラスのコンストラクタ。
@@ -28,6 +29,7 @@ MiniCharacterBase::MiniCharacterBase(IComponent* parent, const DirectX::SimpleMa
 	, m_pNextTiles(nullptr) // 次に現れるタイルのクラスへのポインタを初期化する
 	, m_pPlaneArea(nullptr) // 平面エリアへのポインタを初期化する
 	, m_pShadowMapLight(nullptr) // シャドウマップライトへのポインタを初期化する
+	, m_pOutLine(nullptr) // 輪郭線描画へのポインタを初期化する
 	, m_pCamera(nullptr) // カメラへのポインタを初期化する
 	, m_isMoving(false)// ミニキャラの移動フラグを初期化する
 	, m_isGameOver(false) // ゲームオーバーフラグを初期化する
@@ -68,6 +70,21 @@ void MiniCharacterBase::Initialize(CommonResources* commonResources)
 	m_pCommonResources = commonResources;
 }
 /*
+*	@brief ライト位置の初期化
+*	@details ライト位置の初期化
+*	@param なし
+*	@return なし
+*/
+void MiniCharacterBase::InitializeLightPosition()
+{
+	// 各ノードのライト位置を初期化する
+	for (auto& node : m_nodes)
+	{
+		// 座標をライトに渡す座標とする
+		m_lightPosition = node->GetPosition();
+	}
+}
+/*
 *	@brief ミニキャラクターのベースクラスの更新
 *	@details ミニキャラクターのベースクラスの更新。
 *	@param elapsedTime 経過時間
@@ -91,6 +108,9 @@ void MiniCharacterBase::Update(float elapsedTime, const DirectX::SimpleMath::Vec
 		{
 			// 座標をカメラに渡す座標とする
 			m_cameraPosition = node->GetPosition();
+			// 座標をライトに渡す座標とする
+			m_lightPosition.x = node->GetPosition().x;
+			m_lightPosition.z = node->GetPosition().z;
 			// 座標をアイコンに渡す座標とする
 			m_iconPosition = node->GetPosition();
 		}

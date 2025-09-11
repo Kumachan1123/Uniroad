@@ -55,6 +55,10 @@ void PlayScene::Initialize(CommonResources* resources)
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	// シャドウマップライトを作成する
 	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
+	// 輪郭線描画クラスを作成する
+	m_pOutLine = std::make_unique<OutLine>(m_pCommonResources);
+	// 視野角を輪郭描画クラスに設定
+	m_pOutLine->SetFovTheta(XMConvertToRadians(FOV));
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -95,10 +99,14 @@ void PlayScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetCamera(m_pFixedCameraPlay.get());
 	// ミニキャラのベースにシャドウマップライトを設定する
 	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
+	// ミニキャラのベースに輪郭線描画を設定する
+	m_pMiniCharacterBase->SetOutLine(m_pOutLine.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
 	m_pMiniCharacterBase->Attach(std::make_unique<MiniCharacter>(m_pMiniCharacterBase.get(), Vector3::Zero, 0.0f));
+	// ミニキャラのライトの位置を初期化
+	m_pMiniCharacterBase->InitializeLightPosition();
 	// ミニキャラのカメラ追従位置をスタート地点にする
 	m_pMiniCharacterBase->SetCameraPosition(m_pCSVMap->GetStart().pos);
 	// 操作画面の背景を作成する
@@ -176,22 +184,20 @@ void PlayScene::Update(float elapsedTime)
 	m_time += elapsedTime;
 	// フェードの更新
 	m_pFade->Update(elapsedTime);
+	// 空の更新
+	m_pSky->Update(elapsedTime);
 	// フェードインが終わったらフェード状態をなくす
 	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
 	// カウントダウンの更新
 	if (m_pFade->GetState() == Fade::FadeState::None)m_pCountDown->Update(elapsedTime);
-	// 5秒未満ならこれ以降の更新は行わない
-	if (m_time > elapsedTime * 2 && m_time < COUNTDOWN_TIME)	return;
-	// カメラ用の座標をシャドウマップライトに設定
-	Vector3 playerPosition = m_pMiniCharacterBase->GetCameraPosition();
-	// シャドウマップライト更新
-	m_pShadowMapLight->SetLightPosition(playerPosition + SHADOWMAPLIGHT_POSITION);
-	// 空の更新
-	m_pSky->Update(elapsedTime);
 	// スピードアップボタンの更新
 	m_pSpeedUpButton->Update(elapsedTime);
 	// スピードアップボタンが押された場合、ゲーム内経過時間を倍にする
 	float inGameTime = m_pSpeedUpButton->IsPressed() ? elapsedTime * m_pCommonResources->GetSettingManager()->GetSpeedMode() : elapsedTime;
+	// ゲーム開始するまではプレイヤーだけ更新しない
+	if (!m_pCountDown->GetGameStart())m_pMiniCharacterBase->Update(0.0f, Vector3::Zero, Quaternion::Identity);
+	// ゲーム開始後は通常通り更新する
+	else m_pMiniCharacterBase->Update(inGameTime, Vector3::Zero, Quaternion::Identity);
 	// 結果アニメーションが有効ならリザルト用のカメラに切り替えて書く処理を行う
 	if (m_pResultAnimation->IsAnimationEnable())
 	{
@@ -257,6 +263,7 @@ void PlayScene::Update(float elapsedTime)
 			// 次のステージ番号を取得
 			m_stageNumber = m_pResultButton->GetStageNum();
 		}
+
 	}
 	// リザルトでない場合は通常の更新を行う
 	else
@@ -273,8 +280,10 @@ void PlayScene::Update(float elapsedTime)
 		m_pPanel->SetPlayerPosition(m_pMiniCharacterBase->GetCameraPosition());
 		// パネルの更新
 		m_pPanel->Update(inGameTime);
-		// 次のタイルの更新
-		m_pNextTiles->Update(inGameTime);
+		// ゲーム開始するまでは次のタイルの更新はしない
+		if (!m_pCountDown->GetGameStart())m_pNextTiles->Update(0.0f);
+		// ゲーム開始後は通常通り更新する
+		else m_pNextTiles->Update(inGameTime);
 		// メダルカウンターに現在のメダル数を設定
 		m_pMedalCounter->SetCollectedMedalCount(m_pCSVItem->GetCollectedMedals());
 		// メダルカウンターの更新
@@ -282,8 +291,10 @@ void PlayScene::Update(float elapsedTime)
 	}
 	// CSVアイテムの更新
 	m_pCSVItem->Update(inGameTime);
-	// ミニキャラの更新
-	m_pMiniCharacterBase->Update(inGameTime, Vector3::Zero, Quaternion::Identity);
+	// カメラ用の座標をシャドウマップライトに設定
+	Vector3 playerPosition = m_pMiniCharacterBase->GetLightPosition();
+	// シャドウマップライト更新
+	m_pShadowMapLight->SetLightPosition(playerPosition + SHADOWMAPLIGHT_POSITION);
 	// 結果アニメーションに結果を渡す
 	m_pResultAnimation->SetResult(m_pMiniCharacterBase->IsGameOver(), m_pMiniCharacterBase->IsGameClear());
 
@@ -331,6 +342,8 @@ void PlayScene::Render()
 		m_pShadowMapLight->SetViewport(m_viewPortGame);
 		// シャドウマップライトをレンダリングする
 		m_pShadowMapLight->RenderShadow();
+		// 輪郭線描画を開始する
+		m_pOutLine->RenderOutLine(m_view, m_projectionGame);
 		// CSVアイテムの描画
 		m_pCSVItem->Render(m_view, m_projectionGame);
 		// ミニキャラの描画
@@ -368,6 +381,8 @@ void PlayScene::Render()
 		m_pShadowMapLight->SetViewport(m_pCommonResources->GetDeviceResources()->GetScreenViewport());
 		// シャドウマップライトをレンダリングする
 		m_pShadowMapLight->RenderShadow();
+		// 輪郭線描画を開始する
+		m_pOutLine->RenderOutLine(m_view, m_projectionResult);
 		// CSVアイテムの描画
 		m_pCSVItem->Render(m_view, m_projectionResult);
 		// ミニキャラの描画
@@ -442,19 +457,19 @@ void PlayScene::CreateCamera()
 	m_pFixedCameraResult->Initialize(rect.right, rect.bottom);
 	// 射影行列(ゲーム画面用)を作成する
 	m_projectionGame = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),// 視野角
+		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right * Display::RATIO_MAIN_SCREEN_WIDTH) / static_cast<float>(rect.bottom),// アスペクト比
 		0.1f, 1000.0f// ニアクリップ距離、ファークリップ距離
 	);
 	// 射影行列(操作画面用)を作成する
 	m_projectionControll = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),// 視野角
+		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right * Display::RATIO_CONTROLL_SCREEN_WIDTH) / static_cast<float>(rect.bottom),// アスペクト比
 		0.1f, 1000.0f// ニアクリップ距離、ファークリップ距離
 	);
 	// 射影行列(リザルト用)を作成する
 	m_projectionResult = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),// 視野角
+		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
 		0.1f, 1000.0f// ニアクリップ距離、ファークリップ距離
 	);

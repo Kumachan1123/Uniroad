@@ -50,6 +50,10 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	CreateCamera();
 	// シャドウマップライトを作成する
 	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
+	// 輪郭線描画を作成する
+	m_pOutLine = std::make_unique<OutLine>(m_pCommonResources);
+	// 視野角を輪郭描画クラスに設定
+	m_pOutLine->SetFovTheta(XMConvertToRadians(FOV));
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -87,7 +91,6 @@ void StageSelectScene::Initialize(CommonResources* resources)
 		m_pStageGates.back()->Initialize();
 		// ステージの入り口の位置を設定
 		m_pStageGates.back()->SetPosition(center);
-
 	}
 	// 平面を初期化する
 	m_pPlaneArea->Initialize();
@@ -103,6 +106,8 @@ void StageSelectScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetPlaneArea(m_pPlaneArea.get());
 	// ミニキャラのベースにシャドウマップライトを設定する
 	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
+	// ミニキャラのベースに輪郭線描画を設定する
+	m_pMiniCharacterBase->SetOutLine(m_pOutLine.get());
 	// ミニキャラにカメラを設定
 	m_pMiniCharacterBase->SetCamera(m_pTrackingCamera.get());
 	// ミニキャラを初期化する
@@ -228,6 +233,8 @@ void StageSelectScene::Render()
 	m_pStageSelect->Render(m_view, m_projection);
 	// シャドウマップライトをレンダリングする
 	m_pShadowMapLight->RenderShadow();
+	// 輪郭線描画を開始する
+	m_pOutLine->RenderOutLine(m_view, m_projection);
 	// ステージの入り口の描画
 	for (auto& gate : m_pStageGates)gate->Render(m_view, m_projection);
 	// ミニキャラの描画
@@ -317,7 +324,7 @@ void StageSelectScene::CreateCamera()
 	m_pTrackingCamera->Initialize((int)(rect.right), rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(45.0f),// 視野角
+		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
 		0.1f, 10000.0f// ニアクリップ距離、ファークリップ距離
 	);

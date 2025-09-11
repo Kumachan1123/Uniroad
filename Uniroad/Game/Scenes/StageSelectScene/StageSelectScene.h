@@ -33,6 +33,7 @@
 #include "Game/Sky/Sky.h"
 #include "Game/Fade/Fade.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
+#include "KumachiLib/OutLine/OutLine.h"
 
 // 前方宣言
 class CommonResources;
@@ -88,6 +89,8 @@ private:
 	static constexpr DirectX::SimpleMath::Vector3 TRACKING_CAMERA_INITIAL_POSITION = { 5.0f,-0.5f, 2.0f };
 	// シャドウマップライトの位置
 	static constexpr DirectX::SimpleMath::Vector3 SHADOW_MAP_LIGHT_POSITION = { 0.0f, 30.0f, 0.0f };
+	// 視野角(FOV)の角度（デグリー）
+	static constexpr float FOV = 45.0f;
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -114,6 +117,8 @@ private:
 	std::unique_ptr<BackButton> m_pBackButton;
 	// シャドウマップライト
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
+	// 輪郭線描画
+	std::unique_ptr<OutLine> m_pOutLine;
 	// 射影行列
 	DirectX::SimpleMath::Matrix m_projection;
 	// ビュー行列

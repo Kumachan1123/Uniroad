@@ -25,6 +25,7 @@
 #include "Game/Scenes/TitleScene/TitleAnimationState/TitleAnimationState.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
+#include "KumachiLib/OutLine/OutLine.h"
 
 // 前方宣言
 class CommonResources;
@@ -78,6 +79,10 @@ public:
 	ShadowMapLight* GetShadowMapLight() { return m_pShadowMapLight; }
 	// シャドウマップライトを設定する
 	void SetShadowMapLight(ShadowMapLight* shadowMapLight) { m_pShadowMapLight = shadowMapLight; }
+	// 輪郭線描画クラスを取得する
+	OutLine* GetOutLine() { return m_pOutLine; }
+	// 輪郭線描画クラスを設定する
+	void SetOutLine(OutLine* outLine) { m_pOutLine = outLine; }
 	// 移動フラグを取得する
 	bool IsMoving() const { return m_isMoving; }
 	// 移動フラグを設定する
@@ -86,6 +91,10 @@ public:
 	DirectX::SimpleMath::Vector3 GetCameraPosition() const { return m_cameraPosition; }
 	// カメラに渡す座標を設定する
 	void SetCameraPosition(const DirectX::SimpleMath::Vector3& cameraPosition) { m_cameraPosition = cameraPosition; }
+	// ライトに渡す座標を取得する
+	DirectX::SimpleMath::Vector3 GetLightPosition() const { return m_lightPosition; }
+	// ライトに渡す座標を設定する
+	void SetLightPosition(const DirectX::SimpleMath::Vector3& lightPosition) { m_lightPosition = lightPosition; }
 	// アイコンに渡す座標を取得する
 	DirectX::SimpleMath::Vector3 GetIconPosition() const { return m_iconPosition; }
 	// アイコンに渡す座標を設定する
@@ -106,6 +115,8 @@ public:
 	ICamera* GetCamera() const { return m_pCamera; }
 	// カメラのポインターを設定する
 	void SetCamera(ICamera* camera) { m_pCamera = camera; }
+	// ライトの座標を初期化
+	void InitializeLightPosition();
 public:
 	// public関数
 	// コンストラクタ
@@ -140,6 +151,8 @@ private:
 	PlaneArea* m_pPlaneArea;
 	// シャドウマップライト
 	ShadowMapLight* m_pShadowMapLight;
+	// 輪郭線描画
+	OutLine* m_pOutLine;
 	// カメラ
 	ICamera* m_pCamera;
 	// ノード番号
@@ -160,6 +173,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_cameraPosition;
 	// アイコンに渡す座標
 	DirectX::SimpleMath::Vector3 m_iconPosition;
+	// ライトに渡す座標
+	DirectX::SimpleMath::Vector3 m_lightPosition;
 	// 質量
 	float m_mass;
 	// ノード配列

@@ -36,6 +36,7 @@
 #include "Game/Fade/Fade.h"
 #include "Game/Sky/Sky.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
+#include "KumachiLib/OutLine/OutLine.h"
 #include "Game/Particle/Particle.h"
 #include "Game/Particle/Utility.h"
 #include "Game/Scenes/PlayScene/CountDown/CountDown.h"
@@ -125,6 +126,8 @@ private:
 	static constexpr DirectX::SimpleMath::Vector3 FIXEDCAMERA_RESULT_TARGET_OFFSET = DirectX::SimpleMath::Vector3(0.0f, 3.0f, 0.0f);
 	// シャドウマップライトの位置
 	static constexpr DirectX::SimpleMath::Vector3 SHADOWMAPLIGHT_POSITION = DirectX::SimpleMath::Vector3(0.0f, 30.0f, 0.0f);
+	// 視野角(FOV)の角度（デグリー）
+	static constexpr float FOV = 45.0f;
 private:
 	// privateメンバ変数
 	// 共通リソース
@@ -163,6 +166,8 @@ private:
 	std::unique_ptr<Sky> m_pSky;
 	// シャドウマップライト
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
+	// 輪郭線描画
+	std::unique_ptr<OutLine> m_pOutLine;
 	// 紙吹雪パーティクル
 	std::unique_ptr<Particle> m_pConfetti;
 	// カウントダウン

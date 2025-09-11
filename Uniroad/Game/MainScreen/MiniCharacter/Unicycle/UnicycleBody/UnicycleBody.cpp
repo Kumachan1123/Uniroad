@@ -69,14 +69,22 @@ void UnicycleBody::Initialize(CommonResources* commonResources)
 */
 void UnicycleBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& currentPosition, const DirectX::SimpleMath::Quaternion& currentAngle)
 {
+	// DirectX名前空間のSimpleMathを使用する
+	using namespace DirectX::SimpleMath;
 	// 現在の位置を更新する
 	m_currentPosition = currentPosition + m_initialPosition;
 	// 現在の回転角を更新する
 	m_currentAngle = m_rotationMiniCharacterAngle * m_initialAngle * currentAngle;
+	// ワールド行列を生成する
+	m_worldMatrix = Matrix::CreateScale(Vector3::One) *
+		Matrix::CreateFromQuaternion(m_currentAngle) *
+		Matrix::CreateTranslation(m_currentPosition);
 	// ベースを取得する
 	const auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent()->GetParent());
 	// シャドウマップにモデルを登録する
 	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
+	// 輪郭線にモデルを登録する
+	pBase->GetOutLine()->SetOutLineModel(m_pModel, m_worldMatrix);
 	// 「胴体」部品を更新する
 	for (auto& MiniCharacterPart : m_pMiniCharacterParts)MiniCharacterPart->Update(elapsedTime, m_currentPosition, m_currentAngle);
 }
@@ -89,16 +97,10 @@ void UnicycleBody::Update(float elapsedTime, const DirectX::SimpleMath::Vector3&
 */
 void UnicycleBody::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-	// DirectX名前空間のSimpleMathを使用する
-	using namespace DirectX::SimpleMath;
 	// Direct3Dデバイスコンテキストを取得
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// コモンステートを取得
 	auto states = m_pCommonResources->GetCommonStates();
-	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(Vector3::One) *
-		Matrix::CreateFromQuaternion(m_currentAngle) *
-		Matrix::CreateTranslation(m_currentPosition);
 	// モデルを描画する
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 	// 部品を描画する

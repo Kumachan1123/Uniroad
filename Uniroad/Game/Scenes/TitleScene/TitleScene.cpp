@@ -51,6 +51,10 @@ void TitleScene::Initialize(CommonResources* resources)
 	CreateCamera();
 	// シャドウマップライトを作成する
 	m_pShadowMapLight = std::make_unique<ShadowMapLight>(m_pCommonResources);
+	// 輪郭線描画クラスを作成する
+	m_pOutLine = std::make_unique<OutLine>(m_pCommonResources);
+	// 視野角を輪郭描画クラスに設定
+	m_pOutLine->SetFovTheta(XMConvertToRadians(FOV));
 	// 空を作成する
 	m_pSky = std::make_unique<Sky>(m_pCommonResources);
 	// 空を初期化する
@@ -85,6 +89,8 @@ void TitleScene::Initialize(CommonResources* resources)
 	m_pMiniCharacterBase->SetCamera(m_pFixedCamera.get());
 	// ミニキャラのベースにシャドウマップライトを設定する
 	m_pMiniCharacterBase->SetShadowMapLight(m_pShadowMapLight.get());
+	// ミニキャラのベースに輪郭線描画を設定する
+	m_pMiniCharacterBase->SetOutLine(m_pOutLine.get());
 	// ミニキャラを初期化する
 	m_pMiniCharacterBase->Initialize(m_pCommonResources);
 	// ミニキャラベースにミニキャラをアタッチ
@@ -137,7 +143,7 @@ void TitleScene::Update(float elapsedTime)
 	m_pRoad->Update(elapsedTime);
 	// シャドウマップライトを更新
 	m_pShadowMapLight->Update(elapsedTime);
-	// 
+	// シャドウマップライトの位置をミニキャラの位置に設定
 	m_pShadowMapLight->SetLightPosition(targetPos + SHADOW_MAP_LIGHT_POSITION);
 	// 座標を初期化
 	Vector3 position(Vector3::Zero);
@@ -192,6 +198,8 @@ void TitleScene::Render()
 	m_pRoad->Render(m_view, m_projection);
 	// シャドウマップライトをレンダリングする
 	m_pShadowMapLight->RenderShadow();
+	// 輪郭線描画を開始する
+	m_pOutLine->RenderOutLine(m_view, m_projection);
 	// ミニキャラの描画
 	m_pMiniCharacterBase->Render(m_view, m_projection);
 	// 以下、2D描画のものを描画する
@@ -271,10 +279,11 @@ void TitleScene::CreateCamera()
 	m_debugCamera->Initialize(rect.right, rect.bottom);
 	// 射影行列を作成する
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(60.0f),// 視野角
+		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
 		0.1f, 100.0f);// ニアクリップ距離、ファークリップ距離
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
+
 }
 

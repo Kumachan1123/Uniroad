@@ -20,6 +20,7 @@ CountDown::CountDown()
 	, m_frameCols(1) // 画像の列数
 	, m_time(0.0f) // 時間
 	, m_prevFrame(-1) // 前のフレーム
+	, m_gameStart(false) // ゲーム開始フラグ
 	, m_onFrameChanged(nullptr) // フレーム変更時のコールバック
 {
 }
@@ -83,8 +84,14 @@ void CountDown::Update(float elapsedTime)
 {
 	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
-	// 一定時間経過したら更新しない
-	if (m_time > END_TIME)return;
+	// 一定時間経過したら
+	if (m_time > END_TIME)
+	{
+		// ゲーム開始フラグを立てる
+		m_gameStart = true;
+		// これ以降更新しない
+		return;
+	}
 	// 時間を更新
 	m_time += elapsedTime;
 	// 現在のフレーム番号計算

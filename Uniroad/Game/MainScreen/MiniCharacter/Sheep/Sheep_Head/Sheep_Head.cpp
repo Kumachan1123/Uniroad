@@ -74,10 +74,16 @@ void SheepHead::Update(float elapsedTime, const DirectX::SimpleMath::Vector3& cu
 	m_currentPosition = currentPosition + m_initialPosition;
 	// 現在の回転角を更新する
 	m_currentAngle = m_rotationMiniCharacterAngle * m_initialAngle * currentAngle;
+	// ワールド行列を生成する
+	m_worldMatrix = Matrix::CreateScale(Vector3::One) * // スケール
+		Matrix::CreateFromQuaternion(m_currentAngle) * // 回転
+		Matrix::CreateTranslation(m_currentPosition); // 位置
 	// ベースを取得
 	auto pBase = dynamic_cast<MiniCharacterBase*>(m_pParent->GetParent()->GetParent());
 	// シャドウマップにモデルを登録する
 	pBase->GetShadowMapLight()->SetShadowModel(m_pModel, m_worldMatrix);
+	// 輪郭線にモデルを登録する
+	pBase->GetOutLine()->SetOutLineModel(m_pModel, m_worldMatrix);
 	// ミニキャラクラスを取得する
 	auto pMiniCharacter = dynamic_cast<MiniCharacter*>(m_pParent->GetParent());
 	// ミニキャラクターが存在しない場合は何もしない
@@ -105,10 +111,7 @@ void SheepHead::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::S
 	// デバイスコンテキストとステートを取得する
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = m_pCommonResources->GetCommonStates();
-	// ワールド行列を生成する
-	m_worldMatrix = Matrix::CreateScale(Vector3::One) * // スケール
-		Matrix::CreateFromQuaternion(m_currentAngle) * // 回転
-		Matrix::CreateTranslation(m_currentPosition); // 位置
+
 	// モデルを描画する
 	m_pModel->Draw(context, *states, m_worldMatrix, view, proj, false);
 }

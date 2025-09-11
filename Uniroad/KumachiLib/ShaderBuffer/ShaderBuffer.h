@@ -65,3 +65,13 @@ struct cbLight
 	DirectX::XMVECTOR lightDirection;		// ライトの方向
 	DirectX::XMVECTOR lightAmbient;			// ライトの環境光
 };
+
+// アウトライン用の定数バッファ構造体
+struct cbOutline
+{
+	DirectX::XMFLOAT4X4 WorldViewProj; // ワールドビュー射影行列
+	DirectX::XMFLOAT4   OutlineColor; // アウトラインの色
+	float               OutlineThickness; // アウトラインの太さ
+	float				FOVTheta; // FOVのθ
+	float               Padding[6]; // パディング (16バイトアラインメント)
+};
