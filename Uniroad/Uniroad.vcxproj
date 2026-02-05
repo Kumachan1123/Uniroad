@@ -292,6 +292,7 @@
     <ClInclude Include="KumachiLib\ShaderBuffer\ShaderBuffer.h" />
     <ClInclude Include="KumachiLib\ShadowMapLight\ShadowMapLight.h" />
     <ClInclude Include="KumachiLib\TextureManager\TextureManager.h" />
+    <ClInclude Include="KumachiLib\UIText\UIText.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.h" />
     <ClInclude Include="Libraries\FMOD\inc\fmod.hpp" />
     <ClInclude Include="Libraries\FMOD\inc\fmod_codec.h" />
@@ -398,6 +399,7 @@
     <ClCompile Include="KumachiLib\SettingManager\SettingManager.cpp" />
     <ClCompile Include="KumachiLib\ShadowMapLight\ShadowMapLight.cpp" />
     <ClCompile Include="KumachiLib\TextureManager\TextureManager.cpp" />
+    <ClCompile Include="KumachiLib\UIText\UIText.cpp" />
     <ClCompile Include="Libraries\Microsoft\DebugDraw.cpp" />
     <ClCompile Include="Libraries\Microsoft\RenderTexture\RenderTexture.cpp" />
     <ClCompile Include="Libraries\MyLib\DebugCamera.cpp" />

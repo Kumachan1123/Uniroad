@@ -55,6 +55,22 @@ void TestScene::Initialize(CommonResources* resources)
 	m_pFade->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
+	// UIテキストを作成する
+	m_pUIText = std::make_unique<UIText>();
+	// UIテキストを初期化する
+	m_pUIText->Initialize(deviceResources);
+	// 適当な文字をセット
+	m_pUIText->SetText("Hello, Test Scene!");
+	// 文字の位置をセット
+	m_pUIText->SetPosition({ 50.0f, 50.0f });
+	// 文字の色をセット
+	m_pUIText->SetColor(Color{ 1,1,1,1 });
+	// 文字のスケールをセット
+	m_pUIText->SetScale(2.0f);
+	// 文字のアライメントをセット
+	m_pUIText->SetAlignment(TextAlignment::RIGHT);
+
+
 }
 /*
 *	@brief 更新
@@ -108,6 +124,8 @@ void TestScene::Render()
 {
 	// フェードを描画する
 	m_pFade->Render();
+	// UIテキストを描画する
+	m_pUIText->Render();
 }
 /*
 *	@brief 終了

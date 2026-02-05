@@ -139,6 +139,7 @@
     <ClInclude Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.h" />
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
     <ClInclude Include="Game\Scenes\TestScene\TestScene.h" />
+    <ClInclude Include="KumachiLib\UIText\UIText.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -235,6 +236,7 @@
     <ClCompile Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.cpp" />
     <ClCompile Include="KumachiLib\OutLine\OutLine.cpp" />
     <ClCompile Include="Game\Scenes\TestScene\TestScene.cpp" />
+    <ClCompile Include="KumachiLib\UIText\UIText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

@@ -24,7 +24,7 @@
 #include "Game/Sky/Sky.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 #include "KumachiLib/OutLine/OutLine.h"
-
+#include "KumachiLib/UIText/UIText.h"
 // 前方宣言
 class CommonResources;
 class MiniCharacterBase;
@@ -94,6 +94,8 @@ private:
 	std::unique_ptr<ShadowMapLight> m_pShadowMapLight;
 	// 輪郭線描画
 	std::unique_ptr<OutLine> m_pOutLine;
+	// UIテキスト
+	std::unique_ptr<UIText> m_pUIText;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列
