@@ -15,6 +15,7 @@ public:
 	enum class SceneID : unsigned int
 	{
 		NONE,// なし
+		TEST,// テスト
 		TITLE,// タイトル
 		SETTING,// 設定
 		STAGESELECT,// ステージ選択

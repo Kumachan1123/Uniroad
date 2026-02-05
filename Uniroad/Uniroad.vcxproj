@@ -257,6 +257,7 @@
     <ClInclude Include="Game\Scenes\SettingScene\SettingPanel\SettingPanel.h" />
     <ClInclude Include="Game\Scenes\SettingScene\SettingScene.h" />
     <ClInclude Include="Game\Scenes\StageSelectScene\BackButton\BackButton.h" />
+    <ClInclude Include="Game\Scenes\TestScene\TestScene.h" />
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
     <ClInclude Include="KumachiLib\ScrollBar\ScrollBar.h" />
     <ClInclude Include="Game\Scenes\TitleScene\Road\Road.h" />
@@ -370,6 +371,7 @@
     <ClCompile Include="Game\Scenes\SettingScene\SettingPanel\SettingPanel.cpp" />
     <ClCompile Include="Game\Scenes\SettingScene\SettingScene.cpp" />
     <ClCompile Include="Game\Scenes\StageSelectScene\BackButton\BackButton.cpp" />
+    <ClCompile Include="Game\Scenes\TestScene\TestScene.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\Road\Road.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleButton\TitleButton.cpp" />
     <ClCompile Include="Game\Scenes\TitleScene\TitleLogo\TitleLogo.cpp" />
