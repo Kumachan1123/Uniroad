@@ -45,7 +45,7 @@ void UIText::Initialize(DX::DeviceResources* pDR)
 	// スプライトバッチの作成
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 	// スプライトフォントの作成
-	m_spriteFont = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/SegoeUI_18.spritefont");
+	m_spriteFont = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/PixelMplus12.spritefont");
 }
 
 

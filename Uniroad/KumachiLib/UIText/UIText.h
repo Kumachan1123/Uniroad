@@ -72,3 +72,23 @@ private:
 	TextAlignment m_alignment;
 
 };
+/*
+if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
+
+if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
+	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont"
+	/FontSize:32
+	/CharacterRegion:32-126
+	/CharacterRegion:12352-12543
+	/CharacterRegion:19968-40959
+	/FastPack
+)
+“®‚­
+if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
+
+if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
+	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" /FontSize:32 /CharacterRegion:32-126 /CharacterRegion:12352-12543 /CharacterRegion:19968-40959 /FastPack
+)
+
+
+*/

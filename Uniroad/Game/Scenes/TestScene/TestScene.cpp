@@ -66,9 +66,9 @@ void TestScene::Initialize(CommonResources* resources)
 	// 文字の色をセット
 	m_pUIText->SetColor(Color{ 1,1,1,1 });
 	// 文字のスケールをセット
-	m_pUIText->SetScale(2.0f);
+	m_pUIText->SetScale(1.0f);
 	// 文字のアライメントをセット
-	m_pUIText->SetAlignment(TextAlignment::RIGHT);
+	m_pUIText->SetAlignment(TextAlignment::LEFT);
 
 
 }

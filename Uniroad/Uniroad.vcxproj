@@ -133,6 +133,13 @@
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>Resources\Shaders\Lab\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <PreBuildEvent>
+      <Command>if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
+
+if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
+	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" /FontSize:32 /CharacterRegion:32-126 /CharacterRegion:12352-12543 /CharacterRegion:19968-40959 /FastPack
+)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -188,6 +195,13 @@
       <ShaderModel>5.0</ShaderModel>
       <ObjectFileOutput>Resources\Shaders\Lab\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <PreBuildEvent>
+      <Command>if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
+
+if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
+	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" /FontSize:32 /CharacterRegion:32-126 /CharacterRegion:12352-12543 /CharacterRegion:19968-40959 /FastPack
+)</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
@@ -679,13 +693,13 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\Microsoft.XAudio2.Redist.1.2.11\build\native\Microsoft.XAudio2.Redist.targets" Condition="Exists('packages\Microsoft.XAudio2.Redist.1.2.11\build\native\Microsoft.XAudio2.Redist.targets')" />
-    <Import Project="packages\directxtk_desktop_2019.2024.10.29.1\build\native\directxtk_desktop_2019.targets" Condition="Exists('packages\directxtk_desktop_2019.2024.10.29.1\build\native\directxtk_desktop_2019.targets')" />
+    <Import Project="packages\directxtk_desktop_2019.2025.10.28.2\build\native\directxtk_desktop_2019.targets" Condition="Exists('packages\directxtk_desktop_2019.2025.10.28.2\build\native\directxtk_desktop_2019.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('packages\Microsoft.XAudio2.Redist.1.2.11\build\native\Microsoft.XAudio2.Redist.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.XAudio2.Redist.1.2.11\build\native\Microsoft.XAudio2.Redist.targets'))" />
-    <Error Condition="!Exists('packages\directxtk_desktop_2019.2024.10.29.1\build\native\directxtk_desktop_2019.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxtk_desktop_2019.2024.10.29.1\build\native\directxtk_desktop_2019.targets'))" />
+    <Error Condition="!Exists('packages\directxtk_desktop_2019.2025.10.28.2\build\native\directxtk_desktop_2019.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxtk_desktop_2019.2025.10.28.2\build\native\directxtk_desktop_2019.targets'))" />
   </Target>
 </Project>
