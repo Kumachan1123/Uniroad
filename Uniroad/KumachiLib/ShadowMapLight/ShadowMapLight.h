@@ -52,7 +52,7 @@ private:
 private:
 	// 定数
 	// シャドウマップのサイズ
-	static constexpr int SHADOWMAP_SIZE = 1024;
+	static constexpr int SHADOWMAP_SIZE = 2048;
 	// ライドの向き
 	static constexpr DirectX::SimpleMath::Vector3 LIGHT_DIRECTION = DirectX::SimpleMath::Vector3(-1.0f, 0.0f, 1.0f);
 	// 環境光の色
