@@ -134,11 +134,8 @@
       <ObjectFileOutput>Resources\Shaders\Lab\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <PreBuildEvent>
-      <Command>if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
-
-if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
-	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" /FontSize:32 /CharacterRegion:32-126 /CharacterRegion:12352-12543 /CharacterRegion:19968-40959 /FastPack
-)</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -196,11 +193,8 @@ if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
       <ObjectFileOutput>Resources\Shaders\Lab\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <PreBuildEvent>
-      <Command>if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
-
-if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
-	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" /FontSize:32 /CharacterRegion:32-126 /CharacterRegion:12352-12543 /CharacterRegion:19968-40959 /FastPack
-)</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

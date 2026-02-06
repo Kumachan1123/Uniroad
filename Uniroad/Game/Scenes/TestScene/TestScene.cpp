@@ -60,13 +60,16 @@ void TestScene::Initialize(CommonResources* resources)
 	// UIテキストを初期化する
 	m_pUIText->Initialize(deviceResources);
 	// 適当な文字をセット
-	m_pUIText->SetText("Hello, Test Scene!");
+	m_pUIText->AddString(L"使い方によっては");
+	m_pUIText->AddString(L"こんなことも");
+	m_pUIText->AddString(L"できちゃいます！");
+	m_pUIText->AddString(L"いやぁ～便利ですねぇ～");
 	// 文字の位置をセット
-	m_pUIText->SetPosition({ 50.0f, 50.0f });
+	m_pUIText->SetPosition({ 100.0f, 50.0f });
 	// 文字の色をセット
 	m_pUIText->SetColor(Color{ 1,1,1,1 });
 	// 文字のスケールをセット
-	m_pUIText->SetScale(1.0f);
+	m_pUIText->SetScale(2.0f);
 	// 文字のアライメントをセット
 	m_pUIText->SetAlignment(TextAlignment::LEFT);
 
@@ -101,6 +104,12 @@ void TestScene::Update(float elapsedTime)
 	{
 		// フェード状態をなくす
 		m_pFade->SetState(Fade::FadeState::None);
+
+	}
+	if (m_pFade->GetState() == Fade::FadeState::None)
+	{
+		// UIテキストを更新する
+		m_pUIText->Update(elapsedTime);
 	}
 	// キーボード入力を取得
 	auto keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
@@ -122,10 +131,11 @@ void TestScene::Update(float elapsedTime)
 */
 void TestScene::Render()
 {
-	// フェードを描画する
-	m_pFade->Render();
 	// UIテキストを描画する
 	m_pUIText->Render();
+	// フェードを描画する
+	m_pFade->Render();
+
 }
 /*
 *	@brief 終了

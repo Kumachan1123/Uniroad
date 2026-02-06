@@ -11,15 +11,29 @@
 */
 UIText::UIText()
 	:m_alignment(TextAlignment::LEFT)
+	, m_currentCharIndex(0)
+	, m_elapsedTime(0.0f)
+	, m_charInterval(0.05f)
+	, m_isComplete(false)
+	, m_cursorVisible(false)
+	, m_cursorTimer(0.0f)
+	, m_cursorBlinkInterval(0.5f)
+	, m_fullText(L"")
+	, m_spriteBatch(nullptr)
+	, m_spriteFont(nullptr)
+	, m_textInfo()
+	, m_fontHeight(50.0f)
+	, m_currentLine(0)
 {
 	// 文字の初期化
-	m_textInfo.text = "";
+	m_textInfo.text = L"";
 	// 位置の初期化
 	m_textInfo.position = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
 	// 色の初期化
 	m_textInfo.color = DirectX::SimpleMath::Color(1.0f, 1.0f, 1.0f, 1.0f);
 	// スケールの初期化
 	m_textInfo.scale = 1.0f;
+
 }
 /*
 *	@brief デストラクタ
@@ -45,8 +59,66 @@ void UIText::Initialize(DX::DeviceResources* pDR)
 	// スプライトバッチの作成
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 	// スプライトフォントの作成
-	m_spriteFont = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/PixelMplus12.spritefont");
+	m_spriteFont = std::make_unique<DirectX::SpriteFont>(device, L"Resources/Fonts/PixelMplus12-Regular.spritefont");
 }
+/*
+*	@brief 更新
+*	@details テキストの更新を行う
+*	@param deltaTime 前フレームからの経過時間（秒）
+*	@return なし
+*/
+void UIText::Update(float deltaTime)
+{
+	// まだ行がある？
+	if (m_currentLine < m_lines.size())
+	{
+		m_elapsedTime += deltaTime;
+
+		while (m_elapsedTime >= m_charInterval)
+		{
+			const std::wstring& full = m_lines[m_currentLine];
+
+			// まだ文字が残ってる
+			if (m_currentCharIndex < full.size())
+			{
+				// 表示行が足りなければ作る
+				if (m_displayLines.size() <= m_currentLine)
+				{
+					m_displayLines.push_back(L"");
+				}
+
+				m_displayLines[m_currentLine] += full[m_currentCharIndex];
+				m_currentCharIndex++;
+			}
+			else
+			{
+				// 次の行へ
+				m_currentLine++;
+				m_currentCharIndex = 0;
+
+				if (m_currentLine >= m_lines.size())
+				{
+					m_isComplete = true;
+				}
+			}
+
+			m_elapsedTime -= m_charInterval;
+		}
+	}
+
+	// ▼点滅
+	if (m_isComplete)
+	{
+		m_cursorTimer += deltaTime;
+
+		if (m_cursorTimer >= m_cursorBlinkInterval)
+		{
+			m_cursorVisible = !m_cursorVisible;
+			m_cursorTimer -= m_cursorBlinkInterval;
+		}
+	}
+}
+
 
 
 /*
@@ -56,29 +128,42 @@ void UIText::Initialize(DX::DeviceResources* pDR)
 */
 void UIText::Render()
 {
-	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// バッチとフォントがなかったら処理なし
+
 	if (!m_spriteBatch || !m_spriteFont)return;
 
-	// スプライトバッチの開始
 	m_spriteBatch->Begin();
-	// アライメントに応じた位置を計算
-	Vector2 alignedPosition = CalculateAlignedPosition();
-	// テキストの描画
-	m_spriteFont->DrawString(
-		m_spriteBatch.get(),
-		m_textInfo.text.c_str(),
-		alignedPosition,
-		m_textInfo.color,
-		0.0f,
-		Vector2::Zero,
-		m_textInfo.scale
-	);
-	// スプライトバッチの終了
-	m_spriteBatch->End();
 
+	Vector2 pos = m_textInfo.position;
+
+	for (size_t i = 0; i < m_displayLines.size(); i++)
+	{
+		std::wstring text = m_displayLines[i];
+
+		// 最後の行＋完了時だけ▼
+		if (m_isComplete &&
+			i == m_displayLines.size() - 1 &&
+			m_cursorVisible)
+		{
+			text += L"　▼";
+		}
+
+		m_spriteFont->DrawString(
+			m_spriteBatch.get(),
+			text.c_str(),
+			pos,
+			m_textInfo.color,
+			0.0f,
+			Vector2::Zero,
+			m_textInfo.scale
+		);
+
+		pos.y += m_fontHeight * m_textInfo.scale;
+	}
+
+	m_spriteBatch->End();
 }
+
 /*
 *	@brief 後処理
 *	@details スプライトバッチとスプライトフォントの解放を行う

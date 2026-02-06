@@ -90,16 +90,16 @@ void Game::Initialize(HWND window, int width, int height)
 	m_settingManager = std::make_unique<SettingManager>();
 	// モデルマネージャの初期化を別スレッドで行う
 	std::thread modelInitializeThread([this, device]()
-		{
-			// モデルマネージャを初期化する
-			m_modelManager->Initialize(m_deviceResources->GetD3DDevice());
-		});
+									  {
+										  // モデルマネージャを初期化する
+										  m_modelManager->Initialize(m_deviceResources->GetD3DDevice());
+									  });
 	// テクスチャマネージャの初期化を別スレッドで行う
 	std::thread textureInitializeThread([this, device]()
-		{
-			// テクスチャマネージャを初期化する
-			m_textureManager->Initialize(m_deviceResources->GetD3DDevice());
-		});
+										{
+											// テクスチャマネージャを初期化する
+											m_textureManager->Initialize(m_deviceResources->GetD3DDevice());
+										});
 	// モデルマネージャの初期化が完了するまで待機する
 	modelInitializeThread.join();
 	// テクスチャマネージャの初期化が完了するまで待機する
