@@ -64,6 +64,13 @@ void TestScene::Initialize(CommonResources* resources)
 	m_pUIText->AddString(L"こんなことも");
 	m_pUIText->AddString(L"できちゃいます！");
 	m_pUIText->AddString(L"いやぁ～便利ですねぇ～");
+	m_pUIText->AddString(L"ユッケビビンバ");
+	m_pUIText->AddString(L".........");
+	m_pUIText->AddString(L"科学の力ってすげー！");
+	m_pUIText->AddString(L"返事がない");
+	m_pUIText->AddString(L"ただの屍のようだ");
+
+
 	// 文字の位置をセット
 	m_pUIText->SetPosition({ 100.0f, 50.0f });
 	// 文字の色をセット

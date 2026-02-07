@@ -105,25 +105,7 @@ private:
 	float m_cursorTimer;
 	// 点滅速度（秒）
 	float m_cursorBlinkInterval;
+	// 最大表示行数
+	size_t m_maxDisplayLines = 3;
 
 };
-/*
-if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
-
-if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
-	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont"
-	/FontSize:32
-	/CharacterRegion:32-126
-	/CharacterRegion:12352-12543
-	/CharacterRegion:19968-40959
-	/FastPack
-)
-動く
-if not exist "$(ProjectDir)Resources\Fonts" mkdir "$(ProjectDir)Resources\Fonts"
-
-if not exist "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" (
-	"$(ProjectDir)Tools\MakeSpriteFont.exe" "PixelMplus12" "$(ProjectDir)Resources\Fonts\PixelMplus12.spritefont" /FontSize:32 /CharacterRegion:32-126 /CharacterRegion:12352-12543 /CharacterRegion:19968-40959 /FastPack
-)
-
-
-*/

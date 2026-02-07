@@ -69,7 +69,6 @@ void UIText::Initialize(DX::DeviceResources* pDR)
 */
 void UIText::Update(float deltaTime)
 {
-	// まだ行がある？
 	if (m_currentLine < m_lines.size())
 	{
 		m_elapsedTime += deltaTime;
@@ -81,20 +80,32 @@ void UIText::Update(float deltaTime)
 			// まだ文字が残ってる
 			if (m_currentCharIndex < full.size())
 			{
-				// 表示行が足りなければ作る
-				if (m_displayLines.size() <= m_currentLine)
+				// ここが大事！
+				if (m_displayLines.empty())
 				{
 					m_displayLines.push_back(L"");
 				}
 
-				m_displayLines[m_currentLine] += full[m_currentCharIndex];
+				m_displayLines.back() += full[m_currentCharIndex];
 				m_currentCharIndex++;
 			}
 			else
 			{
-				// 次の行へ
+				// 1行おわり
 				m_currentLine++;
 				m_currentCharIndex = 0;
+
+				// まず次の器を作る
+				if (m_currentLine < m_lines.size())
+				{
+					m_displayLines.push_back(L"");
+				}
+
+				// そのあと最大チェック
+				if (m_displayLines.size() > m_maxDisplayLines)
+				{
+					m_displayLines.erase(m_displayLines.begin());
+				}
 
 				if (m_currentLine >= m_lines.size())
 				{
@@ -120,7 +131,6 @@ void UIText::Update(float deltaTime)
 }
 
 
-
 /*
 *	@brief 描画
 *	@details スプライトバッチとスプライトフォントを使用してテキストの描画を行う
@@ -135,6 +145,10 @@ void UIText::Render()
 	m_spriteBatch->Begin();
 
 	Vector2 pos = m_textInfo.position;
+	size_t lineCount = m_displayLines.size();
+	// 最大より少ないときは下から積む
+	if (lineCount > m_maxDisplayLines)
+		pos.y += m_fontHeight * (m_maxDisplayLines - lineCount);
 
 	for (size_t i = 0; i < m_displayLines.size(); i++)
 	{
