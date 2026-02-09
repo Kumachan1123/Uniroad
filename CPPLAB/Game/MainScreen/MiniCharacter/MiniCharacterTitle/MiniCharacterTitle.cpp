@@ -134,6 +134,7 @@ void MiniCharacterTitle::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 void MiniCharacterTitle::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
 	// 部品を削除する処理は今は何もしない
+	UNREFERENCED_PARAMETER(MiniCharacterPart);
 }
 /*
 *	@brief タイトルシーン用のミニキャラの描画処理を行う
@@ -157,10 +158,10 @@ void MiniCharacterTitle::Render(const DirectX::SimpleMath::Matrix& view, const D
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// 座標表示
 	debugString->AddString("MiniCharacter Position: (%f, %f, %f)",
-		m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
+						   m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
 	// 速度表示
 	debugString->AddString("MiniCharacter Velocity: (%f, %f, %f)",
-		m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
+						   m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
 #endif // DEBUG
 }
 /*
@@ -238,29 +239,29 @@ void MiniCharacterTitle::ExecuteAnimation(float elapsedTime)
 	// アニメーションの実行
 	switch (GetTitleAnimationState())
 	{
-	case TitleAnimation::START:
-		// 開始アニメーションの処理
-		// 現在の位置を目標座標に向けて補間
-		m_currentPosition = Vector3::Lerp(m_currentPosition, targetPosition, elapsedTime);
-		// 目的地に到達したらアニメーションを待機状態に変更
-		if ((m_currentPosition - targetPosition).Length() < TARGET_POSITION_EPSILON)SetTitleAnimationState(WAIT);
-		break;
-	case TitleAnimation::WAIT:
-		// 待機アニメーションの処理
-		break;
-	case TitleAnimation::CONTINUE:
-		// アニメーション再開の処理
-		// 現在の位置を目標座標に向けて補間
-		m_currentPosition = Vector3::Lerp(m_currentPosition, goalPosition, elapsedTime * CONTINUE_SPEED);
-		// 目的地に到達したらアニメーションを待機状態に変更
-		if ((m_currentPosition - goalPosition).Length() < TARGET_POSITION_EPSILON)SetTitleAnimationState(END);
-		break;
-	case TitleAnimation::END:
-		// アニメーション終了なので何もしない
-		break;
-	case TitleAnimation::NONE:
-		// アニメーションがない場合は何もしない
-		return;
+		case TitleAnimation::START:
+			// 開始アニメーションの処理
+			// 現在の位置を目標座標に向けて補間
+			m_currentPosition = Vector3::Lerp(m_currentPosition, targetPosition, elapsedTime);
+			// 目的地に到達したらアニメーションを待機状態に変更
+			if ((m_currentPosition - targetPosition).Length() < TARGET_POSITION_EPSILON)SetTitleAnimationState(WAIT);
+			break;
+		case TitleAnimation::WAIT:
+			// 待機アニメーションの処理
+			break;
+		case TitleAnimation::CONTINUE:
+			// アニメーション再開の処理
+			// 現在の位置を目標座標に向けて補間
+			m_currentPosition = Vector3::Lerp(m_currentPosition, goalPosition, elapsedTime * CONTINUE_SPEED);
+			// 目的地に到達したらアニメーションを待機状態に変更
+			if ((m_currentPosition - goalPosition).Length() < TARGET_POSITION_EPSILON)SetTitleAnimationState(END);
+			break;
+		case TitleAnimation::END:
+			// アニメーション終了なので何もしない
+			break;
+		case TitleAnimation::NONE:
+			// アニメーションがない場合は何もしない
+			return;
 	}
 }
 /*

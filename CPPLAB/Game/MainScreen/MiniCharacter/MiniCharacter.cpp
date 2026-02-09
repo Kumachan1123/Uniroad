@@ -150,6 +150,7 @@ void MiniCharacter::Attach(std::unique_ptr<IComponent> MiniCharacterPart)
 void MiniCharacter::Detach(std::unique_ptr<IComponent> MiniCharacterPart)
 {
 	// 部品を削除する処理は今は何もしない
+	UNREFERENCED_PARAMETER(MiniCharacterPart);
 }
 /*
 *	@brief プレイヤーを描画する
@@ -179,19 +180,19 @@ void MiniCharacter::Render(const DirectX::SimpleMath::Matrix& view, const Direct
 	const auto debugString = m_pCommonResources->GetDebugString();
 	// 座標表示
 	debugString->AddString("MiniCharacter Position: (%f, %f, %f)",
-		m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
+						   m_currentPosition.x, m_currentPosition.y, m_currentPosition.z);
 	// 速度表示
 	debugString->AddString("MiniCharacter Velocity: (%f, %f, %f)",
-		m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
+						   m_currentVelocity.x, m_currentVelocity.y, m_currentVelocity.z);
 	// 最も近いタイルの名前を表示
 	debugString->AddString("MiniCharacter Tile: %s",
-		GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName.c_str());
+						   GetParent()->GetCSVMap()->GetTileData(m_currentPosition).tileInfo.modelName.c_str());
 	// 座標表示
 	debugString->AddString("CurrentTile Position: (%f, %f, %f)",
-		m_currentTilePosition.x, m_currentTilePosition.y, m_currentTilePosition.z);
+						   m_currentTilePosition.x, m_currentTilePosition.y, m_currentTilePosition.z);
 	// 座標表示
 	debugString->AddString("PrevTile Position: (%f, %f, %f)",
-		m_prevTilePosition.x, m_prevTilePosition.y, m_prevTilePosition.z);
+						   m_prevTilePosition.x, m_prevTilePosition.y, m_prevTilePosition.z);
 #endif
 }
 /*

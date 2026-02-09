@@ -64,9 +64,12 @@ void TestScene::Initialize(CommonResources* resources)
 	m_pUIText->AddString(L"こんなことも");
 	m_pUIText->AddString(L"できちゃいます！");
 	m_pUIText->AddString(L"いやぁ～便利ですねぇ～");
+	m_pUIText->InsertWaitPoint();
 	m_pUIText->AddString(L"ユッケビビンバ");
-	m_pUIText->AddString(L".........");
+	m_pUIText->InsertWaitPoint();
 	m_pUIText->AddString(L"科学の力ってすげー！");
+	m_pUIText->InsertWaitPoint();
+	m_pUIText->AddString(L".........");
 	m_pUIText->AddString(L"返事がない");
 	m_pUIText->AddString(L"ただの屍のようだ");
 
@@ -76,7 +79,7 @@ void TestScene::Initialize(CommonResources* resources)
 	// 文字の色をセット
 	m_pUIText->SetColor(Color{ 1,1,1,1 });
 	// 文字のスケールをセット
-	m_pUIText->SetScale(2.0f);
+	m_pUIText->SetScale(1.0f);
 	// 文字のアライメントをセット
 	m_pUIText->SetAlignment(TextAlignment::LEFT);
 
@@ -123,8 +126,11 @@ void TestScene::Update(float elapsedTime)
 	// スペースキーが押されたら（何らかのフラグがたったら）
 	if (keyState.Space)
 	{
+
 		// フェードアウトに移行
-		m_pFade->SetState(Fade::FadeState::FadeOut);
+		if (m_pUIText->IsFinishedAll())m_pFade->SetState(Fade::FadeState::FadeOut);
+		// 次へ要求を出す
+		else m_pUIText->RequestNext();
 	}
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;

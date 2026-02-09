@@ -54,6 +54,12 @@ public:
 	void SetAlignment(TextAlignment alignment) { m_alignment = alignment; }
 	// 点滅間隔の設定
 	void SetCursorBlinkInterval(float interval) { m_cursorBlinkInterval = interval; }
+	// 次へ要求
+	void RequestNext() { m_requestNext = true; }
+	// ここで止めてね命令
+	void InsertWaitPoint() { m_lines.push_back(L"__WAIT__"); }
+	// 全部表示し終わったか
+	bool IsFinishedAll() const { return m_finishedAll; }
 public:
 
 	// コンストラクタ
@@ -68,9 +74,13 @@ public:
 	void Render();
 	// 後処理
 	void Finalize();
+
 private:
 	// privateメンバ関数
+	// アライメントに基づいて位置を計算する
 	DirectX::SimpleMath::Vector2 CalculateAlignedPosition();
+	// 点滅処理
+	void UpdateCursorBlink(float deltaTime);
 private:
 	// スプライトバッチ
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
@@ -107,5 +117,11 @@ private:
 	float m_cursorBlinkInterval;
 	// 最大表示行数
 	size_t m_maxDisplayLines = 3;
+	// 今待ち中？
+	bool m_waitForInput = false;
+	// 外からの「次へ」要求
+	bool m_requestNext = false;
+	// 一番最後の行を表示したら
+	bool m_finishedAll = false;
 
 };
