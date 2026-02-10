@@ -104,5 +104,7 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// ŽžŠÔ
 	float m_time;
+	// ƒ‚ƒfƒ‹
+	DirectX::Model* m_pModel;
 
 };

@@ -23,5 +23,6 @@
   "StraightHorizontalBlock": "Resources/Models/StraightHorizontalBlock/StraightHorizontalBlock.cmo",
   "StraightVerticalBlock": "Resources/Models/StraightVerticalBlock/StraightVerticalBlock.cmo",
   "Unicycle_Body": "Resources/Models/Unicycle_Body/Unicycle_Body.cmo",
-  "Unicycle_Wheel": "Resources/Models/Unicycle_Wheel/Unicycle_Wheel.cmo"
+  "Unicycle_Wheel": "Resources/Models/Unicycle_Wheel/Unicycle_Wheel.cmo",
+  "Town1": "Resources/Models/Town1/Town1.cmo"
 }

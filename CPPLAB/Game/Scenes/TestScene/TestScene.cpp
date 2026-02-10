@@ -83,6 +83,9 @@ void TestScene::Initialize(CommonResources* resources)
 	// 文字のアライメントをセット
 	m_pUIText->SetAlignment(TextAlignment::LEFT);
 
+	// モデルを取得
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Town1");
+
 
 }
 /*
@@ -104,7 +107,7 @@ void TestScene::Update(float elapsedTime)
 	// デバッグカメラを更新する
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_pFixedCamera->GetViewMatrix();
+	m_view = m_debugCamera->GetViewMatrix();
 	// カメラの位置を調整
 	m_pFixedCamera->SetCameraDistance(CAMERA_POSITION);
 	// フェードの更新
@@ -144,6 +147,22 @@ void TestScene::Update(float elapsedTime)
 */
 void TestScene::Render()
 {
+	// DirectXの名前空間のエイリアス
+	using namespace DirectX;
+	// DirectXのSimpleMath名前空間のエイリアス
+	using namespace DirectX::SimpleMath;
+	// デバイスコンテキストを取得
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	// コモンステートを取得
+	auto commonStates = m_pCommonResources->GetCommonStates();
+	// ワールド行列を設定
+	Matrix world = Matrix::Identity;
+	world *= Matrix::CreateScale(.05f);
+
+	// モデルの描画
+	m_pModel->Draw(context, *commonStates, world, m_view, m_projection);
+
+
 	// UIテキストを描画する
 	m_pUIText->Render();
 	// フェードを描画する
@@ -198,7 +217,7 @@ void TestScene::CreateCamera()
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
-		0.1f, 100.0f);// ニアクリップ距離、ファークリップ距離
+		0.1f, 1000.0f);// ニアクリップ距離、ファークリップ距離
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
 
