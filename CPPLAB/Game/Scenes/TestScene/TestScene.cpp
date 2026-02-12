@@ -84,7 +84,7 @@ void TestScene::Initialize(CommonResources* resources)
 	m_pUIText->SetAlignment(TextAlignment::LEFT);
 
 	// モデルを取得
-	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Town1");
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("World");
 
 
 }
@@ -157,7 +157,7 @@ void TestScene::Render()
 	auto commonStates = m_pCommonResources->GetCommonStates();
 	// ワールド行列を設定
 	Matrix world = Matrix::Identity;
-	world *= Matrix::CreateScale(.05f);
+	world *= Matrix::CreateScale(1.0f);
 
 	// モデルの描画
 	m_pModel->Draw(context, *commonStates, world, m_view, m_projection);
