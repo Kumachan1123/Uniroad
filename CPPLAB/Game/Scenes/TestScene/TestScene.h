@@ -19,15 +19,13 @@
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/Fade/Fade.h"
-#include "Game/MainScreen/MiniCharacter/MiniCharacterBase/MiniCharacterBase.h"
-#include "Game/MainScreen/MiniCharacter/MiniCharacterTitle/MiniCharacterTitle.h"
+
 #include "Game/Sky/Sky.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 #include "KumachiLib/OutLine/OutLine.h"
 #include "KumachiLib/UIText/UIText.h"
 // 前方宣言
 class CommonResources;
-class MiniCharacterBase;
 
 // テストシーンクラス
 class TestScene : public IScene
@@ -68,7 +66,7 @@ private:
 	static constexpr DirectX::SimpleMath::Vector3 SKY_SCALE = { 0.2f, 0.2f, 0.2f };
 	// 天球の回転速度
 	static constexpr float SKY_ROTATION_SPEED = 1.0f;
-	// ひつじの初期生成位置
+	// 初期生成位置
 	static constexpr DirectX::SimpleMath::Vector3 SHEEP_START_POS = { -10.0f, -0.45f, 0.0f };
 	// カメラの位置
 	static constexpr DirectX::SimpleMath::Vector3 CAMERA_POSITION = { 0.0f, 1.8f, 5.0f };
@@ -96,6 +94,8 @@ private:
 	std::unique_ptr<OutLine> m_pOutLine;
 	// UIテキスト
 	std::unique_ptr<UIText> m_pUIText;
+	// 天球
+	std::unique_ptr<Sky> m_pSky;
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列

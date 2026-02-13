@@ -55,6 +55,14 @@ void TestScene::Initialize(CommonResources* resources)
 	m_pFade->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 	// フェードインに移行
 	m_pFade->SetState(Fade::FadeState::FadeIn);
+	// 天球モデルを作成する
+	m_pSky = std::make_unique<Sky>(m_pCommonResources);
+	// 天球モデルを初期化する
+	m_pSky->Initialize();
+	// 天球のスケールをセット
+	m_pSky->SetScale(Vector3(10.f));
+	// 天球の位置をセット
+	m_pSky->SetPosition(Vector3(0.f, 0.f, 0.f));
 	// UIテキストを作成する
 	m_pUIText = std::make_unique<UIText>();
 	// UIテキストを初期化する
@@ -85,6 +93,19 @@ void TestScene::Initialize(CommonResources* resources)
 
 	// モデルを取得
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("World");
+	// モデルにデフォルトのフォグを設定
+	m_pModel->UpdateEffects([&](IEffect* effect)
+							{
+								auto fog = dynamic_cast<BasicEffect*>(effect);
+								if (fog)
+								{
+									fog->SetFogEnabled(true);
+									fog->SetFogStart(75.0f);
+									fog->SetFogEnd(500.0f);
+									fog->SetFogColor(DirectX::Colors::GhostWhite);
+
+								}
+							});
 
 
 }
@@ -112,24 +133,17 @@ void TestScene::Update(float elapsedTime)
 	m_pFixedCamera->SetCameraDistance(CAMERA_POSITION);
 	// フェードの更新
 	if (m_time >= FADE_START_TIME) m_pFade->Update(elapsedTime);
-	// フェードインが終わったら
-	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)
-	{
-		// フェード状態をなくす
-		m_pFade->SetState(Fade::FadeState::None);
-
-	}
-	if (m_pFade->GetState() == Fade::FadeState::None)
-	{
-		// UIテキストを更新する
-		m_pUIText->Update(elapsedTime);
-	}
+	// フェードインが終わったらフェード状態をなくす
+	if (m_pFade->GetState() == Fade::FadeState::FadeInEnd)m_pFade->SetState(Fade::FadeState::None);
+	// UIテキストを更新する
+	if (m_pFade->GetState() == Fade::FadeState::None)m_pUIText->Update(elapsedTime);
+	// 天球を更新する
+	m_pSky->Update(elapsedTime);
 	// キーボード入力を取得
 	auto keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
 	// スペースキーが押されたら（何らかのフラグがたったら）
 	if (keyState.Space)
 	{
-
 		// フェードアウトに移行
 		if (m_pUIText->IsFinishedAll())m_pFade->SetState(Fade::FadeState::FadeOut);
 		// 次へ要求を出す
@@ -158,9 +172,17 @@ void TestScene::Render()
 	// ワールド行列を設定
 	Matrix world = Matrix::Identity;
 	world *= Matrix::CreateScale(1.0f);
-
+	// 天球の描画
+	m_pSky->Render(m_view, m_projection);
 	// モデルの描画
-	m_pModel->Draw(context, *commonStates, world, m_view, m_projection);
+	m_pModel->Draw(context, *commonStates, world, m_view, m_projection, false, [&]()
+				   {
+					   // 両面描画にする
+					   ID3D11RasterizerState* rasterizerState[1];
+					   rasterizerState[0] = commonStates->CullNone();
+					   context->RSSetState(rasterizerState[0]);
+
+				   });
 
 
 	// UIテキストを描画する
@@ -217,7 +239,7 @@ void TestScene::CreateCamera()
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(FOV),// 視野角
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
-		0.1f, 1000.0f);// ニアクリップ距離、ファークリップ距離
+		0.1f, 10000.0f);// ニアクリップ距離、ファークリップ距離
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
 
