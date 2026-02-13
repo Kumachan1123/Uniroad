@@ -105,6 +105,7 @@ void TestScene::Initialize(CommonResources* resources)
 									fog->SetFogColor(DirectX::Colors::GhostWhite);
 
 								}
+
 							});
 
 
@@ -171,7 +172,7 @@ void TestScene::Render()
 	auto commonStates = m_pCommonResources->GetCommonStates();
 	// ワールド行列を設定
 	Matrix world = Matrix::Identity;
-	world *= Matrix::CreateScale(1.0f);
+	world *= Matrix::CreateScale(1.f);
 	// 天球の描画
 	m_pSky->Render(m_view, m_projection);
 	// モデルの描画
