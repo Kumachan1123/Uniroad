@@ -6,8 +6,11 @@
 // 標準ライブラリ
 #include <cassert>
 #include <memory>
+#include <vector>
 // DirectX
 #include <DeviceResources.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
 // 外部ライブラリ
 #include <Libraries/MyLib/DebugCamera.h>
 #include <Libraries/MyLib/DebugString.h>
@@ -21,9 +24,32 @@
 #include "Game/Fade/Fade.h"
 
 #include "Game/Sky/Sky.h"
+#include "Game/Stage/Stage.h"
 #include "KumachiLib/ShadowMapLight/ShadowMapLight.h"
 #include "KumachiLib/OutLine/OutLine.h"
 #include "KumachiLib/UIText/UIText.h"
+#include "Game/MetalMoon/MetalMoon.h"
+
+// 左右反転（XZを鏡映し）したキューブ向き
+const DirectX::SimpleMath::Vector3 kCubeForward[6] =
+{
+	{ -1,  0,  0 }, // +X が鏡映し -> 元 { 1,0,0 }
+	{  1,  0,  0 }, // -X -> 元 {-1,0,0}
+	{  0,  1,  0 }, // +Y はそのまま
+	{  0, -1,  0 }, // -Y はそのまま
+	{  0,  0,  1 }, // +Z が鏡映し -> 元 {0,0,-1}
+	{  0,  0, -1 }  // -Z -> 元 {0,0,1}
+};
+
+const DirectX::SimpleMath::Vector3 kCubeUp[6] =
+{
+	{ 0, 1,  0 },   // +X の up (変化なし)
+	{ 0, 1,  0 },   // -X の up (変化なし)
+	{ 0, 0, -1 },   // +Y の up 元は {0,0,1} -> 符号反転
+	{ 0, 0,  1 },   // -Y の up 元は {0,0,-1} -> 符号反転
+	{ 0, 1,  0 },   // +Z の up (変化なし)
+	{ 0, 1,  0 }    // -Z の up (変化なし)
+};
 // 前方宣言
 class CommonResources;
 
@@ -57,7 +83,10 @@ private:
 	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
-
+	void GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& position);
+	void MakeRotatedCubeVectors(float degrees,
+								DirectX::SimpleMath::Vector3 outForward[6],
+								DirectX::SimpleMath::Vector3 outUp[6]);
 private:
 	// private定数
 	// フェード開始時間
@@ -96,6 +125,13 @@ private:
 	std::unique_ptr<UIText> m_pUIText;
 	// 天球
 	std::unique_ptr<Sky> m_pSky;
+	// ステージ
+	std::unique_ptr<Stage> m_pStage;
+	// メタルムーン
+	std::unique_ptr<MetalMoon> m_pMetalMoon;
+	// モデル
+	DirectX::Model* m_pModel;
+
 	// シーンチェンジフラグ
 	bool m_isChangeScene;
 	// 射影行列
@@ -104,7 +140,6 @@ private:
 	DirectX::SimpleMath::Matrix m_view;
 	// 時間
 	float m_time;
-	// モデル
-	DirectX::Model* m_pModel;
-
+	// 環境マップを作ったか
+	bool m_generatedEnvironmentMap;
 };

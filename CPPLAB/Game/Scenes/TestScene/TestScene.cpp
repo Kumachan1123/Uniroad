@@ -19,6 +19,7 @@ TestScene::TestScene(IScene::SceneID sceneID)
 	, m_isChangeScene(false) // シーン変更フラグ
 	, m_nextSceneID(sceneID) // 次のシーンID
 	, m_time(0.0f) // 時間
+	, m_generatedEnvironmentMap(false) // 環境マップを生成したか
 {
 }
 
@@ -29,7 +30,19 @@ TestScene::TestScene(IScene::SceneID sceneID)
 *	@return なし
 */
 TestScene::~TestScene()
-{
+{    // メタルムーンの Finalize を呼ぶ
+	if (m_pMetalMoon)
+	{
+		m_pMetalMoon->Finalize();
+		m_pMetalMoon.reset(); // unique_ptr を破棄
+	}
+
+	// 他のリソースも同様に Finalize / reset する
+	if (m_pStage)
+	{
+		m_pStage->Finalize();
+		m_pStage.reset();
+	}
 }
 /*
 *	@brief 初期化
@@ -91,23 +104,17 @@ void TestScene::Initialize(CommonResources* resources)
 	// 文字のアライメントをセット
 	m_pUIText->SetAlignment(TextAlignment::LEFT);
 
-	// モデルを取得
-	m_pModel = m_pCommonResources->GetModelManager()->GetModel("World");
-	// モデルにデフォルトのフォグを設定
-	m_pModel->UpdateEffects([&](IEffect* effect)
-							{
-								auto fog = dynamic_cast<BasicEffect*>(effect);
-								if (fog)
-								{
-									fog->SetFogEnabled(true);
-									fog->SetFogStart(75.0f);
-									fog->SetFogEnd(500.0f);
-									fog->SetFogColor(DirectX::Colors::GhostWhite);
+	// ステージを作成する
+	m_pStage = std::make_unique<Stage>();
+	// ステージを初期化する
+	m_pStage->Initialize(m_pCommonResources);
+	// メタルムーンを作成する
+	m_pMetalMoon = std::make_unique<MetalMoon>();
+	// メタルムーンを初期化する
+	m_pMetalMoon->Initialize(m_pCommonResources);
 
-								}
-
-							});
-
+	// モデルを受け取る
+	m_pModel = m_pCommonResources->GetModelManager()->GetModel("MetalMoon");
 
 }
 /*
@@ -153,6 +160,8 @@ void TestScene::Update(float elapsedTime)
 	// フェードアウトが完了していたら、シーン遷移フラグを立てる
 	if (m_pFade->GetState() == Fade::FadeState::FadeOutEnd)	m_isChangeScene = true;
 
+	// 環境マップを生成する
+	GenerateEnvironmentMap(Vector3::Zero);
 }
 /*
 *	@brief 描画
@@ -166,24 +175,19 @@ void TestScene::Render()
 	using namespace DirectX;
 	// DirectXのSimpleMath名前空間のエイリアス
 	using namespace DirectX::SimpleMath;
-	// デバイスコンテキストを取得
+
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	// コモンステートを取得
-	auto commonStates = m_pCommonResources->GetCommonStates();
-	// ワールド行列を設定
-	Matrix world = Matrix::Identity;
-	world *= Matrix::CreateScale(1.f);
+	auto states = m_pCommonResources->GetCommonStates();
+
 	// 天球の描画
 	m_pSky->Render(m_view, m_projection);
-	// モデルの描画
-	m_pModel->Draw(context, *commonStates, world, m_view, m_projection, false, [&]()
-				   {
-					   // 両面描画にする
-					   ID3D11RasterizerState* rasterizerState[1];
-					   rasterizerState[0] = commonStates->CullNone();
-					   context->RSSetState(rasterizerState[0]);
+	// ステージの描画
+	m_pStage->Render(m_view, m_projection);
+	// メタルムーンの描画
+	m_pMetalMoon->Render(m_view, m_projection);
 
-				   });
+	//// モデルの描画
+	//m_pModel->Draw(context, *states, Matrix::Identity, m_view, m_projection);
 
 
 	// UIテキストを描画する
@@ -244,4 +248,180 @@ void TestScene::CreateCamera()
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
 
+}
+// TestScene::GenerateEnvironmentMap - MakeRotatedCubeVectors を使って回転補正を適用
+void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& position)
+{
+	using Microsoft::WRL::ComPtr;
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
+
+	//	if (m_generatedEnvironmentMap) return;
+
+	auto* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	auto* context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	if (!device || !context) return;
+
+	const UINT size = 256 / 4;
+	HRESULT hr = S_OK;
+
+	// --- 回転角 (Y軸) をここで指定 ---
+	const float rotationDegrees = 90.0f; // 必要に応じて変更
+
+	// 回転済み配列を作る（MakeRotatedCubeVectors を利用）
+	SimpleMath::Vector3 rotatedForward[6];
+	SimpleMath::Vector3 rotatedUp[6];
+	MakeRotatedCubeVectors(rotationDegrees, rotatedForward, rotatedUp);
+
+	// テクスチャ記述（1面 = size x size, ArraySize = 6）
+	D3D11_TEXTURE2D_DESC texDesc = {};
+	texDesc.Width = size;
+	texDesc.Height = size;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 6;
+	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	ComPtr<ID3D11Texture2D> envCube;
+	hr = device->CreateTexture2D(&texDesc, nullptr, envCube.GetAddressOf());
+	if (FAILED(hr) || !envCube)
+	{
+		OutputDebugStringA("CreateTexture2D(envCube) failed\n");
+		return;
+	}
+	envCube->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen("EnvCube") + 1, "EnvCube");
+
+	// RTV を 6 個作成（各スライスごと）
+	ComPtr<ID3D11RenderTargetView> cubeRTVs[6];
+	for (UINT i = 0; i < 6; ++i)
+	{
+		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+		rtvDesc.Format = texDesc.Format;
+		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+		rtvDesc.Texture2DArray.MipSlice = 0;
+		rtvDesc.Texture2DArray.FirstArraySlice = i;
+		rtvDesc.Texture2DArray.ArraySize = 1;
+
+		hr = device->CreateRenderTargetView(envCube.Get(), &rtvDesc, cubeRTVs[i].GetAddressOf());
+		if (FAILED(hr) || !cubeRTVs[i])
+		{
+			OutputDebugStringA("CreateRenderTargetView failed for face\n");
+			return;
+		}
+		char name[32];
+		sprintf_s(name, "EnvCubeRTV_%u", i);
+		cubeRTVs[i]->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen(name) + 1, name);
+	}
+
+	// 深度バッファ作成（共通1つを各面で使う）
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	depthDesc.Width = size;
+	depthDesc.Height = size;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	ComPtr<ID3D11Texture2D> depthTex;
+	hr = device->CreateTexture2D(&depthDesc, nullptr, depthTex.GetAddressOf());
+	if (FAILED(hr) || !depthTex)
+	{
+		OutputDebugStringA("CreateTexture2D(depth) failed\n");
+		return;
+	}
+	depthTex->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen("EnvDepthTex") + 1, "EnvDepthTex");
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.Format = depthDesc.Format;
+	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	dsvDesc.Texture2D.MipSlice = 0;
+
+	ComPtr<ID3D11DepthStencilView> dsv;
+	hr = device->CreateDepthStencilView(depthTex.Get(), &dsvDesc, dsv.GetAddressOf());
+	if (FAILED(hr) || !dsv)
+	{
+		OutputDebugStringA("CreateDepthStencilView failed\n");
+		return;
+	}
+	dsv->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen("EnvDSV") + 1, "EnvDSV");
+
+	// ビューポートをセット
+	D3D11_VIEWPORT vp = {};
+	vp.Width = (FLOAT)size; vp.Height = (FLOAT)size; vp.MinDepth = 0.0f; vp.MaxDepth = 1.0f;
+	context->RSSetViewports(1, &vp);
+
+	// クリア色（水色）
+	const FLOAT clearColor[4] = { 0.0f, 1.0f, 1.0f, 1.0f };
+
+	// 各面をレンダリング（描画対象は Sky/Stage など、MetalMoon自身は除外）
+	for (int face = 0; face < 6; ++face)
+	{
+		Matrix view = Matrix::CreateLookAt(position, position + rotatedForward[face], rotatedUp[face]);
+		Matrix proj = Matrix::CreatePerspectiveFieldOfView(XM_PIDIV2, 1.0f, 0.1f, 10000.0f);
+
+		ID3D11RenderTargetView* rtvPtr = cubeRTVs[face].Get();
+		context->OMSetRenderTargets(1, &rtvPtr, dsv.Get());
+		context->ClearRenderTargetView(rtvPtr, clearColor);
+		context->ClearDepthStencilView(dsv.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		// シーン描画（ここで view/proj をシェーダに渡す必要あり）
+		m_pStage->Render(view, proj);
+		m_pSky->Render(view, proj);
+	}
+
+	// SRV 作成
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = texDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MipLevels = texDesc.MipLevels;
+	srvDesc.TextureCube.MostDetailedMip = 0;
+
+	ComPtr<ID3D11ShaderResourceView> envCubeSRV;
+	hr = device->CreateShaderResourceView(envCube.Get(), &srvDesc, envCubeSRV.GetAddressOf());
+	if (FAILED(hr) || !envCubeSRV)
+	{
+		OutputDebugStringA("CreateShaderResourceView failed\n");
+		return;
+	}
+	envCubeSRV->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen("EnvCubeSRV") + 1, "EnvCubeSRV");
+
+	// Material 側に渡す（Material::SetEnvironmentCubeSRV は内部で ComPtr 保持を想定）
+	if (m_pMetalMoon && m_pMetalMoon->GetMaterial())
+	{
+		m_pMetalMoon->GetMaterial()->SetEnvironmentCubeSRV(envCubeSRV.Get());
+	}
+
+	m_generatedEnvironmentMap = true;
+}
+void TestScene::MakeRotatedCubeVectors(float degrees, DirectX::SimpleMath::Vector3 outForward[6], DirectX::SimpleMath::Vector3 outUp[6])
+{
+	using namespace DirectX;
+	float theta = XMConvertToRadians(degrees);
+	XMMATRIX rot = XMMatrixRotationY(theta);
+
+	for (int i = 0; i < 6; ++i)
+	{
+		XMVECTOR vF = XMVectorSet(kCubeForward[i].x, kCubeForward[i].y, kCubeForward[i].z, 0.0f);
+		XMVECTOR vU = XMVectorSet(kCubeUp[i].x, kCubeUp[i].y, kCubeUp[i].z, 0.0f);
+
+		XMVECTOR vFr = XMVector3TransformNormal(vF, rot);
+		XMVECTOR vUr = XMVector3TransformNormal(vU, rot);
+
+		// 正規化して SimpleMath::Vector3 に書き戻す
+		vFr = XMVector3Normalize(vFr);
+		vUr = XMVector3Normalize(vUr);
+
+		outForward[i].x = XMVectorGetX(vFr);
+		outForward[i].y = XMVectorGetY(vFr);
+		outForward[i].z = XMVectorGetZ(vFr);
+
+		outUp[i].x = XMVectorGetX(vUr);
+		outUp[i].y = XMVectorGetY(vUr);
+		outUp[i].z = XMVectorGetZ(vUr);
+	}
 }

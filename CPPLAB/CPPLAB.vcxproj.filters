@@ -140,6 +140,9 @@
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
     <ClInclude Include="Game\Scenes\TestScene\TestScene.h" />
     <ClInclude Include="KumachiLib\UIText\UIText.h" />
+    <ClInclude Include="Game\Stage\Stage.h" />
+    <ClInclude Include="KumachiLib\Material\Material.h" />
+    <ClInclude Include="Game\MetalMoon\MetalMoon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -237,6 +240,9 @@
     <ClCompile Include="KumachiLib\OutLine\OutLine.cpp" />
     <ClCompile Include="Game\Scenes\TestScene\TestScene.cpp" />
     <ClCompile Include="KumachiLib\UIText\UIText.cpp" />
+    <ClCompile Include="Game\Stage\Stage.cpp" />
+    <ClCompile Include="KumachiLib\Material\Material.cpp" />
+    <ClCompile Include="Game\MetalMoon\MetalMoon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -267,6 +273,7 @@
     <None Include="HLSL\UVScroll\UVScroll.hlsli" />
     <None Include="HLSL\OutLine\Common.hlsli" />
     <None Include="HLSL\OutLine\Params.hlsli" />
+    <None Include="HLSL\Material\Material.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -295,5 +302,9 @@
     <FxCompile Include="HLSL\UVScroll\PS_UVScroll.hlsl" />
     <FxCompile Include="HLSL\OutLine\PS_Outline.hlsl" />
     <FxCompile Include="HLSL\OutLine\VS_Outline.hlsl" />
+    <FxCompile Include="HLSL\Material\PS_Stage.hlsl" />
+    <FxCompile Include="HLSL\Material\VS_Stage.hlsl" />
+    <FxCompile Include="HLSL\Material\PS_Metallic.hlsl" />
+    <FxCompile Include="HLSL\Material\VS_Metallic.hlsl" />
   </ItemGroup>
 </Project>
