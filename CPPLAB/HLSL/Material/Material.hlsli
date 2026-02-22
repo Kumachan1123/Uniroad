@@ -4,10 +4,11 @@
 
 // DirectXTKで標準的に定義されているパラメータ
 Texture2D<float4> Texture : register(t0);
+Texture2D<float4> NormalMap : register(t1); // ノーマルマップ
 sampler Sampler : register(s0);
 // Material.hlsli、またはシェーダ内で追加
-TextureCube EnvMap : register(t1);
-SamplerState EnvSampler : register(s1);
+TextureCube EnvMap : register(t10);
+SamplerState EnvSampler : register(s10);
 
 
 cbuffer Parameters : register(b0)
@@ -59,6 +60,7 @@ struct PS_Input
     float4 PositionWS : TEXCOORD1;
     float3 NormalWS : TEXCOORD2;
     float4 LightPosPS : TEXCOORD3;
+    float4 TangentWS : TEXCOORD4; // if available
     float4 PositionPS : SV_Position;
 };
 

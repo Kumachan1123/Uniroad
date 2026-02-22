@@ -45,5 +45,6 @@
   "SEText": "Resources/Textures/SE.png",
   "Min": "Resources/Textures/Min.png",
   "Max": "Resources/Textures/Max.png",
-  "Sky": "Resources/Textures/Sky.png"
+  "Sky": "Resources/Textures/Sky.png",
+  "NormalMap": "Resources/Textures/NormalMap.png"
 }

@@ -250,19 +250,20 @@ void TestScene::CreateCamera()
 
 }
 // TestScene::GenerateEnvironmentMap - MakeRotatedCubeVectors を使って回転補正を適用
+// 修正版: mipmap を「確保」するだけでなく、D3D11 の GenerateMips で生成する
 void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& position)
 {
 	using Microsoft::WRL::ComPtr;
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 
-	//	if (m_generatedEnvironmentMap) return;
+	// if (m_generatedEnvironmentMap) return;
 
 	auto* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 	auto* context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	if (!device || !context) return;
 
-	const UINT size = 256 / 4;
+	const UINT size = 256;
 	HRESULT hr = S_OK;
 
 	// --- 回転角 (Y軸) をここで指定 ---
@@ -273,17 +274,26 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 	SimpleMath::Vector3 rotatedUp[6];
 	MakeRotatedCubeVectors(rotationDegrees, rotatedForward, rotatedUp);
 
-	// テクスチャ記述（1面 = size x size, ArraySize = 6）
+	// =========================================================================
+	// Cubemap texture (with full mip chain + GenerateMips)
+	// =========================================================================
 	D3D11_TEXTURE2D_DESC texDesc = {};
 	texDesc.Width = size;
 	texDesc.Height = size;
-	texDesc.MipLevels = 1;
+
+	// 重要: 0 を指定するとフル mip チェーンが作られる（256なら 9段: 256..1）
+	texDesc.MipLevels = 0;
+
 	texDesc.ArraySize = 6;
 	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	texDesc.SampleDesc.Count = 1;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
+
+	// GenerateMips には RenderTarget と ShaderResource の両方が必要
 	texDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	// 重要: GenerateMips を呼ぶためのフラグを付ける
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE | D3D11_RESOURCE_MISC_GENERATE_MIPS;
 
 	ComPtr<ID3D11Texture2D> envCube;
 	hr = device->CreateTexture2D(&texDesc, nullptr, envCube.GetAddressOf());
@@ -294,14 +304,14 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 	}
 	envCube->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen("EnvCube") + 1, "EnvCube");
 
-	// RTV を 6 個作成（各スライスごと）
+	// RTV を 6 個作成（各スライスごと / mip0 に描画）
 	ComPtr<ID3D11RenderTargetView> cubeRTVs[6];
 	for (UINT i = 0; i < 6; ++i)
 	{
 		D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
 		rtvDesc.Format = texDesc.Format;
 		rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
-		rtvDesc.Texture2DArray.MipSlice = 0;
+		rtvDesc.Texture2DArray.MipSlice = 0;            // 描画は mip0 のみに行う
 		rtvDesc.Texture2DArray.FirstArraySlice = i;
 		rtvDesc.Texture2DArray.ArraySize = 1;
 
@@ -352,7 +362,10 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 
 	// ビューポートをセット
 	D3D11_VIEWPORT vp = {};
-	vp.Width = (FLOAT)size; vp.Height = (FLOAT)size; vp.MinDepth = 0.0f; vp.MaxDepth = 1.0f;
+	vp.Width = (FLOAT)size;
+	vp.Height = (FLOAT)size;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
 	context->RSSetViewports(1, &vp);
 
 	// クリア色（水色）
@@ -374,12 +387,16 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 		m_pSky->Render(view, proj);
 	}
 
-	// SRV 作成
+	// =========================================================================
+	// SRV 作成（TextureCube / full mip chain）
+	// =========================================================================
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = texDesc.Format;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-	srvDesc.TextureCube.MipLevels = texDesc.MipLevels;
+
+	// 重要: -1 を指定すると「全 mip」を SRV に含める
 	srvDesc.TextureCube.MostDetailedMip = 0;
+	srvDesc.TextureCube.MipLevels = (UINT)-1;
 
 	ComPtr<ID3D11ShaderResourceView> envCubeSRV;
 	hr = device->CreateShaderResourceView(envCube.Get(), &srvDesc, envCubeSRV.GetAddressOf());
@@ -389,6 +406,11 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 		return;
 	}
 	envCubeSRV->SetPrivateData(WKPDID_D3DDebugObjectName, (UINT)strlen("EnvCubeSRV") + 1, "EnvCubeSRV");
+
+	// =========================================================================
+	// 重要: mipmap を生成する（mip0 から自動ダウンサンプル）
+	// =========================================================================
+	context->GenerateMips(envCubeSRV.Get());
 
 	// Material 側に渡す（Material::SetEnvironmentCubeSRV は内部で ComPtr 保持を想定）
 	if (m_pMetalMoon && m_pMetalMoon->GetMaterial())

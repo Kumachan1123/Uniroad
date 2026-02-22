@@ -1,28 +1,28 @@
 /*
-	ライトwithシャドウマップ用頂点シェーダ
+    CMO用: 環境マッピング(公式EnvironmentMapEffect風) + Shadow用データも維持
 */
 #include "Material.hlsli"
 
-
 PS_Input main(VS_Input input)
 {
-
     PS_Input output;
 
-    // 頂点の位置を投影空間へ
+    // Position
     output.PositionPS = mul(input.Position, WorldViewProj);
-    
-    // 頂点の位置をワールド空間へ
     output.PositionWS = mul(input.Position, World);
-    
-    // 法線ベクトルをワールド空間へ（拡大縮小の影響を打ち消すため逆転置行列をかける）
-    output.NormalWS = mul(input.Normal, WorldInverseTranspose);
-    
-    // テクスチャのUV座標
+
+    // Normal (world)
+    output.NormalWS = normalize(mul(input.Normal, WorldInverseTranspose));
+
+    // UV
     output.TexCoord = input.TexCoord;
-    
-    // 頂点の位置をライトの投影空間へ
+
+    // Light projection (影用に残す)
     output.LightPosPS = mul(output.PositionWS, lightViewProjection);
- 
+
+    // 仮タンジェント（本当はメッシュから来るべき）
+    float3 Tws = mul(float3(1, 0, 0), (float3x3) World);
+    output.TangentWS = float4(normalize(Tws), 1.0f);
+
     return output;
 }

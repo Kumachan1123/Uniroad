@@ -43,4 +43,6 @@ private:
 	Material* m_material;
 	// 環境マップ
 	ID3D11ShaderResourceView* m_environmentMap;
+	// ノーマルマップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMap;
 };
