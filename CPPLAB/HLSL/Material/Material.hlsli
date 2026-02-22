@@ -3,8 +3,17 @@
 */
 
 // DirectXTKで標準的に定義されているパラメータ
+// テクスチャ
 Texture2D<float4> Texture : register(t0);
-Texture2D<float4> NormalMap : register(t1); // ノーマルマップ
+// ノーマルマップ
+Texture2D<float4> NormalMap : register(t1);
+// 発光マップ
+Texture2D<float4> EmissiveMap : register(t2);
+// アンビエントオクルージョンマップ
+Texture2D<float4> AOMap : register(t3);
+// ラフネスマップ
+Texture2D<float4> RoughnessMap : register(t4);
+
 sampler Sampler : register(s0);
 // Material.hlsli、またはシェーダ内で追加
 TextureCube EnvMap : register(t10);

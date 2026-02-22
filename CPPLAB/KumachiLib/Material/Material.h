@@ -39,6 +39,23 @@ public:
 	ID3D11ShaderResourceView* GetEnvironmentCubeSRV() const { return m_envCubeSRV.Get(); }
 	// 環境マップのテクスチャを設定する
 	void SetEnvironmentCubeSRV(ID3D11ShaderResourceView* envCubeSRV) { m_envCubeSRV = envCubeSRV; }
+	// ノーマルマップを取得する
+	ID3D11ShaderResourceView* GetNormalMap() const { return m_normalMap.Get(); }
+	// ノーマルマップを設定する
+	void SetNormalMap(ID3D11ShaderResourceView* normalMap) { m_normalMap = normalMap; }
+	// 発光マップを取得する
+	ID3D11ShaderResourceView* GetEmissiveMap() const { return m_emissiveMap.Get(); }
+	// 発光マップを設定する
+	void SetEmissiveMap(ID3D11ShaderResourceView* emissiveMap) { m_emissiveMap = emissiveMap; }
+	// アンビエントオクルージョンマップを取得する
+	ID3D11ShaderResourceView* GetAO() const { return m_ao.Get(); }
+	// アンビエントオクルージョンマップを設定する
+	void SetAO(ID3D11ShaderResourceView* ao) { m_ao = ao; }
+	// 粗さマップを取得する
+	ID3D11ShaderResourceView* GetRoughnessMap() const { return m_roughnessMap.Get(); }
+	// 粗さマップを設定する
+	void SetRoughnessMap(ID3D11ShaderResourceView* roughnessMap) { m_roughnessMap = roughnessMap; }
+
 
 
 public:
@@ -52,7 +69,8 @@ public:
 
 	// 終了
 	void Finalize();
-
+	// 各テクスチャをシェーダーにセットし、モデルにシェーダーを渡す
+	void SetShaders(ID3D11DeviceContext* context, DirectX::DX11::CommonStates* commonStates);
 private:
 	// 頂点シェーダーを作る
 	void CreateVertexShader(const std::vector<uint8_t>& blob);
@@ -63,7 +81,14 @@ private:
 	CommonResources* m_pCommonResources;
 	// 環境マップのテクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_envCubeSRV;
-
+	// ノーマルマップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMap;
+	// 発光マップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_emissiveMap;
+	// アンビエントオクルージョンマップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ao;
+	// 粗さマップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_roughnessMap;
 	// シェーダーの名前
 	std::wstring m_shaderName;
 	// RGB値

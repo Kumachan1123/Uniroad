@@ -257,7 +257,8 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 
-	// if (m_generatedEnvironmentMap) return;
+	// 既に生成済みなら何もしない（パフォーマンス最適化）
+	if (m_generatedEnvironmentMap) return;
 
 	auto* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 	auto* context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();

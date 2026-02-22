@@ -46,5 +46,9 @@
   "Min": "Resources/Textures/Min.png",
   "Max": "Resources/Textures/Max.png",
   "Sky": "Resources/Textures/Sky.png",
-  "NormalMap": "Resources/Textures/NormalMap.png"
+  "NormalMap": "Resources/Textures/NormalMap.png",
+  "EmissiveMap": "Resources/Textures/EmissiveMap.png",
+  "AOMap": "Resources/Textures/AOMap.png",
+  "RoughnessMap": "Resources/Textures/RoughnessMap.png"
+
 }

@@ -29,8 +29,14 @@ void MetalMoon::Initialize(CommonResources* resources)
 	m_material->SetShaderName(L"Metallic");
 	// マテリアルを初期化する
 	m_material->Initialize(m_pCommonResources);
-	// テクスチャをロードする
-	m_normalMap = m_pCommonResources->GetTextureManager()->GetTexture("NormalMap");
+	// ノーマルマップをロードする
+	m_material->SetNormalMap(m_pCommonResources->GetTextureManager()->GetTexture("NormalMap"));
+	// 発光マップをロードする
+	m_material->SetEmissiveMap(m_pCommonResources->GetTextureManager()->GetTexture("EmissiveMap"));
+	// アンビエントオクルージョンマップをロードする
+	m_material->SetAO(m_pCommonResources->GetTextureManager()->GetTexture("AOMap"));
+	// 粗さマップをロードする
+	m_material->SetRoughnessMap(m_pCommonResources->GetTextureManager()->GetTexture("RoughnessMap"));
 }
 
 void MetalMoon::Update(float elapsedTime)
@@ -55,7 +61,7 @@ void MetalMoon::Render(DirectX::SimpleMath::Matrix& view, DirectX::SimpleMath::M
 				   {
 					   // 両面描画
 					   ID3D11RasterizerState* rasterizerState[1];
-					   rasterizerState[0] = commonStates->CullCounterClockwise();
+					   rasterizerState[0] = commonStates->CullNone();
 					   context->RSSetState(rasterizerState[0]);
 					   /// 使う各テクスチャをセット
 					   // t0: ベースカラー（デフォルトで多分ついてる）
@@ -65,24 +71,10 @@ void MetalMoon::Render(DirectX::SimpleMath::Matrix& view, DirectX::SimpleMath::M
 					   // ラップ
 					   ID3D11SamplerState* sampler = commonStates->LinearWrap();
 					   context->PSSetSamplers(0, 1, &sampler);                // s0: ベースカラー用
+					   // ノーマルマップ、発光マップ、AOマップ、粗さマップをセットし、シェーダーに渡す
+					   m_material->SetShaders(context, commonStates);
 
 
-					   // t1: ノーマルマップ
-					   ID3D11ShaderResourceView* normalMapSRV = m_normalMap.Get(); // ←Material等に保持
-					   if (normalMapSRV)
-						   context->PSSetShaderResources(1, 1, &normalMapSRV);     // t1: ノーマルマップ
-
-
-					   //  環境マップSRV・サンプラーをシェーダに渡す
-					   ID3D11ShaderResourceView* envCubeSRV = m_material->GetEnvironmentCubeSRV(); // ←Material等に保持
-					   if (envCubeSRV)
-						   context->PSSetShaderResources(10, 1, &envCubeSRV);     // t10: キューブマップ
-					   ID3D11SamplerState* envSampler = commonStates->LinearWrap(); // or custom sampler
-					   context->PSSetSamplers(10, 1, &envSampler);                // s10: キューブマップ用
-
-					   // 頂点・ピクセルシェーダーセット
-					   context->VSSetShader(m_material->GetVertexShader().Get(), nullptr, 0);
-					   context->PSSetShader(m_material->GetPixelShader().Get(), nullptr, 0);
 				   });
 }
 

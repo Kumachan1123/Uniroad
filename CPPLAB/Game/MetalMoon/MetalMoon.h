@@ -11,8 +11,6 @@ class CommonResources;
 class MetalMoon
 {
 public:
-	// アクセサ
-	void SetEnvironmentMap(ID3D11ShaderResourceView* cubemap) { m_environmentMap = cubemap; }
 	// マテリアルにアクセス
 	Material* GetMaterial() const { return m_material; }
 public:
@@ -41,8 +39,12 @@ private:
 	DirectX::Model* m_pModel;
 	// マテリアル
 	Material* m_material;
-	// 環境マップ
-	ID3D11ShaderResourceView* m_environmentMap;
 	// ノーマルマップ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMap;
+	// 発光マップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_emissiveMap;
+	// アンビエントオクルージョンマップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ao;
+	// 粗さマップ
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_roughnessMap;
 };
