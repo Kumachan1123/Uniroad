@@ -201,6 +201,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
+    <ClInclude Include="Game\Car\Car.h" />
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
     <ClInclude Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.h" />
     <ClInclude Include="Game\Display\Display.h" />
@@ -332,6 +333,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
+    <ClCompile Include="Game\Car\Car.cpp" />
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
     <ClCompile Include="Game\ControllScreen\TileConnectionTable\TileConnectionTable.cpp" />
     <ClCompile Include="Game\Display\Display.cpp" />
@@ -446,6 +448,7 @@
     <None Include="ClassDiagram.cd" />
     <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\Material\Material.hlsli" />
+    <None Include="HLSL\Material\MaterialNoTex.hlsli" />
     <None Include="HLSL\OutLine\Common.hlsli" />
     <None Include="HLSL\OutLine\Params.hlsli" />
     <None Include="HLSL\Particle\Particle.hlsli" />
@@ -487,6 +490,12 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
+    <FxCompile Include="HLSL\Material\PS_MetallicNoTex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="HLSL\Material\PS_Stage.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -504,6 +513,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\Material\VS_MetallicNoTex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Material\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
