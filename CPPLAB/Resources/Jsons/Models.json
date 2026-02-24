@@ -27,5 +27,6 @@
   "Town1": "Resources/Models/Town1/Town1.cmo",
   "World": "Resources/Models/World/World.cmo",
   "Area1": "Resources/Models/Area1/Area1.cmo",
-  "MetalMoon": "Resources/Models/MetalMoon/MetalMoon.cmo"
+  "MetalMoon": "Resources/Models/MetalMoon/MetalMoon.cmo",
+  "Car": "Resources/Models/Car/Car.cmo"
 }

@@ -36,7 +36,11 @@ TestScene::~TestScene()
 		m_pMetalMoon->Finalize();
 		m_pMetalMoon.reset(); // unique_ptr を破棄
 	}
-
+	if (m_pCar)
+	{
+		m_pCar->Finalize();
+		m_pCar.reset();
+	}
 	// 他のリソースも同様に Finalize / reset する
 	if (m_pStage)
 	{
@@ -112,6 +116,12 @@ void TestScene::Initialize(CommonResources* resources)
 	m_pMetalMoon = std::make_unique<MetalMoon>();
 	// メタルムーンを初期化する
 	m_pMetalMoon->Initialize(m_pCommonResources);
+	// 車を作成する
+	m_pCar = std::make_unique<Car>();
+	// 車を初期化する
+	m_pCar->Initialize(m_pCommonResources);
+
+
 
 	// モデルを受け取る
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("MetalMoon");
@@ -184,7 +194,9 @@ void TestScene::Render()
 	// ステージの描画
 	m_pStage->Render(m_view, m_projection);
 	// メタルムーンの描画
-	m_pMetalMoon->Render(m_view, m_projection);
+	//m_pMetalMoon->Render(m_view, m_projection);
+	// 車の描画
+	m_pCar->Render(m_view, m_projection);
 
 	//// モデルの描画
 	//m_pModel->Draw(context, *states, Matrix::Identity, m_view, m_projection);

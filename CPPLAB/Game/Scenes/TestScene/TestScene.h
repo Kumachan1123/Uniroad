@@ -29,6 +29,7 @@
 #include "KumachiLib/OutLine/OutLine.h"
 #include "KumachiLib/UIText/UIText.h"
 #include "Game/MetalMoon/MetalMoon.h"
+#include "Game/Car/Car.h"
 
 // 左右反転（XZを鏡映し）したキューブ向き
 const DirectX::SimpleMath::Vector3 kCubeForward[6] =
@@ -129,6 +130,9 @@ private:
 	std::unique_ptr<Stage> m_pStage;
 	// メタルムーン
 	std::unique_ptr<MetalMoon> m_pMetalMoon;
+	// 車
+	std::unique_ptr<Car> m_pCar;
+
 	// モデル
 	DirectX::Model* m_pModel;
 

@@ -55,6 +55,10 @@ public:
 	ID3D11ShaderResourceView* GetRoughnessMap() const { return m_roughnessMap.Get(); }
 	// 粗さマップを設定する
 	void SetRoughnessMap(ID3D11ShaderResourceView* roughnessMap) { m_roughnessMap = roughnessMap; }
+	// テクスチャなしフラグを取得する
+	bool GetNoTexture() const { return m_noTexture; }
+	// テクスチャなしフラグを設定する
+	void SetNoTexture(bool noTexture) { m_noTexture = noTexture; }
 
 
 
@@ -97,4 +101,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vs;
 	// ピクセルシェーダー
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_ps;
+	// テクスチャなしフラグ
+	bool m_noTexture;
 };

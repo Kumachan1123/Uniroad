@@ -71,6 +71,7 @@ struct PS_Input
     float4 LightPosPS : TEXCOORD3;
     float4 TangentWS : TEXCOORD4; // if available
     float4 PositionPS : SV_Position;
+    float4 Diffuse : COLOR;
 };
 
 // シャドウマップの頂点シェーダ入力用
