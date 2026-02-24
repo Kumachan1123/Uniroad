@@ -426,10 +426,7 @@ void TestScene::GenerateEnvironmentMap(const DirectX::SimpleMath::Vector3& posit
 	context->GenerateMips(envCubeSRV.Get());
 
 	// Material ‘¤‚É“n‚·iMaterial::SetEnvironmentCubeSRV ‚Í“à•”‚Å ComPtr •ÛŽ‚ð‘z’èj
-	if (m_pMetalMoon && m_pMetalMoon->GetMaterial())
-	{
-		m_pMetalMoon->GetMaterial()->SetEnvironmentCubeSRV(envCubeSRV.Get());
-	}
+	m_pCar->GetMaterial()->SetEnvironmentCubeSRV(envCubeSRV.Get());
 
 	m_generatedEnvironmentMap = true;
 }

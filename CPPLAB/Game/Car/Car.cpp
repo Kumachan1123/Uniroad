@@ -2,9 +2,9 @@
 #include "Car.h"
 
 Car::Car()
-	: m_pCommonResources(nullptr) // å…±é€šãƒªã‚½ãƒ¼ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿
-	, m_pModel(nullptr) // ãƒ¢ãƒ‡ãƒ«ã¸ã®ãƒã‚¤ãƒ³ã‚¿
-	, m_material(nullptr) // ãƒãƒ†ãƒªã‚¢ãƒ«ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+	: m_pCommonResources(nullptr) // ‹¤’ÊƒŠƒ\[ƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	, m_pModel(nullptr) // ƒ‚ƒfƒ‹‚Ö‚Ìƒ|ƒCƒ“ƒ^
+	, m_material(nullptr) // ƒ}ƒeƒŠƒAƒ‹‚Ö‚Ìƒ|ƒCƒ“ƒ^
 {
 }
 
@@ -12,26 +12,26 @@ void Car::Initialize(CommonResources* resources)
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// å…±é€šãƒªã‚½ãƒ¼ã‚¹ã‚’ã‚»ãƒƒãƒˆ
+	// ‹¤’ÊƒŠƒ\[ƒX‚ğƒZƒbƒg
 	m_pCommonResources = resources;
-	// ãƒ‡ãƒã‚¤ã‚¹ã‚’å–å¾—
+	// ƒfƒoƒCƒX‚ğæ“¾
 	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
-	// ãƒ¢ãƒ‡ãƒ«ã‚’å–å¾—
+	// ƒ‚ƒfƒ‹‚ğæ“¾
 	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Car");
 
-	// ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’ä½œã‚‹
+	// ƒ}ƒeƒŠƒAƒ‹‚ğì‚é
 	m_material = new Material();
-	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®åå‰ã‚’è¨­å®šã™ã‚‹
+	// ƒ}ƒeƒŠƒAƒ‹‚ÌƒVƒF[ƒ_[‚Ì–¼‘O‚ğİ’è‚·‚é
 	m_material->SetShaderName(L"MetallicNoTex");
-	// ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’åˆæœŸåŒ–ã™ã‚‹
+	// ƒ}ƒeƒŠƒAƒ‹‚ğ‰Šú‰»‚·‚é
 	m_material->Initialize(m_pCommonResources);
-	//// ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
+	//// ƒm[ƒ}ƒ‹ƒ}ƒbƒv‚ğƒ[ƒh‚·‚é
 	//m_material->SetNormalMap(m_pCommonResources->GetTextureManager()->GetTexture("NormalMap"));
-	//// ç™ºå…‰ãƒãƒƒãƒ—ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
+	//// ”­Œõƒ}ƒbƒv‚ğƒ[ƒh‚·‚é
 	//m_material->SetEmissiveMap(m_pCommonResources->GetTextureManager()->GetTexture("EmissiveMap"));
-	//// ã‚¢ãƒ³ãƒ“ã‚¨ãƒ³ãƒˆã‚ªã‚¯ãƒ«ãƒ¼ã‚¸ãƒ§ãƒ³ãƒãƒƒãƒ—ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
+	//// ƒAƒ“ƒrƒGƒ“ƒgƒIƒNƒ‹[ƒWƒ‡ƒ“ƒ}ƒbƒv‚ğƒ[ƒh‚·‚é
 	//m_material->SetAO(m_pCommonResources->GetTextureManager()->GetTexture("AOMap"));
-	//// ç²—ã•ãƒãƒƒãƒ—ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
+	//// ‘e‚³ƒ}ƒbƒv‚ğƒ[ƒh‚·‚é
 	//m_material->SetRoughnessMap(m_pCommonResources->GetTextureManager()->GetTexture("RoughnessMap"));
 }
 
@@ -45,30 +45,30 @@ void Car::Render(DirectX::SimpleMath::Matrix& view, DirectX::SimpleMath::Matrix&
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’å–å¾—
+	// ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg‚ğæ“¾
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	// ã‚³ãƒ¢ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆã‚’å–å¾—
+	// ƒRƒ‚ƒ“ƒXƒe[ƒg‚ğæ“¾
 	auto commonStates = m_pCommonResources->GetCommonStates();
-	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’è¨­å®š
+	// ƒ[ƒ‹ƒhs—ñ‚ğİ’è
 	Matrix world = Matrix::Identity;
 	world *= Matrix::CreateScale(0.1f);
 	world *= Matrix::CreateTranslation(0, 0, 0);
-	// ãƒ¢ãƒ‡ãƒ«ã®æç”»
+	// ƒ‚ƒfƒ‹‚Ì•`‰æ
 	m_pModel->Draw(context, *commonStates, world, view, proj, false, [&]()
 				   {
-					   //// ä¸¡é¢æç”»
-					   //ID3D11RasterizerState* rasterizerState[1];
-					   //rasterizerState[0] = commonStates->CullNone();
-					   //context->RSSetState(rasterizerState[0]);
-					   ///// ä½¿ã†å„ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ã‚»ãƒƒãƒˆ
-					   //// t0: ãƒ™ãƒ¼ã‚¹ã‚«ãƒ©ãƒ¼ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã§å¤šåˆ†ã¤ã„ã¦ã‚‹ï¼‰
-					   //// åŠé€æ˜æç”»ã‚’å¯èƒ½ã«ã™ã‚‹
-					   //ID3D11BlendState* blendState = commonStates->AlphaBlend();
-					   //context->OMSetBlendState(blendState, nullptr, 0xffffffff);
-					   //// ãƒ©ãƒƒãƒ—
+					   // —¼–Ê•`‰æ
+					   ID3D11RasterizerState* rasterizerState[1];
+					   rasterizerState[0] = commonStates->CullNone();
+					   context->RSSetState(rasterizerState[0]);
+					   /// g‚¤ŠeƒeƒNƒXƒ`ƒƒ‚ğƒZƒbƒg
+					   // t0: ƒx[ƒXƒJƒ‰[iƒfƒtƒHƒ‹ƒg‚Å‘½•ª‚Â‚¢‚Ä‚éj
+					   // ”¼“§–¾•`‰æ‚ğ‰Â”\‚É‚·‚é
+					   ID3D11BlendState* blendState = commonStates->AlphaBlend();
+					   context->OMSetBlendState(blendState, nullptr, 0xffffffff);
+					   //// ƒ‰ƒbƒv
 					   //ID3D11SamplerState* sampler = commonStates->LinearWrap();
-					   //context->PSSetSamplers(0, 1, &sampler);                // s0: ãƒ™ãƒ¼ã‚¹ã‚«ãƒ©ãƒ¼ç”¨
-					   // ãƒãƒ¼ãƒãƒ«ãƒãƒƒãƒ—ã€ç™ºå…‰ãƒãƒƒãƒ—ã€AOãƒãƒƒãƒ—ã€ç²—ã•ãƒãƒƒãƒ—ã‚’ã‚»ãƒƒãƒˆã—ã€ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã«æ¸¡ã™
+					   //context->PSSetSamplers(0, 1, &sampler);                // s0: ƒx[ƒXƒJƒ‰[—p
+					   // ƒm[ƒ}ƒ‹ƒ}ƒbƒvA”­Œõƒ}ƒbƒvAAOƒ}ƒbƒvA‘e‚³ƒ}ƒbƒv‚ğƒZƒbƒg‚µAƒVƒF[ƒ_[‚É“n‚·
 					   m_material->SetShaders(context, commonStates);
 
 
@@ -76,7 +76,7 @@ void Car::Render(DirectX::SimpleMath::Matrix& view, DirectX::SimpleMath::Matrix&
 }
 
 void Car::Finalize()
-{	// ãƒãƒ†ãƒªã‚¢ãƒ«ã®é–‹æ”¾
+{	// ƒ}ƒeƒŠƒAƒ‹‚ÌŠJ•ú
 	if (m_material)
 	{
 		delete m_material;

@@ -1,6 +1,6 @@
 /*
 *		@file Car.h
-*		@brief 車クラス（テクスチャなしのモデルのテストクラス）
+*		@brief $B<V%/%i%9!J%F%/%9%A%c$J$7$N%b%G%k$N%F%9%H%/%i%9!K(B
 */
 #pragma once
 #include "Game/CommonResources/CommonResources.h"
@@ -11,40 +11,40 @@ class CommonResources;
 class Car
 {
 public:
-	// マテリアルにアクセス
+	// $B%^%F%j%"%k$K%"%/%;%9(B
 	Material* GetMaterial() const { return m_material; }
 public:
-	// public関数
-	// コンストラクタ
+	// public$B4X?t(B
+	// $B%3%s%9%H%i%/%?(B
 	Car();
-	// デストラクタ defaultで定義
+	// $B%G%9%H%i%/%?(B default$B$GDj5A(B
 	~Car() = default;
-	// 初期化
+	// $B=i4|2=(B
 	void Initialize(CommonResources* resources);
-	// 更新
+	// $B99?7(B
 	void Update(float elapsedTime);
-	// 描画
+	// $BIA2h(B
 	void Render(DirectX::SimpleMath::Matrix& view, DirectX::SimpleMath::Matrix& proj);
-	// 終了
+	// $B=*N;(B
 	void Finalize();
 
-	// private関数
+	// private$B4X?t(B
 private:
 
-	// privateメンバ変数
+	// private$B%a%s%PJQ?t(B
 private:
-	// 共通リソースへのポインタ
+	// $B6&DL%j%=!<%9$X$N%]%$%s%?(B
 	CommonResources* m_pCommonResources;
-	// モデルポインター
+	// $B%b%G%k%]%$%s%?!<(B
 	DirectX::Model* m_pModel;
-	// マテリアル
+	// $B%^%F%j%"%k(B
 	Material* m_material;
-	// ノーマルマップ
+	// $B%N!<%^%k%^%C%W(B
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMap;
-	// 発光マップ
+	// $BH/8w%^%C%W(B
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_emissiveMap;
-	// アンビエントオクルージョンマップ
+	// $B%"%s%S%(%s%H%*%/%k!<%8%g%s%^%C%W(B
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ao;
-	// 粗さマップ
+	// $BAF$5%^%C%W(B
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_roughnessMap;
 };
