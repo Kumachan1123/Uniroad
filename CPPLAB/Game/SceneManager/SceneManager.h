@@ -16,6 +16,7 @@
 #include "Game/Scenes/PlayScene/PlayScene.h"
 #include "Game/Scenes/SettingScene/SettingScene.h"
 #include "Game/Scenes/TestScene/TestScene.h"
+#include "Game/Scenes/RehabiliScene/RehabiliScene.h"
 
 // 前方宣言
 class CommonResources;
@@ -23,6 +24,7 @@ class CommonResources;
 // シーンマネージャクラス
 class SceneManager
 {
+
 public:
 	// publicメンバ関数
 	// コンストラクタ

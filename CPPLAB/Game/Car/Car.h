@@ -1,6 +1,6 @@
 /*
 *		@file Car.h
-*		@brief $B<V%/%i%9!J%F%/%9%A%c$J$7$N%b%G%k$N%F%9%H%/%i%9!K(B
+*		@brief ŽÔƒNƒ‰ƒX
 */
 #pragma once
 #include "Game/CommonResources/CommonResources.h"
@@ -11,40 +11,38 @@ class CommonResources;
 class Car
 {
 public:
-	// $B%^%F%j%"%k$K%"%/%;%9(B
+	// ƒAƒNƒZƒT
+	// ƒ}ƒeƒŠƒAƒ‹‚ðŽæ“¾‚·‚é
 	Material* GetMaterial() const { return m_material; }
 public:
-	// public$B4X?t(B
-	// $B%3%s%9%H%i%/%?(B
+	// publicŠÖ”
+	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	Car();
-	// $B%G%9%H%i%/%?(B default$B$GDj5A(B
+	// ƒfƒXƒgƒ‰ƒNƒ^ default‚Å’è‹`
 	~Car() = default;
-	// $B=i4|2=(B
+	// ‰Šú‰»
 	void Initialize(CommonResources* resources);
-	// $B99?7(B
+	// XV
 	void Update(float elapsedTime);
-	// $BIA2h(B
+	// •`‰æ
 	void Render(DirectX::SimpleMath::Matrix& view, DirectX::SimpleMath::Matrix& proj);
-	// $B=*N;(B
+	// I—¹
 	void Finalize();
 
-	// private$B4X?t(B
-private:
 
-	// private$B%a%s%PJQ?t(B
 private:
-	// $B6&DL%j%=!<%9$X$N%]%$%s%?(B
+	// ‹¤’ÊƒŠƒ\[ƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^
 	CommonResources* m_pCommonResources;
-	// $B%b%G%k%]%$%s%?!<(B
+	// ƒ‚ƒfƒ‹‚Ö‚Ìƒ|ƒCƒ“ƒ^
 	DirectX::Model* m_pModel;
-	// $B%^%F%j%"%k(B
+	// ƒ}ƒeƒŠƒAƒ‹‚Ö‚Ìƒ|ƒCƒ“ƒ^
 	Material* m_material;
-	// $B%N!<%^%k%^%C%W(B
+	// ƒm[ƒ}ƒ‹ƒ}ƒbƒv
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalMap;
-	// $BH/8w%^%C%W(B
+	// ”­Œõƒ}ƒbƒv
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_emissiveMap;
-	// $B%"%s%S%(%s%H%*%/%k!<%8%g%s%^%C%W(B
+	// ƒAƒ“ƒrƒGƒ“ƒgƒIƒNƒ‹[ƒWƒ‡ƒ“ƒ}ƒbƒv
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ao;
-	// $BAF$5%^%C%W(B
+	// ‘e‚³ƒ}ƒbƒv
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_roughnessMap;
 };

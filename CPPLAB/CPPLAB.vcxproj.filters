@@ -143,6 +143,8 @@
     <ClInclude Include="Game\Stage\Stage.h" />
     <ClInclude Include="KumachiLib\Material\Material.h" />
     <ClInclude Include="Game\MetalMoon\MetalMoon.h" />
+    <ClInclude Include="Game\Car\Car.h" />
+    <ClInclude Include="Game\Scenes\RehabiliScene\RehabiliScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -243,6 +245,8 @@
     <ClCompile Include="Game\Stage\Stage.cpp" />
     <ClCompile Include="KumachiLib\Material\Material.cpp" />
     <ClCompile Include="Game\MetalMoon\MetalMoon.cpp" />
+    <ClCompile Include="Game\Car\Car.cpp" />
+    <ClCompile Include="Game\Scenes\RehabiliScene\RehabiliScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -274,6 +278,7 @@
     <None Include="HLSL\OutLine\Common.hlsli" />
     <None Include="HLSL\OutLine\Params.hlsli" />
     <None Include="HLSL\Material\Material.hlsli" />
+    <None Include="HLSL\Material\MaterialNoTex.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -306,5 +311,7 @@
     <FxCompile Include="HLSL\Material\VS_Stage.hlsl" />
     <FxCompile Include="HLSL\Material\PS_Metallic.hlsl" />
     <FxCompile Include="HLSL\Material\VS_Metallic.hlsl" />
+    <FxCompile Include="HLSL\Material\PS_MetallicNoTex.hlsl" />
+    <FxCompile Include="HLSL\Material\VS_MetallicNoTex.hlsl" />
   </ItemGroup>
 </Project>

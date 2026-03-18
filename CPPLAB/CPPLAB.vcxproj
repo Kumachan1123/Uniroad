@@ -260,6 +260,7 @@
     <ClInclude Include="Game\Scenes\PlayScene\PlayScene.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.h" />
     <ClInclude Include="Game\Scenes\PlayScene\ResultButton\ResultButton.h" />
+    <ClInclude Include="Game\Scenes\RehabiliScene\RehabiliScene.h" />
     <ClInclude Include="Game\Scenes\SettingScene\Back\Back.h" />
     <ClInclude Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.h" />
     <ClInclude Include="Game\Scenes\SettingScene\MaxTexture\MaxTexture.h" />
@@ -379,6 +380,7 @@
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultAnimation\ResultAnimation.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\ResultButton\ResultButton.cpp" />
+    <ClCompile Include="Game\Scenes\RehabiliScene\RehabiliScene.cpp" />
     <ClCompile Include="Game\Scenes\SettingScene\Back\Back.cpp" />
     <ClCompile Include="Game\Scenes\SettingScene\BGMTexture\BGMTexture.cpp" />
     <ClCompile Include="Game\Scenes\SettingScene\MaxTexture\MaxTexture.cpp" />

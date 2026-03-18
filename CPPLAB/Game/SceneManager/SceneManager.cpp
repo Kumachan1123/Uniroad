@@ -37,7 +37,7 @@ void SceneManager::Initialize(CommonResources* resources)
 	// 共通リソースを取得
 	m_pCommonResources = resources;
 	// タイトルシーンに変更
-	ChangeScene(IScene::SceneID::TEST);
+	ChangeScene(IScene::SceneID::REHABILI);
 }
 /*
 *	@brief 更新する
@@ -133,6 +133,11 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 		case IScene::SceneID::TEST:// テストシーン
 			// テストシーンを作成
 			m_pCurrentScene = std::make_unique<TestScene>(sceneID);
+			// 処理を抜ける
+			break;
+		case IScene::SceneID::REHABILI:// ゲームづくりのリハビリシーン
+			// ゲームづくりのリハビリシーンを作成
+			m_pCurrentScene = std::make_unique<RehabiliScene>(sceneID);
 			// 処理を抜ける
 			break;
 		default:

@@ -16,6 +16,7 @@ public:
 	{
 		NONE,// なし
 		TEST,// テスト
+		REHABILI,// ゲームづくりのリハビリ
 		TITLE,// タイトル
 		SETTING,// 設定
 		STAGESELECT,// ステージ選択
