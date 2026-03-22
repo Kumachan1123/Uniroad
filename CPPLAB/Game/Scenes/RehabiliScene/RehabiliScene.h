@@ -56,7 +56,8 @@ private:
 	// private関数
 	// カメラに関する設定をする
 	void CreateCamera();
-
+	// SDKメッシュを作る
+	void CreateSDKMesh(std::wstring name);
 private:
 	// private定数
 		// 視野角(FOV)の角度（デグリー）
@@ -81,5 +82,9 @@ private:
 	// 時間
 	float m_time;
 	// モデル
-	DirectX::Model* m_pModel;
+	std::unique_ptr<DirectX::Model> m_pModel;
+	// ボーン変換行列
+	DirectX::ModelBone::TransformArray m_boneTransforms;
+	// エフェクトファクトリー
+	std::unique_ptr<DirectX::EffectFactory> m_pEffectFactory;
 };

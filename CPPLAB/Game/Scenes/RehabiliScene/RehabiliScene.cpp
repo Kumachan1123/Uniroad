@@ -40,10 +40,13 @@ void RehabiliScene::Initialize(CommonResources* resources)
 {
 	// 共通リソースを保存する
 	m_pCommonResources = resources;
+
+	m_pEffectFactory = std::make_unique<DirectX::EffectFactory>(m_pCommonResources->GetDeviceResources()->GetD3DDevice());
 	// カメラに関する設定をする
 	CreateCamera();
 	// モデルを受け取る
-	m_pModel = m_pCommonResources->GetModelManager()->GetModel("Medal");
+	//m_pModel = m_pCommonResources->GetModelManager()->GetModel("Medal");
+	CreateSDKMesh(L"Wolf");
 }
 /*
 *	@brief 更新
@@ -88,7 +91,19 @@ void RehabiliScene::Render()
 	// コンテキストを取得する
 	auto context = deviceResources->GetD3DDeviceContext();
 	// モデルの描画
-	m_pModel->Draw(context, *states, Matrix::Identity, m_view, m_projection);
+	if (!m_pModel) return;
+
+	Matrix world = Matrix::Identity;
+	world *= Matrix::CreateScale(1.f);
+
+	if (!m_pModel->bones.empty() && m_boneTransforms)
+	{
+		m_pModel->Draw(context, *states, m_pModel->bones.size(), m_boneTransforms.get(), world, m_view, m_projection);
+	}
+	else
+	{
+		m_pModel->Draw(context, *states, world, m_view, m_projection);
+	}
 }
 /*
 *	@brief 終了
@@ -142,4 +157,38 @@ void RehabiliScene::CreateCamera()
 		0.1f, 10000.0f);// ニアクリップ距離、ファークリップ距離
 	// カメラに射影行列をセット
 	m_pFixedCamera->SetProjectionMatrix(m_projection);
+}
+/*
+*	@brief SDKメッシュを作る
+*	@details SDKメッシュの作成を行う
+*	@param name SDKメッシュの名前
+*	@return なし
+*/
+void RehabiliScene::CreateSDKMesh(std::wstring name)
+{
+	// DirectXの名前空間の使用
+	using namespace DirectX;
+	// deviceを取得する
+	ID3D11Device* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+
+	// ファイルパス
+	std::wstring filePath = L"Resources/SDKMeshes/" + name + L"/" + name + L".sdkmesh";
+	// フォルダパス
+	std::wstring folderPath = L"Resources/SDKMeshes/" + name;
+
+	// フォルダパスを指定する
+	m_pEffectFactory->SetDirectory(folderPath.c_str());
+	// SDKメッシュを作成する
+	m_pModel = DirectX::Model::CreateFromSDKMESH(device, filePath.c_str(), *m_pEffectFactory, DirectX::ModelLoader_Clockwise);
+
+	if (m_pModel && !m_pModel->bones.empty())
+	{
+		m_boneTransforms = DirectX::ModelBone::MakeArray(m_pModel->bones.size());
+		m_pModel->CopyAbsoluteBoneTransformsTo(m_pModel->bones.size(), m_boneTransforms.get());
+	}
+	else
+	{
+		m_boneTransforms.reset();
+	}
+
 }
