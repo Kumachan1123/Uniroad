@@ -227,7 +227,7 @@ void BackButton::CreateAnimationSequence()
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / START_DURATION;
 				// 補間
-				t = Clamp(t, 0.0f, 1.0f);
+				t = KumachiLib::Clamp(t, 0.0f, 1.0f);
 				// イージング
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
@@ -261,7 +261,7 @@ void BackButton::CreateAnimationSequence()
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / END_DURATION;
 				// 補間
-				t = Clamp(t, 0.0f, 1.0f);
+				t = KumachiLib::Clamp(t, 0.0f, 1.0f);
 				// イージング
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間

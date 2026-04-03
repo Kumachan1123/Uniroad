@@ -123,8 +123,8 @@ inline void Image::DrawQuadWithBuffer(const Rect& buttonRect, const T& buffer)
 	float startX = buttonRect.position.x - buttonRect.size.x / 2.0f;
 	float startY = buttonRect.position.y - correctedHeight / 2.0f;
 	// NDCç¿ïWånÇ…ïœä∑
-	Vector2 ndcLT = ToNDC(Vector2(startX, startY));
-	Vector2 ndcRB = ToNDC(Vector2(startX + buttonRect.size.x, startY + correctedHeight));
+	Vector2 ndcLT = KumachiLib::ToNDC(Vector2(startX, startY));
+	Vector2 ndcRB = KumachiLib::ToNDC(Vector2(startX + buttonRect.size.x, startY + correctedHeight));
 	// í∏ì_ç¿ïWÇÃê›íË
 	VertexPositionTexture vertices[VERTEX_COUNT]{};
 	vertices[0] = { VertexPositionTexture(Vector3(ndcLT.x, ndcLT.y, 0), Vector2(0, 0)) };// ç∂è„

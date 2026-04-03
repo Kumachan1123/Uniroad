@@ -230,7 +230,7 @@ void TitleButton::CreateAnimationSequence()
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / DURATION;
 				// 範囲制限
-				t = Clamp(t, 0.0f, 1.0f);
+				t = KumachiLib::Clamp(t, 0.0f, 1.0f);
 				// イージング計算
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
@@ -263,7 +263,7 @@ void TitleButton::CreateAnimationSequence()
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / DURATION;
 				// 範囲制限
-				t = Clamp(t, 0.0f, 1.0f);
+				t = KumachiLib::Clamp(t, 0.0f, 1.0f);
 				// イージング
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間

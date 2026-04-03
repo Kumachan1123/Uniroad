@@ -114,8 +114,8 @@ float ScrollBar::MapRatioToRect(const Rect& barRect, float ratio01)
 	float left = barRect.position.x - barRect.size.x / 2.0f;
 	// 右
 	float right = barRect.position.x + barRect.size.x / 2.0f;
-	// clamp（念のため0～1範囲外のときも補正）
-	float ratio = Clamp(ratio01, 0.0f, 1.0f);
+	// KumachiLib::Clamp（念のため0～1範囲外のときも補正）
+	float ratio = KumachiLib::Clamp(ratio01, 0.0f, 1.0f);
 	// 矩形に対する割合を座標に変換して返す
 	return left + (right - left) * ratio;
 }
@@ -137,8 +137,8 @@ float ScrollBar::UnmapRectToRatio(const Rect& barRect, float positionX)
 	if (right == left) return 0.0f;
 	// 矩形に対する割合を計算
 	float ratio = (positionX - left) / (right - left);
-	// clamp（念のため0～1範囲外のときも補正）
-	ratio = Clamp(ratio, 0.0f, 1.0f);
+	// KumachiLib::Clamp（念のため0～1範囲外のときも補正）
+	ratio = KumachiLib::Clamp(ratio, 0.0f, 1.0f);
 	// 計算した割合を返す
 	return ratio;
 }

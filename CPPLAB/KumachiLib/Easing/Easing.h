@@ -343,7 +343,7 @@ namespace Easing {
 		static std::random_device rd;
 		static std::mt19937 gen(rd());
 		std::uniform_real_distribution<float> dist(-amplitude, amplitude);
-		return Clamp(t + dist(gen), 0.0f, 1.0f);
+		return KumachiLib::Clamp(t + dist(gen), 0.0f, 1.0f);
 	}
 
 	// 任意イージング関数の逆再生（リバース）

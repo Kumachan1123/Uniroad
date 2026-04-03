@@ -250,8 +250,8 @@ void ResultButton::CreateAnimationSequence()
 			{
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / DURATION;
-				// Clampで0～1に制限
-				t = Clamp(t, 0.0f, 1.0f);
+				// KumachiLib::Clampで0～1に制限
+				t = KumachiLib::Clamp(t, 0.0f, 1.0f);
 				// イージング計算
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間
@@ -284,8 +284,8 @@ void ResultButton::CreateAnimationSequence()
 			{
 				// 各ボタンの進行度
 				float t = (totalTime - DELAYS[i]) / DURATION;
-				// Clampで0～1に制限
-				t = Clamp(t, 0.0f, 1.0f);
+				// KumachiLib::Clampで0～1に制限
+				t = KumachiLib::Clamp(t, 0.0f, 1.0f);
 				// イージング計算
 				float easing = Easing::EaseInOutCubic(t);
 				// 補間

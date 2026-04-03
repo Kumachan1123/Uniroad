@@ -49,6 +49,8 @@
   "NormalMap": "Resources/Textures/NormalMap.png",
   "EmissiveMap": "Resources/Textures/EmissiveMap.png",
   "AOMap": "Resources/Textures/AOMap.png",
-  "RoughnessMap": "Resources/Textures/RoughnessMap.png"
+  "RoughnessMap": "Resources/Textures/RoughnessMap.png",
+"Puyo": "Resources/Textures/Puyo.png",
+"Puyo_Grid": "Resources/Textures/Puyo_Grid.png"
 
 }

@@ -125,7 +125,7 @@ void Fade::FadeOut(float elapsedTime)
 		// 時間を計算
 		m_fadeTime -= elapsedTime * FADE_SPEED;
 		// フェードを制限
-		m_fadeTime = Clamp(m_fadeTime, FADE_MIN, FADE_MAX);
+		m_fadeTime = KumachiLib::Clamp(m_fadeTime, FADE_MIN, FADE_MAX);
 		// フェードが最小値になったらフェードアウト終了
 		if (m_fadeTime <= FADE_MIN)	m_fadeState = FadeState::FadeOutEnd;
 	}
@@ -143,7 +143,7 @@ void Fade::FadeIn(float elapsedTime)
 		// 時間を計算
 		m_fadeTime += elapsedTime * FADE_SPEED;
 		// フェードを制限
-		m_fadeTime = Clamp(m_fadeTime, FADE_MIN, FADE_MAX);
+		m_fadeTime = KumachiLib::Clamp(m_fadeTime, FADE_MIN, FADE_MAX);
 		// フェードが最大値になったらフェードイン終了
 		if (m_fadeTime >= FADE_MAX)	m_fadeState = FadeState::FadeInEnd;
 	}

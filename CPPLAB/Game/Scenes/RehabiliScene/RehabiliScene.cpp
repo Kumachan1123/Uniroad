@@ -13,14 +13,13 @@
 */
 RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
 	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_pFixedCamera(nullptr) // カメラへのポインタ
+	, m_pTPCamera(nullptr) // カメラへのポインタ
 	, m_view() // ビュー行列
 	, m_projection() // 射影行列
 	, m_isChangeScene(false) // シーン変更フラグ
 	, m_nextSceneID(sceneID) // 次のシーンID
 	, m_time(0.0f) // 時間
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details ゲームづくりのリハビリ用シーンクラスのデストラクタ
@@ -28,8 +27,7 @@ RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
 *	@return なし
 */
 RehabiliScene::~RehabiliScene()
-{
-}
+{}
 /*
 *	@brief 初期化
 *	@details ゲームづくりのリハビリ用シーンクラスの初期化を行う
@@ -38,15 +36,43 @@ RehabiliScene::~RehabiliScene()
 */
 void RehabiliScene::Initialize(CommonResources* resources)
 {
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 	// 共通リソースを保存する
 	m_pCommonResources = resources;
+	auto deviceResources = m_pCommonResources->GetDeviceResources();
 
-	m_pEffectFactory = std::make_unique<DirectX::EffectFactory>(m_pCommonResources->GetDeviceResources()->GetD3DDevice());
 	// カメラに関する設定をする
 	CreateCamera();
 	// モデルを受け取る
 	//m_pModel = m_pCommonResources->GetModelManager()->GetModel("Medal");
-	CreateSDKMesh(L"Wolf");
+	//CreateSDKMesh(L"Android");
+	//m_pAndroid = std::make_unique<Android>();
+	//m_pAndroid->Initialize(m_pCommonResources);
+	// ぷよのグリッドを作成する
+	for (int row = 0; row < 12; row++)
+	{
+		for (int col = 0; col < 6; col++)
+		{
+			m_pPuyoGrid[col][row] = std::make_unique<PuyoGrid>();
+			m_pPuyoGrid[col][row]->SetPosition(Vector2(0.4f + col * 0.05f, 0.045f + row * 0.0826f));
+			m_pPuyoGrid[col][row]->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+		}
+	}
+	// ぷよぷよを作成する
+	for (int row = 0; row < 12; row++)
+	{
+		for (int col = 0; col < 6; col++)
+		{
+			int randomColor = KumachiLib::GenerateRandomMultiplier(0, 4); // 0から4のランダムな整数を生成
+			m_pPuyo[col][row] = std::make_unique<Puyo>(static_cast<Puyo::PuyoColor>(randomColor));
+			m_pPuyo[col][row]->SetPosition(Vector2(0.4f + col * 0.05f, 0.045f + row * 0.0826f));
+			m_pPuyo[col][row]->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+		}
+	}
+	//m_pPuyo = std::make_unique<Puyo>(Puyo::PuyoColor::Green);
+	//m_pPuyo->SetPosition(Vector2(0.4, 0.1));
+	//m_pPuyo->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
 }
 /*
 *	@brief 更新
@@ -58,20 +84,28 @@ void RehabiliScene::Update(float elapsedTime)
 {
 	// 時間を更新する
 	m_time += elapsedTime;
-	// 固定カメラの更新
-	m_pFixedCamera->Update();
+	m_pTPCamera->SetTime(m_time);
+	// 三人称カメラの更新
+	m_pTPCamera->Update();
 	// デバッグカメラを更新する
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
 	// ビュー行列を取得
-	m_view = m_debugCamera->GetViewMatrix();
+	m_view = m_pTPCamera->GetViewMatrix();
 	// シーン変更の入力をチェックする
 	// キーボード入力を取得
 	auto keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
 	// スペースキーが押されたら（何らかのフラグがたったら）
-	if (keyState.Space)
+	if (keyState.Enter)m_isChangeScene = true;
+	// ぷよぷよの更新
+	for (int row = 0; row < 12; row++)
 	{
-		m_isChangeScene = true;
+		for (int col = 0; col < 6; col++)
+		{
+			m_pPuyo[col][row]->Update(elapsedTime);
+		}
 	}
+	//m_pPuyo->Update(elapsedTime);
+	//m_pAndroid->Update(elapsedTime);
 
 }
 /*
@@ -90,20 +124,26 @@ void RehabiliScene::Render()
 	const auto states = m_pCommonResources->GetCommonStates();
 	// コンテキストを取得する
 	auto context = deviceResources->GetD3DDeviceContext();
-	// モデルの描画
-	if (!m_pModel) return;
-
-	Matrix world = Matrix::Identity;
-	world *= Matrix::CreateScale(1.f);
-
-	if (!m_pModel->bones.empty() && m_boneTransforms)
+	//// モデルの描画
+	//m_pAndroid->Render(m_view, m_projection);
+	// ぷよのグリッドの描画
+	for (int row = 0; row < 12; row++)
 	{
-		m_pModel->Draw(context, *states, m_pModel->bones.size(), m_boneTransforms.get(), world, m_view, m_projection);
+		for (int col = 0; col < 6; col++)
+		{
+			m_pPuyoGrid[col][row]->Render();
+		}
 	}
-	else
+
+	// ぷよぷよの描画
+	for (int row = 0; row < 12; row++)
 	{
-		m_pModel->Draw(context, *states, world, m_view, m_projection);
+		for (int col = 0; col < 6; col++)
+		{
+			m_pPuyo[col][row]->Render();
+		}
 	}
+	//m_pPuyo->Render();
 }
 /*
 *	@brief 終了
@@ -143,9 +183,10 @@ void RehabiliScene::CreateCamera()
 	// 出力サイズを取得する
 	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
 	// 固定カメラを作成する
-	m_pFixedCamera = std::make_unique<FixedCamera>();
+	m_pTPCamera = std::make_unique<TPCamera>();
 	// 固定カメラを初期化する
-	m_pFixedCamera->Initialize((int)(rect.right), rect.bottom);
+	m_pTPCamera->SetCommonResources(m_pCommonResources);
+	m_pTPCamera->Initialize((int)(rect.right), rect.bottom);
 	// デバッグカメラを作成する
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
 	// デバッグカメラを初期化する
@@ -156,7 +197,7 @@ void RehabiliScene::CreateCamera()
 		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// アスペクト比
 		0.1f, 10000.0f);// ニアクリップ距離、ファークリップ距離
 	// カメラに射影行列をセット
-	m_pFixedCamera->SetProjectionMatrix(m_projection);
+	m_pTPCamera->SetProjectionMatrix(m_projection);
 }
 /*
 *	@brief SDKメッシュを作る
@@ -176,19 +217,6 @@ void RehabiliScene::CreateSDKMesh(std::wstring name)
 	// フォルダパス
 	std::wstring folderPath = L"Resources/SDKMeshes/" + name;
 
-	// フォルダパスを指定する
-	m_pEffectFactory->SetDirectory(folderPath.c_str());
-	// SDKメッシュを作成する
-	m_pModel = DirectX::Model::CreateFromSDKMESH(device, filePath.c_str(), *m_pEffectFactory, DirectX::ModelLoader_Clockwise);
 
-	if (m_pModel && !m_pModel->bones.empty())
-	{
-		m_boneTransforms = DirectX::ModelBone::MakeArray(m_pModel->bones.size());
-		m_pModel->CopyAbsoluteBoneTransformsTo(m_pModel->bones.size(), m_boneTransforms.get());
-	}
-	else
-	{
-		m_boneTransforms.reset();
-	}
 
 }

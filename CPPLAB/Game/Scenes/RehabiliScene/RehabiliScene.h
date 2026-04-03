@@ -21,7 +21,12 @@
 #include "Game/SceneManager/IScene.h"
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
+#include "Game/Camera/TPCamera/TPCamera.h"
 #include "Game/Fade/Fade.h"
+#include "Game/Android/Android.h"
+#include "Game/Puyo/Puyo.h"
+#include "Game/PuyoGrid/PuyoGrid.h"
+#include "KumachiLib/Math/KumachiLib.h"
 
 // 前方宣言
 class CommonResources;
@@ -69,8 +74,11 @@ private:
 	CommonResources* m_pCommonResources;
 	// 次のシーンID
 	IScene::SceneID m_nextSceneID;
-	// カメラ
-	std::unique_ptr<FixedCamera> m_pFixedCamera;
+	std::unique_ptr<TPCamera> m_pTPCamera;
+	// ぷよぷよ
+	std::unique_ptr<Puyo> m_pPuyo[6][12];
+	// グリッド
+	std::unique_ptr<PuyoGrid> m_pPuyoGrid[6][12];
 	// デバッグカメラ
 	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
 	// シーンチェンジフラグ
@@ -83,8 +91,6 @@ private:
 	float m_time;
 	// モデル
 	std::unique_ptr<DirectX::Model> m_pModel;
-	// ボーン変換行列
-	DirectX::ModelBone::TransformArray m_boneTransforms;
-	// エフェクトファクトリー
-	std::unique_ptr<DirectX::EffectFactory> m_pEffectFactory;
+	// Android
+	std::unique_ptr<Android> m_pAndroid;
 };

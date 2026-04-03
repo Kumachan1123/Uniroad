@@ -145,6 +145,10 @@
     <ClInclude Include="Game\MetalMoon\MetalMoon.h" />
     <ClInclude Include="Game\Car\Car.h" />
     <ClInclude Include="Game\Scenes\RehabiliScene\RehabiliScene.h" />
+    <ClInclude Include="Game\Android\Android.h" />
+    <ClInclude Include="Game\Camera\TPCamera\TPCamera.h" />
+    <ClInclude Include="Game\Puyo\Puyo.h" />
+    <ClInclude Include="Game\PuyoGrid\PuyoGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -247,6 +251,10 @@
     <ClCompile Include="Game\MetalMoon\MetalMoon.cpp" />
     <ClCompile Include="Game\Car\Car.cpp" />
     <ClCompile Include="Game\Scenes\RehabiliScene\RehabiliScene.cpp" />
+    <ClCompile Include="Game\Android\Android.cpp" />
+    <ClCompile Include="Game\Camera\TPCamera\TPCamera.cpp" />
+    <ClCompile Include="Game\Puyo\Puyo.cpp" />
+    <ClCompile Include="Game\PuyoGrid\PuyoGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -279,6 +287,7 @@
     <None Include="HLSL\OutLine\Params.hlsli" />
     <None Include="HLSL\Material\Material.hlsli" />
     <None Include="HLSL\Material\MaterialNoTex.hlsli" />
+    <None Include="HLSL\SDKMesh\Header.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -313,5 +322,7 @@
     <FxCompile Include="HLSL\Material\VS_Metallic.hlsl" />
     <FxCompile Include="HLSL\Material\PS_MetallicNoTex.hlsl" />
     <FxCompile Include="HLSL\Material\VS_MetallicNoTex.hlsl" />
+    <FxCompile Include="HLSL\SDKMesh\VS_SDKMesh.hlsl" />
+    <FxCompile Include="HLSL\SDKMesh\PS_SDKMesh.hlsl" />
   </ItemGroup>
 </Project>

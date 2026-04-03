@@ -200,6 +200,8 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Android\Android.h" />
+    <ClInclude Include="Game\Camera\TPCamera\TPCamera.h" />
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\Car\Car.h" />
     <ClInclude Include="Game\ControllScreen\MedalCounter\MedalCounter.h" />
@@ -254,6 +256,8 @@
     <ClInclude Include="Game\Mouse\Mouse.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Particle\Utility.h" />
+    <ClInclude Include="Game\PuyoGrid\PuyoGrid.h" />
+    <ClInclude Include="Game\Puyo\Puyo.h" />
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\PlayScene\CountDown\CountDown.h" />
@@ -333,6 +337,8 @@
     <ClInclude Include="Game\MainScreen\Tiles\TileFactory\TileFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Android\Android.cpp" />
+    <ClCompile Include="Game\Camera\TPCamera\TPCamera.cpp" />
     <ClCompile Include="Game\Camera\TrackingCamera\TrackingCamera.cpp" />
     <ClCompile Include="Game\Car\Car.cpp" />
     <ClCompile Include="Game\ControllScreen\MedalCounter\MedalCounter.cpp" />
@@ -375,6 +381,8 @@
     <ClCompile Include="Game\Mouse\Mouse.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Particle\Utility.cpp" />
+    <ClCompile Include="Game\PuyoGrid\PuyoGrid.cpp" />
+    <ClCompile Include="Game\Puyo\Puyo.cpp" />
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\CountDown\CountDown.cpp" />
     <ClCompile Include="Game\Scenes\PlayScene\PlayScene.cpp" />
@@ -454,6 +462,7 @@
     <None Include="HLSL\OutLine\Common.hlsli" />
     <None Include="HLSL\OutLine\Params.hlsli" />
     <None Include="HLSL\Particle\Particle.hlsli" />
+    <None Include="HLSL\SDKMesh\Header.hlsli" />
     <None Include="HLSL\ShadowMapLight\Common.hlsli" />
     <None Include="HLSL\ShadowMapLight\Params.hlsli" />
     <None Include="HLSL\Sky\Header.hlsli" />
@@ -626,6 +635,26 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\Particle\%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="HLSL\SDKMesh\PS_SDKMesh.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\SDKMesh\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\SDKMesh\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="HLSL\SDKMesh\VS_SDKMesh.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources\Shaders\SDKMesh\%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources\Shaders\SDKMesh\%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="HLSL\ShadowMapLight\PS_Light.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
