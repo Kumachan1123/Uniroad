@@ -68,7 +68,7 @@ void PuyoGrid::UpdateConstantBuffer()
 	// プロジェクション行列を単位行列に設定
 	m_spriteSheetBuffer.matProj = Matrix::Identity;
 	// アニメーションのコマを設定
-	m_spriteSheetBuffer.count = Vector4((float)(0.f));
+	m_spriteSheetBuffer.count = Vector4::Zero;
 	// 高さを設定
 	m_spriteSheetBuffer.height = Vector4((float)(m_frameRows));
 	// 幅を設定

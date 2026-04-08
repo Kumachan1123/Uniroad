@@ -25,6 +25,10 @@ RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
 	, m_subOffsetCol(0)
 	, m_subOffsetRow(-1)
 	, m_fallTimer(0.0f)
+	, m_isResolving(false)
+	, m_resolveNeedsGravity(false)
+	, m_resolveNeedsErase(false)
+	, m_resolveTimer(0.0f)
 	, m_prevLeftKey(false)
 	, m_prevRightKey(false)
 	, m_prevAKey(false)
@@ -61,6 +65,10 @@ void RehabiliScene::Initialize(CommonResources* resources)
 	m_isFalling = false;
 	m_fallTimer = 0.0f;
 	m_time = 0.0f;
+	m_isResolving = false;
+	m_resolveNeedsGravity = false;
+	m_resolveNeedsErase = false;
+	m_resolveTimer = 0.0f;
 
 	// 盤面背景（グリッド）を6x12で生成。
 	// 見た目のマス位置と内部座標を一致させるため GridToPosition を必ず通す。
@@ -103,7 +111,7 @@ void RehabiliScene::Update(float elapsedTime)
 
 	// 次の落下ペア生成用タイマーを進める。
 	m_time += elapsedTime;
-	if (m_time >= 1.0f && !m_isFalling)
+	if (m_time >= 1.0f && !m_isFalling && !m_isResolving)
 	{
 		// 落下中ぷよが存在しない時だけ新規生成する。
 		GeneratePuyo();
@@ -144,6 +152,11 @@ void RehabiliScene::Update(float elapsedTime)
 			}
 		}
 	}
+	else if (m_isResolving)
+	{
+		// 連鎖解決は1回のUpdateで完走させず、1秒ごとに段階実行する。
+		ResolveBoard(elapsedTime);
+	}
 }
 /*
 *	@brief 描画
@@ -158,7 +171,7 @@ void RehabiliScene::Render()
 	const auto deviceResources = m_pCommonResources->GetDeviceResources();
 	const auto states = m_pCommonResources->GetCommonStates();
 	auto context = deviceResources->GetD3DDeviceContext();
-
+	// グリッドを描画する
 	for (int row = 0; row < 12; row++)
 	{
 		for (int col = 0; col < 6; col++)
@@ -166,7 +179,7 @@ void RehabiliScene::Render()
 			m_pPuyoGrid[col][row]->Render();
 		}
 	}
-
+	// 固定ぷよを描画する
 	for (int row = 0; row < 12; row++)
 	{
 		for (int col = 0; col < 6; col++)
@@ -174,7 +187,7 @@ void RehabiliScene::Render()
 			m_pFixedPuyo[col][row]->Render();
 		}
 	}
-
+	// 落下中ぷよを描画する
 	if (m_isFalling)
 	{
 		for (int row = 0; row < 3; row++)
@@ -374,20 +387,22 @@ void RehabiliScene::UpdateFallingPuyo(float elapsedTime)
 
 bool RehabiliScene::TryMoveFallingPuyo(int dx, int dy)
 {
-	const int centerCol = m_fallCenterCol + dx;
-	const int centerRow = m_fallCenterRow + dy;
-	const int subCol = m_fallCenterCol + m_subOffsetCol + dx;
-	const int subRow = m_fallCenterRow + m_subOffsetRow + dy;
-
+	// 移動先の軸ぷよと子ぷよの盤面座標を計算して、両方とも空いているかチェックする。
+	const int centerCol = m_fallCenterCol + dx;// 移動先の軸ぷよの列
+	const int centerRow = m_fallCenterRow + dy;// 移動先の軸ぷよの行
+	const int subCol = m_fallCenterCol + m_subOffsetCol + dx;// 移動先の子ぷよの列
+	const int subRow = m_fallCenterRow + m_subOffsetRow + dy;// 移動先の子ぷよの行
+	// どちらかが盤面外なら移動不可。
 	if (!IsInsideBoard(centerCol, centerRow) || !IsInsideBoard(subCol, subRow))
 	{
 		return false;
 	}
+	// どちらかが埋まっているなら移動不可。
 	if (!IsCellEmpty(centerCol, centerRow) || !IsCellEmpty(subCol, subRow))
 	{
 		return false;
 	}
-
+	// 両方とも空いているなら移動可能。中心座標を更新して、描画位置も再同期する。
 	m_fallCenterCol = centerCol;
 	m_fallCenterRow = centerRow;
 	SyncFallingPuyoPosition();
@@ -458,7 +473,7 @@ void RehabiliScene::LockFallingPuyo()
 		{ m_fallCenterCol, m_fallCenterRow, m_pFallingPuyo[1][1]->GetColor() },
 		{ m_fallCenterCol + m_subOffsetCol, m_fallCenterRow + m_subOffsetRow, m_pFallingPuyo[1 + m_subOffsetCol][1 + m_subOffsetRow]->GetColor() }
 	};
-
+	// 盤面内のセルだけを固定盤面へ転写する。盤面外は無視（通常は回転の結果が該当）。
 	for (const auto& cell : cells)
 	{
 		if (!IsInsideBoard(cell.col, cell.row))
@@ -480,23 +495,54 @@ void RehabiliScene::LockFallingPuyo()
 	m_isFalling = false;
 	m_fallTimer = 0.0f;
 
-	// 設置後の盤面解決（下詰め・消去・連鎖）を実行。
-	ResolveBoard();
+	// 設置後の盤面解決（落下→消去→再落下→再消去）を1秒間隔で開始する。
+	m_isResolving = true;
+	m_resolveNeedsGravity = true;
+	m_resolveNeedsErase = false;
+	m_resolveTimer = 0.0f;
 }
 
-void RehabiliScene::ResolveBoard()
+void RehabiliScene::ResolveBoard(float elapsedTime)
 {
-	while (true)
+	if (!m_isResolving)
 	{
-		// 通常設置時でも必ず下詰めして、空中に残るぷよを解消する。
-		ApplyGravityToBoard();
+		return;
+	}
 
-		// 4つ以上連結が無ければ盤面安定。
-		if (!EraseConnectedPuyo())
+	m_resolveTimer += elapsedTime;
+	if (m_resolveTimer < FALL_INTERVAL)
+	{
+		return;
+	}
+	m_resolveTimer = 0.0f;
+
+	if (m_resolveNeedsGravity)
+	{
+		// このステップは重力落下。
+		ApplyGravityToBoard();
+		// 次ステップは消去判定。
+		m_resolveNeedsGravity = false;
+		m_resolveNeedsErase = true;
+		return;
+	}
+
+	if (m_resolveNeedsErase)
+	{
+		// このステップは消去判定。
+		if (EraseConnectedPuyo())
 		{
-			break;
+			// 消去があったら次ステップは再び重力落下。
+			m_resolveNeedsErase = false;
+			m_resolveNeedsGravity = true;
 		}
-		// 消去が発生した場合は、次ループで再び下詰め→再判定（連鎖）
+		else
+		{
+			// 消去なしなら解決終了。次フレームで新ぷよ生成へ進む。
+			m_isResolving = false;
+			m_resolveNeedsErase = false;
+			m_resolveNeedsGravity = false;
+			m_time = 1.0f;
+		}
 	}
 }
 
@@ -545,7 +591,8 @@ bool RehabiliScene::EraseConnectedPuyo()
 	return true;
 }
 
-void RehabiliScene::CollectConnectedPuyo(int col, int row, Puyo::PuyoColor color, bool visited[6][12], std::vector<std::pair<int, int>>& outCells) const
+void RehabiliScene::CollectConnectedPuyo(int col, int row, Puyo::PuyoColor color,
+										 bool visited[6][12], std::vector<std::pair<int, int>>& outCells) const
 {
 	// 盤面外は探索終了。
 	if (!IsInsideBoard(col, row))
@@ -630,8 +677,7 @@ void RehabiliScene::SyncFallingPuyoPosition()
 	{
 		return;
 	}
-
-	// 軸ぷよを中心座標へ配置。
+	// 軸ぷよを新しい盤面座標へ配置。
 	m_pFallingPuyo[1][1]->SetRowCol(m_fallCenterRow, m_fallCenterCol);
 	m_pFallingPuyo[1][1]->SetPosition(GridToPosition(m_fallCenterCol, m_fallCenterRow));
 

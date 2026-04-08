@@ -81,12 +81,13 @@ private:
 	// 落下中ぷよを固定盤面へ配置する
 	void LockFallingPuyo();
 	// 盤面の連鎖解決
-	// 下詰め→4連結消去を繰り返し、消去が無くなるまで反復する。
-	void ResolveBoard();
+	// 1秒ごとに「消去判定」と「重力落下」を交互に進める。
+	void ResolveBoard(float elapsedTime);
 	// 4つ以上連結したぷよを消去する
 	bool EraseConnectedPuyo();
 	// 同色連結を深さ優先で収集する
-	void CollectConnectedPuyo(int col, int row, Puyo::PuyoColor color, bool visited[6][12], std::vector<std::pair<int, int>>& outCells) const;
+	void CollectConnectedPuyo(int col, int row, Puyo::PuyoColor color,
+							  bool visited[6][12], std::vector<std::pair<int, int>>& outCells) const;
 	// 重力で盤面を下詰めする
 	bool ApplyGravityToBoard();
 	// 指定マスの固定ぷよを作り直す
@@ -130,6 +131,14 @@ private:
 	int m_subOffsetRow;
 	// 自然落下の経過時間
 	float m_fallTimer;
+	// 盤面解決中フラグ（重力・消去をフレーム分割で進める）
+	bool m_isResolving;
+	// 次ステップで重力適用するか
+	bool m_resolveNeedsGravity;
+	// 次ステップで消去判定するか
+	bool m_resolveNeedsErase;
+	// 連鎖解決ステップ用タイマー
+	float m_resolveTimer;
 	// 左入力の前フレーム状態（エッジ判定用）
 	bool m_prevLeftKey;
 	// 右入力の前フレーム状態（エッジ判定用）
