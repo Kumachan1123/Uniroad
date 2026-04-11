@@ -43,6 +43,8 @@ public:
 	bool IsFalling() const { return m_isFalling; }
 	// 自由落下フラグを設定する。
 	void SetIsFalling(bool isFalling) { m_isFalling = isFalling; }
+	// 補間移動を開始する。
+	void StartSmoothMove(const DirectX::SimpleMath::Vector2& targetPosition, float duration);
 public:
 	// 色を指定して生成する。
 	Puyo(PuyoColor color);
@@ -91,5 +93,15 @@ private:
 	bool m_isFalling;
 	// 落下用タイマー
 	float m_time;
+	// 補間移動中かどうか
+	bool m_isSmoothMoving;
+	// 補間移動の開始位置
+	DirectX::SimpleMath::Vector2 m_smoothMoveStartPosition;
+	// 補間移動の終了位置
+	DirectX::SimpleMath::Vector2 m_smoothMoveTargetPosition;
+	// 補間移動にかかる時間
+	float m_smoothMoveDuration;
+	// 補間移動の経過時間
+	float m_smoothMoveTime;
 };
 #endif // PUYO_H

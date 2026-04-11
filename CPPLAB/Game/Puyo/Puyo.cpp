@@ -13,8 +13,13 @@ Puyo::Puyo(PuyoColor color)
 	, m_frameCols(5) // スプライトシートの列数（色数に対応）
 	, m_row(0) // 盤面上の行番号
 	, m_col(0) // 盤面上の列番号
-	, m_time(0.0f) // 落下タイマー
 	, m_isFalling(false) // 自由落下フラグ
+	, m_time(0.0f) // 落下用タイマー
+	, m_isSmoothMoving(false) // 補間移動中かどうか
+	, m_smoothMoveStartPosition(POSITION) // 補間移動の開始位置
+	, m_smoothMoveTargetPosition(POSITION) // 補間移動の終了位置
+	, m_smoothMoveDuration(0.0f) // 補間移動にかかる時間
+	, m_smoothMoveTime(0.0f) // 補間移動の経過時間
 {}
 
 Puyo::~Puyo()
@@ -48,12 +53,42 @@ void Puyo::Initialize(CommonResources* resources, int width, int height)
 	// 描画矩形を現在の位置・サイズで同期。
 	m_rect.position = m_position;
 	m_rect.size = m_size;
+	m_time = 0.0f;
+	m_isSmoothMoving = false;
+}
+
+void Puyo::StartSmoothMove(const DirectX::SimpleMath::Vector2& targetPosition, float duration)
+{
+	m_isSmoothMoving = true;
+	m_smoothMoveStartPosition = m_position;
+	m_smoothMoveTargetPosition = targetPosition;
+	m_smoothMoveDuration = duration;
+	m_smoothMoveTime = 0.0f;
 }
 
 void Puyo::Update(float elapsedTime)
 {
 	// 毎フレーム、描画用の定数バッファを現在状態に更新する。
 	UpdateConstantBuffer();
+
+	if (m_isSmoothMoving)
+	{
+		m_smoothMoveTime += elapsedTime;
+		float t = (m_smoothMoveDuration > 0.0f) ? (m_smoothMoveTime / m_smoothMoveDuration) : 1.0f;
+		if (t > 1.0f) t = 1.0f;
+		if (t < 0.0f) t = 0.0f;
+		KumachiLib::Clamp(t, 0.0f, 1.0f);
+
+		using namespace DirectX::SimpleMath;
+		m_position = Vector2::Lerp(m_smoothMoveStartPosition, m_smoothMoveTargetPosition, t);
+		m_rect.position = m_position;
+
+		if (t >= 1.0f)
+		{
+			m_isSmoothMoving = false;
+		}
+		return;
+	}
 
 	// 簡易自由落下モード。
 	// RehabiliScene側の盤面制御と独立して動くため、必要時のみ有効化される。
