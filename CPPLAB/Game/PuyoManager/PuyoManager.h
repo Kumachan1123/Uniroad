@@ -61,6 +61,8 @@ private:
 	void RecreateFixedPuyo(int col, int row, Puyo::PuyoColor color);
 	// 落下中ぷよの表示位置を盤面座標から再同期する
 	void SyncFallingPuyoPosition();
+	// 落下中ぷよの着地予定位置プレビューを更新
+	void UpdateLandingPreview();
 	// 盤面内判定
 	bool IsInsideBoard(int col, int row) const;
 	// 空きマス判定（固定盤面ベース）
@@ -69,6 +71,8 @@ private:
 	bool IsFallingCellAt(int col, int row) const;
 	// 盤面座標から描画座標へ変換
 	DirectX::SimpleMath::Vector2 GridToPosition(int col, int row) const;
+	// 消去前の表情変更ステップ（現在はプレースホルダー）
+	void ChangePuyoFaceBeforeErase();
 private:
 	// private定数
 	// 自然落下間隔（秒）
@@ -99,6 +103,8 @@ private:
 	bool m_isResolving;
 	// 次ステップで重力適用するか
 	bool m_resolveNeedsGravity;
+	// 次ステップで表情変更するか
+	bool m_resolveNeedsFaceChange;
 	// 次ステップで消去判定するか
 	bool m_resolveNeedsErase;
 	// 連鎖解決ステップ用タイマー
@@ -114,4 +120,6 @@ private:
 	// 落下中ぷよが存在するか
 	bool m_isFalling;
 	// グリッド背景
+	// 落下中ぷよの着地予定位置プレビュー
+	std::unique_ptr<Puyo> m_pLandingPreviewPuyo[2];
 };

@@ -22,6 +22,7 @@ void PuyoManager::Initialize(CommonResources* resources)
 	m_time = 0.0f;
 	m_isResolving = false;
 	m_resolveNeedsGravity = false;
+	m_resolveNeedsFaceChange = false;
 	m_resolveNeedsErase = false;
 	m_resolveTimer = 0.0f;
 
@@ -53,6 +54,10 @@ void PuyoManager::Initialize(CommonResources* resources)
 		{
 			m_pFallingPuyo[col][row].reset();
 		}
+	}
+	for (int i = 0; i < 2; i++)
+	{
+		m_pLandingPreviewPuyo[i].reset();
 	}
 }
 
@@ -90,6 +95,14 @@ void PuyoManager::Update(float elapsedTime)
 				}
 			}
 		}
+
+		for (int i = 0; i < 2; i++)
+		{
+			if (m_pLandingPreviewPuyo[i])
+			{
+				m_pLandingPreviewPuyo[i]->Update(elapsedTime);
+			}
+		}
 	}
 	else if (m_isResolving)
 	{
@@ -119,6 +132,17 @@ void PuyoManager::Render()
 		for (int col = 0; col < 6; col++)
 		{
 			m_pFixedPuyo[col][row]->Render();
+		}
+	}
+	// 着地予定位置プレビューを描画する
+	if (m_isFalling)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			if (m_pLandingPreviewPuyo[i])
+			{
+				m_pLandingPreviewPuyo[i]->Render();
+			}
 		}
 	}
 	// 落下中ぷよを描画する
@@ -166,12 +190,19 @@ void PuyoManager::GeneratePuyo()
 			m_pFallingPuyo[col][row].reset();
 		}
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		m_pLandingPreviewPuyo[i].reset();
+	}
 
 	// 色は個別にランダム決定。
 	int centerColor = KumachiLib::GenerateRandomMultiplier(0, 4);
 	int subColor = KumachiLib::GenerateRandomMultiplier(0, 4);
 	m_pFallingPuyo[1][1] = std::make_unique<Puyo>(static_cast<Puyo::PuyoColor>(centerColor));
 	m_pFallingPuyo[1 + m_subOffsetCol][1 + m_subOffsetRow] = std::make_unique<Puyo>(static_cast<Puyo::PuyoColor>(subColor));
+
+	m_pLandingPreviewPuyo[0] = std::make_unique<Puyo>(static_cast<Puyo::PuyoColor>(centerColor));
+	m_pLandingPreviewPuyo[1] = std::make_unique<Puyo>(static_cast<Puyo::PuyoColor>(subColor));
 
 	// 実体化したぷよを描画可能な状態へ初期化。
 	for (int row = 0; row < 3; row++)
@@ -184,9 +215,17 @@ void PuyoManager::GeneratePuyo()
 			}
 		}
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		if (m_pLandingPreviewPuyo[i])
+		{
+			m_pLandingPreviewPuyo[i]->Initialize(m_pCommonResources, deviceResources->GetOutputSize().right, deviceResources->GetOutputSize().bottom);
+		}
+	}
 
 	// 盤面座標から描画座標を同期して落下開始。
 	SyncFallingPuyoPosition();
+	UpdateLandingPreview();
 	m_isFalling = true;
 }
 
@@ -237,6 +276,8 @@ void PuyoManager::UpdateFallingPuyo(float elapsedTime)
 			LockFallingPuyo();
 		}
 	}
+
+	UpdateLandingPreview();
 }
 
 bool PuyoManager::TryMoveFallingPuyo(int dx, int dy)
@@ -344,6 +385,10 @@ void PuyoManager::LockFallingPuyo()
 			m_pFallingPuyo[col][row].reset();
 		}
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		m_pLandingPreviewPuyo[i].reset();
+	}
 
 	m_isFalling = false;
 	m_fallTimer = 0.0f;
@@ -351,8 +396,42 @@ void PuyoManager::LockFallingPuyo()
 	// 設置後の盤面解決（落下→消去→再落下→再消去）を1秒間隔で開始する。
 	m_isResolving = true;
 	m_resolveNeedsGravity = true;
+	m_resolveNeedsFaceChange = false;
 	m_resolveNeedsErase = false;
 	m_resolveTimer = 0.0f;
+}
+
+void PuyoManager::ChangePuyoFaceBeforeErase()
+{
+	bool visited[6][12] = {};
+
+	for (int row = 0; row < 12; row++)
+	{
+		for (int col = 0; col < 6; col++)
+		{
+			if (visited[col][row])
+			{
+				continue;
+			}
+
+			const auto color = m_pFixedPuyo[col][row]->GetColor();
+			if (color == Puyo::PuyoColor::None)
+			{
+				visited[col][row] = true;
+				continue;
+			}
+
+			std::vector<std::pair<int, int>> connected;
+			CollectConnectedPuyo(col, row, color, visited, connected);
+			if (connected.size() >= 4)
+			{
+				for (const auto& cell : connected)
+				{
+					// TODO: ここで cell.first, cell.second のぷよに「消去前の表情」フラグを立てる
+				}
+			}
+		}
+	}
 }
 
 void PuyoManager::ResolveBoard(float elapsedTime)
@@ -373,8 +452,18 @@ void PuyoManager::ResolveBoard(float elapsedTime)
 	{
 		// このステップは重力落下。
 		ApplyGravityToBoard();
-		// 次ステップは消去判定。
+		// 次ステップは表情変更。
 		m_resolveNeedsGravity = false;
+		m_resolveNeedsFaceChange = true;
+		return;
+	}
+
+	if (m_resolveNeedsFaceChange)
+	{
+		// このステップは表情変更（現状プレースホルダー）。
+		ChangePuyoFaceBeforeErase();
+		// 次ステップは消去判定。
+		m_resolveNeedsFaceChange = false;
 		m_resolveNeedsErase = true;
 		return;
 	}
@@ -392,8 +481,9 @@ void PuyoManager::ResolveBoard(float elapsedTime)
 		{
 			// 消去なしなら解決終了。次フレームで新ぷよ生成へ進む。
 			m_isResolving = false;
-			m_resolveNeedsErase = false;
 			m_resolveNeedsGravity = false;
+			m_resolveNeedsFaceChange = false;
+			m_resolveNeedsErase = false;
 			m_time = 1.0f;
 		}
 	}
@@ -575,5 +665,43 @@ DirectX::SimpleMath::Vector2 PuyoManager::GridToPosition(int col, int row) const
 	using namespace DirectX::SimpleMath;
 	return Vector2(0.4f + col * 0.05f, 0.045f + row * 0.0826f);
 }
+
+void PuyoManager::UpdateLandingPreview()
+{
+	if (!m_isFalling || !m_pFallingPuyo[1][1] || !m_pLandingPreviewPuyo[0] || !m_pLandingPreviewPuyo[1])
+	{
+		return;
+	}
+
+	int drop = 0;
+	while (true)
+	{
+		const int nextCenterCol = m_fallCenterCol;
+		const int nextCenterRow = m_fallCenterRow + drop + 1;
+		const int nextSubCol = m_fallCenterCol + m_subOffsetCol;
+		const int nextSubRow = m_fallCenterRow + m_subOffsetRow + drop + 1;
+
+		if (!IsInsideBoard(nextCenterCol, nextCenterRow) || !IsInsideBoard(nextSubCol, nextSubRow))
+		{
+			break;
+		}
+		if (!IsCellEmpty(nextCenterCol, nextCenterRow) || !IsCellEmpty(nextSubCol, nextSubRow))
+		{
+			break;
+		}
+		drop++;
+	}
+
+	const int centerCol = m_fallCenterCol;
+	const int centerRow = m_fallCenterRow + drop;
+	const int subCol = m_fallCenterCol + m_subOffsetCol;
+	const int subRow = m_fallCenterRow + m_subOffsetRow + drop;
+
+	m_pLandingPreviewPuyo[0]->SetRowCol(centerRow, centerCol);
+	m_pLandingPreviewPuyo[0]->SetPosition(GridToPosition(centerCol, centerRow));
+	m_pLandingPreviewPuyo[1]->SetRowCol(subRow, subCol);
+	m_pLandingPreviewPuyo[1]->SetPosition(GridToPosition(subCol, subRow));
+}
+
 
 

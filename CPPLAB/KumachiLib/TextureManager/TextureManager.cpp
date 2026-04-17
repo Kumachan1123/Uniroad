@@ -16,8 +16,7 @@ TextureManager::TextureManager()
 	: m_pCommonResources(nullptr)// 共通リソース
 	, m_pDevice(nullptr)// デバイス
 	, m_pTextureMap()// テクスチャマップ
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details テクスチャマネージャークラスのデストラクタ

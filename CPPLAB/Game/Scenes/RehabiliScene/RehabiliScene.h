@@ -30,6 +30,7 @@
 #include "Game/PuyoGrid/PuyoGrid.h"
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/PuyoManager/PuyoManager.h"
+#include <KumachiLib\BillboardSprite\BillboardSprite.h>
 
 // 前方宣言
 class CommonResources;
@@ -101,4 +102,7 @@ private:
 	std::unique_ptr<Android> m_pAndroid;
 	// ぷよマネージャー
 	std::unique_ptr<PuyoManager> m_pPuyoManager;
+	// BillboardSprite
+	std::unique_ptr<BillboardSprite> m_pBillboardSprite;
+
 };

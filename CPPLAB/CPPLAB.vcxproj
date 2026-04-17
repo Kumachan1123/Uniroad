@@ -277,6 +277,7 @@
     <ClInclude Include="Game\Scenes\StageSelectScene\BackButton\BackButton.h" />
     <ClInclude Include="Game\Scenes\TestScene\TestScene.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
+    <ClInclude Include="KumachiLib\BillboardSprite\BillboardSprite.h" />
     <ClInclude Include="KumachiLib\Material\Material.h" />
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
     <ClInclude Include="KumachiLib\ScrollBar\ScrollBar.h" />
@@ -408,6 +409,7 @@
     <ClCompile Include="Game\Sky\Sky.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
     <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
+    <ClCompile Include="KumachiLib\BillboardSprite\BillboardSprite.cpp" />
     <ClCompile Include="KumachiLib\Bloom\Bloom.cpp" />
     <ClCompile Include="KumachiLib\Button\Button.cpp" />
     <ClCompile Include="KumachiLib\FileCounter\FileCounter.cpp" />
@@ -458,6 +460,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="docs\PuyoManager_RefactorPlan.md" />
     <None Include="HLSL\Counter\Counter.hlsli" />
     <None Include="HLSL\Material\Material.hlsli" />
     <None Include="HLSL\Material\MaterialNoTex.hlsli" />

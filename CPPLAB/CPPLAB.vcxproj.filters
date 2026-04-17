@@ -150,6 +150,7 @@
     <ClInclude Include="Game\Puyo\Puyo.h" />
     <ClInclude Include="Game\PuyoGrid\PuyoGrid.h" />
     <ClInclude Include="Game\PuyoManager\PuyoManager.h" />
+    <ClInclude Include="KumachiLib\BillboardSprite\BillboardSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -257,6 +258,7 @@
     <ClCompile Include="Game\Puyo\Puyo.cpp" />
     <ClCompile Include="Game\PuyoGrid\PuyoGrid.cpp" />
     <ClCompile Include="Game\PuyoManager\PuyoManager.cpp" />
+    <ClCompile Include="KumachiLib\BillboardSprite\BillboardSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -290,6 +292,7 @@
     <None Include="HLSL\Material\Material.hlsli" />
     <None Include="HLSL\Material\MaterialNoTex.hlsli" />
     <None Include="HLSL\SDKMesh\Header.hlsli" />
+    <None Include="docs\PuyoManager_RefactorPlan.md" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />

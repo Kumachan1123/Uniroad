@@ -45,12 +45,18 @@ void RehabiliScene::Initialize(CommonResources* resources)
 
 	// カメラを生成して、ビュー・射影の準備を完了させる。
 	CreateCamera();
-
-	// ぷよマネージャーを生成して、初期化する。
+	// ビルボードスプライトを生成する。
+	m_pBillboardSprite = std::make_unique<BillboardSprite>();
+	m_pBillboardSprite->SetTexture(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));
+	m_pBillboardSprite->Initialize(m_pCommonResources);
+	// ビルボードスプライトの位置とスケール を設定
+	m_pBillboardSprite->SetPosition(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 5.0f));
+	m_pBillboardSprite->SetScale(1.0f);
+	// ビルボード機能の有効/無効を設定
+	m_pBillboardSprite->SetBillboard(true);
+	// ぷよマネージャーを生成する。
 	m_pPuyoManager = std::make_unique<PuyoManager>();
 	m_pPuyoManager->Initialize(m_pCommonResources);
-
-
 
 
 }
@@ -71,16 +77,16 @@ void RehabiliScene::Update(float elapsedTime)
 	m_pTPCamera->SetTime(m_time);
 	m_pTPCamera->Update();
 	m_debugCamera->Update(m_pCommonResources->GetInputManager());
-	m_view = m_pTPCamera->GetViewMatrix();
+	m_view = m_debugCamera->GetViewMatrix();
 
 	// シーン遷移入力。
 	auto keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
 	if (keyState.Enter)m_isChangeScene = true;
 
+	// ビルボードスプライトの更新。
+	m_pBillboardSprite->Update(elapsedTime);
 	// ぷよマネージャーの更新。
 	m_pPuyoManager->Update(elapsedTime);
-
-
 }
 /*
 *	@brief 描画
@@ -96,7 +102,7 @@ void RehabiliScene::Render()
 	const auto states = m_pCommonResources->GetCommonStates();
 	auto context = deviceResources->GetD3DDeviceContext();
 
-	// ぷよマネージャーの描画。
+	m_pBillboardSprite->Render(m_view, m_projection);
 	m_pPuyoManager->Render();
 }
 /*
