@@ -54,9 +54,7 @@ void RehabiliScene::Initialize(CommonResources* resources)
 	m_pBillboardSprite->SetScale(1.0f);
 	// ビルボード機能の有効/無効を設定
 	m_pBillboardSprite->SetBillboard(true);
-	// ぷよマネージャーを生成する。
-	m_pPuyoManager = std::make_unique<PuyoManager>();
-	m_pPuyoManager->Initialize(m_pCommonResources);
+
 
 
 }
@@ -85,8 +83,7 @@ void RehabiliScene::Update(float elapsedTime)
 
 	// ビルボードスプライトの更新。
 	m_pBillboardSprite->Update(elapsedTime);
-	// ぷよマネージャーの更新。
-	m_pPuyoManager->Update(elapsedTime);
+
 }
 /*
 *	@brief 描画
@@ -103,7 +100,6 @@ void RehabiliScene::Render()
 	auto context = deviceResources->GetD3DDeviceContext();
 
 	m_pBillboardSprite->Render(m_view, m_projection);
-	m_pPuyoManager->Render();
 }
 /*
 *	@brief 終了

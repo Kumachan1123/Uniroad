@@ -11,11 +11,6 @@
 #include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "IScene.h"
-#include "Game/Scenes/TitleScene/TitleScene.h"
-#include "Game/Scenes/StageSelectScene/StageSelectScene.h"
-#include "Game/Scenes/PlayScene/PlayScene.h"
-#include "Game/Scenes/SettingScene/SettingScene.h"
-#include "Game/Scenes/TestScene/TestScene.h"
 #include "Game/Scenes/RehabiliScene/RehabiliScene.h"
 
 // 前方宣言

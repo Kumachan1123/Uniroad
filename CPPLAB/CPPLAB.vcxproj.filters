@@ -55,7 +55,6 @@
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\Camera\FixedCamera\FixedCamera.h" />
     <ClInclude Include="Game\ControllScreen\NextTiles\NextTiles.h" />
-    <ClInclude Include="Game\Mouse\Mouse.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComponent.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\IComposite.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Interface\ILeaf.h" />
@@ -138,7 +137,6 @@
     <ClInclude Include="Game\Display\Display.h" />
     <ClInclude Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.h" />
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
-    <ClInclude Include="Game\Scenes\TestScene\TestScene.h" />
     <ClInclude Include="KumachiLib\UIText\UIText.h" />
     <ClInclude Include="Game\Stage\Stage.h" />
     <ClInclude Include="KumachiLib\Material\Material.h" />
@@ -180,7 +178,6 @@
     <ClCompile Include="Game\ControllScreen\Panel\Panel.cpp" />
     <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
     <ClCompile Include="Game\ControllScreen\NextTiles\NextTiles.cpp" />
-    <ClCompile Include="Game\Mouse\Mouse.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacter.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\MiniCharacterBase\MiniCharacterBase.cpp" />
     <ClCompile Include="Game\MainScreen\Tiles\StraightVerticalTile\StraightVerticalTile.cpp" />
@@ -246,7 +243,6 @@
     <ClCompile Include="Game\Display\Display.cpp" />
     <ClCompile Include="Game\MainScreen\MiniCharacter\Parameters\Parameters.cpp" />
     <ClCompile Include="KumachiLib\OutLine\OutLine.cpp" />
-    <ClCompile Include="Game\Scenes\TestScene\TestScene.cpp" />
     <ClCompile Include="KumachiLib\UIText\UIText.cpp" />
     <ClCompile Include="Game\Stage\Stage.cpp" />
     <ClCompile Include="KumachiLib\Material\Material.cpp" />

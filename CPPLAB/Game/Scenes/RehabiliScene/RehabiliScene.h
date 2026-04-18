@@ -100,8 +100,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_pModel;
 	// Android（未使用）
 	std::unique_ptr<Android> m_pAndroid;
-	// ぷよマネージャー
-	std::unique_ptr<PuyoManager> m_pPuyoManager;
+
 	// BillboardSprite
 	std::unique_ptr<BillboardSprite> m_pBillboardSprite;
 
