@@ -21,6 +21,7 @@
 #include <Libraries/MyLib/MemoryLeakDetector.h>
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
+#include <Game\MyResources\MyResources.h>
 #include "Game/CommonResources/CommonResources.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/Camera/TPCamera/TPCamera.h"
@@ -31,7 +32,7 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include "Game/PuyoManager/PuyoManager.h"
 #include <KumachiLib\BillboardSprite\BillboardSprite.h>
-
+#include <Game\Player2D\Player2D.h>
 // 前方宣言
 class CommonResources;
 
@@ -54,7 +55,7 @@ public:
 	~RehabiliScene() override;
 	// 初期化
 	// カメラ生成、グリッド生成、固定盤面初期化を行う。
-	void Initialize(CommonResources* resources) override;
+	void Initialize() override;
 	// 更新
 	// 入力処理、落下更新、設置判定、盤面更新を行う。
 	void Update(float elapsedTime) override;
@@ -79,8 +80,6 @@ private:
 	static constexpr float FOV = 60.0f;
 private:
 	// privateメンバ変数
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// 次のシーンID
 	IScene::SceneID m_nextSceneID;
 	// 三人称カメラ
@@ -100,8 +99,7 @@ private:
 	std::unique_ptr<DirectX::Model> m_pModel;
 	// Android（未使用）
 	std::unique_ptr<Android> m_pAndroid;
-
-	// BillboardSprite
-	std::unique_ptr<BillboardSprite> m_pBillboardSprite;
+	// 2Dプレイヤー
+	std::unique_ptr<Player2D> m_pPlayer2D;
 
 };

@@ -12,7 +12,6 @@
 */
 SceneManager::SceneManager()
 	: m_pCurrentScene{}// 現在のシーン
-	, m_pCommonResources{}// 共通リソース
 	, m_stageNumber{ 0 }// ステージ番号
 	, m_nowSceneID{ IScene::SceneID::NONE }// 現在のシーンID
 {}
@@ -26,15 +25,11 @@ SceneManager::~SceneManager() { Finalize(); }
 /*
 *	@brief 初期化する
 *	@details シーンマネージャクラスの初期化
-*	@param resources 共通リソース
+*	@param なし
 *	@return なし
 */
-void SceneManager::Initialize(CommonResources* resources)
+void SceneManager::Initialize()
 {
-	// リソースがnullptrでないことを確認
-	assert(resources);
-	// 共通リソースを取得
-	m_pCommonResources = resources;
 	// タイトルシーンに変更
 	ChangeScene(IScene::SceneID::REHABILI);
 }
@@ -89,7 +84,7 @@ void SceneManager::ChangeScene(IScene::SceneID sceneID)
 	// シーンを削除する
 	DeleteScene();
 	// 全ての音を停止
-	m_pCommonResources->GetAudioManager()->StopAllSounds();
+	MyResourecs::Get().GetAudioManager()->StopAllSounds();
 	// 新しいシーンを作成する
 	CreateScene(sceneID);
 }
@@ -119,7 +114,7 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 	// シーンがnullptrでないことを確認
 	assert(m_pCurrentScene);
 	// シーンを初期化する
-	m_pCurrentScene->Initialize(m_pCommonResources);
+	m_pCurrentScene->Initialize();
 	// シーンIDを設定する
 	SetSceneID(sceneID);
 }
@@ -131,8 +126,6 @@ void SceneManager::CreateScene(IScene::SceneID sceneID)
 */
 void SceneManager::DeleteScene()
 {
-	// ステージセレクトシーンの場合は、ステージ番号をマネージャーに渡す
-	if (m_nowSceneID == IScene::SceneID::STAGESELECT || m_nowSceneID == IScene::SceneID::PLAY)m_stageNumber = m_pCurrentScene->GetStageNumber();
 	// 現在のシーンをリセットする
 	m_pCurrentScene.reset();
 }

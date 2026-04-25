@@ -15,17 +15,17 @@ const 	float BillboardSprite::m_vertexMaxY = 1.0f;// 最大Y座標
 BillboardSprite::BillboardSprite()
 	: m_position()// エフェクトを再生する座標
 	, m_scale()// エフェクトのスケール
-	, m_pCommonResources()// 共通リソース
 	, m_world()// ワールド行列
 	, m_anim(0)// アニメーションのコマ
-	, m_animSpeed(30.0f)// アニメーションのスピード
+	, m_animSpeed(9.0f)// アニメーションのスピード
 	, m_animTime(0.0f)// アニメーションの時間
-	, m_frameRows{ 1 }// 画像の行数
-	, m_frameCols{ 1 }// 画像の列数
+	, m_frameRows{ 4 }// 画像の行数
+	, m_frameCols{ 3 }// 画像の列数
 	, m_vertices{}// 頂点情報
 	, m_pDrawPolygon(DrawPolygon::GetInstance())// 板ポリゴン描画クラス
 	, m_pCreateShader(CreateShader::GetInstance())// シェーダー作成クラス
 	, m_isBillboard(true)// ビルボード機能（デフォルトON）
+	, m_animSwitch(false)// アニメ切替フラグ	
 {
 
 }
@@ -33,11 +33,10 @@ BillboardSprite::BillboardSprite()
 BillboardSprite::~BillboardSprite()
 {}
 
-void BillboardSprite::Initialize(CommonResources* resources)
+void BillboardSprite::Initialize()
 {
-	m_pCommonResources = resources;
-	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());// 頂点情報の初期化
-	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0],
+	m_pDrawPolygon->InitializePositionTexture(MyResourecs::Get().GetDeviceResources());// 頂点情報の初期化
+	m_pCreateShader->Initialize(MyResourecs::Get().GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0],
 								static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);	// シェーダー作成クラスの初期化
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_pVertexShader);// 頂点シェーダー
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pPixelShader);	// ピクセルシェーダー
@@ -53,9 +52,12 @@ void BillboardSprite::Update(float elapsedTime)
 	m_animTime += elapsedTime * m_animSpeed;// 経過時間を加算
 	if (m_animTime >= 1.0f)// 1秒経過
 	{
-		m_anim++;// アニメのコマを薦める
+		if (m_animSwitch == false)m_anim++;
+		else m_anim--;
 		m_animTime = 0.0f;// タイマーをリセット
 	}
+	if (m_anim == 2)m_animSwitch = true;// アニメ切替
+	if (m_anim == 0)m_animSwitch = false;// アニメ切替
 }
 
 void BillboardSprite::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
@@ -110,7 +112,7 @@ void BillboardSprite::Render(const DirectX::SimpleMath::Matrix& view, const Dire
 	m_pDrawPolygon->SetShaderBuffer(0, 1, cb);
 	// 描画前設定
 	m_pDrawPolygon->DrawSetting(
-		DrawPolygon::SamplerStates::LINEAR_WRAP,// テクスチャのサンプラーステート(リニア、ラップ)
+		DrawPolygon::SamplerStates::POINT_CLAMP,// テクスチャのサンプラーステート(リニア、ラップ)
 		DrawPolygon::BlendStates::NONPREMULTIPLIED,// ブレンドステート(非乗算)
 		DrawPolygon::RasterizerStates::CULL_NONE,// ラスタライザーステート(カリングなし)
 		DrawPolygon::DepthStencilStates::DEPTH_READ);// 深度ステンシルステート(読み取りのみ)

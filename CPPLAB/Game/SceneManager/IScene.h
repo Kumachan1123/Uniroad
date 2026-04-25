@@ -15,19 +15,14 @@ public:
 	enum class SceneID : unsigned int
 	{
 		NONE,// なし
-		TEST,// テスト
 		REHABILI,// ゲームづくりのリハビリ
-		TITLE,// タイトル
-		SETTING,// 設定
-		STAGESELECT,// ステージ選択
-		PLAY,// プレイ
 	};
 public:
 	// publicメンバ関数
 	// デストラクタ
 	virtual ~IScene() = default;
 	// 初期化
-	virtual void Initialize(CommonResources* resources) = 0;
+	virtual void Initialize() = 0;
 	// 更新
 	virtual void Update(float elapsedTime) = 0;
 	// 描画

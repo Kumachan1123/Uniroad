@@ -11,6 +11,7 @@
 #include <Libraries/MyLib/InputManager.h>
 // 自作ヘッダーファイル
 #include "IScene.h"
+#include <Game\MyResources\MyResources.h>
 #include "Game/Scenes/RehabiliScene/RehabiliScene.h"
 
 // 前方宣言
@@ -27,7 +28,7 @@ public:
 	// デストラクタ
 	~SceneManager();
 	// 初期化
-	void Initialize(CommonResources* resources);
+	void Initialize();
 	// 更新
 	void Update(float elapsedTime);
 	// 描画
@@ -50,8 +51,6 @@ private:
 	// privateメンバ変数
 	// 現在のシーン
 	std::unique_ptr<IScene> m_pCurrentScene;
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// 現在のシーンID
 	IScene::SceneID m_nowSceneID;
 	// プレイシーンにステージ番号を渡すための変数

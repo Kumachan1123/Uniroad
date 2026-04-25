@@ -112,6 +112,18 @@ void Game::Initialize(HWND window, int width, int height)
 	m_settingManager->Initialize();
 
 	// シーンへ渡す共通リソースを設定する
+	MyResourecs::Get().Initialize(
+		&m_timer,				// タイマー
+		m_deviceResources.get(),// デバイスリソース
+		m_commonStates.get(),	// コモンステート
+		m_debugString.get(),	// デバッグ文字列
+		m_inputManager.get(),	// 入力マネージャ
+		m_audioManager.get(),	// オーディオマネージャ
+		m_modelManager.get(),	// モデルマネージャ
+		m_textureManager.get(),	// テクスチャマネージャ 
+		m_settingManager.get()	// 設定マネージャ
+	);
+
 	m_pCommonResources->Initialize(
 		&m_timer,				// タイマー
 		m_deviceResources.get(),// デバイスリソース
@@ -126,7 +138,7 @@ void Game::Initialize(HWND window, int width, int height)
 	// シーンマネージャを作成する
 	m_sceneManager = std::make_unique<SceneManager>();
 	// シーンマネージャを初期化する
-	m_sceneManager->Initialize(m_pCommonResources.get());
+	m_sceneManager->Initialize();
 	//カーソルを見えるようにする
 	ShowCursor(TRUE);
 }

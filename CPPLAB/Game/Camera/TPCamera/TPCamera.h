@@ -8,6 +8,7 @@
 // 自作ヘッダーファイル
 #include "Game/Interface/ICamera.h"
 #include "Game/CommonResources/CommonResources.h"
+#include "Game/MyResources/MyResources.h"
 
 class CommonResources;
 
@@ -37,10 +38,6 @@ public:
 	const DirectX::SimpleMath::Vector3& GetCameraDistance() const { return m_cameraDistance; }
 	// カメラの距離を設定する
 	void SetCameraDistance(const DirectX::SimpleMath::Vector3& distance) { m_cameraDistance = distance; }
-	// 共通リソースを取得する
-	CommonResources* GetCommonResources() const { return m_pCommonResources; }
-	// 共通リソースを設定する
-	void SetCommonResources(CommonResources* resources) { m_pCommonResources = resources; }
 	// 時間を取得する
 	float GetTime() const { return m_time; }
 	// 時間を設定する
@@ -82,8 +79,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_up;
 	// カメラの距離
 	DirectX::SimpleMath::Vector3 m_cameraDistance;
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// 時間
 	float m_time;
 };

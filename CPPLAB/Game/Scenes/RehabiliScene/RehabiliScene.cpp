@@ -12,8 +12,7 @@
 *	@return なし
 */
 RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
-	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_pTPCamera(nullptr) // カメラへのポインタ
+	: m_pTPCamera(nullptr) // カメラへのポインタ
 	, m_view() // ビュー行列
 	, m_projection() // 射影行列
 	, m_isChangeScene(false) // シーン変更フラグ
@@ -31,30 +30,23 @@ RehabiliScene::~RehabiliScene()
 /*
 *	@brief 初期化
 *	@details ゲームづくりのリハビリ用シーンクラスの初期化を行う
-*	@param resources 共通リソースへのポインタ
+*	@param なし
 *	@return なし
 */
-void RehabiliScene::Initialize(CommonResources* resources)
+void RehabiliScene::Initialize()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 共通リソースを保存する。
 	// 以降のテクスチャ取得やデバイス参照はこのポインタ経由で統一する。
-	m_pCommonResources = resources;
-	auto deviceResources = m_pCommonResources->GetDeviceResources();
+
+	auto deviceResources = MyResourecs::Get().GetDeviceResources();
+	auto textureManager = MyResourecs::Get().GetTextureManager();
 
 	// カメラを生成して、ビュー・射影の準備を完了させる。
 	CreateCamera();
-	// ビルボードスプライトを生成する。
-	m_pBillboardSprite = std::make_unique<BillboardSprite>();
-	m_pBillboardSprite->SetTexture(m_pCommonResources->GetTextureManager()->GetTexture("Medal"));
-	m_pBillboardSprite->Initialize(m_pCommonResources);
-	// ビルボードスプライトの位置とスケール を設定
-	m_pBillboardSprite->SetPosition(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 5.0f));
-	m_pBillboardSprite->SetScale(1.0f);
-	// ビルボード機能の有効/無効を設定
-	m_pBillboardSprite->SetBillboard(true);
-
+	// プレイヤーを生成する
+	m_pPlayer2D = std::make_unique<Player2D>();
 
 
 }
@@ -74,15 +66,15 @@ void RehabiliScene::Update(float elapsedTime)
 	// カメラ更新（ゲームロジックとは独立）。
 	m_pTPCamera->SetTime(m_time);
 	m_pTPCamera->Update();
-	m_debugCamera->Update(m_pCommonResources->GetInputManager());
+	m_debugCamera->Update(MyResourecs::Get().GetInputManager());
 	m_view = m_debugCamera->GetViewMatrix();
 
 	// シーン遷移入力。
-	auto keyState = m_pCommonResources->GetInputManager()->GetKeyboardState();
+	auto keyState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
 	if (keyState.Enter)m_isChangeScene = true;
 
-	// ビルボードスプライトの更新。
-	m_pBillboardSprite->Update(elapsedTime);
+	// プレイヤー更新
+	m_pPlayer2D->Update(elapsedTime);
 
 }
 /*
@@ -95,11 +87,11 @@ void RehabiliScene::Render()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	const auto deviceResources = m_pCommonResources->GetDeviceResources();
-	const auto states = m_pCommonResources->GetCommonStates();
+	const auto deviceResources = MyResourecs::Get().GetDeviceResources();
+	const auto states = MyResourecs::Get().GetCommonStates();
 	auto context = deviceResources->GetD3DDeviceContext();
-
-	m_pBillboardSprite->Render(m_view, m_projection);
+	// プレイヤー描画
+	m_pPlayer2D->Render(m_view, m_projection);
 }
 /*
 *	@brief 終了
@@ -122,7 +114,7 @@ IScene::SceneID RehabiliScene::GetNextSceneID() const
 	// シーン変更がないならすぐ戻る
 	if (!m_isChangeScene)return IScene::SceneID::NONE;
 	// ステージセレクトへ
-	return IScene::SceneID::TEST;
+	return IScene::SceneID::NONE;
 }
 /*
 * 	@brief カメラに関する設定をする
@@ -137,11 +129,10 @@ void RehabiliScene::CreateCamera()
 	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
-	RECT rect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
+	RECT rect = MyResourecs::Get().GetDeviceResources()->GetOutputSize();
 	// 固定カメラを作成する
 	m_pTPCamera = std::make_unique<TPCamera>();
 	// 固定カメラを初期化する
-	m_pTPCamera->SetCommonResources(m_pCommonResources);
 	m_pTPCamera->Initialize((int)(rect.right), rect.bottom);
 	// デバッグカメラを作成する
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
@@ -166,7 +157,7 @@ void RehabiliScene::CreateSDKMesh(std::wstring name)
 	// DirectXの名前空間の使用
 	using namespace DirectX;
 	// deviceを取得する
-	ID3D11Device* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	ID3D11Device* device = MyResourecs::Get().GetDeviceResources()->GetD3DDevice();
 
 	// ファイルパス
 	std::wstring filePath = L"Resources/SDKMeshes/" + name + L"/" + name + L".sdkmesh";

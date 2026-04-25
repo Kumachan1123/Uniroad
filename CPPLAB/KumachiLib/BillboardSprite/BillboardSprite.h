@@ -12,6 +12,7 @@
 #include <KumachiLib/Math/KumachiLib.h>
 #include <KumachiLib\DrawPolygon\DrawPolygon.h>
 #include <KumachiLib\CreateShader\CreateShader.h>
+#include <Game\MyResources\MyResources.h>
 // 前方宣言
 class CommonResources;
 
@@ -44,7 +45,7 @@ public:
 public:
 	BillboardSprite();
 	~BillboardSprite();
-	void Initialize(CommonResources* resources);
+	void Initialize();
 	void Update(float elapsedTime);
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 	void Finalize();
@@ -59,8 +60,6 @@ private:
 	static const float m_vertexMaxY;//上
 private:
 	// privateメンバ変数
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// エフェクトを再生する座標
 	DirectX::SimpleMath::Vector3 m_position;
 	// エフェクトのスケール
@@ -102,4 +101,6 @@ private:
 	int m_frameCols;//列
 	// ビルボード機能のON/OFFフラグ
 	bool m_isBillboard;
+	// アニメ切替フラグ
+	bool m_animSwitch;
 };

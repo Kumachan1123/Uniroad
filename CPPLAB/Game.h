@@ -23,6 +23,7 @@
 #include "KumachiLib/TextureManager/TextureManager.h"
 #include "KumachiLib/SettingManager/SettingManager.h"
 #include "Game/Screen/Screen.h"
+#include "Game/MyResources/MyResources.h"
 
 // ƒQ[ƒ€ƒNƒ‰ƒX
 class Game final : public DX::IDeviceNotify
