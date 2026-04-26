@@ -92,6 +92,8 @@
     <ClInclude Include="..\..\..\Downloads\Singleton.h" />
     <ClInclude Include="KumachiLib\Singleton\Singleton.h" />
     <ClInclude Include="Game\MyResources\MyResources.h" />
+    <ClInclude Include="Game\Player2D\PlayerDirection.h" />
+    <ClInclude Include="Game\GameObject\IGameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

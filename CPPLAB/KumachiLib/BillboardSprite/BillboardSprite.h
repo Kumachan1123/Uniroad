@@ -12,11 +12,12 @@
 #include <KumachiLib/Math/KumachiLib.h>
 #include <KumachiLib\DrawPolygon\DrawPolygon.h>
 #include <KumachiLib\CreateShader\CreateShader.h>
+#include <Game\GameObject\IGameObject.h>
 #include <Game\MyResources\MyResources.h>
 // 前方宣言
 class CommonResources;
 
-class BillboardSprite
+class BillboardSprite : public IGameObject
 {
 public:
 	// 構造体
@@ -42,13 +43,15 @@ public:
 	void SetScale(float scale) { m_scale = scale; }
 	// ビルボード機能を有効/無効にセット
 	void SetBillboard(bool enable) { m_isBillboard = enable; }
+	// 向きを変える
+	void SetDirection(int direction) { m_direction = direction; }
 public:
-	BillboardSprite();
+	BillboardSprite(IGameObject* owner);
 	~BillboardSprite();
-	void Initialize();
-	void Update(float elapsedTime);
-	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
-	void Finalize();
+	void Initialize()override;
+	void Update(float elapsedTime)override;
+	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)override;
+	void Finalize()override;
 private:
 	// 定数
 	// 入力レイアウト
@@ -60,6 +63,8 @@ private:
 	static const float m_vertexMaxY;//上
 private:
 	// privateメンバ変数
+	// このオブジェクトを持つクラス
+	IGameObject* m_pOwner;
 	// エフェクトを再生する座標
 	DirectX::SimpleMath::Vector3 m_position;
 	// エフェクトのスケール
@@ -92,6 +97,8 @@ private:
 	DirectX::DX11::VertexPositionTexture m_vertices[4];
 	// フレーム数
 	int m_anim;
+	// 向き番号
+	int m_direction;
 	// アニメーションスピード
 	float m_animSpeed;
 	// アニメーションの経過時間

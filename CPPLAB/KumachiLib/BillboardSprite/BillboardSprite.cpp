@@ -12,8 +12,9 @@ const 	float BillboardSprite::m_vertexMinX = -1.0f;// 最小X座標
 const 	float BillboardSprite::m_vertexMaxX = 1.0f;// 最大X座標
 const 	float BillboardSprite::m_vertexMinY = -1.0f;// 最小Y座標
 const 	float BillboardSprite::m_vertexMaxY = 1.0f;// 最大Y座標
-BillboardSprite::BillboardSprite()
-	: m_position()// エフェクトを再生する座標
+BillboardSprite::BillboardSprite(IGameObject* owner)
+	: m_pOwner(owner)
+	, m_position()// エフェクトを再生する座標
 	, m_scale()// エフェクトのスケール
 	, m_world()// ワールド行列
 	, m_anim(0)// アニメーションのコマ
@@ -26,6 +27,7 @@ BillboardSprite::BillboardSprite()
 	, m_pCreateShader(CreateShader::GetInstance())// シェーダー作成クラス
 	, m_isBillboard(true)// ビルボード機能（デフォルトON）
 	, m_animSwitch(false)// アニメ切替フラグ	
+	, m_direction(0)// 向き番号
 {
 
 }
@@ -56,8 +58,8 @@ void BillboardSprite::Update(float elapsedTime)
 		else m_anim--;
 		m_animTime = 0.0f;// タイマーをリセット
 	}
-	if (m_anim == 2)m_animSwitch = true;// アニメ切替
-	if (m_anim == 0)m_animSwitch = false;// アニメ切替
+	if (m_anim == +2)m_animSwitch = true;// アニメ切替
+	if (m_anim == +0)m_animSwitch = false;// アニメ切替
 }
 
 void BillboardSprite::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
@@ -99,7 +101,7 @@ void BillboardSprite::Render(const DirectX::SimpleMath::Matrix& view, const Dire
 	m_constBuffer.matProj = projection.Transpose();
 	// アニメーションの設定
 	// アニメーションのコマ数を設定
-	m_constBuffer.count = Vector4((float)(m_anim));
+	m_constBuffer.count = Vector4((float)(m_anim + (m_direction * 3)));
 	// テクスチャの列を設定
 	m_constBuffer.height = Vector4((float)(m_frameRows));
 	// テクスチャの行を設定

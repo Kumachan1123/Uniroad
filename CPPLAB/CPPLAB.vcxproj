@@ -205,6 +205,7 @@
     <ClInclude Include="Game\Camera\TPCamera\TPCamera.h" />
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\Car\Car.h" />
+    <ClInclude Include="Game\GameObject\IGameObject.h" />
     <ClInclude Include="Game\MyResources\MyResources.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
@@ -221,6 +222,7 @@
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Particle\Utility.h" />
     <ClInclude Include="Game\Player2D\Player2D.h" />
+    <ClInclude Include="Game\Player2D\PlayerDirection.h" />
     <ClInclude Include="Game\PuyoGrid\PuyoGrid.h" />
     <ClInclude Include="Game\PuyoManager\PuyoManager.h" />
     <ClInclude Include="Game\Puyo\Puyo.h" />
