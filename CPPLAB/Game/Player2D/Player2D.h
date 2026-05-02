@@ -6,13 +6,14 @@
 #include <Game\MyResources\MyResources.h>
 #include <Game\GameObject\IGameObject.h>
 #include <Game\Player2D\PlayerDirection.h>
+class TileMap;
 class Player2D : public IGameObject
 {
 public:
 	enum class MoveState
 	{
 		Idle = 0,// 待機
-		Turning = 1,// 向き変更
+		Turning = 1,// 方向変更
 		Moving = 2// 移動
 	};
 public:
@@ -23,15 +24,19 @@ public:
 	void Update(float elapsedTime)override;
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)override;
 	void Finalize()override;
+	const DirectX::SimpleMath::Vector3& GetPosition() const { return m_position; }
+	void SetTileMap(TileMap* tileMap) { m_pTileMap = tileMap; }
 private:
-	const float TURN_TIME = 0.2f;// 向き変更の時間
-	const float MOVE_TIME = 0.15f;// 1マス移動にかける時間
+	const float TURN_TIME = 0.2f;// 方向変更の時間
+	const float MOVE_TIME = 0.15f;// 1マス移動にかかる時間
+	const float GROUND_HEIGHT = 0.75f;// 地面の上に見せる高さ
 private:
 	std::unique_ptr<BillboardSprite> m_pBillboardSprite;// ビルボードスプライト
-	ObjectDirection m_direction;// プレイヤーの次の向き
-	ObjectDirection m_currentDirection;// プレイヤーの現在の向き
+	TileMap* m_pTileMap;// 盤面参照
+	ObjectDirection m_direction;// プレイヤーの進行方向
+	ObjectDirection m_currentDirection;// プレイヤーの現在の方向
 	MoveState m_moveState;// プレイヤーの移動状態
-	float m_turnTimer;// 向き変更のタイマー
+	float m_turnTimer;// 方向変更のタイマー
 	float m_moveTimer;// 移動タイマー
 	DirectX::SimpleMath::Vector3 m_position;// 現在位置
 	DirectX::SimpleMath::Vector3 m_moveStartPosition;// 移動開始位置

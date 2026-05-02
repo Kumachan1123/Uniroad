@@ -1,16 +1,18 @@
 #include "pch.h"
 #include "Player2D.h"
+#include <Game\TileMap\TileMap.h>
 
 Player2D::Player2D()
 	: m_pBillboardSprite(nullptr)
+	, m_pTileMap(nullptr)
 	, m_direction(ObjectDirection::Down)
 	, m_currentDirection(ObjectDirection::Down)
 	, m_moveState(MoveState::Idle)
 	, m_turnTimer(0.0f)
 	, m_moveTimer(0.0f)
-	, m_position(0.0f, 0.0f, 0.0f)
-	, m_moveStartPosition(0.0f, 0.0f, 0.0f)
-	, m_targetPosition(0.0f, 0.0f, 0.0f)
+	, m_position(10.65f, GROUND_HEIGHT, 7.50f)
+	, m_moveStartPosition(10.65f, GROUND_HEIGHT, 7.50f)
+	, m_targetPosition(10.65f, GROUND_HEIGHT, 7.50f)
 	, m_isMoving(false)
 	, m_prevKeyboardState{}
 {
@@ -41,48 +43,61 @@ void Player2D::Update(float elapsedTime)
 	auto& keyboardState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
 
 	auto isPressed = [&](DirectX::Keyboard::Keys key)
-	{
-		return keyboardState.IsKeyDown(key);
-	};
+		{
+			return keyboardState.IsKeyDown(key);
+		};
 
 	auto isNewPress = [&](DirectX::Keyboard::Keys key)
-	{
-		return keyboardState.IsKeyDown(key) && !m_prevKeyboardState.IsKeyDown(key);
-	};
+		{
+			return keyboardState.IsKeyDown(key) && !m_prevKeyboardState.IsKeyDown(key);
+		};
 
 	auto snapToGrid = [](const Vector3& position)
-	{
-		return Vector3(
-			std::round(position.x),
-			std::round(position.y),
-			std::round(position.z));
-	};
+		{
+			return Vector3(
+				std::floor(position.x) + 0.5f,
+				position.y,
+				std::floor(position.z) + 0.5f);
+		};
 
 	auto beginMove = [&](ObjectDirection direction)
-	{
-		m_moveState = MoveState::Moving;
-		m_isMoving = true;
-		m_moveTimer = 0.0f;
-		m_moveStartPosition = snapToGrid(m_position);
-		m_position = m_moveStartPosition;
-		m_targetPosition = m_moveStartPosition;
-
-		switch (direction)
 		{
-		case ObjectDirection::Up:
-			m_targetPosition.y += 1.0f;
-			break;
-		case ObjectDirection::Down:
-			m_targetPosition.y -= 1.0f;
-			break;
-		case ObjectDirection::Left:
-			m_targetPosition.x -= 1.0f;
-			break;
-		case ObjectDirection::Right:
-			m_targetPosition.x += 1.0f;
-			break;
-		}
-	};
+			Vector3 startPosition = snapToGrid(m_position);
+			Vector3 targetPosition = startPosition;
+
+			switch (direction)
+			{
+				case ObjectDirection::Up:
+					targetPosition.z += 1.0f;
+					break;
+				case ObjectDirection::Down:
+					targetPosition.z -= 1.0f;
+					break;
+				case ObjectDirection::Left:
+					targetPosition.x += 1.0f;
+					break;
+				case ObjectDirection::Right:
+					targetPosition.x -= 1.0f;
+					break;
+			}
+
+			if (m_pTileMap)
+			{
+				if (!m_pTileMap->IsWalkableAtWorld(targetPosition))
+				{
+					return;
+				}
+			}
+
+			m_moveState = MoveState::Moving;
+			m_isMoving = true;
+			m_moveTimer = 0.0f;
+			m_moveStartPosition = startPosition;
+			m_position = m_moveStartPosition;
+			m_targetPosition = targetPosition;
+			m_position.y = GROUND_HEIGHT;
+			m_targetPosition.y = GROUND_HEIGHT;
+		};
 
 	if (m_moveState == MoveState::Idle)
 	{
@@ -150,6 +165,7 @@ void Player2D::Update(float elapsedTime)
 		}
 
 		m_position = Vector3::Lerp(m_moveStartPosition, m_targetPosition, t);
+		m_position.y = GROUND_HEIGHT;
 	}
 
 	m_pBillboardSprite->SetPosition(m_position);

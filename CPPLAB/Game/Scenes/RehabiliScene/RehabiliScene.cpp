@@ -45,8 +45,12 @@ void RehabiliScene::Initialize()
 
 	// カメラを生成して、ビュー・射影の準備を完了させる。
 	CreateCamera();
+	// タイルマップの生成
+	m_pTileMap = std::make_unique<TileMap>();
+	m_pTileMap->Initialize();
 	// プレイヤーを生成する
 	m_pPlayer2D = std::make_unique<Player2D>();
+	m_pPlayer2D->SetTileMap(m_pTileMap.get());
 
 
 }
@@ -63,18 +67,18 @@ void RehabiliScene::Update(float elapsedTime)
 	m_time += elapsedTime;
 
 
-	// カメラ更新（ゲームロジックとは独立）。
-	m_pTPCamera->SetTime(m_time);
+	// プレイヤー更新
+	m_pPlayer2D->Update(elapsedTime);
+	// 3D空間用の追従カメラを設定する
+	auto playerPosition = m_pPlayer2D->GetPosition();
+	m_pTPCamera->SetTargetPosition(playerPosition);
+	m_pTPCamera->SetEyePosition(playerPosition + DirectX::SimpleMath::Vector3(0.0f, 15.0f, -5.0f));
 	m_pTPCamera->Update();
-	m_debugCamera->Update(MyResourecs::Get().GetInputManager());
-	m_view = m_debugCamera->GetViewMatrix();
+	m_view = m_pTPCamera->GetViewMatrix();
 
 	// シーン遷移入力。
 	auto keyState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
 	if (keyState.Enter)m_isChangeScene = true;
-
-	// プレイヤー更新
-	m_pPlayer2D->Update(elapsedTime);
 
 }
 /*
@@ -88,8 +92,12 @@ void RehabiliScene::Render()
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	const auto deviceResources = MyResourecs::Get().GetDeviceResources();
-	const auto states = MyResourecs::Get().GetCommonStates();
-	auto context = deviceResources->GetD3DDeviceContext();
+	// タイルマップ描画
+	if (m_pTileMap)
+	{
+		m_pTileMap->SetRenderCenter(m_pPlayer2D->GetPosition());
+		m_pTileMap->Render(m_view, m_projection);
+	}
 	// プレイヤー描画
 	m_pPlayer2D->Render(m_view, m_projection);
 }
@@ -101,6 +109,16 @@ void RehabiliScene::Render()
 */
 void RehabiliScene::Finalize()
 {
+	if (m_pTileMap)
+	{
+		m_pTileMap->Finalize();
+		m_pTileMap.reset();
+	}
+	if (m_pPlayer2D)
+	{
+		m_pPlayer2D->Finalize();
+		m_pPlayer2D.reset();
+	}
 
 }
 /*
