@@ -94,6 +94,8 @@
     <ClInclude Include="Game\MyResources\MyResources.h" />
     <ClInclude Include="Game\Player2D\PlayerDirection.h" />
     <ClInclude Include="Game\GameObject\IGameObject.h" />
+    <ClInclude Include="Game\Map\MapTile.h" />
+    <ClInclude Include="Game\OverWorldMap\OverWorldMap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -147,6 +149,8 @@
     <ClCompile Include="KumachiLib\BillboardSprite\BillboardSprite.cpp" />
     <ClCompile Include="Game\Player2D\Player2D.cpp" />
     <ClCompile Include="Game\MyResources\MyResources.cpp" />
+    <ClCompile Include="Game\Map\MapTile.cpp" />
+    <ClCompile Include="Game\OverWorldMap\OverWorldMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

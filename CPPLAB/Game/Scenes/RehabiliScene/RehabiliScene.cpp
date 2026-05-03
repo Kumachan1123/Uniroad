@@ -47,6 +47,9 @@ void RehabiliScene::Initialize()
 	CreateCamera();
 	// プレイヤーを生成する
 	m_pPlayer2D = std::make_unique<Player2D>();
+	// マップを生成する
+	m_pOverWorldMap = std::make_unique<OverWorldMap>();
+
 
 
 }
@@ -75,6 +78,8 @@ void RehabiliScene::Update(float elapsedTime)
 
 	// プレイヤー更新
 	m_pPlayer2D->Update(elapsedTime);
+	// マップ更新
+	m_pOverWorldMap->Update(elapsedTime);
 
 }
 /*
@@ -90,6 +95,8 @@ void RehabiliScene::Render()
 	const auto deviceResources = MyResourecs::Get().GetDeviceResources();
 	const auto states = MyResourecs::Get().GetCommonStates();
 	auto context = deviceResources->GetD3DDeviceContext();
+	// マップ描画
+	m_pOverWorldMap->Render(m_view, m_projection);
 	// プレイヤー描画
 	m_pPlayer2D->Render(m_view, m_projection);
 }

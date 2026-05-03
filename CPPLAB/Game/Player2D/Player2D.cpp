@@ -28,7 +28,7 @@ void Player2D::Initialize()
 	m_pBillboardSprite->Initialize();
 	// ビルボードスプライトの位置とスケール を設定
 	m_pBillboardSprite->SetPosition(m_position);
-	m_pBillboardSprite->SetScale(1.0f);
+	m_pBillboardSprite->SetScale(0.50f);
 	// ビルボード機能の有効/無効を設定
 	m_pBillboardSprite->SetBillboard(true);
 }
@@ -41,48 +41,48 @@ void Player2D::Update(float elapsedTime)
 	auto& keyboardState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
 
 	auto isPressed = [&](DirectX::Keyboard::Keys key)
-	{
-		return keyboardState.IsKeyDown(key);
-	};
+		{
+			return keyboardState.IsKeyDown(key);
+		};
 
 	auto isNewPress = [&](DirectX::Keyboard::Keys key)
-	{
-		return keyboardState.IsKeyDown(key) && !m_prevKeyboardState.IsKeyDown(key);
-	};
+		{
+			return keyboardState.IsKeyDown(key) && !m_prevKeyboardState.IsKeyDown(key);
+		};
 
 	auto snapToGrid = [](const Vector3& position)
-	{
-		return Vector3(
-			std::round(position.x),
-			std::round(position.y),
-			std::round(position.z));
-	};
+		{
+			return Vector3(
+				std::round(position.x),
+				std::round(position.y),
+				std::round(position.z));
+		};
 
 	auto beginMove = [&](ObjectDirection direction)
-	{
-		m_moveState = MoveState::Moving;
-		m_isMoving = true;
-		m_moveTimer = 0.0f;
-		m_moveStartPosition = snapToGrid(m_position);
-		m_position = m_moveStartPosition;
-		m_targetPosition = m_moveStartPosition;
-
-		switch (direction)
 		{
-		case ObjectDirection::Up:
-			m_targetPosition.y += 1.0f;
-			break;
-		case ObjectDirection::Down:
-			m_targetPosition.y -= 1.0f;
-			break;
-		case ObjectDirection::Left:
-			m_targetPosition.x -= 1.0f;
-			break;
-		case ObjectDirection::Right:
-			m_targetPosition.x += 1.0f;
-			break;
-		}
-	};
+			m_moveState = MoveState::Moving;
+			m_isMoving = true;
+			m_moveTimer = 0.0f;
+			m_moveStartPosition = snapToGrid(m_position);
+			m_position = m_moveStartPosition;
+			m_targetPosition = m_moveStartPosition;
+
+			switch (direction)
+			{
+				case ObjectDirection::Up:
+					m_targetPosition.z -= 1.0f;
+					break;
+				case ObjectDirection::Down:
+					m_targetPosition.z += 1.0f;
+					break;
+				case ObjectDirection::Left:
+					m_targetPosition.x -= 1.0f;
+					break;
+				case ObjectDirection::Right:
+					m_targetPosition.x += 1.0f;
+					break;
+			}
+		};
 
 	if (m_moveState == MoveState::Idle)
 	{

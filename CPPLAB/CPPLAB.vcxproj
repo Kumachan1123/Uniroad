@@ -206,6 +206,7 @@
     <ClInclude Include="Game\Camera\TrackingCamera\TrackingCamera.h" />
     <ClInclude Include="Game\Car\Car.h" />
     <ClInclude Include="Game\GameObject\IGameObject.h" />
+    <ClInclude Include="Game\Map\MapTile.h" />
     <ClInclude Include="Game\MyResources\MyResources.h" />
     <ClInclude Include="Game\Fade\Fade.h" />
     <ClInclude Include="Game\Interface\IButton.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Game\CommonResources\CommonResources.h" />
     <ClInclude Include="Game\Interface\IUI.h" />
     <ClInclude Include="Game\MetalMoon\MetalMoon.h" />
+    <ClInclude Include="Game\OverWorldMap\OverWorldMap.h" />
     <ClInclude Include="Game\Particle\Particle.h" />
     <ClInclude Include="Game\Particle\Utility.h" />
     <ClInclude Include="Game\Player2D\Player2D.h" />
@@ -291,8 +293,10 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game\Camera\FixedCamera\FixedCamera.cpp" />
     <ClCompile Include="Game\CommonResources\CommonResources.cpp" />
+    <ClCompile Include="Game\Map\MapTile.cpp" />
     <ClCompile Include="Game\MetalMoon\MetalMoon.cpp" />
     <ClCompile Include="Game\MyResources\MyResources.cpp" />
+    <ClCompile Include="Game\OverWorldMap\OverWorldMap.cpp" />
     <ClCompile Include="Game\Particle\Particle.cpp" />
     <ClCompile Include="Game\Particle\Utility.cpp" />
     <ClCompile Include="Game\Player2D\Player2D.cpp" />

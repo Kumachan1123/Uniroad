@@ -1,4 +1,6 @@
 {
   "Medal": "Resources/Textures/Medal.png",
-  "Player": "Resources/Textures/Player.png"
+  "Player": "Resources/Textures/Player.png",
+  "Grass": "Resources/Textures/Grass.png",
+  "OverWorld": "Resources/Textures/OverWorld.png"
 }
