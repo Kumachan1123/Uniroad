@@ -1,9 +1,12 @@
 #include <pch.h>
 #include "OverWorldMap.h"
+#include <fstream>
+#include <sstream>
+#include <string>
 /*
-*	@brief コンストラクタ
-*	@details OverWorldMapクラスのコンストラクタ
-*	@param なし
+* 	@brief コンストラクタ
+* 	@details OverWorldMapクラスのコンストラクタ
+* 	@param なし
 */
 OverWorldMap::OverWorldMap()
 	: m_mapTiles()// マップタイルのコンテナ
@@ -11,25 +14,52 @@ OverWorldMap::OverWorldMap()
 	Initialize();
 }
 /*
-*	@brief 初期化
-*	@details OverWorldMapクラスの初期化
-*	@param なし
-*	@return なし
+* 	@brief 初期化
+* 	@details OverWorldMapクラスの初期化
+* 	@param なし
+* 	@return なし
 */
 void OverWorldMap::Initialize()
 {
-	const int SIZE = 2;
-	// 手始めに3x3のマップタイルを生成してみる
-	for (int row = 0; row < SIZE; ++row)
+	const float tileInterval = 1.0f;
+	const float startX = -1.0f;
+	const float startZ = -1.0f;
+	const std::string filename = "Resources/Map/Map.csv";
+
+	std::ifstream ifs(filename);
+	if (!ifs.is_open())
 	{
-		for (int col = 0; col < SIZE; ++col)
+		return;
+	}
+
+	std::string line;
+	int row = 0;
+	while (std::getline(ifs, line))
+	{
+		if (line.empty())
 		{
+			continue;
+		}
+
+		std::stringstream ss(line);
+		std::string cell;
+		int col = 0;
+		while (std::getline(ss, cell, ','))
+		{
+			if (cell.empty())
+			{
+				++col;
+				continue;
+			}
+
 			auto tile = std::make_unique<MapTile>();
 			tile->SetFrame(36, 40); // マップチップの行数と列数を設定
-			tile->SetChipNum(0); // マップチップの番号を設定
+			tile->SetChipNum(std::stoi(cell)); // CSVの数値をチップ番号に設定
 			tile->SetMapPosition(row, col); // マップ上の位置を設定
 			m_mapTiles.push_back(std::move(tile)); // タイルをコンテナに追加
+			++col;
 		}
+		++row;
 	}
 }
 
