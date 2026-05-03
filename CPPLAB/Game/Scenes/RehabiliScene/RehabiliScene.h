@@ -33,7 +33,6 @@
 #include "Game/PuyoManager/PuyoManager.h"
 #include <KumachiLib\BillboardSprite\BillboardSprite.h>
 #include <Game\Player2D\Player2D.h>
-#include <Game\TileMap\TileMap.h>
 // 前方宣言
 class CommonResources;
 
@@ -102,7 +101,5 @@ private:
 	std::unique_ptr<Android> m_pAndroid;
 	// 2Dプレイヤー
 	std::unique_ptr<Player2D> m_pPlayer2D;
-	// ?t?@?~???[???n?
-	std::unique_ptr<TileMap> m_pTileMap;
 
 };

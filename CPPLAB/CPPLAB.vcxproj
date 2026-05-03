@@ -229,7 +229,6 @@
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scenes\RehabiliScene\RehabiliScene.h" />
-    <ClInclude Include="Game\TileMap\TileMap.h" />
     <ClInclude Include="KumachiLib\BillboardSprite\BillboardSprite.h" />
     <ClInclude Include="KumachiLib\Material\Material.h" />
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
@@ -303,7 +302,6 @@
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
     <ClCompile Include="Game\Scenes\RehabiliScene\RehabiliScene.cpp" />
     <ClCompile Include="Game\Sky\Sky.cpp" />
-    <ClCompile Include="Game\TileMap\TileMap.cpp" />
     <ClCompile Include="KumachiLib\Animaiton\Animation.cpp" />
     <ClCompile Include="KumachiLib\BillboardSprite\BillboardSprite.cpp" />
     <ClCompile Include="KumachiLib\Bloom\Bloom.cpp" />
