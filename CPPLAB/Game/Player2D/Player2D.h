@@ -1,6 +1,7 @@
 #pragma once
 #ifndef Player2D_h
 #define Player2D_h
+#include <functional>
 #include <KumachiLib\BillboardSprite\BillboardSprite.h>
 #include <Libraries\MyLib\InputManager.h>
 #include <Game\MyResources\MyResources.h>
@@ -26,6 +27,8 @@ public:
 
 	// マップタイルの行・列から初期位置を設定する
 	void SetMapTilePosition(int row, int col);
+	// 移動先の通行可否を問い合わせる関数を設定する
+	void SetCanMoveCallback(const std::function<bool(int, int)>& canMoveCallback);
 private:
 	const float TURN_TIME = 0.02f;// 向き変更の時間
 	const float MOVE_TIME = 0.3f;// 1マス移動にかける時間
@@ -41,5 +44,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_targetPosition;// 移動先位置
 	bool m_isMoving;// 移動中フラグ
 	DirectX::Keyboard::State m_prevKeyboardState;// 前フレームの入力状態
+	std::function<bool(int, int)> m_canMoveCallback;
 };
 #endif // !Player2D_h

@@ -1,15 +1,15 @@
 /*
-*	@file RehabiliScene.cpp
-*	@brief ゲームづくりのリハビリ用シーンクラス
+* 	@file RehabiliScene.cpp
+* 	@brief ゲームづくりのリハビリ用シーンクラス
 */
 
 #include "pch.h"
 #include "RehabiliScene.h"
 /*
-*	@brief コンストラクタ
-*	@details ゲームづくりのリハビリ用シーンクラスのコンストラクタ
-*	@param sceneID シーンID
-*	@return なし
+* 	@brief コンストラクタ
+* 	@details ゲームづくりのリハビリ用シーンクラスのコンストラクタ
+* 	@param sceneID シーンID
+* 	@return なし
 */
 RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
 	: m_pTPCamera(nullptr) // カメラへのポインタ
@@ -20,18 +20,18 @@ RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
 	, m_time(0.0f) // 時間
 {}
 /*
-*	@brief デストラクタ
-*	@details ゲームづくりのリハビリ用シーンクラスのデストラクタ
-*	@param なし
-*	@return なし
+* 	@brief デストラクタ
+* 	@details ゲームづくりのリハビリ用シーンクラスのデストラクタ
+* 	@param なし
+* 	@return なし
 */
 RehabiliScene::~RehabiliScene()
 {}
 /*
-*	@brief 初期化
-*	@details ゲームづくりのリハビリ用シーンクラスの初期化を行う
-*	@param なし
-*	@return なし
+* 	@brief 初期化
+* 	@details ゲームづくりのリハビリ用シーンクラスの初期化を行う
+* 	@param なし
+* 	@return なし
 */
 void RehabiliScene::Initialize()
 {
@@ -45,22 +45,24 @@ void RehabiliScene::Initialize()
 
 	// カメラを生成して、ビュー・射影の準備を完了させる。
 	CreateCamera();
-	// プレイヤーを生成する
-	m_pPlayer2D = std::make_unique<Player2D>();
-	// プレイヤーの初期位置をマップタイルの行・列から設定する
-	m_pPlayer2D->SetMapTilePosition(3, 5);
 
 	// マップを生成する
 	m_pOverWorldMap = std::make_unique<OverWorldMap>();
 
-
-
+	// プレイヤーを生成する
+	m_pPlayer2D = std::make_unique<Player2D>();
+	// プレイヤーの初期位置をマップタイルの行・列から設定する
+	m_pPlayer2D->SetMapTilePosition(3, 5);
+	// プレイヤーの移動可能範囲を設定
+	m_pPlayer2D->SetCanMoveCallback([this](int row, int col) {
+		return m_pOverWorldMap->IsWalkable(row, col);
+		});
 }
 /*
-*	@brief 更新
-*	@details ゲームづくりのリハビリ用シーンクラスの更新を行う
-*	@param elapsedTime 経過時間
-*	@return なし
+* 	@brief 更新
+* 	@details ゲームづくりのリハビリ用シーンクラスの更新を行う
+* 	@param elapsedTime 経過時間
+* 	@return なし
 */
 void RehabiliScene::Update(float elapsedTime)
 {
@@ -86,10 +88,10 @@ void RehabiliScene::Update(float elapsedTime)
 
 }
 /*
-*	@brief 描画
-*	@details ゲームづくりのリハビリ用シーンクラスの描画を行う
-*	@param なし
-*	@return なし
+* 	@brief 描画
+* 	@details ゲームづくりのリハビリ用シーンクラスの描画を行う
+* 	@param なし
+* 	@return なし
 */
 void RehabiliScene::Render()
 {
@@ -104,20 +106,20 @@ void RehabiliScene::Render()
 	m_pPlayer2D->Render(m_view, m_projection);
 }
 /*
-*	@brief 終了
-*	@details ゲームづくりのリハビリ用シーンクラスの終了処理を行う
-*	@param なし
-*	@return なし
+* 	@brief 終了
+* 	@details ゲームづくりのリハビリ用シーンクラスの終了処理を行う
+* 	@param なし
+* 	@return なし
 */
 void RehabiliScene::Finalize()
 {
 
 }
 /*
-*	@brief シーン変更
-*	@details シーン変更の有無を取得する
-*	@param なし
-*	@return シーンID
+* 	@brief シーン変更
+* 	@details シーン変更の有無を取得する
+* 	@param なし
+* 	@return シーンID
 */
 IScene::SceneID RehabiliScene::GetNextSceneID() const
 {
@@ -128,9 +130,9 @@ IScene::SceneID RehabiliScene::GetNextSceneID() const
 }
 /*
 * 	@brief カメラに関する設定をする
-*	@details カメラの作成と設定を行う
-*	@param なし
-*	@return なし
+* 	@details カメラの作成と設定を行う
+* 	@param なし
+* 	@return なし
 */
 void RehabiliScene::CreateCamera()
 {
@@ -157,10 +159,10 @@ void RehabiliScene::CreateCamera()
 	m_pTPCamera->SetProjectionMatrix(m_projection);
 }
 /*
-*	@brief SDKメッシュを作る
-*	@details SDKメッシュの作成を行う
-*	@param name SDKメッシュの名前
-*	@return なし
+* 	@brief SDKメッシュを作る
+* 	@details SDKメッシュの作成を行う
+* 	@param name SDKメッシュの名前
+* 	@return なし
 */
 void RehabiliScene::CreateSDKMesh(std::wstring name)
 {

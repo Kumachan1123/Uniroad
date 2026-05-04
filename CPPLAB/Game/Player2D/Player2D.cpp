@@ -13,6 +13,7 @@ Player2D::Player2D()
 	, m_targetPosition(0.0f, 0.0f, 0.0f)
 	, m_isMoving(false)
 	, m_prevKeyboardState{}
+	, m_canMoveCallback()
 {
 	Initialize();
 }
@@ -46,6 +47,11 @@ void Player2D::SetMapTilePosition(int row, int col)
 	}
 }
 
+void Player2D::SetCanMoveCallback(const std::function<bool(int, int)>& canMoveCallback)
+{
+	m_canMoveCallback = canMoveCallback;
+}
+
 void Player2D::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;
@@ -73,10 +79,41 @@ void Player2D::Update(float elapsedTime)
 
 	auto beginMove = [&](ObjectDirection direction)
 		{
+			Vector3 startPosition = snapToGrid(m_position);
+			int nextRow = static_cast<int>(startPosition.z);
+			int nextCol = static_cast<int>(startPosition.x);
+
+			switch (direction)
+			{
+				case ObjectDirection::Up:
+					nextRow -= 1;
+					break;
+				case ObjectDirection::Down:
+					nextRow += 1;
+					break;
+				case ObjectDirection::Left:
+					nextCol -= 1;
+					break;
+				case ObjectDirection::Right:
+					nextCol += 1;
+					break;
+			}
+
+			if (m_canMoveCallback && !m_canMoveCallback(nextRow, nextCol))
+			{
+				m_isMoving = false;
+				m_moveState = MoveState::Idle;
+				m_moveTimer = 0.0f;
+				m_moveStartPosition = startPosition;
+				m_targetPosition = startPosition;
+				m_position = startPosition;
+				return;
+			}
+
 			m_moveState = MoveState::Moving;
 			m_isMoving = true;
 			m_moveTimer = 0.0f;
-			m_moveStartPosition = snapToGrid(m_position);
+			m_moveStartPosition = startPosition;
 			m_position = m_moveStartPosition;
 			m_targetPosition = m_moveStartPosition;
 

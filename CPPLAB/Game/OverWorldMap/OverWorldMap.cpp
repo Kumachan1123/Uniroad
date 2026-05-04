@@ -10,7 +10,9 @@
 * 	@param なし
 */
 OverWorldMap::OverWorldMap()
-	: m_mapTiles()// マップタイルのコンテナ
+	: m_mapLayer1() // マップタイルのコンテナ
+	, m_mapLayer2() // マップのレイヤー2（必要に応じて使用）
+	, m_collisionLayer() // 当たり判定タイルのコンテナ
 {
 	Initialize();
 }
@@ -22,43 +24,75 @@ OverWorldMap::OverWorldMap()
 */
 void OverWorldMap::Initialize()
 {
-	CSVMapLoad("Resources/Map/Map.csv"); // CSVファイルからマップデータを読み込む
+	CSVMapLoad("Resources/Map/Map.csv", m_mapLayer1); // CSVファイルからマップデータを読み込む
+	//CSVMapLoad("Resources/Map/Map.csv", m_mapLayer2); // CSVファイルからマップデータを読み込む
+	CSVCollisionLoad("Resources/Map/CollisonMap.csv"); // CSVファイルから当たり判定データを読み込む
+}
 
+bool OverWorldMap::IsWalkable(int row, int col) const
+{
+	for (const auto& tile : m_collisionLayer)
+	{
+		if (tile != nullptr && tile->GetRow() == row && tile->GetCol() == col)
+		{
+			return !tile->HasCollision();
+		}
+	}
+	return true;
 }
 
 void OverWorldMap::Update(float elapsedTime)
 {
 	// 各マップタイルの更新
-	for (auto& tile : m_mapTiles)
+	for (auto& tile : m_mapLayer1)
 	{
-		tile->Update(elapsedTime);
+		if (tile != nullptr)
+			tile->Update(elapsedTime);
 	}
-}
+	for (auto& tile : m_mapLayer2)
+	{
+		if (tile != nullptr)
+			tile->Update(elapsedTime);
+	}
 
+}
 void OverWorldMap::Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	// 各マップタイルの描画
-	for (auto& tile : m_mapTiles)
+	for (auto& tile : m_mapLayer1)
 	{
 		tile->Render(view, projection);
 	}
-}
+	for (auto& tile : m_mapLayer2)
+	{
+		tile->Render(view, projection);
+	}
 
+}
 void OverWorldMap::Finalize()
 {
 	// 各マップタイルの終了処理
-	for (auto& tile : m_mapTiles)
+	for (auto& tile : m_mapLayer1)
+	{
+		tile->Finalize();
+	}
+	for (auto& tile : m_mapLayer2)
+	{
+		tile->Finalize();
+	}
+	for (auto& tile : m_collisionLayer)
 	{
 		tile->Finalize();
 	}
 }
 /*
-*	@brief CSVマップの読み込み
-*	@details CSVファイルからマップデータを読み込む関数
-*	@param filename CSVファイルのパス
-*	@return なし
+* 	@brief CSVマップの読み込み
+* 	@details CSVファイルからマップデータを読み込む関数
+* 	@param filename CSVファイルのパス
+* 	@param pMap マップタイルのコンテナ
+* 	@return なし
 */
-void OverWorldMap::CSVMapLoad(const std::string& filename)
+void OverWorldMap::CSVMapLoad(const std::string& filename, std::vector<std::unique_ptr<MapTile>>& pMap)
 {
 	const float tileInterval = 1.0f;
 	const float startX = -1.0f;
@@ -94,29 +128,48 @@ void OverWorldMap::CSVMapLoad(const std::string& filename)
 			tile->SetFrame(36, 40); // マップチップの行数と列数を設定
 			tile->SetChipNum(std::stoi(cell)); // CSVの数値をチップ番号に設定
 			tile->SetMapPosition(row, col); // マップ上の位置を設定
-			m_mapTiles.push_back(std::move(tile)); // タイルをコンテナに追加
+			tile->SetPosition(DirectX::SimpleMath::Vector3(startX + col * tileInterval, -1.0f, startZ + row * tileInterval));
+			pMap.push_back(std::move(tile)); // タイルをコンテナに追加
 			++col;
 		}
 		++row;
 	}
 }
 
-MapTile* OverWorldMap::GetTile(int row, int col) const
+void OverWorldMap::CSVCollisionLoad(const std::string& filename)
 {
-	// マップタイルの行数と列数を取得
-	int tileRows = 0;
-	int tileCols = 0;
-	if (!m_mapTiles.empty())
+	std::ifstream ifs(filename);
+	if (!ifs.is_open())
 	{
-		tileRows = m_mapTiles[0]->GetRow();
-		tileCols = m_mapTiles[0]->GetCol();
+		return;
 	}
-	// タイル番号を計算
-	int tileNum = row * tileCols + col;
-	// タイル番号が有効な範囲内かチェック
-	if (tileNum < 0 || tileNum >= static_cast<int>(m_mapTiles.size()))
+
+	std::string line;
+	int row = 0;
+	while (std::getline(ifs, line))
 	{
-		return nullptr; // 無効なタイル番号の場合はnullptrを返す
+		if (line.empty())
+		{
+			continue;
+		}
+		std::stringstream ss(line);
+		std::string cell;
+		int col = 0;
+		while (std::getline(ss, cell, ','))
+		{
+			if (cell.empty())
+			{
+				++col;
+				continue;
+			}
+			auto tile = std::make_unique<CollisionTile>();
+			bool hasCollision = std::stoi(cell) == 1; // CSVの数値が1なら当たり判定あり、0ならなし
+			tile->SetHasCollision(hasCollision); // CSVの数値が1なら当たり判定あり、0ならなし
+			tile->SetMapPosition(row, col); // マップ上の位置を設定
+			m_collisionLayer.push_back(std::move(tile)); // タイルをコンテナに追加
+			++col;
+		}
+		++row;
 	}
-	return m_mapTiles[tileNum].get(); // タイルを返す
 }
+

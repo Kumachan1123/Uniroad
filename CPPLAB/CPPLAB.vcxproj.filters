@@ -96,6 +96,7 @@
     <ClInclude Include="Game\GameObject\IGameObject.h" />
     <ClInclude Include="Game\Map\MapTile.h" />
     <ClInclude Include="Game\OverWorldMap\OverWorldMap.h" />
+    <ClInclude Include="Game\CollisionTile\CollisionTile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="Game\MyResources\MyResources.cpp" />
     <ClCompile Include="Game\Map\MapTile.cpp" />
     <ClCompile Include="Game\OverWorldMap\OverWorldMap.cpp" />
+    <ClCompile Include="Game\CollisionTile\CollisionTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -185,6 +187,7 @@
     <None Include="HLSL\Material\MaterialNoTex.hlsli" />
     <None Include="HLSL\SDKMesh\Header.hlsli" />
     <None Include="docs\PuyoManager_RefactorPlan.md" />
+    <None Include=".github\copilot-instructions.md" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
