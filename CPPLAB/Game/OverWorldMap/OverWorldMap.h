@@ -8,6 +8,9 @@
 class OverWorldMap : public IGameObject
 {
 public:
+	// 任意のタイル番号のタイルを取得する関数
+	MapTile* GetTile(int row, int col)const;
+public:
 	OverWorldMap();
 	~OverWorldMap() = default;
 	void Initialize()override;

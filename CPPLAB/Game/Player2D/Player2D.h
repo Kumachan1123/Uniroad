@@ -23,6 +23,9 @@ public:
 	void Update(float elapsedTime)override;
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)override;
 	void Finalize()override;
+
+	// マップタイルの行・列から初期位置を設定する
+	void SetMapTilePosition(int row, int col);
 private:
 	const float TURN_TIME = 0.02f;// 向き変更の時間
 	const float MOVE_TIME = 0.3f;// 1マス移動にかける時間

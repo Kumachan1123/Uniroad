@@ -33,6 +33,19 @@ void Player2D::Initialize()
 	m_pBillboardSprite->SetBillboard(true);
 }
 
+void Player2D::SetMapTilePosition(int row, int col)
+{
+	using namespace DirectX::SimpleMath;
+	// タイル中心を基準に初期位置を決める
+	m_position = Vector3(static_cast<float>(col), m_position.y, static_cast<float>(row));
+	m_moveStartPosition = m_position;
+	m_targetPosition = m_position;
+	if (m_pBillboardSprite != nullptr)
+	{
+		m_pBillboardSprite->SetPosition(m_position);
+	}
+}
+
 void Player2D::Update(float elapsedTime)
 {
 	using namespace DirectX::SimpleMath;

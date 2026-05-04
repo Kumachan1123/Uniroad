@@ -47,6 +47,9 @@ void RehabiliScene::Initialize()
 	CreateCamera();
 	// プレイヤーを生成する
 	m_pPlayer2D = std::make_unique<Player2D>();
+	// プレイヤーの初期位置をマップタイルの行・列から設定する
+	m_pPlayer2D->SetMapTilePosition(3, 5);
+
 	// マップを生成する
 	m_pOverWorldMap = std::make_unique<OverWorldMap>();
 

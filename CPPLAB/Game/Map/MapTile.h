@@ -20,6 +20,10 @@ public:
 	void SetFrame(int rows, int cols) { m_frameRows = rows; m_frameCols = cols; }
 	// マップチップの番号をセット
 	void SetChipNum(int chipNum) { m_chipNum = chipNum; }
+	// マップ上での行と列を取得
+	int GetRow() const { return m_row; }
+	int GetCol() const { return m_col; }
+
 	// マップ上での位置をセット
 	void SetMapPosition(int row, int col) { m_row = row; m_col = col; }
 

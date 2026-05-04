@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+
 /*
 * 	@brief コンストラクタ
 * 	@details OverWorldMapクラスのコンストラクタ
@@ -98,4 +99,24 @@ void OverWorldMap::CSVMapLoad(const std::string& filename)
 		}
 		++row;
 	}
+}
+
+MapTile* OverWorldMap::GetTile(int row, int col) const
+{
+	// マップタイルの行数と列数を取得
+	int tileRows = 0;
+	int tileCols = 0;
+	if (!m_mapTiles.empty())
+	{
+		tileRows = m_mapTiles[0]->GetRow();
+		tileCols = m_mapTiles[0]->GetCol();
+	}
+	// タイル番号を計算
+	int tileNum = row * tileCols + col;
+	// タイル番号が有効な範囲内かチェック
+	if (tileNum < 0 || tileNum >= static_cast<int>(m_mapTiles.size()))
+	{
+		return nullptr; // 無効なタイル番号の場合はnullptrを返す
+	}
+	return m_mapTiles[tileNum].get(); // タイルを返す
 }
