@@ -15,6 +15,8 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)override;
 	void Finalize()override;
 private:
+	void CSVMapLoad(const std::string& filename); // CSVファイルからマップデータを読み込む関数
+private:
 	std::vector<std::unique_ptr<MapTile>> m_mapTiles; // マップタイルのコンテナ
 };
 #endif // !OVER_WORLD_MAP_H

@@ -24,8 +24,8 @@ public:
 	void Render(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)override;
 	void Finalize()override;
 private:
-	const float TURN_TIME = 0.2f;// 向き変更の時間
-	const float MOVE_TIME = 0.15f;// 1マス移動にかける時間
+	const float TURN_TIME = 0.02f;// 向き変更の時間
+	const float MOVE_TIME = 0.3f;// 1マス移動にかける時間
 private:
 	std::unique_ptr<BillboardSprite> m_pBillboardSprite;// ビルボードスプライト
 	ObjectDirection m_direction;// プレイヤーの次の向き
