@@ -4,7 +4,6 @@
 /// </summary>
 
 
-#include <memory>
 namespace KumachiLib
 {
 	class BinaryFile

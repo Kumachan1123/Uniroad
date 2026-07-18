@@ -5,16 +5,13 @@
 #pragma once
 #ifndef TEXTUREMANAGER_DEFINED
 #define TEXTUREMANAGER_DEFINED
-// 標準ライブラリ
-#include <string>
-#include <fstream>
-#include <memory>
-#include <unordered_map>
-// DirectX
-#include <DeviceResources.h>
 
+// DirectX
+namespace DX
+{
+	class DeviceResources;
+}
 // 前方宣言
-class CommonResources;
 
 // テクスチャマネージャークラス
 class TextureManager
@@ -37,8 +34,6 @@ private:
 	void LoadTexture(const std::string& key, const wchar_t* path);
 private:
 	// private変数
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// デバイス
 	ID3D11Device1* m_pDevice;
 	// テクスチャのマップ

@@ -23,9 +23,9 @@ class AudioManager;
 class ModelManager;
 class TextureManager;
 class SettingManager;
-class MyResourecs : public Singleton<MyResourecs>
+class MyResources : public Singleton<MyResources>
 {
-	friend class Singleton<MyResourecs>;
+	friend class Singleton<MyResources>;
 public:
 	// アクセサ
 	// タイマーを取得する
@@ -63,9 +63,9 @@ public:
 private:
 	// publicメソッド
 	// コンストラクタ
-	MyResourecs() = default;
+	MyResources() = default;
 	// デストラクタ defaultで定義
-	~MyResourecs() = default;
+	~MyResources() = default;
 private:
 	// privateメンバ変数
 	// 受け渡しするリソース一覧

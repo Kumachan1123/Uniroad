@@ -4,8 +4,7 @@
 */
 #pragma once
 // 標準ライブラリ
-#include <string>
-#include <Windows.h>
+
 
 // ファイルカウンタークラス
 class FileCounter

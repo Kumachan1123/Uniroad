@@ -3,8 +3,6 @@
 *	@brief UIテキストクラス
 */
 #pragma once
-#include <string>
-#include <memory>
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
 #include <DeviceResources.h>
@@ -27,7 +25,7 @@ struct TextInfo
 	std::wstring text; // 描画するテキスト
 	DirectX::SimpleMath::Vector2 position; // テキストの位置
 	DirectX::SimpleMath::Color color; // テキストの色
-	float scale; // テキストのスケール
+	float scale = 1.0f; // テキストのスケール
 };
 
 // UIテキストクラス

@@ -22,20 +22,12 @@
 // 自作ヘッダーファイル
 #include "Game/SceneManager/IScene.h"
 #include <Game\MyResources\MyResources.h>
-#include "Game/CommonResources/CommonResources.h"
 #include "Game/Camera/FixedCamera/FixedCamera.h"
 #include "Game/Camera/TPCamera/TPCamera.h"
 #include "Game/Fade/Fade.h"
-#include "Game/Android/Android.h"
-#include "Game/Puyo/Puyo.h"
-#include "Game/PuyoGrid/PuyoGrid.h"
 #include "KumachiLib/Math/KumachiLib.h"
-#include "Game/PuyoManager/PuyoManager.h"
 #include <KumachiLib\BillboardSprite\BillboardSprite.h>
 #include <Game\Player2D\Player2D.h>
-#include <Game\OverWorldMap\OverWorldMap.h>
-// 前方宣言
-class CommonResources;
 
 // ゲームづくりのリハビリ用シーンクラス
 // 6x12の盤面を持ち、落下中の2連ぷよ（軸＋子）を入力で操作する。
@@ -98,12 +90,8 @@ private:
 	float m_time;
 	// モデル（未使用）
 	std::unique_ptr<DirectX::Model> m_pModel;
-	// Android（未使用）
-	std::unique_ptr<Android> m_pAndroid;
 	// 2Dプレイヤー
 	std::unique_ptr<Player2D> m_pPlayer2D;
-	// マップ
-	std::unique_ptr<OverWorldMap> m_pOverWorldMap;
 
 
 };

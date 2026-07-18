@@ -4,6 +4,9 @@
 */
 #include "pch.h"
 #include "UIText.h"
+#include <string>
+#include <memory>
+
 /*
 *	@brief コンストラクタ
 *	@details テキスト描画情報とアライメントの初期化を行う
@@ -44,8 +47,7 @@ UIText::UIText()
 *	@return なし
 */
 UIText::~UIText()
-{
-}
+{}
 /*
 *	@brief 初期化
 *	@details スプライトバッチとスプライトフォントの作成を行う

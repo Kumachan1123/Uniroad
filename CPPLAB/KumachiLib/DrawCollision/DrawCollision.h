@@ -3,18 +3,14 @@
 	@brief	当たり判定描画用クラス
 */
 #pragma once
-#include <Libraries/Microsoft/DebugDraw.h>
-#include <DeviceResources.h>
-#include "Game/CommonResources/CommonResources.h"
-//前方宣言
-class CommonResources;
+
 
 class DrawCollision
 {
 public:
 
 	// 初期化
-	static void Initialize(CommonResources* commonResources);
+	static void Initialize();
 	// 描画開始
 	static void DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	// 境界球描画
@@ -33,6 +29,4 @@ private:
 	static Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;
 	// プリミティブバッチ
 	static std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	// 共通リソース
-	static CommonResources* m_commonResources;
 };

@@ -3,29 +3,10 @@
 *	@brief スクロールバーの大元となるオブジェクトのヘッダーファイル
 */
 #pragma once
-// 標準ライブラリ
-#include <vector>
-#include <cassert>
-#include <memory>
-#include <string>
-// DirectX
-#include <SimpleMath.h>
-#include <Model.h>
-#include <Effects.h>
-#include <DeviceResources.h>
-// 外部ライブラリ
-#include <Libraries/MyLib/MemoryLeakDetector.h>
-#include <Libraries/Microsoft/DebugDraw.h>
-#include <Libraries/MyLib/DebugString.h>
-#include <Libraries/MyLib/InputManager.h>
-// 自作ヘッダーファイル
-#include "Game/CommonResources/CommonResources.h"
+#include "KumachiLib/Rect/Rect.h"
 #include "KumachiLib/Image/Image.h"
-#include "KumachiLib/Math/KumachiLib.h"
-#include "KumachiLib/MouseClick/MouseClick.h"
 
 // 前方宣言
-class CommonResources;
 
 // スクロールバーの大元となるオブジェクトのクラス
 class ScrollBar
@@ -67,7 +48,7 @@ public:
 	// デストラクタ
 	~ScrollBar();
 	// 初期化
-	void Initialize(CommonResources* resources, int width, int height);
+	void Initialize(int width, int height);
 	// 更新
 	void Update(const float elapsedTime);
 	// 画像を表示
@@ -85,8 +66,6 @@ private:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 private:
 	// private変数
-	// 共通リソースへのポインタ
-	CommonResources* m_pCommonResources;
 	// 操作部分画像クラス
 	std::unique_ptr<Image> m_pController;
 	// 棒画像クラス

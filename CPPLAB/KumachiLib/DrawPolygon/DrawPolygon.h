@@ -6,21 +6,13 @@
 #pragma once
 #ifndef DRAW_POLYGON_DEFINED
 #define DRAW_POLYGON_DEFINED
-// 標準ライブラリ
-#include <vector>
-// DirectXのヘッダファイル
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
-#include <WICTextureLoader.h>
-#include <CommonStates.h>
-// 外部ライブラリ
-#include "Game/CommonResources/CommonResources.h"
-#include <DeviceResources.h>
-#include <Libraries/Microsoft/DebugDraw.h>
 
-// 前方宣言
-class CommonResources;
+namespace DX
+{
+	class DeviceResources;
+}
+
+
 
 // 板ポリゴン描画用クラス
 class DrawPolygon

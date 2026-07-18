@@ -8,8 +8,6 @@
 // 自作ヘッダーファイル
 #include "Game/Interface/IUI.h"
 
-// 前方宣言
-class CommonResources;
 
 // 画像のインターフェースクラス
 class IImage : public IUI

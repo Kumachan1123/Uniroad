@@ -4,6 +4,22 @@
 */
 #include <pch.h>
 #include "Game.h"
+// 標準ライブラリ
+#include <thread>
+
+// 外部ライブラリ
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/nlohmann/json.hpp>
+// ゲーム関連
+#include "Game/SceneManager/IScene.h"
+#include "Game/SceneManager/SceneManager.h"
+#include "KumachiLib/AudioManager/AudioManager.h"
+#include "KumachiLib/ModelManager/ModelManager.h"
+#include "KumachiLib/TextureManager/TextureManager.h"
+#include "KumachiLib/SettingManager/SettingManager.h"
+#include "Game/Screen/Screen.h"
+#include "Game/MyResources/MyResources.h"
 /*
 *	@brief ゲームを終了する
 *	@detail ゲームを終了する関数(Main.cppから呼び出される)
@@ -25,7 +41,6 @@ Game::Game() noexcept(false)
 	: m_deviceResources{}// デバイスリソース
 	, m_timer{}// タイマー
 	, m_commonStates{}// コモンステート
-	, m_pCommonResources{}// 共通リソース
 	, m_debugString{}// デバッグ文字列
 	, m_inputManager{}// 入力マネージャ
 	, m_sceneManager{}// シーンマネージャ
@@ -40,6 +55,14 @@ Game::Game() noexcept(false)
 	// デバイス通知を登録する
 	m_deviceResources->RegisterDeviceNotify(this);
 }
+/*
+*	@brief デストラクタ
+*	@detail ゲームのメインクラスのデストラクタ
+*	@param なし
+*	@return なし
+*/
+Game::~Game()
+{}
 
 
 /*
@@ -80,8 +103,6 @@ void Game::Initialize(HWND window, int width, int height)
 	);
 	// オーディオマネージャーを作成する
 	m_audioManager = std::make_unique<AudioManager>();
-	// 共通リソースを作成する
-	m_pCommonResources = std::make_unique<CommonResources>();
 	// モデルマネージャを作成する
 	m_modelManager = std::make_unique<ModelManager>();
 	// テクスチャマネージャを作成する
@@ -112,7 +133,7 @@ void Game::Initialize(HWND window, int width, int height)
 	m_settingManager->Initialize();
 
 	// シーンへ渡す共通リソースを設定する
-	MyResourecs::Get().Initialize(
+	MyResources::Get().Initialize(
 		&m_timer,				// タイマー
 		m_deviceResources.get(),// デバイスリソース
 		m_commonStates.get(),	// コモンステート
@@ -124,17 +145,6 @@ void Game::Initialize(HWND window, int width, int height)
 		m_settingManager.get()	// 設定マネージャ
 	);
 
-	m_pCommonResources->Initialize(
-		&m_timer,				// タイマー
-		m_deviceResources.get(),// デバイスリソース
-		m_commonStates.get(),	// コモンステート
-		m_debugString.get(),	// デバッグ文字列
-		m_inputManager.get(),	// 入力マネージャ
-		m_audioManager.get(),	// オーディオマネージャ
-		m_modelManager.get(),	// モデルマネージャ
-		m_textureManager.get(),	// テクスチャマネージャ 
-		m_settingManager.get()	// 設定マネージャ
-	);
 	// シーンマネージャを作成する
 	m_sceneManager = std::make_unique<SceneManager>();
 	// シーンマネージャを初期化する

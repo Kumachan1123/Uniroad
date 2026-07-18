@@ -21,7 +21,6 @@
     <ClInclude Include="Game\SceneManager\IScene.h" />
     <ClInclude Include="Game\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Screen\Screen.h" />
-    <ClInclude Include="Game\CommonResources\CommonResources.h" />
     <ClInclude Include="KumachiLib\Anchor\Anchor.h" />
     <ClInclude Include="KumachiLib\AudioManager\AudioManager.h" />
     <ClInclude Include="KumachiLib\BinaryFile\BinaryFile.h" />
@@ -79,14 +78,8 @@
     <ClInclude Include="KumachiLib\OutLine\OutLine.h" />
     <ClInclude Include="KumachiLib\UIText\UIText.h" />
     <ClInclude Include="KumachiLib\Material\Material.h" />
-    <ClInclude Include="Game\MetalMoon\MetalMoon.h" />
-    <ClInclude Include="Game\Car\Car.h" />
     <ClInclude Include="Game\Scenes\RehabiliScene\RehabiliScene.h" />
-    <ClInclude Include="Game\Android\Android.h" />
     <ClInclude Include="Game\Camera\TPCamera\TPCamera.h" />
-    <ClInclude Include="Game\Puyo\Puyo.h" />
-    <ClInclude Include="Game\PuyoGrid\PuyoGrid.h" />
-    <ClInclude Include="Game\PuyoManager\PuyoManager.h" />
     <ClInclude Include="KumachiLib\BillboardSprite\BillboardSprite.h" />
     <ClInclude Include="Game\Player2D\Player2D.h" />
     <ClInclude Include="..\..\..\Downloads\Singleton.h" />
@@ -94,9 +87,6 @@
     <ClInclude Include="Game\MyResources\MyResources.h" />
     <ClInclude Include="Game\Player2D\PlayerDirection.h" />
     <ClInclude Include="Game\GameObject\IGameObject.h" />
-    <ClInclude Include="Game\Map\MapTile.h" />
-    <ClInclude Include="Game\OverWorldMap\OverWorldMap.h" />
-    <ClInclude Include="Game\CollisionTile\CollisionTile.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -106,7 +96,6 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Game\SceneManager\SceneManager.cpp" />
-    <ClCompile Include="Game\CommonResources\CommonResources.cpp" />
     <ClCompile Include="KumachiLib\AudioManager\AudioManager.cpp" />
     <ClCompile Include="KumachiLib\BinaryFile\BinaryFile.cpp" />
     <ClCompile Include="KumachiLib\CreateShader\CreateShader.cpp" />
@@ -139,20 +128,11 @@
     <ClCompile Include="KumachiLib\OutLine\OutLine.cpp" />
     <ClCompile Include="KumachiLib\UIText\UIText.cpp" />
     <ClCompile Include="KumachiLib\Material\Material.cpp" />
-    <ClCompile Include="Game\MetalMoon\MetalMoon.cpp" />
-    <ClCompile Include="Game\Car\Car.cpp" />
     <ClCompile Include="Game\Scenes\RehabiliScene\RehabiliScene.cpp" />
-    <ClCompile Include="Game\Android\Android.cpp" />
     <ClCompile Include="Game\Camera\TPCamera\TPCamera.cpp" />
-    <ClCompile Include="Game\Puyo\Puyo.cpp" />
-    <ClCompile Include="Game\PuyoGrid\PuyoGrid.cpp" />
-    <ClCompile Include="Game\PuyoManager\PuyoManager.cpp" />
     <ClCompile Include="KumachiLib\BillboardSprite\BillboardSprite.cpp" />
     <ClCompile Include="Game\Player2D\Player2D.cpp" />
     <ClCompile Include="Game\MyResources\MyResources.cpp" />
-    <ClCompile Include="Game\Map\MapTile.cpp" />
-    <ClCompile Include="Game\OverWorldMap\OverWorldMap.cpp" />
-    <ClCompile Include="Game\CollisionTile\CollisionTile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

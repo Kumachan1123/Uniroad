@@ -5,7 +5,11 @@
 */
 #include <pch.h>
 #include "CreateShader.h"
-using namespace KumachiLib;
+// 標準ライブラリ
+#include <memory>
+#include <utility>
+// 自作ヘッダーファイル
+#include "KumachiLib/BinaryFile/BinaryFile.h"
 // シングルトンインスタンスの初期化
 std::unique_ptr<CreateShader> CreateShader::m_pInstance = nullptr;
 /*
@@ -37,8 +41,7 @@ CreateShader::CreateShader()
 	, m_pIED(nullptr)// インプットエレメントディスクリプタ
 	, m_NumElements(0)// 要素数
 	, m_pInputLayout(nullptr)// レイアウト
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details シェーダーを作成するための初期化を行う
@@ -94,11 +97,11 @@ void CreateShader::Initialize(ID3D11Device1* device)
 * 	@return なし
 */
 void CreateShader::CreateVertexShader(const wchar_t* fileName,
-	Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs)
+									  Microsoft::WRL::ComPtr<ID3D11VertexShader>& vs)
 {
 
 	// バイナリファイルを読み込む
-	BinaryFile VS = BinaryFile::LoadFile(fileName);
+	KumachiLib::BinaryFile VS = KumachiLib::BinaryFile::LoadFile(fileName);
 	//シェーダーを作成
 	if (FAILED(m_pDevice->CreateVertexShader(VS.GetData(), VS.GetSize(), NULL, vs.ReleaseAndGetAddressOf())))
 	{
@@ -120,7 +123,7 @@ void CreateShader::CreateVertexShader(const wchar_t* fileName,
 void CreateShader::CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11PixelShader>& ps)
 {
 	// バイナリファイルを読み込む
-	BinaryFile PS = BinaryFile::LoadFile(fileName);
+	KumachiLib::BinaryFile PS = KumachiLib::BinaryFile::LoadFile(fileName);
 	// ピクセルシェーダ作成
 	if (FAILED(m_pDevice->CreatePixelShader(PS.GetData(), PS.GetSize(), NULL, ps.ReleaseAndGetAddressOf())))
 	{
@@ -140,7 +143,7 @@ void CreateShader::CreatePixelShader(const wchar_t* fileName, Microsoft::WRL::Co
 void CreateShader::CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11GeometryShader>& gs)
 {
 	// バイナリファイルを読み込む
-	BinaryFile GS = BinaryFile::LoadFile(fileName);
+	KumachiLib::BinaryFile GS = KumachiLib::BinaryFile::LoadFile(fileName);
 	// ジオメトリシェーダ作成
 	if (FAILED(m_pDevice->CreateGeometryShader(GS.GetData(), GS.GetSize(), NULL, gs.ReleaseAndGetAddressOf())))
 	{
@@ -160,7 +163,7 @@ void CreateShader::CreateGeometryShader(const wchar_t* fileName, Microsoft::WRL:
 void CreateShader::CreateComputeShader(const wchar_t* fileName, Microsoft::WRL::ComPtr<ID3D11ComputeShader>& cs)
 {
 	// バイナリファイルを読み込む
-	BinaryFile CS = BinaryFile::LoadFile(fileName);
+	KumachiLib::BinaryFile CS = KumachiLib::BinaryFile::LoadFile(fileName);
 	// コンピュートシェーダ作成
 	if (FAILED(m_pDevice->CreateComputeShader(CS.GetData(), CS.GetSize(), NULL, cs.ReleaseAndGetAddressOf())))
 	{

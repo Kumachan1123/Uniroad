@@ -4,6 +4,7 @@
 */
 #include "pch.h"
 #include "Animation.h"
+
 /*
 *	@brief コンストラクタ
 *	@details アニメーションクラスのコンストラクタ
@@ -15,8 +16,7 @@ Animation::Animation()
 	, m_currentStep(0) // 現在のアニメーションステップ
 	, m_animStepTime(0.0f) // アニメーションステップ時間
 	, m_isPaused(false) // 一時停止フラグ
-{
-}
+{}
 /*
 *	@brief アニメーションシーケンスを作成
 *	@details アニメーションシーケンスを作成する

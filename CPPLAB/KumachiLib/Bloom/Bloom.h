@@ -6,17 +6,16 @@
 #pragma once
 #ifndef BLOOM_DEFINED
 #define BLOOM_DEFINED
-// DirectXのヘッダファイル
-#include <PostProcess.h>
-#include <CommonStates.h>
-#include <DeviceResources.h>
 // 外部ライブラリ
-#include <Libraries/Microsoft/RenderTexture/RenderTexture.h>
-// 自作ヘッダーファイル
-#include "Game/CommonResources/CommonResources.h"
+#include <PostProcess.h>
+namespace DX
+{
+	class DeviceResources;
+	class RenderTexture;
+}
+
 
 //前方宣言
-class CommonResources;
 
 // ブルームエフェクトクラス
 class Bloom
@@ -39,7 +38,7 @@ public:
 	// デストラクタ
 	~Bloom();
 	// ポストプロセスを生成
-	void CreatePostProcess(CommonResources* resources);
+	void CreatePostProcess();
 	// オフスクリーン描画用にRTVを切り替える
 	void ChangeOffScreenRT();
 	// ポストプロセスに必要な設定を準備する
@@ -58,8 +57,6 @@ private:
 	//private変数
 	// シングルトンインスタンス
 	static std::unique_ptr<Bloom> m_pInstance;
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// 共通リソース
 	ID3D11DeviceContext1* m_pDeviceContext;
 	// デバイスリソース

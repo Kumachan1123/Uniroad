@@ -5,17 +5,24 @@
 
 #include "pch.h"
 #include "Material.h"
-
+#include <DeviceResources.h>
+// 外部ライブラリ
+#include <Libraries/MyLib/DebugCamera.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/GridFloor.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
+#include <Libraries/Microsoft/ReadData.h>
+#include "Game/MyResources/MyResources.h"
 Material::Material()
-	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_rgb(DirectX::Colors::White) // RGB値を白で初期化
-{
-}
+	: m_rgb(DirectX::Colors::White) // RGB値を白で初期化
+	, m_shaderName(L"Default") // シェーダー名を"Default"で初期化
+	, m_noTexture(false) // テクスチャなしフラグをfalseで初期化
 
-void Material::Initialize(CommonResources* resources)
+{}
+
+void Material::Initialize()
 {
-	// 共通リソースをセット
-	m_pCommonResources = resources;
 	// シェーダを読み込むための変数
 	std::vector<uint8_t> blob;
 	// 頂点シェーダのパスを指定して読み込む
@@ -29,8 +36,7 @@ void Material::Initialize(CommonResources* resources)
 }
 
 void Material::Finalize()
-{
-}
+{}
 /*
 *	@brief  各テクスチャをシェーダーにセットし、モデルにシェーダーを渡す
 *	@param[in] context デバイスコンテキスト
@@ -77,7 +83,7 @@ void Material::SetShaders(
 void Material::CreateVertexShader(const std::vector<uint8_t>& blob)
 {
 	// Direct3Dデバイスを取得
-	const auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	const auto device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
 	// 頂点シェーダーを作成する
 	device->CreateVertexShader(blob.data(), blob.size(), nullptr, m_vs.ReleaseAndGetAddressOf());
 }
@@ -85,7 +91,7 @@ void Material::CreateVertexShader(const std::vector<uint8_t>& blob)
 void Material::CreatePixelShader(const std::vector<uint8_t>& blob)
 {
 	// Direct3Dデバイスを取得
-	const auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	const auto device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
 	// ピクセルシェーダーを作成する
 	device->CreatePixelShader(blob.data(), blob.size(), nullptr, m_ps.ReleaseAndGetAddressOf());
 }

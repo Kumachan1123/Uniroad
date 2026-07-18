@@ -4,6 +4,11 @@
 */
 #include "pch.h"
 #include "Image.h"
+#include <DeviceResources.h>
+// 自作ヘッダーファイル
+#include "KumachiLib/BinaryFile/BinaryFile.h"
+#include "KumachiLib/CreateShader/CreateShader.h"
+#include "Game/MyResources/MyResources.h"
 // インプットレイアウトの定義
 const std::vector<D3D11_INPUT_ELEMENT_DESC>  Image::INPUT_LAYOUT =
 {
@@ -17,8 +22,7 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC>  Image::INPUT_LAYOUT =
 *	@return なし
 */
 Image::Image()
-	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_viewportWidth(0) // ビューポートの幅
+	: m_viewportWidth(0) // ビューポートの幅
 	, m_viewportHeight(0) // ビューポートの高さ
 	, m_pCreateShader(CreateShader::GetInstance()) // シェーダー作成クラス
 	, m_pDrawPolygon(DrawPolygon::GetInstance()) // 描画クラス
@@ -27,8 +31,7 @@ Image::Image()
 	, m_shaders{} // シェーダーの構造体
 	, m_vertices{} // 頂点配列
 	, m_constBuffer{} // コンスタントバッファ
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details 画像クラスのデストラクタ
@@ -36,28 +39,23 @@ Image::Image()
 *	@return なし
 */
 Image::~Image()
-{
-	// 共通リソースへのポインタをnullptrに設定
-	m_pCommonResources = nullptr;
-}
+{}
 /*
 *	@brief 初期化
 *	@details 画像クラスの初期化を行う
-*	@param resources 共通リソース
 *	@param width ウィンドウの幅
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void Image::Initialize(CommonResources* resources, int width, int height)
+void Image::Initialize(int width, int height)
 {
 	// 共通リソースへのポインタを設定
-	m_pCommonResources = resources;
 	// ウィンドウの幅を設定
 	m_viewportWidth = width;
 	// ウィンドウの高さを設定
 	m_viewportHeight = height;
 	// 描画クラスの初期化
-	m_pDrawPolygon->InitializePositionTexture(m_pCommonResources->GetDeviceResources());
+	m_pDrawPolygon->InitializePositionTexture(MyResources::Get().GetDeviceResources());
 	// シェーダーの作成
 	CreateShaders();
 }
@@ -70,7 +68,7 @@ void Image::Initialize(CommonResources* resources, int width, int height)
 void Image::CreateShaders()
 {
 	// シェーダー作成クラスの初期化
-	m_pCreateShader->Initialize(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
+	m_pCreateShader->Initialize(MyResources::Get().GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0], static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);
 	// 頂点シェーダーのパスの文字列を変換
 	std::wstring wpathVS = std::wstring(m_vertexShaderFilePath.begin(), m_vertexShaderFilePath.end());
 	// ピクセルシェーダーのパスの文字列を変換

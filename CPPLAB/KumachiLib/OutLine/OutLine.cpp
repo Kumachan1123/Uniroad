@@ -4,18 +4,23 @@
 */
 #include "pch.h"
 #include "OutLine.h"
+// 外部ライブラリ
+#include "Libraries/Microsoft/ReadData.h"
+#include <DeviceResources.h>
+
+// 自作ヘッダーファイル
+#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
+#include "Game/MyResources/MyResources.h"
 /*
 *	@brief コンストラクタ
 *	@details 輪郭線描画クラスのコンストラクタ
-*	@param commonResources 共通リソース
 *	@return なし
 */
-OutLine::OutLine(CommonResources* commonResources)
-	: m_pCommonResources(commonResources)// 共通リソース
-	, m_pDevice(commonResources->GetDeviceResources()->GetD3DDevice())// Direct3Dデバイス
+OutLine::OutLine()
+	: m_pDevice(MyResources::Get().GetDeviceResources()->GetD3DDevice())// Direct3Dデバイス
 	, m_pVS(nullptr)// 頂点シェーダ
 	, m_pPS(nullptr)// ピクセルシェーダ
-	, m_viewport(commonResources->GetDeviceResources()->GetScreenViewport()) // ビューポート
+	, m_viewport(MyResources::Get().GetDeviceResources()->GetScreenViewport()) // ビューポート
 {
 	// シェーダの読み込み
 	LoadShader(m_pDevice);
@@ -29,10 +34,7 @@ OutLine::OutLine(CommonResources* commonResources)
 *	@return なし
 */
 OutLine::~OutLine()
-{
-	// 共通リソースをnullptrに設定
-	m_pCommonResources = nullptr;
-}
+{}
 /*
 *	@brief 輪郭になるモデルを描画
 *	@details 輪郭になるモデルを描画する
@@ -47,7 +49,7 @@ void OutLine::RenderOutLine(const DirectX::SimpleMath::Matrix& view, const Direc
 	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// 必要なリソースを取得する
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto context = MyResources::Get().GetDeviceResources()->GetD3DDeviceContext();
 	// ワールドビュー射影行列の計算
 	Matrix ViewProj = view * proj;
 	// コンスタントバッファのマップ
@@ -73,35 +75,35 @@ void OutLine::RenderOutLine(const DirectX::SimpleMath::Matrix& view, const Direc
 		// ワールド行列を抽出
 		Matrix world = outLineInfo.second;
 		// 輪郭を描画する
-		model->Draw(context, *m_pCommonResources->GetCommonStates(), world, view, proj, false, [&]
-			{
-				// コンスタントバッファを設定
-				ID3D11Buffer* cbuf[] = { m_pOutlineConstantBuffer.Get() };
-				// 各シェーダーに定数バッファを設定する
-				context->VSSetConstantBuffers(2, 1, cbuf);
-				context->PSSetConstantBuffers(2, 1, cbuf);
-				// シェーダを設定する
-				context->VSSetShader(m_pVS.Get(), nullptr, 0);
-				context->PSSetShader(m_pPS.Get(), nullptr, 0);
-				// サンプラーステートを指定する
-				ID3D11SamplerState* sampler[] = { m_pCommonResources->GetCommonStates()->LinearWrap() };
-				// カリング設定
-				ID3D11RasterizerState* rasterizerState;
-				// 裏面描画にする
-				rasterizerState = m_pCommonResources->GetCommonStates()->CullClockwise();
-				// ラスタライザーステートを指定する
-				context->RSSetState(rasterizerState);
-				// ブレンドステートを指定する
-				ID3D11BlendState* blendState = m_pCommonResources->GetCommonStates()->AlphaBlend();
-				// ブレンドステートを設定する
-				context->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
-				// 深度ステンシルステートを指定する
-				ID3D11DepthStencilState* depthStencilState = m_pCommonResources->GetCommonStates()->DepthDefault();
-				// 深度ステンシルステートを設定する
-				context->OMSetDepthStencilState(depthStencilState, 0);
-				// サンプラーステートをピクセルシェーダーに設定する
-				context->PSSetSamplers(0, 1, sampler);
-			}
+		model->Draw(context, *MyResources::Get().GetCommonStates(), world, view, proj, false, [&]
+					{
+						// コンスタントバッファを設定
+						ID3D11Buffer* cbuf[] = { m_pOutlineConstantBuffer.Get() };
+						// 各シェーダーに定数バッファを設定する
+						context->VSSetConstantBuffers(2, 1, cbuf);
+						context->PSSetConstantBuffers(2, 1, cbuf);
+						// シェーダを設定する
+						context->VSSetShader(m_pVS.Get(), nullptr, 0);
+						context->PSSetShader(m_pPS.Get(), nullptr, 0);
+						// サンプラーステートを指定する
+						ID3D11SamplerState* sampler[] = { MyResources::Get().GetCommonStates()->LinearWrap() };
+						// カリング設定
+						ID3D11RasterizerState* rasterizerState;
+						// 裏面描画にする
+						rasterizerState = MyResources::Get().GetCommonStates()->CullClockwise();
+						// ラスタライザーステートを指定する
+						context->RSSetState(rasterizerState);
+						// ブレンドステートを指定する
+						ID3D11BlendState* blendState = MyResources::Get().GetCommonStates()->AlphaBlend();
+						// ブレンドステートを設定する
+						context->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
+						// 深度ステンシルステートを指定する
+						ID3D11DepthStencilState* depthStencilState = MyResources::Get().GetCommonStates()->DepthDefault();
+						// 深度ステンシルステートを設定する
+						context->OMSetDepthStencilState(depthStencilState, 0);
+						// サンプラーステートをピクセルシェーダーに設定する
+						context->PSSetSamplers(0, 1, sampler);
+					}
 		);
 	}
 	// モデルとワールド行列のペアをクリアする

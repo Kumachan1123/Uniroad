@@ -4,11 +4,7 @@
 *	@details 板ポリゴンを描画する際に使用するシェーダーを作成する
 */
 #pragma once
-// 標準ライブラリ
-#include <memory>
-#include <utility>
-// 自作ヘッダーファイル
-#include "KumachiLib/BinaryFile/BinaryFile.h"
+
 
 // シェーダーを作成するシングルトンクラス
 class CreateShader

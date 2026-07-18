@@ -6,6 +6,12 @@
 #include "SettingManager.h"
 // 外部ライブラリ
 #include "Libraries/nlohmann/json.hpp"
+// 標準ライブラリ
+#include <fstream>
+#include <unordered_map>
+#include <thread> 
+#include <memory>
+#include <string>
 // ファイル名
 const std::string SettingManager::FILE_NAME = "Resources/Jsons/Setting.json";
 /*
@@ -18,8 +24,7 @@ SettingManager::SettingManager()
 	: m_bgmVolume(1.0f) // BGM音量初期値
 	, m_seVolume(1.0f) // SE音量初期値
 	, m_speedMode(1.0f) // 倍速モード初期値
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details 設定管理クラスのデストラクタ

@@ -4,6 +4,13 @@
 */
 #include <pch.h>
 #include "ModelManager.h"
+// 標準ライブラリ
+#include <memory>
+#include <unordered_map>
+#include <string>
+#include <fstream>
+// DirectX
+#include <DeviceResources.h>
 // 外部ライブラリ
 #include "Libraries/nlohmann/json.hpp"
 /*
@@ -16,8 +23,7 @@ ModelManager::ModelManager()
 	: m_pDevice(nullptr) // デバイス
 	, m_pModelMap() // モデルのマップ
 	, m_pEffectFactory(nullptr) // エフェクトファクトリー
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details モデルマネージャークラスのデストラクタ

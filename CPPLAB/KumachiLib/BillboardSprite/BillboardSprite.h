@@ -3,20 +3,12 @@
 *	@details	: 3D空間に配置された2D画像を描画するクラス
 */
 #pragma once
-// DirectX
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h> 
-#include <WICTextureLoader.h> 
-#include <DeviceResources.h>
-#include <Game/CommonResources/CommonResources.h>	
-#include <KumachiLib/Math/KumachiLib.h>
-#include <KumachiLib\DrawPolygon\DrawPolygon.h>
-#include <KumachiLib\CreateShader\CreateShader.h>
 #include <Game\GameObject\IGameObject.h>
-#include <Game\MyResources\MyResources.h>
-// 前方宣言
-class CommonResources;
+#include <KumachiLib\DrawPolygon\DrawPolygon.h>
 
+// 前方宣言
+class CreateShader;
+struct DrawPolygon::Shaders;
 class BillboardSprite : public IGameObject
 {
 public:

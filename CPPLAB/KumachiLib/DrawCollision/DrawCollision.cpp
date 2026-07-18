@@ -1,23 +1,22 @@
 #include "pch.h"
 #include "DrawCollision.h"
-
-
+#include <Libraries/Microsoft/DebugDraw.h>
+#include <DeviceResources.h>
+#include "Game/MyResources/MyResources.h"
 // 静的メンバーの初期化
 std::unique_ptr<DirectX::BasicEffect> DrawCollision::m_basicEffect = nullptr;
 Microsoft::WRL::ComPtr<ID3D11InputLayout> DrawCollision::m_pInputLayout = nullptr;
 std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> DrawCollision::m_primitiveBatch = nullptr;
-CommonResources* DrawCollision::m_commonResources = nullptr;
 
 // 初期化
-void DrawCollision::Initialize(CommonResources* commonResources)
+void DrawCollision::Initialize()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 	// 共通リソースを設定
 	// デバイスとコンテキストを取得
-	m_commonResources = commonResources;
-	auto device = m_commonResources->GetDeviceResources()->GetD3DDevice();
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
+	auto context = MyResources::Get().GetDeviceResources()->GetD3DDeviceContext();
 
 	// ベーシックエフェクトを作成する
 	m_basicEffect = std::make_unique<BasicEffect>(device);
@@ -40,8 +39,8 @@ void DrawCollision::DrawStart(DirectX::SimpleMath::Matrix view, DirectX::SimpleM
 
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto context = m_commonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto states = m_commonResources->GetCommonStates();
+	auto context = MyResources::Get().GetDeviceResources()->GetD3DDeviceContext();
+	auto states = MyResources::Get().GetCommonStates();
 	// 描画する
 	// 各パラメータを設定する
 	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFFF);
@@ -80,5 +79,4 @@ void DrawCollision::Finalize()
 	m_basicEffect.reset();
 	m_pInputLayout.Reset();
 	m_primitiveBatch.reset();
-	m_commonResources = nullptr;
 }

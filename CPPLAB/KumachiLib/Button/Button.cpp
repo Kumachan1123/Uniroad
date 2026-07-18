@@ -4,6 +4,9 @@
 */
 #include "pch.h"
 #include "Button.h"
+#include "Game/MyResources/MyResources.h"
+#include <DeviceResources.h>
+
 /*
 *	@brief コンストラクタ
 *	@details ボタンの初期化を行う
@@ -11,10 +14,8 @@
 *	@return なし
 */
 Button::Button()
-	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_pImage(std::make_unique<Image>()) // 画像へのポインタ
-{
-}
+	: m_pImage(std::make_unique<Image>()) // 画像へのポインタ
+{}
 /*
 *	@brief デストラクタ
 *	@details ボタンの終了処理を行う
@@ -22,10 +23,7 @@ Button::Button()
 *	@return なし
 */
 Button::~Button()
-{
-	// 共通リソースへのポインタをnullptrに設定
-	m_pCommonResources = nullptr;
-}
+{}
 /*
 *	@brief 初期化
 *	@details ボタンの初期化を行う
@@ -34,12 +32,11 @@ Button::~Button()
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void Button::Initialize(CommonResources* resources, int width, int height)
+void Button::Initialize(int width, int height)
 {
 	// 共通リソースへのポインタを設定
-	m_pCommonResources = resources;
 	// 画像の初期化
-	m_pImage->Initialize(m_pCommonResources, width, height);
+	m_pImage->Initialize(width, height);
 }
 /*
 *	@brief 更新
@@ -67,7 +64,7 @@ bool Button::Hit(const DirectX::SimpleMath::Vector2& mousePosition, const Rect& 
 	// 左上・右下をスクリーン座標へ変換
 	// アスペクト比を考慮してY方向サイズを補正
 	// ウィンドウハンドルを取得
-	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
+	const HWND hwnd = MyResources::Get().GetDeviceResources()->GetWindow();
 	// ウィンドウサイズ取得
 	RECT rect;
 	// クライアント領域サイズを取得

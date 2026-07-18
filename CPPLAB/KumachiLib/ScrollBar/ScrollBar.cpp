@@ -4,6 +4,14 @@
 */
 #include "pch.h"
 #include "ScrollBar.h"
+#include "Game/MyResources/MyResources.h"
+#include <DeviceResources.h>
+// 自作ヘッダーファイル
+#include "KumachiLib/BinaryFile/BinaryFile.h"
+#include "KumachiLib/CreateShader/CreateShader.h"
+#include "KumachiLib/DrawPolygon/DrawPolygon.h"
+#include "KumachiLib/Math/KumachiLib.h"
+#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
 /*
 *	@brief コンストラクタ
 *	@details スクロールバーの初期化を行う
@@ -11,11 +19,9 @@
 *	@return なし
 */
 ScrollBar::ScrollBar()
-	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_pController(std::make_unique<Image>()) // 操作部分画像へのポインタ
+	: m_pController(std::make_unique<Image>()) // 操作部分画像へのポインタ
 	, m_pBar(std::make_unique<Image>()) // 棒部分画像へのポインタ
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details スクロールバーの終了処理を行う
@@ -23,10 +29,7 @@ ScrollBar::ScrollBar()
 *	@return なし
 */
 ScrollBar::~ScrollBar()
-{
-	// 共通リソースへのポインタをnullptrに設定
-	m_pCommonResources = nullptr;
-}
+{}
 /*
 *	@brief 初期化
 *	@details スクロールバーの初期化を行う
@@ -35,14 +38,12 @@ ScrollBar::~ScrollBar()
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void ScrollBar::Initialize(CommonResources* resources, int width, int height)
+void ScrollBar::Initialize(int width, int height)
 {
-	// 共通リソースへのポインタを設定
-	m_pCommonResources = resources;
 	// 棒部分画像の作成
-	m_pBar->Initialize(m_pCommonResources, width, height);
+	m_pBar->Initialize(width, height);
 	// 操作部分画像の初期化
-	m_pController->Initialize(m_pCommonResources, width, height);
+	m_pController->Initialize(width, height);
 }
 /*
 *	@brief 更新
@@ -63,13 +64,13 @@ void ScrollBar::Update(const float elapsedTime)
 *	@return 当たり判定の結果(true:当たった false:当たってない)
 */
 bool ScrollBar::Hit(const DirectX::SimpleMath::Vector2& mousePosition,
-	const Rect& scrollBarRect,
-	float& outRatioX)
+					const Rect& scrollBarRect,
+					float& outRatioX)
 {
 	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// ウィンドウサイズ取得
-	const HWND hwnd = m_pCommonResources->GetDeviceResources()->GetWindow();
+	const HWND hwnd = MyResources::Get().GetDeviceResources()->GetWindow();
 	// ウィンドウサイズを取得
 	RECT rect;
 	GetClientRect(hwnd, &rect);

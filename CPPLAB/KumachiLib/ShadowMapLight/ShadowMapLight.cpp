@@ -4,15 +4,19 @@
 */
 #include "pch.h"
 #include "ShadowMapLight.h"
+#include <DeviceResources.h>
+#include "game/MyResources/MyResources.h"
+#include "Libraries/Microsoft/ReadData.h"
+#include "Libraries/Microsoft/RenderTexture/RenderTexture.h"
+
 /*
 *	@brief コンストラクタ
 *	@details シャドウマップ用ライトクラスのコンストラクタ
-*	@param commonResources 共通リソース
+*	@param なし
 *	@return なし
 */
-ShadowMapLight::ShadowMapLight(CommonResources* commonResources)
-	: m_pCommonResources(commonResources)// 共通リソース
-	, m_pDevice(commonResources->GetDeviceResources()->GetD3DDevice())// Direct3Dデバイス
+ShadowMapLight::ShadowMapLight()
+	: m_pDevice(MyResources::Get().GetDeviceResources()->GetD3DDevice())// Direct3Dデバイス
 	, m_pVS(nullptr)// 頂点シェーダ
 	, m_pPS(nullptr)// ピクセルシェーダ
 	, m_pConstantBuffer(nullptr)// 定数バッファ
@@ -20,7 +24,7 @@ ShadowMapLight::ShadowMapLight(CommonResources* commonResources)
 	, m_pShadowMapDS(nullptr)// 深度ステンシル
 	, m_pShadowMapSampler(nullptr)// シャドウマップのサンプラー
 	, m_lightTheta(100.0f)// ライトの画角 (100度を初期値として設定
-	, m_viewport(commonResources->GetDeviceResources()->GetScreenViewport()) // ビューポート
+	, m_viewport(MyResources::Get().GetDeviceResources()->GetScreenViewport()) // ビューポート
 	, m_lightPosition(0.0f, 10.0f, 0.0f) // ライトの座標
 {
 	// DirectXの名前空間を使用
@@ -74,9 +78,9 @@ void ShadowMapLight::RenderShadow()
 	// SimpleMathの名前空間を使用
 	using namespace DirectX::SimpleMath;
 	// デバイスコンテキストを取得する
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto context = MyResources::Get().GetDeviceResources()->GetD3DDeviceContext();
 	// 共通ステートを取得する
-	auto states = m_pCommonResources->GetCommonStates();
+	auto states = MyResources::Get().GetCommonStates();
 	// ライトの向いている方向を調整する
 	const Vector3 lightDir = Vector3::Transform(LIGHT_DIRECTION, m_lightQuaternion);
 	// ライト空間のビュー行列を計算する
@@ -133,17 +137,17 @@ void ShadowMapLight::RenderShadow()
 		DirectX::Model* model = shadowInfo.first;
 		// 影を描画
 		model->Draw(context, *states, world, lightView, lightProjection, false, [&]
-			{
-				// シャドウマップ用頂点シェーダーを設定する
-				context->VSSetShader(m_pVSShadowMap.Get(), nullptr, 0);
-				// シャドウマップ用ピクセルシェーダーを設定する
-				context->PSSetShader(m_pPSShadowMap.Get(), nullptr, 0);
-			}
+					{
+						// シャドウマップ用頂点シェーダーを設定する
+						context->VSSetShader(m_pVSShadowMap.Get(), nullptr, 0);
+						// シャドウマップ用ピクセルシェーダーを設定する
+						context->PSSetShader(m_pPSShadowMap.Get(), nullptr, 0);
+					}
 		);
 	}
 	// RTVとDSVを通常描画用の設定に戻す準備
-	auto defaultRTV = m_pCommonResources->GetDeviceResources()->GetRenderTargetView();
-	auto defaultDSV = m_pCommonResources->GetDeviceResources()->GetDepthStencilView();
+	auto defaultRTV = MyResources::Get().GetDeviceResources()->GetRenderTargetView();
+	auto defaultDSV = MyResources::Get().GetDeviceResources()->GetDepthStencilView();
 	// 描画先に通常描画用のRTVとDSVを設定する
 	context->OMSetRenderTargets(1, &defaultRTV, defaultDSV);
 	// ビューポートを通常描画用に切り替える

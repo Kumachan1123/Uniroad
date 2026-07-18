@@ -3,14 +3,8 @@
 *	@brief	輪郭線描画クラス
 */
 #pragma once
-// 外部ライブラリ
-#include "Libraries/Microsoft/ReadData.h"
-// 自作ヘッダーファイル
-#include "Game/CommonResources/CommonResources.h"
-#include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
 
-// 前方宣言
-class CommonResources;
+
 
 // 輪郭線描画クラス
 class OutLine
@@ -26,7 +20,7 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	OutLine(CommonResources* commonResources);
+	OutLine();
 	// デストラクタ
 	~OutLine();
 	// 輪郭になるモデルを描画
@@ -43,8 +37,6 @@ private:
 	static constexpr float OUTLINE_WIDTH = 0.01f;
 private:
 	// private変数
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// Direct3Dデバイス
 	ID3D11Device1* m_pDevice;
 	// 頂点シェーダ

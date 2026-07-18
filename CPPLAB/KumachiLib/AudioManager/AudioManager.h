@@ -6,14 +6,7 @@
 #ifndef AUDIOMANAGER_DEFINED
 #define AUDIOMANAGER_DEFINED
 // 標準ライブラリ
-#include <string>
-#include <fstream>
-#include <unordered_map>
-#include <thread> 
-#include <memory>
-// FMOD(外部ライブラリ)
-#include "Libraries/FMOD/inc/fmod.hpp"
-#include "Libraries/FMOD/inc/fmod_errors.h"
+
 
 // 前方宣言
 namespace FMOD

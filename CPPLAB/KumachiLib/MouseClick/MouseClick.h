@@ -4,7 +4,6 @@
 */
 #pragma once
 // DirectX
-#include <Mouse.h>
 
 // 拡張マウス入力クラス
 class MouseClick

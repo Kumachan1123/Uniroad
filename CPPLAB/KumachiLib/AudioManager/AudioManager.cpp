@@ -4,8 +4,15 @@
 */
 #include <pch.h>
 #include "AudioManager.h"
+#include "Libraries/FMOD/inc/fmod_errors.h"
+// FMOD(外部ライブラリ)
+#include "Libraries/FMOD/inc/fmod.hpp"
 // 外部ライブラリ
 #include "Libraries/nlohmann/json.hpp"
+#include <memory>
+#include <thread> 
+#include <fstream>
+
 /*
 *	@brief コンストラクタ
 *	@details FMODシステムの初期化を行い、ゲーム内で使用する全ての効果音とBGMを読み込む

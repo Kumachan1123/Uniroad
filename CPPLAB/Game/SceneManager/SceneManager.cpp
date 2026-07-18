@@ -84,7 +84,7 @@ void SceneManager::ChangeScene(IScene::SceneID sceneID)
 	// シーンを削除する
 	DeleteScene();
 	// 全ての音を停止
-	MyResourecs::Get().GetAudioManager()->StopAllSounds();
+	MyResources::Get().GetAudioManager()->StopAllSounds();
 	// 新しいシーンを作成する
 	CreateScene(sceneID);
 }

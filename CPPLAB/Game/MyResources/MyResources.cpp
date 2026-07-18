@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "MyResources.h"
 
-void MyResourecs::Initialize(DX::StepTimer* timer,
+void MyResources::Initialize(DX::StepTimer* timer,
 							 DX::DeviceResources* dr,
 							 DirectX::CommonStates* commonStates,
 							 mylib::DebugString* debugString,

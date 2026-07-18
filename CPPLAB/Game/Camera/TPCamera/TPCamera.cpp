@@ -43,9 +43,9 @@ void TPCamera::CalculateViewMatrix()
 	// 名前空間を使用
 	using namespace DirectX::SimpleMath;
 
-	if (MyResourecs::Get().GetInputManager())
+	if (MyResources::Get().GetInputManager())
 	{
-		auto keyState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
+		auto keyState = MyResources::Get().GetInputManager()->GetKeyboardState();
 		// 左右矢印でカメラの視点を回転させる
 		float rotateAngle = 0.0f;
 		const float rotateSpeed = 0.03f;

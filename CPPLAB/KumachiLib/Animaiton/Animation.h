@@ -3,8 +3,6 @@
 *	@brief アニメーションクラス
 */
 #pragma once
-// 標準ライブラリ
-#include <vector>
 // 自作ヘッダーファイル
 #include "KumachiLib/AnimationStep/AnimationStep.h"
 

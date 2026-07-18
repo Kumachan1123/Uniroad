@@ -5,6 +5,17 @@
 */
 #include <pch.h>
 #include "DrawPolygon.h"
+// 標準ライブラリ
+#include <vector>
+// DirectXのヘッダファイル
+#include <Effects.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <WICTextureLoader.h>
+#include <CommonStates.h>
+// 外部ライブラリ
+#include <DeviceResources.h>
+#include <Libraries/Microsoft/DebugDraw.h>
 // シングルトンインスタンスの初期化
 std::unique_ptr<DrawPolygon> DrawPolygon::m_pInstance = nullptr;
 /*
@@ -38,8 +49,7 @@ DrawPolygon::DrawPolygon()
 	, m_pDeviceContext(nullptr)	// デバイスコンテキスト
 	, m_pDR(nullptr)// デバイスリソース
 	, m_pDevice(nullptr)// デバイス
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details デストラクタ
@@ -122,34 +132,34 @@ void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates
 	// サンプラーステートの種類を判別して、サンプラーを設定する
 	switch (ss)
 	{
-	case DrawPolygon::SamplerStates::ANISOTROPIC_CLAMP:// アニソトロピッククランプ
-		// アニソトロピッククランプのサンプラーを取得
-		sampler[0] = m_pStates->AnisotropicClamp();
-		break;
-	case DrawPolygon::SamplerStates::ANISOTROPIC_WRAP:// アニソトロピックラップ
-		// アニソトロピックラップのサンプラーを取得
-		sampler[0] = m_pStates->AnisotropicWrap();
-		break;
-	case DrawPolygon::SamplerStates::LINEAR_CLAMP: // リニアクランプ
-		// リニアクランプのサンプラーを取得
-		sampler[0] = m_pStates->LinearClamp();
-		break;
-	case DrawPolygon::SamplerStates::LINEAR_WRAP: // リニアラップ
-		// リニアラップのサンプラーを取得
-		sampler[0] = m_pStates->LinearWrap();
-		break;
-	case DrawPolygon::SamplerStates::POINT_CLAMP: // ポイントクランプ
-		// ポイントクランプのサンプラーを取得
-		sampler[0] = m_pStates->PointClamp();
-		break;
-	case DrawPolygon::SamplerStates::POINT_WRAP: // ポイントラップ
-		// ポイントラップのサンプラーを取得
-		sampler[0] = m_pStates->PointWrap();
-		break;
-	default: // デフォルトはnullptr
-		// サンプラーをnullptrに設定
-		sampler[0] = nullptr;
-		break;
+		case DrawPolygon::SamplerStates::ANISOTROPIC_CLAMP:// アニソトロピッククランプ
+			// アニソトロピッククランプのサンプラーを取得
+			sampler[0] = m_pStates->AnisotropicClamp();
+			break;
+		case DrawPolygon::SamplerStates::ANISOTROPIC_WRAP:// アニソトロピックラップ
+			// アニソトロピックラップのサンプラーを取得
+			sampler[0] = m_pStates->AnisotropicWrap();
+			break;
+		case DrawPolygon::SamplerStates::LINEAR_CLAMP: // リニアクランプ
+			// リニアクランプのサンプラーを取得
+			sampler[0] = m_pStates->LinearClamp();
+			break;
+		case DrawPolygon::SamplerStates::LINEAR_WRAP: // リニアラップ
+			// リニアラップのサンプラーを取得
+			sampler[0] = m_pStates->LinearWrap();
+			break;
+		case DrawPolygon::SamplerStates::POINT_CLAMP: // ポイントクランプ
+			// ポイントクランプのサンプラーを取得
+			sampler[0] = m_pStates->PointClamp();
+			break;
+		case DrawPolygon::SamplerStates::POINT_WRAP: // ポイントラップ
+			// ポイントラップのサンプラーを取得
+			sampler[0] = m_pStates->PointWrap();
+			break;
+		default: // デフォルトはnullptr
+			// サンプラーをnullptrに設定
+			sampler[0] = nullptr;
+			break;
 	}
 	// ピクセルシェーダにサンプラーを登録する
 	m_pDeviceContext->PSSetSamplers(0, 1, sampler);
@@ -158,26 +168,26 @@ void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates
 	// ブレンドステートの種類を判別して、ブレンドステートを設定する
 	switch (bs)
 	{
-	case DrawPolygon::BlendStates::ALPHA:// アルファブレンド
-		// アルファブレンドのブレンドステートを取得
-		blendState = m_pStates->AlphaBlend();
-		break;
-	case DrawPolygon::BlendStates::ADDITIVE: // 加算ブレンド
-		// 加算ブレンドのブレンドステートを取得
-		blendState = m_pStates->Additive();
-		break;
-	case DrawPolygon::BlendStates::OPAQUE: // 不透明
-		// 不透明のブレンドステートを取得
-		blendState = m_pStates->Opaque();
-		break;
-	case DrawPolygon::BlendStates::NONPREMULTIPLIED: // 非プリマルチプライド
-		// 非プリマルチプライドのブレンドステートを取得
-		blendState = m_pStates->NonPremultiplied();
-		break;
-	default: // デフォルトはnullptr
-		// ブレンドステートをnullptrに設定
-		blendState = nullptr;
-		break;
+		case DrawPolygon::BlendStates::ALPHA:// アルファブレンド
+			// アルファブレンドのブレンドステートを取得
+			blendState = m_pStates->AlphaBlend();
+			break;
+		case DrawPolygon::BlendStates::ADDITIVE: // 加算ブレンド
+			// 加算ブレンドのブレンドステートを取得
+			blendState = m_pStates->Additive();
+			break;
+		case DrawPolygon::BlendStates::OPAQUE: // 不透明
+			// 不透明のブレンドステートを取得
+			blendState = m_pStates->Opaque();
+			break;
+		case DrawPolygon::BlendStates::NONPREMULTIPLIED: // 非プリマルチプライド
+			// 非プリマルチプライドのブレンドステートを取得
+			blendState = m_pStates->NonPremultiplied();
+			break;
+		default: // デフォルトはnullptr
+			// ブレンドステートをnullptrに設定
+			blendState = nullptr;
+			break;
 	}
 	// ブレンドステートを設定する
 	m_pDeviceContext->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
@@ -186,30 +196,30 @@ void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates
 	// 深度ステンシルステートの種類を判別して、深度ステンシルステートを設定する
 	switch (dss)
 	{
-	case DrawPolygon::DepthStencilStates::DEPTH_DEFAULT:// デフォルト
-		// デフォルトの深度ステンシルステートを取得
-		depthStencilState = m_pStates->DepthDefault();
-		break;
-	case DrawPolygon::DepthStencilStates::DEPTH_NONE: // 深度なし
-		// 深度なしの深度ステンシルステートを取得
-		depthStencilState = m_pStates->DepthNone();
-		break;
-	case DrawPolygon::DepthStencilStates::DEPTH_READ: // 深度読み取り
-		// 深度読み取りの深度ステンシルステートを取得
-		depthStencilState = m_pStates->DepthRead();
-		break;
-	case DrawPolygon::DepthStencilStates::DEPTH_READ_REVERSE_Z: // 深度読み取り（逆Z）
-		// 深度読み取り（逆Z）の深度ステンシルステートを取得
-		depthStencilState = m_pStates->DepthReadReverseZ();
-		break;
-	case DrawPolygon::DepthStencilStates::DEPTH_REVERSE_Z: // 逆Z
-		// 逆Zの深度ステンシルステートを取得
-		depthStencilState = m_pStates->DepthReverseZ();
-		break;
-	default: // デフォルトはnullptr
-		// 深度ステンシルステートをnullptrに設定
-		depthStencilState = nullptr;
-		break;
+		case DrawPolygon::DepthStencilStates::DEPTH_DEFAULT:// デフォルト
+			// デフォルトの深度ステンシルステートを取得
+			depthStencilState = m_pStates->DepthDefault();
+			break;
+		case DrawPolygon::DepthStencilStates::DEPTH_NONE: // 深度なし
+			// 深度なしの深度ステンシルステートを取得
+			depthStencilState = m_pStates->DepthNone();
+			break;
+		case DrawPolygon::DepthStencilStates::DEPTH_READ: // 深度読み取り
+			// 深度読み取りの深度ステンシルステートを取得
+			depthStencilState = m_pStates->DepthRead();
+			break;
+		case DrawPolygon::DepthStencilStates::DEPTH_READ_REVERSE_Z: // 深度読み取り（逆Z）
+			// 深度読み取り（逆Z）の深度ステンシルステートを取得
+			depthStencilState = m_pStates->DepthReadReverseZ();
+			break;
+		case DrawPolygon::DepthStencilStates::DEPTH_REVERSE_Z: // 逆Z
+			// 逆Zの深度ステンシルステートを取得
+			depthStencilState = m_pStates->DepthReverseZ();
+			break;
+		default: // デフォルトはnullptr
+			// 深度ステンシルステートをnullptrに設定
+			depthStencilState = nullptr;
+			break;
 	}
 	// 深度ステンシルステートを設定する
 	m_pDeviceContext->OMSetDepthStencilState(depthStencilState, 0);
@@ -219,26 +229,26 @@ void DrawPolygon::DrawSetting(SamplerStates ss, BlendStates bs, RasterizerStates
 	// ラスタライザーステートの種類を判別して、ラスタライザーステートを設定する
 	switch (rs)
 	{
-	case DrawPolygon::RasterizerStates::CULL_CLOCKWISE: // 時計回り
-		// 時計回りのラスタライザーステートを取得
-		rasterizerState = m_pStates->CullClockwise();
-		break;
-	case DrawPolygon::RasterizerStates::CULL_COUNTERCLOCKWISE: // 反時計回り
-		// 反時計回りのラスタライザーステートを取得
-		rasterizerState = m_pStates->CullCounterClockwise();
-		break;
-	case DrawPolygon::RasterizerStates::CULL_NONE: // カリングなし
-		// カリングなしのラスタライザーステートを取得
-		rasterizerState = m_pStates->CullNone();
-		break;
-	case DrawPolygon::RasterizerStates::WIREFRAME: // ワイヤーフレーム
-		// ワイヤーフレームのラスタライザーステートを取得
-		rasterizerState = m_pStates->Wireframe();
-		break;
-	default: // デフォルトはnullptr
-		// ラスタライザーステートをnullptrに設定
-		rasterizerState = nullptr;
-		break;
+		case DrawPolygon::RasterizerStates::CULL_CLOCKWISE: // 時計回り
+			// 時計回りのラスタライザーステートを取得
+			rasterizerState = m_pStates->CullClockwise();
+			break;
+		case DrawPolygon::RasterizerStates::CULL_COUNTERCLOCKWISE: // 反時計回り
+			// 反時計回りのラスタライザーステートを取得
+			rasterizerState = m_pStates->CullCounterClockwise();
+			break;
+		case DrawPolygon::RasterizerStates::CULL_NONE: // カリングなし
+			// カリングなしのラスタライザーステートを取得
+			rasterizerState = m_pStates->CullNone();
+			break;
+		case DrawPolygon::RasterizerStates::WIREFRAME: // ワイヤーフレーム
+			// ワイヤーフレームのラスタライザーステートを取得
+			rasterizerState = m_pStates->Wireframe();
+			break;
+		default: // デフォルトはnullptr
+			// ラスタライザーステートをnullptrに設定
+			rasterizerState = nullptr;
+			break;
 	}
 	// ラスタライザーステートを設定する
 	m_pDeviceContext->RSSetState(rasterizerState);

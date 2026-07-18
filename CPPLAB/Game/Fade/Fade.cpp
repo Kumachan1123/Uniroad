@@ -4,6 +4,7 @@
 */
 #include "pch.h"
 #include "Fade.h"
+#include "Game/MyResources/MyResources.h"
 // フェード最小値
 const float Fade::FADE_MIN = -1.0f;
 // フェード最大値
@@ -25,14 +26,12 @@ const DirectX::SimpleMath::Vector2 Fade::SIZE(2.0f, 2.0f);
 *	@return なし
 */
 Fade::Fade()
-	: m_pCommonResources(nullptr) // 共通リソースへのポインタ
-	, m_pImage(std::make_unique<Image>()) // 画像へのポインタ
+	: m_pImage(std::make_unique<Image>()) // 画像へのポインタ
 	, m_position(POSITION) // フェードの位置
 	, m_size(SIZE) // フェードのサイズ
 	, m_fadeTime{ FADE_INIT }// フェード時間
 	, m_fadeState{ FadeState::None }// フェード状態
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details フェードクラスのデストラクタ
@@ -42,7 +41,6 @@ Fade::Fade()
 Fade::~Fade()
 {
 	// 共通リソースへのポインタをnullptrに設定
-	m_pCommonResources = nullptr;
 }
 /*
 *	@brief 初期化
@@ -52,10 +50,8 @@ Fade::~Fade()
 *	@param height ウィンドウの高さ
 *	@return なし
 */
-void Fade::Initialize(CommonResources* resources, int width, int height)
+void Fade::Initialize(int width, int height)
 {
-	// 共通リソースをセット
-	m_pCommonResources = resources;
 	// 画像を作成
 	m_pImage = std::make_unique<Image>();
 	// 頂点シェーダーのパスを渡す
@@ -63,11 +59,11 @@ void Fade::Initialize(CommonResources* resources, int width, int height)
 	// ピクセルシェーダーのパスを渡す
 	m_pImage->SetPixelShaderFilePath("Resources/Shaders/Fade/PS_Fade.cso");
 	// 画像を設定
-	m_pImage->SetTexture(resources->GetTextureManager()->GetTexture("Fade"));
+	m_pImage->SetTexture(MyResources::Get().GetTextureManager()->GetTexture("Fade"));
 	// シェーダーバッファサイズを設定
 	m_pImage->SetShaderBufferSize(sizeof(FadeBuffer));
 	// 画像の初期化
-	m_pImage->Initialize(m_pCommonResources, width, height);
+	m_pImage->Initialize(width, height);
 	// 矩形の座標を設定
 	m_rect.position = POSITION;
 	// 矩形のサイズを設定

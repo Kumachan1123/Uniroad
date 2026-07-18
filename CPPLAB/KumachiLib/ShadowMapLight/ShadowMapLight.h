@@ -4,15 +4,11 @@
 */
 #pragma once
 // 外部ライブラリ
-#include "Libraries/Microsoft/ReadData.h"
-#include "Libraries/Microsoft/RenderTexture/RenderTexture.h"
 #include "Libraries/MyLib/DepthStencil.h"
 // 自作ヘッダーファイル
-#include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/ShaderBuffer/ShaderBuffer.h"
 
 // 前方宣言
-class CommonResources;
 namespace DX
 {
 	class RenderTexture;
@@ -32,7 +28,7 @@ public:
 public:
 	// public関数
 	// コンストラクタ
-	ShadowMapLight(CommonResources* commonResources);
+	ShadowMapLight();
 	// デストラクタ
 	~ShadowMapLight();
 	// 更新
@@ -60,8 +56,6 @@ private:
 
 private:
 	// private変数
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// Direct3Dデバイス
 	ID3D11Device1* m_pDevice;
 	// 頂点シェーダ

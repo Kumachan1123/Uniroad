@@ -22,7 +22,7 @@ void Player2D::Initialize()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	auto textureManager = MyResourecs::Get().GetTextureManager();
+	auto textureManager = MyResources::Get().GetTextureManager();
 	// ビルボードスプライトを生成する。
 	m_pBillboardSprite = std::make_unique<BillboardSprite>(this);
 	m_pBillboardSprite->SetTexture(textureManager->GetTexture("Player"));
@@ -57,7 +57,7 @@ void Player2D::Update(float elapsedTime)
 	using namespace DirectX::SimpleMath;
 
 	// 入力状態を受け取る
-	auto& keyboardState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
+	auto& keyboardState = MyResources::Get().GetInputManager()->GetKeyboardState();
 
 	auto isPressed = [&](DirectX::Keyboard::Keys key)
 		{

@@ -3,12 +3,8 @@
 *	@brief	設定管理クラスのヘッダーファイル
 */
 #pragma once
-// 標準ライブラリ
-#include <string>
-#include <fstream>
-#include <unordered_map>
-#include <thread> 
-#include <memory>
+
+
 
 // 設定管理クラス
 class SettingManager

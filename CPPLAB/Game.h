@@ -5,25 +5,32 @@
 #pragma once
 #ifndef GAME_DEFINED
 #define GAME_DEFINED
-// 標準ライブラリ
-#include <thread>
 // DirectX
 #include <DeviceResources.h>
 #include "StepTimer.h"
-// 外部ライブラリ
-#include <Libraries/MyLib/DebugString.h>
-#include <Libraries/MyLib/InputManager.h>
-#include <Libraries/nlohmann/json.hpp>
-// ゲーム関連
-#include "Game/CommonResources/CommonResources.h"
-#include "Game/SceneManager/IScene.h"
-#include "Game/SceneManager/SceneManager.h"
-#include "KumachiLib/AudioManager/AudioManager.h"
-#include "KumachiLib/ModelManager/ModelManager.h"
-#include "KumachiLib/TextureManager/TextureManager.h"
-#include "KumachiLib/SettingManager/SettingManager.h"
-#include "Game/Screen/Screen.h"
-#include "Game/MyResources/MyResources.h"
+
+namespace DX
+{
+	class DeviceResources;
+	class StepTimer;
+}
+namespace DirectX
+{
+	namespace DX11
+	{
+		class CommonStates;
+	}
+}
+namespace mylib
+{
+	class DebugString;
+	class InputManager;
+}
+class TextureManager;
+class ModelManager;
+class AudioManager;
+class SceneManager;
+class SettingManager;
 
 // ゲームクラス
 class Game final : public DX::IDeviceNotify
@@ -33,7 +40,7 @@ public:
 	// コンストラクタ
 	Game() noexcept(false);
 	// デストラクタ
-	~Game() = default;
+	~Game();
 	// ムーブコンストラクタ
 	Game(Game&&) = default;
 	// ムーブ代入演算子
@@ -91,8 +98,6 @@ private:
 	BOOL m_fullscreen;
 	// コモンステート
 	std::unique_ptr<DirectX::CommonStates>  m_commonStates;
-	// コモンリソース
-	std::unique_ptr<CommonResources>        m_pCommonResources;
 	// デバッグ文字列
 	std::unique_ptr<mylib::DebugString>     m_debugString;
 	// 入力マネージャ

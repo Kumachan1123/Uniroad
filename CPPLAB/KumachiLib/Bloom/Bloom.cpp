@@ -5,6 +5,13 @@
 */
 #include <pch.h>
 #include "Bloom.h"
+// DirectXのヘッダファイル
+#include <DeviceResources.h>
+#include <CommonStates.h>
+#include <Libraries/Microsoft/RenderTexture/RenderTexture.h>
+
+// 自作ヘッダー
+#include "Game/MyResources/MyResources.h"
 
 // シングルトンインスタンスの初期化
 std::unique_ptr<Bloom> Bloom::m_pInstance = nullptr;
@@ -35,15 +42,13 @@ Bloom::Bloom()
 	: m_pDeviceContext{}// デバイスコンテキスト
 	, m_pDR{}// デバイスリソース
 	, m_pDevice{}// デバイス
-	, m_pCommonResources{}// 共通リソース
 	, m_blur1{}// ブラー1
 	, m_blur2{}// ブラー2
 	, m_pBasicPostProcess{}// ポストプロセス
 	, m_pDualPostProcess{}// デュアルポストプロセス
 	, m_screenSize{}// スクリーンサイズ
 	, m_pStates{}// コモンステート
-{
-}
+{}
 /*
 *	@brief デストラクタ
 *	@details 各種ポインターの解放
@@ -52,8 +57,6 @@ Bloom::Bloom()
 */
 Bloom::~Bloom()
 {
-	// 共通リソースの解放
-	m_pCommonResources = nullptr;
 	// デバイスコンテキストの解放
 	m_pDeviceContext = nullptr;
 	// デバイスリソースの解放
@@ -64,16 +67,14 @@ Bloom::~Bloom()
 /*
 *	@brief ポストプロセスを生成
 *	@details ブルームエフェクトを実装するためのポストプロセスを生成する
-*	@param resources 共通リソース
+*	@param なし
 *	@return なし
 */
-void Bloom::CreatePostProcess(CommonResources* resources)
+void Bloom::CreatePostProcess()
 {
 	using namespace DirectX;
-	// 共通リソースを取得
-	m_pCommonResources = resources;
 	// デバイスリソースを取得
-	m_pDR = m_pCommonResources->GetDeviceResources();
+	m_pDR = MyResources::Get().GetDeviceResources();
 	// デバイスを取得
 	m_pDevice = m_pDR->GetD3DDevice();
 	// デバイスコンテキストを取得
@@ -97,7 +98,7 @@ void Bloom::ChangeOffScreenRT()
 	// オフスクリーン用のRTVを取得
 	m_pOffScreenRTV = m_pOffScreenRT->GetRenderTargetView();
 	// デフォルトのDSVを取得
-	m_pDefaultDSV = m_pCommonResources->GetDeviceResources()->GetDepthStencilView();
+	m_pDefaultDSV = MyResources::Get().GetDeviceResources()->GetDepthStencilView();
 	// RTVとDSVをバインド
 	m_pDeviceContext->OMSetRenderTargets(1, m_pOffScreenRTV.GetAddressOf(), m_pDefaultDSV.Get());
 	// RTVをクリア
@@ -175,11 +176,11 @@ void Bloom::PostProcess()
 	// Pass4::offscreen -> blur1 → フレームバッファに描画する
 	// -----------------------------------------------------
 	// デフォルトのRTVを取得
-	m_pDefaultRTV = m_pCommonResources->GetDeviceResources()->GetRenderTargetView();
+	m_pDefaultRTV = MyResources::Get().GetDeviceResources()->GetRenderTargetView();
 	// レンダーターゲットを設定
 	m_pDeviceContext->OMSetRenderTargets(1, m_pDefaultRTV.GetAddressOf(), nullptr);
 	// デフォルトのビューポートを取得
-	const auto& defaultVP = m_pCommonResources->GetDeviceResources()->GetScreenViewport();
+	const auto& defaultVP = MyResources::Get().GetDeviceResources()->GetScreenViewport();
 	// ビューポートを設定
 	m_pDeviceContext->RSSetViewports(1, &defaultVP);
 	// エフェクトを設定
@@ -206,7 +207,7 @@ void Bloom::PostProcess()
 void Bloom::CreateRenderTexture()
 {
 	// スクリーンサイズを取得
-	m_screenSize = m_pCommonResources->GetDeviceResources()->GetOutputSize();
+	m_screenSize = MyResources::Get().GetDeviceResources()->GetOutputSize();
 	// 半分のサイズを取得
 	RECT halfSize{ 0,0, m_screenSize.right / 2, m_screenSize.bottom / 2 };
 	// オフスクリーン用のRTを作成

@@ -1,5 +1,13 @@
 #include "pch.h"
 #include "BillboardSprite.h"
+// DirectX
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h> 
+#include <WICTextureLoader.h> 
+#include <DeviceResources.h>
+#include <KumachiLib/Math/KumachiLib.h>
+#include <KumachiLib\CreateShader\CreateShader.h>
+#include <Game\MyResources\MyResources.h>
 /*
 *	@brief	入力レイアウト
 */
@@ -37,8 +45,8 @@ BillboardSprite::~BillboardSprite()
 
 void BillboardSprite::Initialize()
 {
-	m_pDrawPolygon->InitializePositionTexture(MyResourecs::Get().GetDeviceResources());// 頂点情報の初期化
-	m_pCreateShader->Initialize(MyResourecs::Get().GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0],
+	m_pDrawPolygon->InitializePositionTexture(MyResources::Get().GetDeviceResources());// 頂点情報の初期化
+	m_pCreateShader->Initialize(MyResources::Get().GetDeviceResources()->GetD3DDevice(), &INPUT_LAYOUT[0],
 								static_cast<UINT>(INPUT_LAYOUT.size()), m_pInputLayout);	// シェーダー作成クラスの初期化
 	m_pCreateShader->CreateVertexShader(L"Resources/Shaders/Counter/VS_Counter.cso", m_pVertexShader);// 頂点シェーダー
 	m_pCreateShader->CreatePixelShader(L"Resources/Shaders/Counter/PS_Counter.cso", m_pPixelShader);	// ピクセルシェーダー

@@ -4,7 +4,6 @@
 */
 #pragma once
 // 自作ヘッダーファイル
-#include "Game/CommonResources/CommonResources.h"
 #include "KumachiLib/Image/Image.h"
 #include "Game/Interface/IImage.h"
 #include "Game/Screen/Screen.h"
@@ -13,7 +12,6 @@
 #include "KumachiLib/Animaiton/Animation.h"
 
 // 前方宣言
-class CommonResources;
 
 // フェードクラス
 class Fade : public IImage
@@ -52,7 +50,7 @@ public:
 	// デストラクタ
 	~Fade();
 	// 初期化
-	void Initialize(CommonResources* resources, int width, int height)override;
+	void Initialize(int width, int height)override;
 	// 更新
 	void Update(float elapsedTime)override;
 	// 画像を表示
@@ -83,8 +81,6 @@ private:
 	static const DirectX::SimpleMath::Vector2 SIZE;
 private:
 	// private変数
-	// 共通リソース
-	CommonResources* m_pCommonResources;
 	// フェード状態
 	FadeState m_fadeState;
 	// 画像

@@ -4,8 +4,13 @@
 */
 #include <pch.h>
 #include "TextureManager.h"
+#include <fstream>
 // 外部ライブラリ
 #include "Libraries/nlohmann/json.hpp"
+// 自作ヘッダー
+#include "Game/MyResources/MyResources.h"
+#include <DeviceResources.h>
+
 /*
 *	@brief コンストラクタ
 *	@details テクスチャマネージャークラスのコンストラクタ
@@ -13,8 +18,7 @@
 *	@return なし
 */
 TextureManager::TextureManager()
-	: m_pCommonResources(nullptr)// 共通リソース
-	, m_pDevice(nullptr)// デバイス
+	: m_pDevice(nullptr)// デバイス
 	, m_pTextureMap()// テクスチャマップ
 {}
 /*

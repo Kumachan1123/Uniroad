@@ -40,23 +40,17 @@ void RehabiliScene::Initialize()
 	// 共通リソースを保存する。
 	// 以降のテクスチャ取得やデバイス参照はこのポインタ経由で統一する。
 
-	auto deviceResources = MyResourecs::Get().GetDeviceResources();
-	auto textureManager = MyResourecs::Get().GetTextureManager();
+	//auto deviceResources = MyResources::Get().GetDeviceResources();
+	//auto textureManager = MyResources::Get().GetTextureManager();
 
 	// カメラを生成して、ビュー・射影の準備を完了させる。
 	CreateCamera();
 
-	// マップを生成する
-	m_pOverWorldMap = std::make_unique<OverWorldMap>();
 
 	// プレイヤーを生成する
 	m_pPlayer2D = std::make_unique<Player2D>();
 	// プレイヤーの初期位置をマップタイルの行・列から設定する
 	m_pPlayer2D->SetMapTilePosition(3, 5);
-	// プレイヤーの移動可能範囲を設定
-	m_pPlayer2D->SetCanMoveCallback([this](int row, int col) {
-		return m_pOverWorldMap->IsWalkable(row, col);
-		});
 }
 /*
 * 	@brief 更新
@@ -74,17 +68,15 @@ void RehabiliScene::Update(float elapsedTime)
 	// カメラ更新（ゲームロジックとは独立）。
 	m_pTPCamera->SetTime(m_time);
 	m_pTPCamera->Update();
-	m_debugCamera->Update(MyResourecs::Get().GetInputManager());
+	m_debugCamera->Update(MyResources::Get().GetInputManager());
 	m_view = m_debugCamera->GetViewMatrix();
 
 	// シーン遷移入力。
-	auto keyState = MyResourecs::Get().GetInputManager()->GetKeyboardState();
+	auto keyState = MyResources::Get().GetInputManager()->GetKeyboardState();
 	if (keyState.Enter)m_isChangeScene = true;
 
 	// プレイヤー更新
 	m_pPlayer2D->Update(elapsedTime);
-	// マップ更新
-	m_pOverWorldMap->Update(elapsedTime);
 
 }
 /*
@@ -97,11 +89,9 @@ void RehabiliScene::Render()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	const auto deviceResources = MyResourecs::Get().GetDeviceResources();
-	const auto states = MyResourecs::Get().GetCommonStates();
-	auto context = deviceResources->GetD3DDeviceContext();
-	// マップ描画
-	m_pOverWorldMap->Render(m_view, m_projection);
+	//const auto deviceResources = MyResources::Get().GetDeviceResources();
+	//const auto states = MyResources::Get().GetCommonStates();
+	//auto context = deviceResources->GetD3DDeviceContext();
 	// プレイヤー描画
 	m_pPlayer2D->Render(m_view, m_projection);
 }
@@ -141,7 +131,7 @@ void RehabiliScene::CreateCamera()
 	// SimpleMathの名前空間の使用
 	using namespace DirectX::SimpleMath;
 	// 出力サイズを取得する
-	RECT rect = MyResourecs::Get().GetDeviceResources()->GetOutputSize();
+	RECT rect = MyResources::Get().GetDeviceResources()->GetOutputSize();
 	// 固定カメラを作成する
 	m_pTPCamera = std::make_unique<TPCamera>();
 	// 固定カメラを初期化する
@@ -169,7 +159,7 @@ void RehabiliScene::CreateSDKMesh(std::wstring name)
 	// DirectXの名前空間の使用
 	using namespace DirectX;
 	// deviceを取得する
-	ID3D11Device* device = MyResourecs::Get().GetDeviceResources()->GetD3DDevice();
+	//ID3D11Device* device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
 
 	// ファイルパス
 	std::wstring filePath = L"Resources/SDKMeshes/" + name + L"/" + name + L".sdkmesh";

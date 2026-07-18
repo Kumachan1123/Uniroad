@@ -4,21 +4,11 @@
 */
 #pragma once
 // 標準ライブラリ
-#include <cassert>
-#include <memory>
-#include <string>
+
 // DirectX
-#include <DeviceResources.h>
-// 外部ライブラリ
-#include <Libraries/MyLib/DebugCamera.h>
-#include <Libraries/MyLib/DebugString.h>
-#include <Libraries/MyLib/GridFloor.h>
-#include <Libraries/MyLib/InputManager.h>
-#include <Libraries/MyLib/MemoryLeakDetector.h>
-#include <Libraries/Microsoft/ReadData.h>
+
 // 自作ヘッダーファイル
-#include "Game/CommonResources/CommonResources.h"
-class CommonResources;
+
 class Material
 {
 	// アクセサ
@@ -69,7 +59,7 @@ public:
 	// デストラクタ defaultで定義
 	~Material() = default;
 	// 初期化
-	void Initialize(CommonResources* resources);
+	void Initialize();
 
 	// 終了
 	void Finalize();
@@ -81,8 +71,6 @@ private:
 	// ピクセルシェーダーを作る
 	void CreatePixelShader(const std::vector<uint8_t>& blob);
 private:
-	// 共通リソースへのポインタ
-	CommonResources* m_pCommonResources;
 	// 環境マップのテクスチャ
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_envCubeSRV;
 	// ノーマルマップ

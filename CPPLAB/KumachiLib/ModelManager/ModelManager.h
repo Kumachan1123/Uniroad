@@ -5,13 +5,7 @@
 #pragma once
 #ifndef MODEL_MANAGER_DEFINED
 #define MODEL_MANAGER_DEFINED
-// 標準ライブラリ
-#include <memory>
-#include <unordered_map>
-#include <string>
-#include <fstream>
-// DirectX
-#include <DeviceResources.h>
+
 
 // モデルマネージャークラス
 class ModelManager
