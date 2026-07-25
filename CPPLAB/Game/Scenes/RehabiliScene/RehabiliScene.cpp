@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "RehabiliScene.h"
+
 /*
 * 	@brief コンストラクタ
 * 	@details ゲームづくりのリハビリ用シーンクラスのコンストラクタ
@@ -42,7 +43,7 @@ void RehabiliScene::Initialize()
 
 	//auto deviceResources = MyResources::Get().GetDeviceResources();
 	//auto textureManager = MyResources::Get().GetTextureManager();
-
+	const auto device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
 	// カメラを生成して、ビュー・射影の準備を完了させる。
 	CreateCamera();
 
@@ -51,6 +52,55 @@ void RehabiliScene::Initialize()
 	m_pPlayer2D = std::make_unique<Player2D>();
 	// プレイヤーの初期位置をマップタイルの行・列から設定する
 	m_pPlayer2D->SetMapTilePosition(3, 5);
+	FBXLoader loader;
+	if (!m_isLoaded)
+	{
+		m_fbxLoader = std::make_unique<FBXLoader>();
+
+		if (m_fbxLoader->Load("Resources/Models/Test/Test.fbx"))
+		{
+			OutputDebugStringA(("Mesh : " + std::to_string(m_fbxLoader->GetMeshCount()) + "\n").c_str());
+			OutputDebugStringA(("Material : " + std::to_string(m_fbxLoader->GetMaterialCount()) + "\n").c_str());
+			OutputDebugStringA(("Animation : " + std::to_string(m_fbxLoader->GetAnimationCount()) + "\n").c_str());
+			m_fbxLoader->DebugMeshInfo();
+		}
+
+		m_isLoaded = true;
+
+		auto meshDatas = m_fbxLoader->GetMeshData();
+
+		OutputDebugStringA(("MeshData Count : " + std::to_string(meshDatas.size()) + "\n").c_str());
+
+		for (size_t i = 0; i < meshDatas.size(); ++i)
+		{
+			OutputDebugStringA(
+				("Vertices : " + std::to_string(meshDatas[i].Vertices.size()) + "\n").c_str());
+
+			OutputDebugStringA(
+				("Indices : " + std::to_string(meshDatas[i].Indices.size()) + "\n").c_str());
+
+			OutputDebugStringA(
+				("Material : " + std::to_string(meshDatas[i].MaterialIndex) + "\n").c_str());
+		}
+		m_fbxModel = std::make_unique<FBXModel>();
+		m_fbxShader = std::make_unique<FBXShader>();
+
+		m_fbxShader->Create(device);
+		m_fbxModel->SetMaterialDiffuseColors(m_fbxLoader->GetMaterialDiffuseColors());
+		m_fbxModel->Create(device, meshDatas, m_fbxLoader->GetMaterials());
+
+	}
+	std::unique_ptr<FBXTexture> texture =
+		std::make_unique<FBXTexture>();
+
+
+	if (texture->Load(
+		device,
+		"Resources/Models/Test/Test.png"))
+	{
+		OutputDebugStringA("FBXTexture Load Success\n");
+	}
+
 }
 /*
 * 	@brief 更新
@@ -93,7 +143,10 @@ void RehabiliScene::Render()
 	//const auto states = MyResources::Get().GetCommonStates();
 	//auto context = deviceResources->GetD3DDeviceContext();
 	// プレイヤー描画
-	m_pPlayer2D->Render(m_view, m_projection);
+	Matrix world = Matrix::Identity;
+
+	m_fbxModel->Draw(MyResources::Get().GetDeviceResources()->GetD3DDeviceContext(), m_fbxShader.get(), world, m_view, m_projection);
+	//m_pPlayer2D->Render(m_view, m_projection);
 }
 /*
 * 	@brief 終了

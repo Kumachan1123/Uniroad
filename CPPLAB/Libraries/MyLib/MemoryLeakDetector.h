@@ -1,14 +1,14 @@
 /*
-	@file	MemoryLeakDetector.h
-	@brief	メモリリークの検出器
+	@file   MemoryLeakDetector.h
+	@brief  メモリリークの検出器
 */
 #pragma once
 
 #if defined(_DEBUG)
-#include <crtdbg.h>
+
 #define _CRTDBG_MAP_ALLOC
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
+
+#include <crtdbg.h>
 
 namespace mylib
 {
@@ -17,3 +17,17 @@ namespace mylib
 		_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 	}
 }
+
+#define MY_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+
+#else
+
+namespace mylib
+{
+	inline void MemoryLeakDetector()
+	{}
+}
+
+#define MY_NEW new
+
+#endif

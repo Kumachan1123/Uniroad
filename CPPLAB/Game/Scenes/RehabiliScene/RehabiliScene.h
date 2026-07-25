@@ -28,7 +28,13 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include <KumachiLib\BillboardSprite\BillboardSprite.h>
 #include <Game\Player2D\Player2D.h>
-
+#include "KumachiLib/FBXLoader/FBXLoader.h"
+#include "KumachiLib/FBXModel/FBXModel.h"
+#include "KumachiLib/FBXShader/FBXShader.h"
+#include "KumachiLib/FBXTexture/FBXTexture.h"
+class FBXModel;
+class FBXShader;
+class FBXLoader;
 // ゲームづくりのリハビリ用シーンクラス
 // 6x12の盤面を持ち、落下中の2連ぷよ（軸＋子）を入力で操作する。
 // 設置後は盤面解決（下詰め・4連結消去・連鎖）を行う。
@@ -92,6 +98,9 @@ private:
 	std::unique_ptr<DirectX::Model> m_pModel;
 	// 2Dプレイヤー
 	std::unique_ptr<Player2D> m_pPlayer2D;
-
+	std::unique_ptr<FBXLoader> m_fbxLoader;
+	std::unique_ptr<FBXModel> m_fbxModel;
+	std::unique_ptr<FBXShader> m_fbxShader;
+	bool m_isLoaded = false;
 
 };
