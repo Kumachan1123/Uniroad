@@ -19,7 +19,12 @@ bool FBXLoader::Load(const std::string& filePath)
 		aiProcess_ImproveCacheLocality |
 		aiProcess_LimitBoneWeights |
 		aiProcess_RemoveRedundantMaterials |
-		aiProcess_FlipUVs);
+		aiProcess_FlipUVs |
+		//aiProcess_MakeLeftHanded |
+		aiProcess_FindInvalidData |
+		aiProcess_FindDegenerates |
+		aiProcess_OptimizeMeshes |
+		aiProcess_PreTransformVertices);
 	if (m_scene == nullptr)
 	{
 		return false;
@@ -79,6 +84,7 @@ bool FBXLoader::Load(const std::string& filePath)
 						mesh->mTextureCoords[0][vertexIndex].x,
 						mesh->mTextureCoords[0][vertexIndex].y
 					};
+
 				}
 
 				meshData.Vertices.emplace_back(vertex);
@@ -271,6 +277,42 @@ bool FBXLoader::Load(const std::string& filePath)
 			("Height : " +
 			 std::to_string(tex->mHeight) +
 			 "\n").c_str());
+	}
+
+	{
+
+		OutputDebugStringA("GetRoot");
+
+		const aiNode* root = m_scene->mRootNode;
+
+		OutputDebugStringA(root->mName.C_Str());
+		OutputDebugStringA("\n");
+		for (unsigned int i = 0; i < root->mNumChildren; i++)
+		{
+			OutputDebugStringA(root->mChildren[i]->mName.C_Str());
+			OutputDebugStringA("\n");
+		}
+		const aiNode* node = m_scene->mRootNode->mChildren[0];
+
+		const aiMatrix4x4& m = node->mTransformation;
+
+		char text[512];
+
+		sprintf_s(
+			text,
+			"Node Matrix\n"
+			"%f %f %f %f\n"
+			"%f %f %f %f\n"
+			"%f %f %f %f\n"
+			"%f %f %f %f\n",
+			m.a1, m.a2, m.a3, m.a4,
+			m.b1, m.b2, m.b3, m.b4,
+			m.c1, m.c2, m.c3, m.c4,
+			m.d1, m.d2, m.d3, m.d4);
+
+		OutputDebugStringA(text);
+		OutputDebugStringA("EndGetRoot");
+
 	}
 	return true;
 }

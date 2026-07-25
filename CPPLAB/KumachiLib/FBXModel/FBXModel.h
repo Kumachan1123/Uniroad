@@ -84,4 +84,10 @@ private:
 	std::vector<MeshData> m_meshDatas;
 
 	std::unique_ptr<FBXTexture> m_whiteTexture;
+
+	// ラスタライザーステート
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
+
+	// 深度ステンシルステート
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthStencilState;
 };

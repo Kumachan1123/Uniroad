@@ -57,7 +57,7 @@ void RehabiliScene::Initialize()
 	{
 		m_fbxLoader = std::make_unique<FBXLoader>();
 
-		if (m_fbxLoader->Load("Resources/Models/Test/Test.fbx"))
+		if (m_fbxLoader->Load("Resources/Models/riceball/riceball.fbx"))
 		{
 			OutputDebugStringA(("Mesh : " + std::to_string(m_fbxLoader->GetMeshCount()) + "\n").c_str());
 			OutputDebugStringA(("Material : " + std::to_string(m_fbxLoader->GetMaterialCount()) + "\n").c_str());
@@ -90,16 +90,16 @@ void RehabiliScene::Initialize()
 		m_fbxModel->Create(device, meshDatas, m_fbxLoader->GetMaterials());
 
 	}
-	std::unique_ptr<FBXTexture> texture =
-		std::make_unique<FBXTexture>();
+	//std::unique_ptr<FBXTexture> texture =
+	//	std::make_unique<FBXTexture>();
 
 
-	if (texture->Load(
-		device,
-		"Resources/Models/Test/Test.png"))
-	{
-		OutputDebugStringA("FBXTexture Load Success\n");
-	}
+	//if (texture->Load(
+	//	device,
+	//	"Resources/Models/Test/Test.png"))
+	//{
+	//	OutputDebugStringA("FBXTexture Load Success\n");
+	//}
 
 }
 /*
@@ -144,7 +144,11 @@ void RehabiliScene::Render()
 	//auto context = deviceResources->GetD3DDeviceContext();
 	// プレイヤー描画
 	Matrix world = Matrix::Identity;
-
+	//world *= Matrix::CreateScale(100.0f);
+	// 本来+Yが上方向だが、FBXモデルは+Zが上方向なので、X軸で90度回転させる。
+	world *= Matrix::CreateRotationX(XMConvertToRadians(90.0f));
+	// さらにこの状態では後ろを向いた状態になるので、Y軸で180度回転させる。
+	//world *= Matrix::CreateRotationY(XMConvertToRadians(180.0f));
 	m_fbxModel->Draw(MyResources::Get().GetDeviceResources()->GetD3DDeviceContext(), m_fbxShader.get(), world, m_view, m_projection);
 	//m_pPlayer2D->Render(m_view, m_projection);
 }

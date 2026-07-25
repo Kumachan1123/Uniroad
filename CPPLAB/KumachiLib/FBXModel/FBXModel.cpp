@@ -1,6 +1,19 @@
 #include"pch.h"
 #include "FBXModel.h"
+// DirectX
+#include <DeviceResources.h>
+#include <d3d11.h>
+#include <SimpleMath.h>
+// ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ
+#include <Libraries/MyLib/DebugCamera.h>
+#include <Libraries/MyLib/DebugString.h>
+#include <Libraries/MyLib/GridFloor.h>
+#include <Libraries/MyLib/InputManager.h>
+#include <Libraries/MyLib/MemoryLeakDetector.h>
 #include "KumachiLib/FBXShader/FBXShader.h"
+#include <CommonStates.h>
+
+#include "Game/MyResources/MyResources.h"
 
 FBXModel::FBXModel()
 {
@@ -31,6 +44,7 @@ bool FBXModel::Create(
 	m_materials = &materials;
 
 	m_meshBuffers.resize(meshDatas.size());
+
 
 
 
@@ -133,9 +147,13 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 	{
 		return;
 	}
-
+	const auto pStates = std::make_unique<DirectX::CommonStates>(MyResources::Get().GetDeviceResources()->GetD3DDevice());
 	//shader->Set(context, buf);
-
+	ID3D11SamplerState* sampler[] = { pStates->AnisotropicClamp() };
+	context->PSSetSamplers(0, 1, sampler);
+	context->RSSetState(pStates->CullClockwise());
+	context->OMSetBlendState(pStates->Opaque(), nullptr, 0xFFFFFFFF);
+	context->OMSetDepthStencilState(pStates->DepthDefault(), 0);
 	for (const MeshBuffer& meshBuffer : m_meshBuffers)
 	{
 		UINT stride = sizeof(ModelVertex);
@@ -171,8 +189,6 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 			meshBuffer.MaterialIndex;
 
 		ID3D11ShaderResourceView* srv = nullptr;
-
-		// m_materials‚ðŽæ“¾
 
 
 		if (m_materials != nullptr &&
