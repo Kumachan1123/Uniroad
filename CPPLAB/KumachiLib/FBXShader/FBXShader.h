@@ -13,6 +13,16 @@
 struct FBXBuffer
 {
 	/**
+	* @brief ワールド行列(だけ）
+	*/
+	DirectX::SimpleMath::Matrix World;
+
+	/**
+	 * @brief ワールド行列の逆行列の転置行列
+	 */
+	DirectX::SimpleMath::Matrix WorldInverseTranspose;
+
+	/**
 	 * @brief ワールドビュープロジェクション行列
 	 */
 	DirectX::SimpleMath::Matrix WorldViewProj;

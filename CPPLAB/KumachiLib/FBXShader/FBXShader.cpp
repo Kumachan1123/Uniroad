@@ -168,6 +168,13 @@ void FBXShader::Set(
 
 	FBXBuffer bufferData = {};
 
+	bufferData.World =
+		transform.World.Transpose();
+
+
+	bufferData.WorldInverseTranspose =
+		transform.World.Invert().Transpose();
+
 	bufferData.WorldViewProj =
 		transform.WorldViewProj.Transpose();
 

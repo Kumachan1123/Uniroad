@@ -133,6 +133,12 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 	//// （テスト）Y方向に少し移動
 	//world *= DirectX::SimpleMath::Matrix::CreateTranslation(0.0f, 5.0f, 0.0f);
 
+	buf.World = world;
+
+	// ワールド行列（逆行列の転置行列を計算するのはFBXShader側で行う）
+	buf.WorldInverseTranspose =
+		world;
+
 	buf.WorldViewProj =
 		world *
 		view *
