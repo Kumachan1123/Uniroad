@@ -85,6 +85,8 @@ private:
 
 	std::unique_ptr<FBXTexture> m_whiteTexture;
 
+	std::unique_ptr< DirectX::CommonStates> m_state;
+
 	// ラスタライザーステート
 	Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_rasterizerState;
 

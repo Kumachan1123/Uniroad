@@ -13,25 +13,68 @@ struct PS_Input
 
 float4 main(PS_Input input) : SV_TARGET
 {
-    /// ディレクショナルライト
+    /// 仮の影色
+    const float3 ShadowColor = float3(0.72f, 0.78f, 0.95f);
+
+    /// 仮の環境光
+    const float Ambient = 0.25f;
+
+    /// ライト方向
     float3 lightDirection =
-        normalize(float3(-0.4f, -1.0f, -0.3f));
+        normalize(LightDirection);
 
-    /// 拡散反射
+    /// ライト色
+    float3 lightColor =
+        LightColor;
+
+    /// Half Lambert
+    float NdotL =
+        dot(
+            normalize(input.Normal),
+            -lightDirection);
+
+    NdotL =
+        NdotL * 0.5f + 0.5f;
+
+    /// 3段階トゥーン
     float diffuse =
-        saturate(dot(input.Normal, -lightDirection));
+        Ambient;
 
-    /// 環境光
+    diffuse +=
+        step(0.40f, NdotL) * 0.30f;
+
+    diffuse +=
+        step(0.75f, NdotL) * 0.45f;
+
     diffuse =
-        max(diffuse, 0.2f);
+        saturate(diffuse);
 
+    /// ライト色
+    float3 toonLight =
+        lerp(
+            ShadowColor,
+            float3(1.0f, 1.0f, 1.0f),
+            diffuse);
+
+    /// テクスチャ
     float4 textureColor =
         DiffuseTexture.Sample(
             Sampler,
             input.TexCoord);
 
-    return
-        textureColor *
-        DiffuseColor *
-        diffuse;
+    /// RGB
+    float3 finalColor =
+        textureColor.rgb *
+        DiffuseColor.rgb *
+        lightColor *
+        toonLight;
+
+    /// Alpha
+    float finalAlpha =
+        textureColor.a *
+        DiffuseColor.a;
+    //return float4(1, 0, 0, DiffuseColor.a);
+    return float4(
+        finalColor,
+      0.25);
 }

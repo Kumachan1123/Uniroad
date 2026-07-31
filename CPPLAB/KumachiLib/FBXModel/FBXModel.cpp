@@ -17,6 +17,8 @@
 
 FBXModel::FBXModel()
 {
+	m_state = std::make_unique<DirectX::CommonStates>(MyResources::Get().GetDeviceResources()->GetD3DDevice());
+
 	m_diffuseColor = DirectX::SimpleMath::Vector4(
 		1.0f,
 		1.0f,
@@ -147,31 +149,72 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 	// 色設定
 	buf.Color = m_diffuseColor;
 
+	FBXLightBuffer lightBuf = {};
+	// ライトの方向を設定
+	lightBuf.LightDirection = DirectX::SimpleMath::Vector4(0.0f, -1.0f, 0.0f, 0.0f);
+	// ライトの色を設定
+	lightBuf.LightColor = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// 全構造体をまとめる
+	FBXShaderBuffer shaderBuf = {};
+	shaderBuf.Transform = buf;
+	shaderBuf.Light = lightBuf;
+
 	//OutputDebugStringA("Shader Set Complete\n");
 
 	if (context == nullptr || shader == nullptr)
 	{
 		return;
 	}
-	const auto pStates = std::make_unique<DirectX::CommonStates>(MyResources::Get().GetDeviceResources()->GetD3DDevice());
 	//shader->Set(context, buf);
-	ID3D11SamplerState* sampler[] = { pStates->AnisotropicClamp() };
+	ID3D11SamplerState* sampler[] = { m_state->AnisotropicWrap() };
 	context->PSSetSamplers(0, 1, sampler);
-	context->RSSetState(pStates->CullClockwise());
-	context->OMSetBlendState(pStates->Opaque(), nullptr, 0xFFFFFFFF);
-	context->OMSetDepthStencilState(pStates->DepthDefault(), 0);
+	context->RSSetState(m_state->CullNone());
+	context->OMSetBlendState(m_state->AlphaBlend(), nullptr, 0xFFFFFFFF);
+	context->OMSetDepthStencilState(m_state->DepthDefault(), 0);
+//======================================
+// 不透明パス
+//======================================
 	for (const MeshBuffer& meshBuffer : m_meshBuffers)
 	{
 		UINT stride = sizeof(ModelVertex);
 		UINT offset = 0;
-			// 色設定
-		buf.Color = m_materialDiffuseColors[meshBuffer.MaterialIndex];
-		shader->Set(context, buf);
-		//OutputDebugStringA(
-		//	("Draw Index Count : " +
-		//	 std::to_string(meshBuffer.IndexCount) +
-		//	 "\n").c_str());
 
+		uint32_t materialIndex = meshBuffer.MaterialIndex;
+
+		if (m_materials == nullptr ||
+			materialIndex >= m_materials->size())
+		{
+			continue;
+		}
+
+		const FBXMaterial& material =
+			(*m_materials)[materialIndex];
+
+		/// 半透明は後で描画
+		if (material.Opacity < 0.999f)
+		{
+			continue;
+		}
+
+		shaderBuf.Transform.Color = material.DiffuseColor;
+				// ディフューズカラーをデバッグ出力
+		OutputDebugStringA(
+			("Material Diffuse Color: " +
+			 std::to_string(material.DiffuseColor.x) + ", " +
+			 std::to_string(material.DiffuseColor.y) + ", " +
+			 std::to_string(material.DiffuseColor.z) + ", " +
+			 std::to_string(material.DiffuseColor.w) + "\n").c_str());
+		shader->Set(context, shaderBuf);
+
+		context->OMSetBlendState(
+			nullptr,
+			nullptr,
+			0xffffffff);
+
+		context->OMSetDepthStencilState(
+			m_state->DepthDefault(),
+			0);
 
 		context->IASetVertexBuffers(
 			0,
@@ -180,38 +223,17 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 			&stride,
 			&offset);
 
-
 		context->IASetIndexBuffer(
 			meshBuffer.IndexBuffer.Get(),
 			DXGI_FORMAT_R32_UINT,
 			0);
 
-
 		context->IASetPrimitiveTopology(
 			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+		ID3D11ShaderResourceView* srv = material.GetTexture();
 
-		uint32_t materialIndex =
-			meshBuffer.MaterialIndex;
-
-		ID3D11ShaderResourceView* srv = nullptr;
-
-
-		if (m_materials != nullptr &&
-			materialIndex < m_materials->size())
-		{
-			const FBXMaterial& material =
-				(*m_materials)[materialIndex];
-
-			if (material.DiffuseTexture)
-			{
-				srv = material.DiffuseTexture->GetSRV();
-			}
-		}
-
-		/// テクスチャが無い場合は白テクスチャを使う
-		if (srv == nullptr &&
-			m_whiteTexture != nullptr)
+		if (srv == nullptr)
 		{
 			srv = m_whiteTexture->GetSRV();
 		}
@@ -227,5 +249,119 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 			0);
 	}
 
-	OutputDebugStringA("Draw\n");
+	// 裏面カリング
+	D3D11_RASTERIZER_DESC frontCullDesc = {};
+	frontCullDesc.FillMode = D3D11_FILL_SOLID;
+	frontCullDesc.CullMode = D3D11_CULL_FRONT;
+	frontCullDesc.DepthClipEnable = TRUE;
+
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> frontCullState;
+	MyResources::Get().GetDeviceResources()->GetD3DDevice()->CreateRasterizerState(
+		&frontCullDesc,
+		frontCullState.GetAddressOf());
+
+	// 表面カリング
+	D3D11_RASTERIZER_DESC backCullDesc = {};
+	backCullDesc.FillMode = D3D11_FILL_SOLID;
+	backCullDesc.CullMode = D3D11_CULL_BACK;
+	backCullDesc.DepthClipEnable = TRUE;
+
+	Microsoft::WRL::ComPtr<ID3D11RasterizerState> backCullState;
+	MyResources::Get().GetDeviceResources()->GetD3DDevice()->CreateRasterizerState(
+		&backCullDesc,
+		backCullState.GetAddressOf());
+
+	//======================================
+// 半透明パス
+//======================================
+	for (const MeshBuffer& meshBuffer : m_meshBuffers)
+	{
+		UINT stride = sizeof(ModelVertex);
+		UINT offset = 0;
+
+		uint32_t materialIndex = meshBuffer.MaterialIndex;
+
+		if (m_materials == nullptr ||
+			materialIndex >= m_materials->size())
+		{
+			continue;
+		}
+
+		const FBXMaterial& material =
+			(*m_materials)[materialIndex];
+		if (material.Opacity >= 0.999f)
+		{
+			continue;
+		}
+
+		OutputDebugStringA(
+			("Transparent Draw : Material " +
+			 std::to_string(materialIndex) + "\n").c_str());
+		OutputDebugStringA(
+			("Stored Alpha : " +
+			 std::to_string(material.DiffuseColor.w) + "\n").c_str());
+		shaderBuf.Transform.Color = material.DiffuseColor;
+		shader->Set(context, shaderBuf);
+
+		context->OMSetBlendState(
+			m_state->Additive(),
+			nullptr,
+			0xffffffff);
+
+		context->OMSetDepthStencilState(
+			m_state->DepthRead(),
+			0);
+
+		context->IASetVertexBuffers(
+			0,
+			1,
+			meshBuffer.VertexBuffer.GetAddressOf(),
+			&stride,
+			&offset);
+
+		context->IASetIndexBuffer(
+			meshBuffer.IndexBuffer.Get(),
+			DXGI_FORMAT_R32_UINT,
+			0);
+
+		context->IASetPrimitiveTopology(
+			D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		ID3D11ShaderResourceView* srv = material.GetTexture();
+
+		if (srv == nullptr)
+		{
+			srv = m_whiteTexture->GetSRV();
+		}
+
+		context->PSSetShaderResources(
+			0,
+			1,
+			&srv);
+
+		//======================================
+		// 裏面
+		//======================================
+		context->RSSetState(frontCullState.Get());
+
+		context->DrawIndexed(
+			meshBuffer.IndexCount,
+			0,
+			0);
+
+		//======================================
+		// 表面
+		//======================================
+		context->RSSetState(backCullState.Get());
+
+		context->DrawIndexed(
+			meshBuffer.IndexCount,
+			0,
+			0);
+	}
+
+	// ラスタライザーステートを戻す
+	context->RSSetState(m_state->CullNone());
+
+	//OutputDebugStringA("Draw\n");
 }

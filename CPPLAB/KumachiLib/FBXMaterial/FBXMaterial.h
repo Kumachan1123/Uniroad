@@ -19,9 +19,6 @@ struct FBXMaterial
 {
 public:
 
-	/**
-	 * @brief Diffuseカラー
-	 */
 	DirectX::SimpleMath::Vector4 DiffuseColor =
 	{
 		1.0f,
@@ -30,37 +27,23 @@ public:
 		1.0f
 	};
 
-
-	/**
-	 * @brief Diffuseテクスチャ
-	 */
 	std::unique_ptr<FBXTexture> DiffuseTexture;
 
+	/// 半透明か
+	bool IsTransparent = false;
 
-	/**
-	 * @brief テクスチャを持っているか
-	 *
-	 * @return 存在する場合true
-	 */
+	/// 不透明度
+	float Opacity = 1.0f;
+
 	bool HasTexture() const
 	{
 		return DiffuseTexture != nullptr;
 	}
 
-
-	/**
-	 * @brief テクスチャ取得
-	 *
-	 * @return ShaderResourceView
-	 */
 	ID3D11ShaderResourceView* GetTexture() const
 	{
-		if (DiffuseTexture == nullptr)
-		{
-			return nullptr;
-		}
-
-
-		return DiffuseTexture->GetSRV();
+		return DiffuseTexture ?
+			DiffuseTexture->GetSRV() :
+			nullptr;
 	}
 };

@@ -32,6 +32,24 @@ struct FBXBuffer
 	DirectX::SimpleMath::Vector4 Color;
 };
 /**
+ * @brief FBX用ライト情報
+ */
+struct FBXLightBuffer
+{
+	DirectX::SimpleMath::Vector4 LightDirection;
+	DirectX::SimpleMath::Vector4 LightColor;
+};
+/**
+ * @brief シェーダーに渡す構造体をさらにまとめた構造体
+ */
+struct FBXShaderBuffer
+{
+	FBXBuffer Transform;
+	FBXLightBuffer Light;
+
+};
+
+/**
  * @brief FBXモデル用シェーダー
  */
 class FBXShader
@@ -48,7 +66,7 @@ public:
 	 * @brief シェーダー設定
 	 */
 	void Set(
-		ID3D11DeviceContext* context, const FBXBuffer& transform);
+		ID3D11DeviceContext* context, const FBXShaderBuffer& shaderBuffer);
 
 private:
 
@@ -59,6 +77,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_transformBuffer;
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_lightBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_samplerState;
 };

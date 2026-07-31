@@ -129,7 +129,38 @@ bool FBXLoader::Load(const std::string& filePath)
 
 
 			aiString path;
+						/// 不透明度
+			float opacity = 1.0f;
 
+			if (aiMat->Get(AI_MATKEY_OPACITY, opacity) == AI_SUCCESS)
+			{
+				material.Opacity = opacity;
+
+				material.DiffuseColor.w = opacity;
+
+				material.IsTransparent = (opacity < 0.999f);
+			}
+			{
+				// 不透明度を出力
+				OutputDebugStringA(
+					("Opacity : " + std::to_string(opacity) + "\n").c_str());
+
+			}
+			int blend = 0;
+
+			if (aiMat->Get(AI_MATKEY_BLEND_FUNC, blend) == AI_SUCCESS)
+			{
+				OutputDebugStringA(
+					("Blend : " +
+					 std::to_string(blend) +
+					 "\n").c_str());
+			}
+
+			if (aiMat->Get(AI_MATKEY_OPACITY, opacity) == AI_SUCCESS)
+			{
+				material.Opacity = opacity;
+				material.DiffuseColor.w = opacity;
+			}
 			aiColor3D color;
 
 			if (aiMat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
@@ -139,9 +170,10 @@ bool FBXLoader::Load(const std::string& filePath)
 					color.r,
 					color.g,
 					color.b,
-					1.0f
+					opacity
 				};
 			}
+
 			/// Diffuseテクスチャ取得
 			if (aiMat->GetTexture(
 				aiTextureType_DIFFUSE,
@@ -231,8 +263,9 @@ bool FBXLoader::Load(const std::string& filePath)
 					color.r,
 					color.g,
 					color.b,
-					1.0f
+					opacity
 				};
+
 				m_materialDiffuseColors.emplace_back(m_diffuseColor);
 
 			}

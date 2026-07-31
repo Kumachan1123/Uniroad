@@ -83,7 +83,8 @@ bool FBXShader::Create(
 	}
 
 	D3D11_BUFFER_DESC bufferDesc = {};
-
+	// 定数バッファの設定
+	// ワールド行列、ビュー行列、射影行列、色を格納するためのバッファ
 	bufferDesc.ByteWidth =
 		sizeof(FBXBuffer);
 
@@ -101,6 +102,33 @@ bool FBXShader::Create(
 	{
 		return false;
 	}
+	//----------------------------------------------------------------------------
+	// ライト情報用の定数バッファを作成する
+	D3D11_BUFFER_DESC lightBufferDesc = {};
+
+	lightBufferDesc.ByteWidth =
+		sizeof(FBXLightBuffer);
+
+	lightBufferDesc.Usage =
+		D3D11_USAGE_DEFAULT;
+
+	lightBufferDesc.BindFlags =
+		D3D11_BIND_CONSTANT_BUFFER;
+
+	if (FAILED(device->CreateBuffer(
+		&lightBufferDesc,
+		nullptr,
+		m_lightBuffer.GetAddressOf())))
+	{
+		return false;
+	}
+	//----------------------------------------------------------------------------
+
+
+
+
+
+
 	D3D11_SAMPLER_DESC samplerDesc = {};
 
 	samplerDesc.Filter =
@@ -136,7 +164,7 @@ bool FBXShader::Create(
 
 void FBXShader::Set(
 	ID3D11DeviceContext* context,
-	const FBXBuffer& transform)
+	const FBXShaderBuffer& shaderBuffer)
 {
 	if (context == nullptr)
 	{
@@ -165,39 +193,48 @@ void FBXShader::Set(
 		1,
 		m_samplerState.GetAddressOf());
 
-
+	// 定数バッファにデータを転送する
+	// ワールド行列とかディフューズカラー
 	FBXBuffer bufferData = {};
 
 	bufferData.World =
-		transform.World.Transpose();
+		shaderBuffer.Transform.World.Transpose();
 
 
 	bufferData.WorldInverseTranspose =
-		transform.World.Invert().Transpose();
+		shaderBuffer.Transform.World.Invert().Transpose();
 
 	bufferData.WorldViewProj =
-		transform.WorldViewProj.Transpose();
+		shaderBuffer.Transform.WorldViewProj.Transpose();
 
 	bufferData.Color =
-		transform.Color;
+		shaderBuffer.Transform.Color;
+
+	// テスト
+	//bufferData.Color.w = 0.5f;
+	// ライト情報
+	FBXLightBuffer lightBuffer = {};
+	lightBuffer.LightDirection =
+		shaderBuffer.Light.LightDirection;
+
+	lightBuffer.LightColor =
+		shaderBuffer.Light.LightColor;
 
 
-	context->UpdateSubresource(
-		m_transformBuffer.Get(),
-		0,
-		nullptr,
-		&bufferData,
-		0,
-		0);
+	// 定数バッファにデータを転送する
+	{
+		// ワールド行列とかディフューズカラー
+		context->UpdateSubresource(m_transformBuffer.Get(), 0, nullptr, &bufferData, 0, 0);
+		context->VSSetConstantBuffers(0, 1, m_transformBuffer.GetAddressOf());
+		context->PSSetConstantBuffers(0, 1, m_transformBuffer.GetAddressOf());
+	}
+	{
+		// ライト情報
+		context->UpdateSubresource(m_lightBuffer.Get(), 0, nullptr, &lightBuffer, 0, 0);
+		context->VSSetConstantBuffers(1, 1, m_lightBuffer.GetAddressOf());
+		context->PSSetConstantBuffers(1, 1, m_lightBuffer.GetAddressOf());
+	}
 
 
-	context->VSSetConstantBuffers(
-		0,
-		1,
-		m_transformBuffer.GetAddressOf());
 
-	context->PSSetConstantBuffers(
-		0,
-		1,
-		m_transformBuffer.GetAddressOf());
 }
