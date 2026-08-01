@@ -5,13 +5,19 @@
 
 #include "pch.h"
 #include "FBXShader.h"
-
+#include "KumachiLib/FBXTexture/FBXTexture.h"
 #include <fstream>
 
 
 bool FBXShader::Create(
 	ID3D11Device* device)
 {
+
+	m_rampTexture = std::make_unique<FBXTexture>();
+
+	m_rampTexture->Load(
+		device,
+		"Resources/Textures/Ramp.png");
 	/// 頂点シェーダー読み込み
 	std::ifstream vsFile(
 		"Resources/Shaders/FBX/VS_FBX.cso",
@@ -220,7 +226,12 @@ void FBXShader::Set(
 	lightBuffer.LightColor =
 		shaderBuffer.Light.LightColor;
 
+	lightBuffer.CameraPosition =
+		shaderBuffer.Light.CameraPosition;
+	ID3D11ShaderResourceView* rampSRV =
+		m_rampTexture->GetSRV();
 
+	context->PSSetShaderResources(1, 1, &rampSRV);
 	// 定数バッファにデータを転送する
 	{
 		// ワールド行列とかディフューズカラー

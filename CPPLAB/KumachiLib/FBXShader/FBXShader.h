@@ -38,6 +38,7 @@ struct FBXLightBuffer
 {
 	DirectX::SimpleMath::Vector4 LightDirection;
 	DirectX::SimpleMath::Vector4 LightColor;
+	DirectX::SimpleMath::Vector4 CameraPosition;
 };
 /**
  * @brief シェーダーに渡す構造体をさらにまとめた構造体
@@ -48,7 +49,7 @@ struct FBXShaderBuffer
 	FBXLightBuffer Light;
 
 };
-
+class FBXTexture;
 /**
  * @brief FBXモデル用シェーダー
  */
@@ -81,4 +82,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_lightBuffer;
 
 	Microsoft::WRL::ComPtr<ID3D11SamplerState> m_samplerState;
+
+	std::unique_ptr<FBXTexture> m_rampTexture;
 };

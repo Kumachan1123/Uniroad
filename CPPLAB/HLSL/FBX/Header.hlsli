@@ -12,4 +12,6 @@ cbuffer Light : register(b1)
     float Padding : packoffset(c0.w); // パディング
     float3 LightColor : packoffset(c1); // ライトの色
     float Padding2 : packoffset(c1.w); // パディング
+    float3 CameraPosition : packoffset(c2);
+    float Padding3 : packoffset(c2.w);
 };

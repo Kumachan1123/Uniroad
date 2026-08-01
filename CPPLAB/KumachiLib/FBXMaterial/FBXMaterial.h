@@ -34,7 +34,8 @@ public:
 
 	/// •s“§–¾“x
 	float Opacity = 1.0f;
-
+	// Šç‚©
+	bool IsSkin = false;
 	bool HasTexture() const
 	{
 		return DiffuseTexture != nullptr;

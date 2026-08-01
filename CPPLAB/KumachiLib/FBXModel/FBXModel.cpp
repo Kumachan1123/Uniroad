@@ -154,7 +154,16 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 	lightBuf.LightDirection = DirectX::SimpleMath::Vector4(0.0f, -1.0f, 0.0f, 0.0f);
 	// ライトの色を設定
 	lightBuf.LightColor = DirectX::SimpleMath::Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	// ライトにカメラの位置を設定
+	DirectX::SimpleMath::Matrix cameraWorld = view.Invert();
 
+	DirectX::SimpleMath::Vector3 cameraPosition =
+	{
+		cameraWorld._41,
+		cameraWorld._42,
+		cameraWorld._43
+	};
+	lightBuf.CameraPosition = DirectX::SimpleMath::Vector4(cameraPosition.x, cameraPosition.y, cameraPosition.z, 1.0f);
 	// 全構造体をまとめる
 	FBXShaderBuffer shaderBuf = {};
 	shaderBuf.Transform = buf;
@@ -167,8 +176,10 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 		return;
 	}
 	//shader->Set(context, buf);
-	ID3D11SamplerState* sampler[] = { m_state->AnisotropicWrap() };
-	context->PSSetSamplers(0, 1, sampler);
+	ID3D11SamplerState* diffuseSampler[] = { m_state->AnisotropicWrap() };
+	ID3D11SamplerState* rampSampler[] = { m_state->PointClamp() };
+	context->PSSetSamplers(0, 1, diffuseSampler);
+	context->PSSetSamplers(1, 1, rampSampler);
 	context->RSSetState(m_state->CullNone());
 	context->OMSetBlendState(m_state->AlphaBlend(), nullptr, 0xFFFFFFFF);
 	context->OMSetDepthStencilState(m_state->DepthDefault(), 0);
@@ -198,13 +209,13 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 		}
 
 		shaderBuf.Transform.Color = material.DiffuseColor;
-				// ディフューズカラーをデバッグ出力
-		OutputDebugStringA(
-			("Material Diffuse Color: " +
-			 std::to_string(material.DiffuseColor.x) + ", " +
-			 std::to_string(material.DiffuseColor.y) + ", " +
-			 std::to_string(material.DiffuseColor.z) + ", " +
-			 std::to_string(material.DiffuseColor.w) + "\n").c_str());
+		//		// ディフューズカラーをデバッグ出力
+		//OutputDebugStringA(
+		//	("Material Diffuse Color: " +
+		//	 std::to_string(material.DiffuseColor.x) + ", " +
+		//	 std::to_string(material.DiffuseColor.y) + ", " +
+		//	 std::to_string(material.DiffuseColor.z) + ", " +
+		//	 std::to_string(material.DiffuseColor.w) + "\n").c_str());
 		shader->Set(context, shaderBuf);
 
 		context->OMSetBlendState(
@@ -294,12 +305,12 @@ void FBXModel::Draw(ID3D11DeviceContext* context, FBXShader* shader,
 			continue;
 		}
 
-		OutputDebugStringA(
-			("Transparent Draw : Material " +
-			 std::to_string(materialIndex) + "\n").c_str());
-		OutputDebugStringA(
-			("Stored Alpha : " +
-			 std::to_string(material.DiffuseColor.w) + "\n").c_str());
+		//OutputDebugStringA(
+		//	("Transparent Draw : Material " +
+		//	 std::to_string(materialIndex) + "\n").c_str());
+		//OutputDebugStringA(
+		//	("Stored Alpha : " +
+		//	 std::to_string(material.DiffuseColor.w) + "\n").c_str());
 		shaderBuf.Transform.Color = material.DiffuseColor;
 		shader->Set(context, shaderBuf);
 

@@ -126,7 +126,19 @@ bool FBXLoader::Load(const std::string& filePath)
 
 			aiMaterial* aiMat =
 				m_scene->mMaterials[i];
+			aiString name;
+			if (aiMat->Get(AI_MATKEY_NAME, name) == AI_SUCCESS)
+			{
+				OutputDebugStringA(
+					("Material Name : " +
+					 std::string(name.C_Str()) +
+					 "\n").c_str());
 
+				OutputDebugStringA(
+					("Length : " +
+					 std::to_string(strlen(name.C_Str())) +
+					 "\n").c_str());
+			}
 
 			aiString path;
 						/// 不透明度
@@ -140,21 +152,16 @@ bool FBXLoader::Load(const std::string& filePath)
 
 				material.IsTransparent = (opacity < 0.999f);
 			}
-			{
-				// 不透明度を出力
-				OutputDebugStringA(
-					("Opacity : " + std::to_string(opacity) + "\n").c_str());
 
-			}
 			int blend = 0;
 
-			if (aiMat->Get(AI_MATKEY_BLEND_FUNC, blend) == AI_SUCCESS)
-			{
-				OutputDebugStringA(
-					("Blend : " +
-					 std::to_string(blend) +
-					 "\n").c_str());
-			}
+			//if (aiMat->Get(AI_MATKEY_BLEND_FUNC, blend) == AI_SUCCESS)
+			//{
+			//	OutputDebugStringA(
+			//		("Blend : " +
+			//		 std::to_string(blend) +
+			//		 "\n").c_str());
+			//}
 
 			if (aiMat->Get(AI_MATKEY_OPACITY, opacity) == AI_SUCCESS)
 			{
@@ -269,7 +276,7 @@ bool FBXLoader::Load(const std::string& filePath)
 				m_materialDiffuseColors.emplace_back(m_diffuseColor);
 
 			}
-			{
+	/*		{
 				OutputDebugStringA(
 					("DiffuseColor : " +
 					 std::to_string(color.r) + ", " +
@@ -280,73 +287,38 @@ bool FBXLoader::Load(const std::string& filePath)
 				("MaterialIndex : " + std::to_string(i) + "\n").c_str());
 
 			OutputDebugStringA(
-				("TexturePath : " + std::string(path.C_Str()) + "\n").c_str());
+				("TexturePath : " + std::string(path.C_Str()) + "\n").c_str());*/
 			m_materials.emplace_back(std::move(material));
 		}
 
 	}
-	OutputDebugStringA(
-		("Embedded Texture Count : " +
-		 std::to_string(m_scene->mNumTextures) +
-		 "\n").c_str());
-	for (unsigned int i = 0; i < m_scene->mNumTextures; i++)
-	{
-		const aiTexture* tex = m_scene->mTextures[i];
+	//OutputDebugStringA(
+	//	("Embedded Texture Count : " +
+	//	 std::to_string(m_scene->mNumTextures) +
+	////	 "\n").c_str());
+	//for (unsigned int i = 0; i < m_scene->mNumTextures; i++)
+	//{
+	//	const aiTexture* tex = m_scene->mTextures[i];
 
-		OutputDebugStringA(
-			("Embedded[" + std::to_string(i) + "]\n").c_str());
+	//	OutputDebugStringA(
+	//		("Embedded[" + std::to_string(i) + "]\n").c_str());
 
-		OutputDebugStringA(
-			("mFilename : " +
-			 std::string(tex->mFilename.C_Str()) +
-			 "\n").c_str());
+	//	OutputDebugStringA(
+	//		("mFilename : " +
+	//		 std::string(tex->mFilename.C_Str()) +
+	//		 "\n").c_str());
 
-		OutputDebugStringA(
-			("Width : " +
-			 std::to_string(tex->mWidth) +
-			 "\n").c_str());
+	//	OutputDebugStringA(
+	//		("Width : " +
+	//		 std::to_string(tex->mWidth) +
+	//		 "\n").c_str());
 
-		OutputDebugStringA(
-			("Height : " +
-			 std::to_string(tex->mHeight) +
-			 "\n").c_str());
-	}
+	//	OutputDebugStringA(
+	//		("Height : " +
+	//		 std::to_string(tex->mHeight) +
+	//		 "\n").c_str());
+	//}
 
-	{
-
-		OutputDebugStringA("GetRoot");
-
-		const aiNode* root = m_scene->mRootNode;
-
-		OutputDebugStringA(root->mName.C_Str());
-		OutputDebugStringA("\n");
-		for (unsigned int i = 0; i < root->mNumChildren; i++)
-		{
-			OutputDebugStringA(root->mChildren[i]->mName.C_Str());
-			OutputDebugStringA("\n");
-		}
-		const aiNode* node = m_scene->mRootNode->mChildren[0];
-
-		const aiMatrix4x4& m = node->mTransformation;
-
-		char text[512];
-
-		sprintf_s(
-			text,
-			"Node Matrix\n"
-			"%f %f %f %f\n"
-			"%f %f %f %f\n"
-			"%f %f %f %f\n"
-			"%f %f %f %f\n",
-			m.a1, m.a2, m.a3, m.a4,
-			m.b1, m.b2, m.b3, m.b4,
-			m.c1, m.c2, m.c3, m.c4,
-			m.d1, m.d2, m.d3, m.d4);
-
-		OutputDebugStringA(text);
-		OutputDebugStringA("EndGetRoot");
-
-	}
 	return true;
 }
 
