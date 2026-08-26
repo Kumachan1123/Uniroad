@@ -1,10 +1,10 @@
-/*
+ï»¿/*
 *		@file    RehabiliScene.h
-*		@brief   ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX
-*		@details ‚Õ‚æ”Õ–Ê‚Ì¶¬E—‰º‘€ìEİ’uEÁ‹Ed—Íˆ—‚ğŠÇ—‚·‚éB
+*		@brief   ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
+*		@details ã·ã‚ˆç›¤é¢ã®ç”Ÿæˆãƒ»è½ä¸‹æ“ä½œãƒ»è¨­ç½®ãƒ»æ¶ˆå»ãƒ»é‡åŠ›å‡¦ç†ã‚’ç®¡ç†ã™ã‚‹ã€‚
 */
 #pragma once
-// •W€ƒ‰ƒCƒuƒ‰ƒŠ
+// æ¨™æº–ãƒ©ã‚¤ãƒ–ãƒ©ãƒª
 #include <cassert>
 #include <memory>
 #include <vector>
@@ -13,13 +13,13 @@
 #include <DeviceResources.h>
 #include <d3d11.h>
 #include <SimpleMath.h>
-// ŠO•”ƒ‰ƒCƒuƒ‰ƒŠ
+// å¤–éƒ¨ãƒ©ã‚¤ãƒ–ãƒ©ãƒª
 #include <Libraries/MyLib/DebugCamera.h>
 #include <Libraries/MyLib/DebugString.h>
 #include <Libraries/MyLib/GridFloor.h>
 #include <Libraries/MyLib/InputManager.h>
 #include <Libraries/MyLib/MemoryLeakDetector.h>
-// ©ìƒwƒbƒ_[ƒtƒ@ƒCƒ‹
+// è‡ªä½œãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
 #include "Game/SceneManager/IScene.h"
 #include <Game\MyResources\MyResources.h>
 #include "Game/Camera/FixedCamera/FixedCamera.h"
@@ -28,79 +28,77 @@
 #include "KumachiLib/Math/KumachiLib.h"
 #include <KumachiLib\BillboardSprite\BillboardSprite.h>
 #include <Game\Player2D\Player2D.h>
-#include "KumachiLib/FBXLoader/FBXLoader.h"
-#include "KumachiLib/FBXModel/FBXModel.h"
-#include "KumachiLib/FBXShader/FBXShader.h"
-#include "KumachiLib/FBXTexture/FBXTexture.h"
-class FBXModel;
-class FBXShader;
-class FBXLoader;
-// ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX
-// 6x12‚Ì”Õ–Ê‚ğ‚¿A—‰º’†‚Ì2˜A‚Õ‚æi²{qj‚ğ“ü—Í‚Å‘€ì‚·‚éB
-// İ’uŒã‚Í”Õ–Ê‰ğŒˆi‰º‹l‚ßE4˜AŒ‹Á‹E˜A½j‚ğs‚¤B
+#include <KumachiLib\CreateShader\CreateShader.h>
+// ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
+// 6x12ã®ç›¤é¢ã‚’æŒã¡ã€è½ä¸‹ä¸­ã®2é€£ã·ã‚ˆï¼ˆè»¸ï¼‹å­ï¼‰ã‚’å…¥åŠ›ã§æ“ä½œã™ã‚‹ã€‚
+// è¨­ç½®å¾Œã¯ç›¤é¢è§£æ±ºï¼ˆä¸‹è©°ã‚ãƒ»4é€£çµæ¶ˆå»ãƒ»é€£é–ï¼‰ã‚’è¡Œã†ã€‚
 class RehabiliScene : public IScene
 {
 public:
-	// ƒAƒNƒZƒT
-	// ƒXƒe[ƒW”Ô†‚ğæ“¾‚·‚éiƒŠƒnƒrƒŠƒV[ƒ“‚ÍŒÅ’è’l0j
+	// ã‚¢ã‚¯ã‚»ã‚µ
+	// ã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·ã‚’å–å¾—ã™ã‚‹ï¼ˆãƒªãƒãƒ“ãƒªã‚·ãƒ¼ãƒ³ã¯å›ºå®šå€¤0ï¼‰
 	int GetStageNumber() const override { return 0; }
-	// ƒXƒe[ƒW”Ô†‚ğİ’è‚·‚éiŒ»İ‚Í–¢g—pj
+	// ã‚¹ãƒ†ãƒ¼ã‚¸ç•ªå·ã‚’è¨­å®šã™ã‚‹ï¼ˆç¾åœ¨ã¯æœªä½¿ç”¨ï¼‰
 	void SetStageNumber(int stageNumber) override { stageNumber; }
 public:
-	// publicŠÖ”
-	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	// publicé–¢æ•°
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	RehabiliScene(IScene::SceneID sceneID);
-	// ƒfƒXƒgƒ‰ƒNƒ^
+	// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	~RehabiliScene() override;
-	// ‰Šú‰»
-	// ƒJƒƒ‰¶¬AƒOƒŠƒbƒh¶¬AŒÅ’è”Õ–Ê‰Šú‰»‚ğs‚¤B
+	// åˆæœŸåŒ–
+	// ã‚«ãƒ¡ãƒ©ç”Ÿæˆã€ã‚°ãƒªãƒƒãƒ‰ç”Ÿæˆã€å›ºå®šç›¤é¢åˆæœŸåŒ–ã‚’è¡Œã†ã€‚
 	void Initialize() override;
-	// XV
-	// “ü—Íˆ—A—‰ºXVAİ’u”»’èA”Õ–ÊXV‚ğs‚¤B
+	// æ›´æ–°
+	// å…¥åŠ›å‡¦ç†ã€è½ä¸‹æ›´æ–°ã€è¨­ç½®åˆ¤å®šã€ç›¤é¢æ›´æ–°ã‚’è¡Œã†ã€‚
 	void Update(float elapsedTime) override;
-	// •`‰æ
-	// ƒOƒŠƒbƒhAŒÅ’è‚Õ‚æA—‰º’†‚Õ‚æ‚Ì‡‚Å•`‰æ‚·‚éB
+	// æç”»
+	// ã‚°ãƒªãƒƒãƒ‰ã€å›ºå®šã·ã‚ˆã€è½ä¸‹ä¸­ã·ã‚ˆã®é †ã§æç”»ã™ã‚‹ã€‚
 	void Render() override;
-	// I—¹
+	// çµ‚äº†
 	void Finalize() override;
-	// ƒV[ƒ“ID‚ğæ“¾‚·‚é
+	// ã‚·ãƒ¼ãƒ³IDã‚’å–å¾—ã™ã‚‹
 	SceneID GetNextSceneID() const override;
 
 private:
-	// privateŠÖ”
-	// ƒJƒƒ‰‚ÉŠÖ‚·‚éİ’è‚ğ‚·‚é
+	// privateé–¢æ•°
+	// ã‚«ãƒ¡ãƒ©ã«é–¢ã™ã‚‹è¨­å®šã‚’ã™ã‚‹
 	void CreateCamera();
-	// SDKƒƒbƒVƒ…‚ğì‚éiŒ»ó‚Í–¢g—pj
+	// SDKãƒ¡ãƒƒã‚·ãƒ¥ã‚’ä½œã‚‹ï¼ˆç¾çŠ¶ã¯æœªä½¿ç”¨ï¼‰
 	void CreateSDKMesh(std::wstring name);
 
 private:
-	// private’è”
-	// ‹–ìŠp(FOV)‚ÌŠp“xiƒfƒOƒŠ[j
+	// privateå®šæ•°
+	// è¦–é‡è§’(FOV)ã®è§’åº¦ï¼ˆãƒ‡ã‚°ãƒªãƒ¼ï¼‰
 	static constexpr float FOV = 60.0f;
 private:
-	// privateƒƒ“ƒo•Ï”
-	// Ÿ‚ÌƒV[ƒ“ID
+	// privateãƒ¡ãƒ³ãƒå¤‰æ•°
+	// æ¬¡ã®ã‚·ãƒ¼ãƒ³ID
 	IScene::SceneID m_nextSceneID;
-	// OlÌƒJƒƒ‰
+	// ä¸‰äººç§°ã‚«ãƒ¡ãƒ©
 	std::unique_ptr<TPCamera> m_pTPCamera;
 
-	// ƒfƒoƒbƒOƒJƒƒ‰
+	// ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©
 	std::unique_ptr<mylib::DebugCamera> m_debugCamera;
-	// ƒV[ƒ“ƒ`ƒFƒ“ƒWƒtƒ‰ƒO
+	// ã‚·ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸ãƒ•ãƒ©ã‚°
 	bool m_isChangeScene;
-	// Ë‰es—ñ
+	// å°„å½±è¡Œåˆ—
 	DirectX::SimpleMath::Matrix m_projection;
-	// ƒrƒ…[s—ñ
+	// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
 	DirectX::SimpleMath::Matrix m_view;
-	// Œo‰ßŠÔiŸ‚Õ‚æ¶¬‚Ü‚Å‚Ì‘Ò‹@‚Ég—pj
+	// çµŒéæ™‚é–“ï¼ˆæ¬¡ã·ã‚ˆç”Ÿæˆã¾ã§ã®å¾…æ©Ÿã«ä½¿ç”¨ï¼‰
 	float m_time;
-	// ƒ‚ƒfƒ‹i–¢g—pj
+	// ãƒ¢ãƒ‡ãƒ«ï¼ˆæœªä½¿ç”¨ï¼‰
 	std::unique_ptr<DirectX::Model> m_pModel;
-	// 2DƒvƒŒƒCƒ„[
+	// 2Dãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
 	std::unique_ptr<Player2D> m_pPlayer2D;
-	std::unique_ptr<FBXLoader> m_fbxLoader;
-	std::unique_ptr<FBXModel> m_fbxModel;
-	std::unique_ptr<FBXShader> m_fbxShader;
+	// ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãƒ•ã‚¡ã‚¯ãƒˆãƒª
+	std::unique_ptr<DirectX::EffectFactory> m_pEffectFactory;
+	// ãƒœãƒ¼ãƒ³ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
+	DirectX::ModelBone::TransformArray m_boneTransforms;
+	ID3D11Buffer* m_pTransformBuffer;
+	ID3D11Buffer* m_pLightBuffer;
 	bool m_isLoaded = false;
-
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pPixelShader;
 };

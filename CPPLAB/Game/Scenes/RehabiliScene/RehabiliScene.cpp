@@ -1,229 +1,221 @@
-/*
+ï»¿/*
 * 	@file RehabiliScene.cpp
-* 	@brief ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX
+* 	@brief ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹
 */
 
 #include "pch.h"
 #include "RehabiliScene.h"
-
+#include <KumachiLib\BinaryFile\BinaryFile.h>
 /*
-* 	@brief ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-* 	@details ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX‚ÌƒRƒ“ƒXƒgƒ‰ƒNƒ^
-* 	@param sceneID ƒV[ƒ“ID
-* 	@return ‚È‚µ
+* 	@brief ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+* 	@details ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+* 	@param sceneID ã‚·ãƒ¼ãƒ³ID
+* 	@return ãªã—
 */
 RehabiliScene::RehabiliScene(IScene::SceneID sceneID)
-	: m_pTPCamera(nullptr) // ƒJƒƒ‰‚Ö‚Ìƒ|ƒCƒ“ƒ^
-	, m_view() // ƒrƒ…[s—ñ
-	, m_projection() // Ë‰es—ñ
-	, m_isChangeScene(false) // ƒV[ƒ“•ÏXƒtƒ‰ƒO
-	, m_nextSceneID(sceneID) // Ÿ‚ÌƒV[ƒ“ID
-	, m_time(0.0f) // ŠÔ
+	: m_pTPCamera(nullptr) // ã‚«ãƒ¡ãƒ©ã¸ã®ãƒã‚¤ãƒ³ã‚¿
+	, m_view() // ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
+	, m_projection() // å°„å½±è¡Œåˆ—
+	, m_isChangeScene(false) // ã‚·ãƒ¼ãƒ³å¤‰æ›´ãƒ•ãƒ©ã‚°
+	, m_nextSceneID(sceneID) // æ¬¡ã®ã‚·ãƒ¼ãƒ³ID
+	, m_time(0.0f) // æ™‚é–“
 {}
 /*
-* 	@brief ƒfƒXƒgƒ‰ƒNƒ^
-* 	@details ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX‚ÌƒfƒXƒgƒ‰ƒNƒ^
-* 	@param ‚È‚µ
-* 	@return ‚È‚µ
+* 	@brief ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+* 	@details ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+* 	@param ãªã—
+* 	@return ãªã—
 */
 RehabiliScene::~RehabiliScene()
 {}
 /*
-* 	@brief ‰Šú‰»
-* 	@details ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX‚Ì‰Šú‰»‚ğs‚¤
-* 	@param ‚È‚µ
-* 	@return ‚È‚µ
+* 	@brief åˆæœŸåŒ–
+* 	@details ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–ã‚’è¡Œã†
+* 	@param ãªã—
+* 	@return ãªã—
 */
 void RehabiliScene::Initialize()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	// ‹¤’ÊƒŠƒ\[ƒX‚ğ•Û‘¶‚·‚éB
-	// ˆÈ~‚ÌƒeƒNƒXƒ`ƒƒæ“¾‚âƒfƒoƒCƒXQÆ‚Í‚±‚Ìƒ|ƒCƒ“ƒ^Œo—R‚Å“ˆê‚·‚éB
-
-	//auto deviceResources = MyResources::Get().GetDeviceResources();
-	//auto textureManager = MyResources::Get().GetTextureManager();
+	// å…±é€šãƒªã‚½ãƒ¼ã‚¹ã‚’ä¿å­˜ã™ã‚‹ã€‚
+	// ä»¥é™ã®ãƒ†ã‚¯ã‚¹ãƒãƒ£å–å¾—ã‚„ãƒ‡ãƒã‚¤ã‚¹å‚ç…§ã¯ã“ã®ãƒã‚¤ãƒ³ã‚¿çµŒç”±ã§çµ±ä¸€ã™ã‚‹ã€‚
 	const auto device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
-	// ƒJƒƒ‰‚ğ¶¬‚µ‚ÄAƒrƒ…[EË‰e‚Ì€”õ‚ğŠ®—¹‚³‚¹‚éB
+	m_pEffectFactory = std::make_unique<DirectX::EffectFactory>(device);
+	// ã‚«ãƒ¡ãƒ©ã‚’ç”Ÿæˆã—ã¦ã€ãƒ“ãƒ¥ãƒ¼ãƒ»å°„å½±ã®æº–å‚™ã‚’å®Œäº†ã•ã›ã‚‹ã€‚
 	CreateCamera();
+	// SDKãƒ¡ãƒƒã‚·ãƒ¥ã‚’ãƒ­ãƒ¼ãƒ‰ã™ã‚‹
+	CreateSDKMesh(L"Coke");	//// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ç”Ÿæˆã™ã‚‹
+	//m_pPlayer2D = std::make_unique<Player2D>();
+	//// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®åˆæœŸä½ç½®ã‚’ãƒãƒƒãƒ—ã‚¿ã‚¤ãƒ«ã®è¡Œãƒ»åˆ—ã‹ã‚‰è¨­å®šã™ã‚‹
+	//m_pPlayer2D->SetMapTilePosition(3, 5);
 
-
-	// ƒvƒŒƒCƒ„[‚ğ¶¬‚·‚é
-	m_pPlayer2D = std::make_unique<Player2D>();
-	// ƒvƒŒƒCƒ„[‚Ì‰ŠúˆÊ’u‚ğƒ}ƒbƒvƒ^ƒCƒ‹‚ÌsE—ñ‚©‚çİ’è‚·‚é
-	m_pPlayer2D->SetMapTilePosition(3, 5);
-	FBXLoader loader;
-	if (!m_isLoaded)
-	{
-		m_fbxLoader = std::make_unique<FBXLoader>();
-
-		if (m_fbxLoader->Load("Resources/Models/kazusa/kazusa.fbx"))
-		{
-			OutputDebugStringA(("Mesh : " + std::to_string(m_fbxLoader->GetMeshCount()) + "\n").c_str());
-			OutputDebugStringA(("Material : " + std::to_string(m_fbxLoader->GetMaterialCount()) + "\n").c_str());
-			OutputDebugStringA(("Animation : " + std::to_string(m_fbxLoader->GetAnimationCount()) + "\n").c_str());
-			m_fbxLoader->DebugMeshInfo();
-		}
-
-		m_isLoaded = true;
-
-		auto meshDatas = m_fbxLoader->GetMeshData();
-
-		OutputDebugStringA(("MeshData Count : " + std::to_string(meshDatas.size()) + "\n").c_str());
-
-		for (size_t i = 0; i < meshDatas.size(); ++i)
-		{
-			OutputDebugStringA(
-				("Vertices : " + std::to_string(meshDatas[i].Vertices.size()) + "\n").c_str());
-
-			OutputDebugStringA(
-				("Indices : " + std::to_string(meshDatas[i].Indices.size()) + "\n").c_str());
-
-			OutputDebugStringA(
-				("Material : " + std::to_string(meshDatas[i].MaterialIndex) + "\n").c_str());
-		}
-		m_fbxModel = std::make_unique<FBXModel>();
-		m_fbxShader = std::make_unique<FBXShader>();
-
-		m_fbxShader->Create(device);
-		m_fbxModel->SetMaterialDiffuseColors(m_fbxLoader->GetMaterialDiffuseColors());
-		m_fbxModel->Create(device, meshDatas, m_fbxLoader->GetMaterials());
-
-	}
-	//std::unique_ptr<FBXTexture> texture =
-	//	std::make_unique<FBXTexture>();
-
-
-	//if (texture->Load(
-	//	device,
-	//	"Resources/Models/Test/Test.png"))
-	//{
-	//	OutputDebugStringA("FBXTexture Load Success\n");
-	//}
 
 }
 /*
-* 	@brief XV
-* 	@details ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX‚ÌXV‚ğs‚¤
-* 	@param elapsedTime Œo‰ßŠÔ
-* 	@return ‚È‚µ
+* 	@brief æ›´æ–°
+* 	@details ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®æ›´æ–°ã‚’è¡Œã†
+* 	@param elapsedTime çµŒéæ™‚é–“
+* 	@return ãªã—
 */
 void RehabiliScene::Update(float elapsedTime)
 {
 
-	// Ÿ‚Ì—‰ºƒyƒA¶¬—pƒ^ƒCƒ}[‚ği‚ß‚éB
+	// æ¬¡ã®è½ä¸‹ãƒšã‚¢ç”Ÿæˆç”¨ã‚¿ã‚¤ãƒãƒ¼ã‚’é€²ã‚ã‚‹ã€‚
 	m_time += elapsedTime;
 
 
-	// ƒJƒƒ‰XViƒQ[ƒ€ƒƒWƒbƒN‚Æ‚Í“Æ—§jB
+	// ã‚«ãƒ¡ãƒ©æ›´æ–°ï¼ˆã‚²ãƒ¼ãƒ ãƒ­ã‚¸ãƒƒã‚¯ã¨ã¯ç‹¬ç«‹ï¼‰ã€‚
 	m_pTPCamera->SetTime(m_time);
 	m_pTPCamera->Update();
 	m_debugCamera->Update(MyResources::Get().GetInputManager());
 	m_view = m_debugCamera->GetViewMatrix();
 
-	// ƒV[ƒ“‘JˆÚ“ü—ÍB
+	// ã‚·ãƒ¼ãƒ³é·ç§»å…¥åŠ›ã€‚
 	auto keyState = MyResources::Get().GetInputManager()->GetKeyboardState();
 	if (keyState.Enter)m_isChangeScene = true;
 
-	// ƒvƒŒƒCƒ„[XV
-	m_pPlayer2D->Update(elapsedTime);
+	//// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ›´æ–°
+	//m_pPlayer2D->Update(elapsedTime);
 
 }
 /*
-* 	@brief •`‰æ
-* 	@details ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX‚Ì•`‰æ‚ğs‚¤
-* 	@param ‚È‚µ
-* 	@return ‚È‚µ
+* 	@brief æç”»
+* 	@details ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®æç”»ã‚’è¡Œã†
+* 	@param ãªã—
+* 	@return ãªã—
 */
 void RehabiliScene::Render()
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
-	//const auto deviceResources = MyResources::Get().GetDeviceResources();
-	//const auto states = MyResources::Get().GetCommonStates();
-	//auto context = deviceResources->GetD3DDeviceContext();
-	// ƒvƒŒƒCƒ„[•`‰æ
+
 	Matrix world = Matrix::Identity;
-	world *= Matrix::CreateScale(1.10f);
-	//// –{—ˆ+Y‚ªã•ûŒü‚¾‚ªAFBXƒ‚ƒfƒ‹‚Í+Z‚ªã•ûŒü‚È‚Ì‚ÅAX²‚Å90“x‰ñ“]‚³‚¹‚éB
-	//world *= Matrix::CreateRotationX(XMConvertToRadians(90.0f));
-	//// ‚³‚ç‚É‚±‚Ìó‘Ô‚Å‚ÍŒã‚ë‚ğŒü‚¢‚½ó‘Ô‚É‚È‚é‚Ì‚ÅAY²‚Å180“x‰ñ“]‚³‚¹‚éB
-	//world *= Matrix::CreateRotationY(XMConvertToRadians(180.0f));
-	world *= Matrix::CreateTranslation(0.0f, -10.0f, 0.0f);
-	m_fbxModel->Draw(MyResources::Get().GetDeviceResources()->GetD3DDeviceContext(), m_fbxShader.get(), world, m_view, m_projection);
-	//m_pPlayer2D->Render(m_view, m_projection);
+	world *= Matrix::CreateScale(1.f);
+	world *= Matrix::CreateRotationX(XMConvertToRadians(90.0f));
+	world *= Matrix::CreateRotationY(XMConvertToRadians(180.0f));
+
+	const auto deviceResources = MyResources::Get().GetDeviceResources();
+	const auto states = MyResources::Get().GetCommonStates();
+	auto deviceContext = deviceResources->GetD3DDeviceContext();
+
+	if (!m_pModel) return;
+
+	if (!m_pModel->bones.empty() && m_boneTransforms)
+	{
+		m_pModel->Draw(deviceContext, *states, m_pModel->bones.size(), m_boneTransforms.get(), world, m_view, m_projection);
+	}
+	else
+	{
+		m_pModel->Draw(deviceContext, *states, world, m_view, m_projection);
+	}
 }
+
 /*
-* 	@brief I—¹
-* 	@details ƒQ[ƒ€‚Ã‚­‚è‚ÌƒŠƒnƒrƒŠ—pƒV[ƒ“ƒNƒ‰ƒX‚ÌI—¹ˆ—‚ğs‚¤
-* 	@param ‚È‚µ
-* 	@return ‚È‚µ
+* 	@brief çµ‚äº†
+* 	@details ã‚²ãƒ¼ãƒ ã¥ãã‚Šã®ãƒªãƒãƒ“ãƒªç”¨ã‚·ãƒ¼ãƒ³ã‚¯ãƒ©ã‚¹ã®çµ‚äº†å‡¦ç†ã‚’è¡Œã†
+* 	@param ãªã—
+* 	@return ãªã—
 */
 void RehabiliScene::Finalize()
-{
-
-}
+{}
 /*
-* 	@brief ƒV[ƒ“•ÏX
-* 	@details ƒV[ƒ“•ÏX‚Ì—L–³‚ğæ“¾‚·‚é
-* 	@param ‚È‚µ
-* 	@return ƒV[ƒ“ID
+* 	@brief ã‚·ãƒ¼ãƒ³å¤‰æ›´
+* 	@details ã‚·ãƒ¼ãƒ³å¤‰æ›´ã®æœ‰ç„¡ã‚’å–å¾—ã™ã‚‹
+* 	@param ãªã—
+* 	@return ã‚·ãƒ¼ãƒ³ID
 */
 IScene::SceneID RehabiliScene::GetNextSceneID() const
 {
-	// ƒV[ƒ“•ÏX‚ª‚È‚¢‚È‚ç‚·‚®–ß‚é
+	// ã‚·ãƒ¼ãƒ³å¤‰æ›´ãŒãªã„ãªã‚‰ã™ãæˆ»ã‚‹
 	if (!m_isChangeScene)return IScene::SceneID::NONE;
-	// ƒXƒe[ƒWƒZƒŒƒNƒg‚Ö
+	// ã‚¹ãƒ†ãƒ¼ã‚¸ã‚»ãƒ¬ã‚¯ãƒˆã¸
 	return IScene::SceneID::NONE;
 }
 /*
-* 	@brief ƒJƒƒ‰‚ÉŠÖ‚·‚éİ’è‚ğ‚·‚é
-* 	@details ƒJƒƒ‰‚Ìì¬‚Æİ’è‚ğs‚¤
-* 	@param ‚È‚µ
-* 	@return ‚È‚µ
+* 	@brief ã‚«ãƒ¡ãƒ©ã«é–¢ã™ã‚‹è¨­å®šã‚’ã™ã‚‹
+* 	@details ã‚«ãƒ¡ãƒ©ã®ä½œæˆã¨è¨­å®šã‚’è¡Œã†
+* 	@param ãªã—
+* 	@return ãªã—
 */
 void RehabiliScene::CreateCamera()
 {
-	// DirectX‚Ì–¼‘O‹óŠÔ‚Ìg—p
+	// DirectXã®åå‰ç©ºé–“ã®ä½¿ç”¨
 	using namespace DirectX;
-	// SimpleMath‚Ì–¼‘O‹óŠÔ‚Ìg—p
+	// SimpleMathã®åå‰ç©ºé–“ã®ä½¿ç”¨
 	using namespace DirectX::SimpleMath;
-	// o—ÍƒTƒCƒY‚ğæ“¾‚·‚é
+	// å‡ºåŠ›ã‚µã‚¤ã‚ºã‚’å–å¾—ã™ã‚‹
 	RECT rect = MyResources::Get().GetDeviceResources()->GetOutputSize();
-	// ŒÅ’èƒJƒƒ‰‚ğì¬‚·‚é
+	// å›ºå®šã‚«ãƒ¡ãƒ©ã‚’ä½œæˆã™ã‚‹
 	m_pTPCamera = std::make_unique<TPCamera>();
-	// ŒÅ’èƒJƒƒ‰‚ğ‰Šú‰»‚·‚é
+	// å›ºå®šã‚«ãƒ¡ãƒ©ã‚’åˆæœŸåŒ–ã™ã‚‹
 	m_pTPCamera->Initialize((int)(rect.right), rect.bottom);
-	// ƒfƒoƒbƒOƒJƒƒ‰‚ğì¬‚·‚é
+	// ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‚’ä½œæˆã™ã‚‹
 	m_debugCamera = std::make_unique<mylib::DebugCamera>();
-	// ƒfƒoƒbƒOƒJƒƒ‰‚ğ‰Šú‰»‚·‚é
+	// ãƒ‡ãƒãƒƒã‚°ã‚«ãƒ¡ãƒ©ã‚’åˆæœŸåŒ–ã™ã‚‹
 	m_debugCamera->Initialize(rect.right, rect.bottom);
-	// Ë‰es—ñ‚ğì¬‚·‚é
+	// å°„å½±è¡Œåˆ—ã‚’ä½œæˆã™ã‚‹
 	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(FOV),// ‹–ìŠp
-		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// ƒAƒXƒyƒNƒg”ä
-		0.1f, 10000.0f);// ƒjƒAƒNƒŠƒbƒv‹——£Aƒtƒ@[ƒNƒŠƒbƒv‹——£
-	// ƒJƒƒ‰‚ÉË‰es—ñ‚ğƒZƒbƒg
+		XMConvertToRadians(FOV),// è¦–é‡è§’
+		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),// ã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”
+		0.1f, 10000.0f);// ãƒ‹ã‚¢ã‚¯ãƒªãƒƒãƒ—è·é›¢ã€ãƒ•ã‚¡ãƒ¼ã‚¯ãƒªãƒƒãƒ—è·é›¢
+	// ã‚«ãƒ¡ãƒ©ã«å°„å½±è¡Œåˆ—ã‚’ã‚»ãƒƒãƒˆ
 	m_pTPCamera->SetProjectionMatrix(m_projection);
 }
 /*
-* 	@brief SDKƒƒbƒVƒ…‚ğì‚é
-* 	@details SDKƒƒbƒVƒ…‚Ìì¬‚ğs‚¤
-* 	@param name SDKƒƒbƒVƒ…‚Ì–¼‘O
-* 	@return ‚È‚µ
+* 	@brief SDKãƒ¡ãƒƒã‚·ãƒ¥ã‚’ä½œã‚‹
+* 	@details SDKãƒ¡ãƒƒã‚·ãƒ¥ã®ä½œæˆã‚’è¡Œã†
+* 	@param name SDKãƒ¡ãƒƒã‚·ãƒ¥ã®åå‰
+* 	@return ãªã—
 */
 void RehabiliScene::CreateSDKMesh(std::wstring name)
 {
-	// DirectX‚Ì–¼‘O‹óŠÔ‚Ìg—p
 	using namespace DirectX;
-	// device‚ğæ“¾‚·‚é
-	//ID3D11Device* device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
+	ID3D11Device1* device = MyResources::Get().GetDeviceResources()->GetD3DDevice();
 
-	// ƒtƒ@ƒCƒ‹ƒpƒX
 	std::wstring filePath = L"Resources/SDKMeshes/" + name + L"/" + name + L".sdkmesh";
-	// ƒtƒHƒ‹ƒ_ƒpƒX
 	std::wstring folderPath = L"Resources/SDKMeshes/" + name;
 
+	// ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
+	D3D11_BUFFER_DESC bufferDesc = {};
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesc.ByteWidth = sizeof(XMFLOAT4X4) * 3;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	device->CreateBuffer(&bufferDesc, nullptr, &m_pTransformBuffer);
 
+	m_pEffectFactory->SetDirectory(folderPath.c_str());
 
+	m_pModel = DirectX::Model::CreateFromSDKMESH(
+		device,
+		filePath.c_str(),
+		*m_pEffectFactory,
+		DirectX::ModelLoader_Clockwise
+	);
+	// ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«æ¸ˆã¿ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’èª­ã¿è¾¼ã‚€
+	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+	KumachiLib::BinaryFile VS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/SDKMesh/VS_SDKMesh.cso");
+	// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ä½œæˆ
+	if (FAILED(device->CreateVertexShader(VS.GetData(), VS.GetSize(), NULL, m_pVertexShader.ReleaseAndGetAddressOf())))
+	{
+		// ã‚¨ãƒ©ãƒ¼å‡¦ç†
+		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
+	}
+	// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+	KumachiLib::BinaryFile PS = KumachiLib::BinaryFile::LoadFile(L"Resources/Shaders/SDKMesh/PS_SDKMesh.cso");
+	// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ä½œæˆ
+	if (FAILED(device->CreatePixelShader(PS.GetData(), PS.GetSize(), NULL, m_pPixelShader.ReleaseAndGetAddressOf())))
+	{
+		// ã‚¨ãƒ©ãƒ¼å‡¦ç†
+		MessageBox(0, L"CreatePixelShader Failed.", NULL, MB_OK);
+	}
+	if (m_pModel && !m_pModel->bones.empty())
+	{
+		m_boneTransforms = DirectX::ModelBone::MakeArray(m_pModel->bones.size());
+		m_pModel->CopyAbsoluteBoneTransformsTo(m_pModel->bones.size(), m_boneTransforms.get());
+	}
+	else
+	{
+		m_boneTransforms.reset();
+	}
 }

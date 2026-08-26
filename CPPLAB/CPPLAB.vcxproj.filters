@@ -87,12 +87,6 @@
     <ClInclude Include="Game\MyResources\MyResources.h" />
     <ClInclude Include="Game\Player2D\PlayerDirection.h" />
     <ClInclude Include="Game\GameObject\IGameObject.h" />
-    <ClInclude Include="KumachiLib\FBXLoader\FBXLoader.h" />
-    <ClInclude Include="KumachiLib\FBXModel\FBXModel.h" />
-    <ClInclude Include="KumachiLib\FBXShader\FBXShader.h" />
-    <ClInclude Include="KumachiLib\FBXTexture\FBXTexture.h" />
-    <ClInclude Include="KumachiLib\FBXMaterial\FBXMaterial.h" />
-    <ClInclude Include="KumachiLib\FBXMeshData\FBXMeshData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -139,10 +133,6 @@
     <ClCompile Include="KumachiLib\BillboardSprite\BillboardSprite.cpp" />
     <ClCompile Include="Game\Player2D\Player2D.cpp" />
     <ClCompile Include="Game\MyResources\MyResources.cpp" />
-    <ClCompile Include="KumachiLib\FBXLoader\FBXLoader.cpp" />
-    <ClCompile Include="KumachiLib\FBXModel\FBXModel.cpp" />
-    <ClCompile Include="KumachiLib\FBXShader\FBXShader.cpp" />
-    <ClCompile Include="KumachiLib\FBXTexture\FBXTexture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -178,7 +168,6 @@
     <None Include="HLSL\SDKMesh\Header.hlsli" />
     <None Include="docs\PuyoManager_RefactorPlan.md" />
     <None Include=".github\copilot-instructions.md" />
-    <None Include="HLSL\FBX\Header.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="HLSL\Particle\GS_Particle.hlsl" />
@@ -215,7 +204,5 @@
     <FxCompile Include="HLSL\Material\VS_MetallicNoTex.hlsl" />
     <FxCompile Include="HLSL\SDKMesh\VS_SDKMesh.hlsl" />
     <FxCompile Include="HLSL\SDKMesh\PS_SDKMesh.hlsl" />
-    <FxCompile Include="HLSL\FBX\VS_FBX.hlsl" />
-    <FxCompile Include="HLSL\FBX\PS_FBX.hlsl" />
   </ItemGroup>
 </Project>
